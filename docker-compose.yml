@@ -1,0 +1,12 @@
+services:
+  web:
+    container_name: qr_reader
+    build: .
+    command: python manage.py runserver
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=0
+    restart: unless-stopped

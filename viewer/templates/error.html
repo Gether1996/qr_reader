@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <title>Chyba</title>
+{% endblock %}
+
+{% block content %}
+
+<div style="margin-top: 50px; margin-left: 50px;">
+    <h1>{{ error }}</h1>
+
+    <a class="btn btn-primary" href="{% url 'homepage' %}">Späť na úvodnú stránku</a>
+</div>
+
+{% endblock %}

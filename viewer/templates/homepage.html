@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <title>Domov</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">QR Code Directory</h1>
+
+    <div class="text-center mb-4">
+        <button class="btn btn-primary" onclick="openAddQRCodeModal()">➕ Add QR Code</button>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        {% for profile in qr_codes %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if profile.qr_code %}
+                <img src="{{ profile.qr_code.url }}" class="card-img-top p-3" alt="QR Code for {{ profile.name_surname }}">
+                {% else %}
+                <div class="card-img-top bg-light text-center py-5">
+                    <p>No QR Code</p>
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ profile.name_surname }}</h5>
+                    <p class="card-text">
+                        <strong>Email:</strong> {{ profile.email }}<br>
+                        <strong>Phone:</strong> {{ profile.phone }}<br>
+                        <strong>Company:</strong> {{ profile.company }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No profiles found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
