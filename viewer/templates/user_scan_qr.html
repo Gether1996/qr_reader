@@ -18,19 +18,23 @@
         margin-bottom: 2rem;
     }
     
-    #scanner-video {
+    #qr-reader {
         width: 100%;
-        max-width: 500px;
-        min-height: 400px;
-        border-radius: 12px;
-        background: #000;
-        display: block;
+        max-width: 600px;
         margin: 0 auto;
-        border: 2px solid #e5e7eb;
     }
     
-    #scanner-video video {
+    #qr-reader video {
+        width: 100%;
         border-radius: 12px;
+    }
+    
+    #qr-reader__scan_region {
+        border-radius: 12px !important;
+    }
+    
+    #qr-reader__camera_selection {
+        margin-top: 1rem;
     }
     
     #manual-input-section {
@@ -97,14 +101,14 @@
     <div class="camera-section">
         <div class="text-center mb-3">
             <button id="startScanBtn" class="btn btn-primary btn-lg">
-                <i class="fas fa-camera me-2"></i>Start Camera
+                <i class="fas fa-camera me-2"></i>Start QR Scanner
             </button>
             <button id="stopScanBtn" class="btn btn-danger btn-lg" style="display: none;">
-                <i class="fas fa-stop me-2"></i>Stop Camera
+                <i class="fas fa-stop me-2"></i>Stop Scanner
             </button>
         </div>
         
-        <video id="scanner-video" style="display: none;"></video>
+        <div id="qr-reader" style="display: none;"></div>
         
         <div id="manual-input-section">
             <h5 class="mb-3"><i class="fas fa-keyboard me-2"></i>Or Enter UUID Manually</h5>
@@ -114,7 +118,7 @@
                 </div>
                 <div class="col-md-4">
                     <button id="manual-scan-btn" class="btn btn-success w-100">
-                        <i class="fas fa-check me-2"></i>Scan
+                        <i class="fas fa-check me-2"></i>Submit
                     </button>
                 </div>
             </div>
@@ -130,9 +134,9 @@
 {% block extra_js %}
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
-let html5QrcodeScanner = null;
-let userLocation = null;
-let isScanning = false;
+var html5QrcodeScanner = null;
+var userLocation = null;
+var isScanning = false;
 
 // Function to request location
 function requestLocation() {
@@ -198,40 +202,44 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function stopScanner() {
+function stopScanner() {
     if (html5QrcodeScanner && isScanning) {
-        try {
-            await html5QrcodeScanner.stop();
+        html5QrcodeScanner.clear().then(function() {
             console.log('Scanner stopped successfully');
-        } catch (err) {
+            isScanning = false;
+            html5QrcodeScanner = null;
+        }).catch(function(err) {
             console.error('Error stopping scanner:', err);
-        }
-        isScanning = false;
-        html5QrcodeScanner = null;
+            isScanning = false;
+            html5QrcodeScanner = null;
+        });
     }
 }
 
-async function processScan(uuid) {
+function processScan(uuid) {
     // Prevent multiple scans
-    if (isScanning && html5QrcodeScanner) {
-        await stopScanner();
+    if (isScanning) {
+        stopScanner();
     }
 
     // Request location if not available
     if (!userLocation) {
-        try {
-            await requestLocation();
-        } catch (error) {
+        requestLocation().then(function() {
+            submitScan(uuid);
+        }).catch(function(error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Location Required',
                 text: error.message,
                 confirmButtonColor: '#2563eb'
             });
-            return;
-        }
+        });
+    } else {
+        submitScan(uuid);
     }
+}
 
+function submitScan(uuid) {
     // Extract UUID from URL if it's a full URL
     var extractedUuid = uuid.trim();
     if (extractedUuid.includes('/scan/')) {
@@ -243,21 +251,20 @@ async function processScan(uuid) {
 
     console.log('Processing scan for UUID:', extractedUuid);
 
-    try {
-        var response = await fetch('{% url "user_scan_qr" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                uuid: extractedUuid,
-                latitude: userLocation.latitude,
-                longitude: userLocation.longitude
-            })
-        });
-
-        var data = await response.json();
+    fetch('{% url "user_scan_qr" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            uuid: extractedUuid,
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude
+        })
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
         var resultDiv = document.getElementById('scan-result');
         
         if (data.status === 'success') {
@@ -265,9 +272,9 @@ async function processScan(uuid) {
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<h4 class="text-success mb-3"><i class="fas fa-check-circle me-2"></i>Scan Successful!</h4><div class="info-grid"><div class="info-item"><div class="info-label">QR Code Name</div><div class="info-value">' + data.data.qr_name + '</div></div><div class="info-item"><div class="info-label">QR Location</div><div class="info-value">' + data.data.qr_location + '</div></div><div class="info-item"><div class="info-label">Scanned At</div><div class="info-value">' + data.data.scan_timestamp + '</div></div><div class="info-item"><div class="info-label">Your Location</div><div class="info-value"><a href="https://www.google.com/maps?q=' + data.data.scan_latitude + ',' + data.data.scan_longitude + '" target="_blank">' + data.data.scan_latitude.toFixed(6) + ', ' + data.data.scan_longitude.toFixed(6) + ' <i class="fas fa-external-link-alt ms-1"></i></a></div></div></div><div class="text-center mt-3"><button onclick="location.reload()" class="btn btn-primary"><i class="fas fa-redo me-2"></i>Scan Another</button></div>';
             
-            // Stop camera if running
-            await stopScanner();
-            document.getElementById('scanner-video').style.display = 'none';
+            // Stop scanner
+            stopScanner();
+            document.getElementById('qr-reader').style.display = 'none';
             document.getElementById('startScanBtn').style.display = 'inline-block';
             document.getElementById('stopScanBtn').style.display = 'none';
         } else {
@@ -275,7 +282,8 @@ async function processScan(uuid) {
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<h4 class="text-danger mb-3"><i class="fas fa-exclamation-circle me-2"></i>Scan Failed</h4><p>' + data.message + '</p><button onclick="location.reload()" class="btn btn-secondary"><i class="fas fa-redo me-2"></i>Try Again</button>';
         }
-    } catch (error) {
+    })
+    .catch(function(error) {
         console.error('Scan processing error:', error);
         Swal.fire({
             icon: 'error',
@@ -283,109 +291,87 @@ async function processScan(uuid) {
             text: 'Failed to process scan: ' + error.message,
             confirmButtonColor: '#2563eb'
         });
-    }
+    });
 }
 
-// Start camera scanner
-document.getElementById('startScanBtn').addEventListener('click', async function() {
+// Start QR scanner
+document.getElementById('startScanBtn').addEventListener('click', function() {
     // Request location if not available
     if (!userLocation) {
-        try {
-            await requestLocation();
-        } catch (error) {
+        requestLocation().then(function() {
+            startScanner();
+        }).catch(function(error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Location Required',
                 text: error.message,
                 confirmButtonColor: '#2563eb'
             });
-            return;
-        }
+        });
+    } else {
+        startScanner();
     }
+});
 
-    var videoElement = document.getElementById('scanner-video');
+function startScanner() {
+    var readerDiv = document.getElementById('qr-reader');
     var startBtn = document.getElementById('startScanBtn');
     var stopBtn = document.getElementById('stopScanBtn');
 
+    readerDiv.style.display = 'block';
+    startBtn.style.display = 'none';
+    stopBtn.style.display = 'inline-block';
+
     try {
-        // Get available cameras
-        var devices = await Html5Qrcode.getCameras();
-        
-        if (!devices || devices.length === 0) {
-            throw new Error('No cameras found on this device');
-        }
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader",
+            { 
+                fps: 10,
+                qrbox: 250,
+                rememberLastUsedCamera: true
+            },
+            false
+        );
 
-        console.log('Available cameras:', devices);
-
-        videoElement.style.display = 'block';
-        startBtn.style.display = 'none';
-        stopBtn.style.display = 'inline-block';
-
-        html5QrcodeScanner = new Html5Qrcode("scanner-video");
-        
-        // Prefer back camera (environment)
-        var cameraId = devices[0].id;
-        for (var i = 0; i < devices.length; i++) {
-            var device = devices[i];
-            if (device.label.toLowerCase().includes('back') || 
-                device.label.toLowerCase().includes('rear') ||
-                device.label.toLowerCase().includes('environment')) {
-                cameraId = device.id;
-                break;
-            }
-        }
-
-        console.log('Starting camera:', cameraId);
-
-        var config = {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0,
-            disableFlip: false
-        };
-
-        await html5QrcodeScanner.start(
-            cameraId,
-            config,
+        html5QrcodeScanner.render(
             function(decodedText) {
                 console.log('QR Code detected:', decodedText);
                 processScan(decodedText);
             },
-            function(errorMessage) {
-                // Ignore continuous scanning errors
+            function(error) {
+                // Ignore continuous scanning errors (they happen every frame)
+                // console.log('Scan error:', error);
             }
         );
 
         isScanning = true;
-        console.log('Camera started successfully');
-
+        console.log('Scanner started successfully');
     } catch (err) {
-        console.error('Camera error:', err);
-        
-        videoElement.style.display = 'none';
-        startBtn.style.display = 'inline-block';
-        stopBtn.style.display = 'none';
-        
+        console.error('Scanner initialization error:', err);
         Swal.fire({
             icon: 'error',
-            title: 'Camera Error',
-            text: err.message || 'Unable to access camera. Please check permissions or try manual input.',
+            title: 'Scanner Error',
+            text: 'Failed to start scanner: ' + err.message,
             confirmButtonColor: '#2563eb'
         });
+        
+        readerDiv.style.display = 'none';
+        startBtn.style.display = 'inline-block';
+        stopBtn.style.display = 'none';
     }
-});
+}
 
-// Stop camera
-document.getElementById('stopScanBtn').addEventListener('click', async function() {
-    await stopScanner();
-    document.getElementById('scanner-video').style.display = 'none';
+// Stop scanner
+document.getElementById('stopScanBtn').addEventListener('click', function() {
+    stopScanner();
+    document.getElementById('qr-reader').style.display = 'none';
     document.getElementById('startScanBtn').style.display = 'inline-block';
     this.style.display = 'none';
 });
 
 // Manual scan
 document.getElementById('manual-scan-btn').addEventListener('click', function() {
-    const uuid = document.getElementById('manual-uuid').value.trim();
+    var uuid = document.getElementById('manual-uuid').value.trim();
     if (!uuid) {
         Swal.fire({
             icon: 'warning',
@@ -406,8 +392,8 @@ document.getElementById('manual-uuid').addEventListener('keypress', function(e) 
 });
 
 // Cleanup on page unload
-window.addEventListener('beforeunload', async function() {
-    await stopScanner();
+window.addEventListener('beforeunload', function() {
+    stopScanner();
 });
 </script>
 {% endblock %}
