@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Company Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .qr-code-img {
+        max-width: 150px;
+        border-radius: 8px;
+    }
+    .modal-backdrop {
+        z-index: 1040;
+    }
+    .modal {
+        z-index: 1050;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-building me-2"></i>{{ company.name }} Dashboard</h2>
+            <p class="text-muted">Manage your QR codes and users</p>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <h4><i class="fas fa-qrcode me-2"></i>{{ qr_codes.count }}</h4>
+                <p class="mb-0">Total QR Codes</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <h4><i class="fas fa-users me-2"></i>{{ users.count }}</h4>
+                <p class="mb-0">Registered Users</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <h4><i class="fas fa-mouse-pointer me-2"></i>{{ recent_scans.count }}</h4>
+                <p class="mb-0">Recent Scans</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col">
+            <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#createQRModal">
+                <i class="fas fa-plus me-2"></i>Create QR Code
+            </button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                <i class="fas fa-user-plus me-2"></i>Register User
+            </button>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#qr-codes-tab">
+                <i class="fas fa-qrcode me-2"></i>QR Codes
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#users-tab">
+                <i class="fas fa-users me-2"></i>Users
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#scans-tab">
+                <i class="fas fa-mouse-pointer me-2"></i>Recent Scans
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- QR Codes Tab -->
+        <div class="tab-pane fade show active" id="qr-codes-tab">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>QR Code</th>
+                                    <th>Name</th>
+                                    <th>Location</th>
+                                    <th>Created</th>
+                                    <th>Status</th>
+                                    <th>Scans</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for qr in qr_codes %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img">
+                                    </td>
+                                    <td>{{ qr.name }}</td>
+                                    <td>{{ qr.location }}</td>
+                                    <td>{{ qr.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if qr.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ qr.scans.count }}</td>
+                                    <td>
+                                        <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'delete_qr_code' qr.id %}" class="btn btn-sm btn-danger" 
+                                           onclick="return confirm('Deactivate this QR code?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No QR codes yet. Create one to get started!</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div class="tab-pane fade" id="users-tab">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Created</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td><i class="fas fa-user me-2"></i>{{ user.name }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if user.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No users yet. Register users to give them access!</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scans Tab -->
+        <div class="tab-pane fade" id="scans-tab">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>QR Code</th>
+                                    <th>Scanned By</th>
+                                    <th>Location</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for scan in recent_scans %}
+                                <tr>
+                                    <td>{{ scan.qr_code.name }}</td>
+                                    <td>
+                                        {% if scan.scanned_by %}
+                                            {{ scan.scanned_by.name }}
+                                        {% else %}
+                                            <span class="text-muted">Anonymous</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="https://www.google.com/maps?q={{ scan.latitude }},{{ scan.longitude }}" target="_blank">
+                                            <i class="fas fa-map-marker-alt me-1"></i>
+                                            {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
+                                        </a>
+                                    </td>
+                                    <td>{{ scan.timestamp|date:"Y-m-d H:i:s" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No scans yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create QR Code Modal -->
+<div class="modal fade" id="createQRModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-qrcode me-2"></i>Create New QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createQRForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="qr_name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="qr_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qr_location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="qr_location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qr_info" class="form-label">Additional Info (Optional)</label>
+                        <textarea class="form-control" id="qr_info" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="createQRCode()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Register New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createUserForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="user_name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="user_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="user_email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="user_password" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="createUser()">Register</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function createQRCode() {
+    const data = {
+        name: document.getElementById('qr_name').value,
+        location: document.getElementById('qr_location').value,
+        additional_info: document.getElementById('qr_info').value
+    };
+
+    fetch('{% url "create_qr_code" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire('Success!', 'QR code created successfully', 'success')
+                .then(() => location.reload());
+        } else {
+            Swal.fire('Error!', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error!', 'Failed to create QR code', 'error');
+    });
+}
+
+function createUser() {
+    const data = {
+        name: document.getElementById('user_name').value,
+        email: document.getElementById('user_email').value,
+        password: document.getElementById('user_password').value
+    };
+
+    fetch('{% url "create_user" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire('Success!', 'User registered successfully', 'success')
+                .then(() => location.reload());
+        } else {
+            Swal.fire('Error!', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error!', 'Failed to register user', 'error');
+    });
+}
+</script>
+{% endblock %}

@@ -1,2 +1,465 @@
-
 {% load static %}
+
+<nav class="qr-navbar">
+    <div class="container">
+        <div class="navbar-wrapper">
+            <a class="brand-logo" href="{% url 'landing_page' %}">
+                <div class="logo-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <span class="brand-text">QR Reader</span>
+            </a>
+            
+            <button class="mobile-toggle" id="mobileToggle" type="button">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                {% if request.session.user_type == 'company' %}
+                    <!-- Company Navigation -->
+                    <a href="{% url 'company_dashboard' %}" class="nav-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <div class="nav-item dropdown-wrapper">
+                        <button class="dropdown-trigger" type="button">
+                            <i class="fas fa-building"></i>
+                            <span>Manage</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'company_dashboard' %}" class="dropdown-link">
+                                <i class="fas fa-qrcode"></i>
+                                <span>QR Codes</span>
+                            </a>
+                            <a href="{% url 'company_dashboard' %}" class="dropdown-link">
+                                <i class="fas fa-users"></i>
+                                <span>Users</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'company_logout' %}" class="dropdown-link logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                {% elif request.session.user_type == 'user' %}
+                    <!-- User Navigation -->
+                    <a href="{% url 'user_dashboard' %}" class="nav-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <div class="nav-item dropdown-wrapper">
+                        <button class="dropdown-trigger" type="button">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Account</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'user_dashboard' %}" class="dropdown-link">
+                                <i class="fas fa-qrcode"></i>
+                                <span>QR Codes</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'user_logout' %}" class="dropdown-link logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                {% else %}
+                    <!-- Public Navigation -->
+                    <a href="{% url 'landing_page' %}" class="nav-item">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="{% url 'company_login' %}" class="nav-item-btn primary">
+                        <i class="fas fa-building"></i>
+                        <span>Company Login</span>
+                    </a>
+                    <a href="{% url 'user_login' %}" class="nav-item-btn secondary">
+                        <i class="fas fa-user"></i>
+                        <span>User Login</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Reset and base navbar styles */
+    .qr-navbar {
+        background: #ffffff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .qr-navbar .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+    
+    .navbar-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 70px;
+    }
+    
+    /* Brand logo */
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: #1f2937;
+        font-weight: 700;
+        font-size: 1.25rem;
+        transition: transform 0.2s;
+    }
+    
+    .brand-logo:hover {
+        transform: translateY(-2px);
+        color: #2563eb;
+    }
+    
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    }
+    
+    .brand-text {
+        font-size: 1.25rem;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    /* Mobile toggle */
+    .mobile-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+    }
+    
+    .mobile-toggle span {
+        width: 25px;
+        height: 3px;
+        background: #1f2937;
+        border-radius: 3px;
+        transition: all 0.3s;
+    }
+    
+    .mobile-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+    }
+    
+    .mobile-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .mobile-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+    
+    /* Navigation menu */
+    .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Nav items */
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.25rem;
+        color: #4b5563;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+    
+    .nav-item:hover {
+        background: #f3f4f6;
+        color: #2563eb;
+    }
+    
+    .nav-item i {
+        font-size: 1rem;
+    }
+    
+    /* Button style nav items */
+    .nav-item-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.5rem;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+    
+    .nav-item-btn.primary {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+    
+    .nav-item-btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        color: white;
+    }
+    
+    .nav-item-btn.secondary {
+        background: #10b981;
+        color: white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    
+    .nav-item-btn.secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        background: #059669;
+        color: white;
+    }
+    
+    /* Dropdown */
+    .dropdown-wrapper {
+        position: relative;
+    }
+    
+    .dropdown-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.25rem;
+        color: #4b5563;
+        background: none;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+    
+    .dropdown-trigger:hover {
+        background: #f3f4f6;
+        color: #2563eb;
+    }
+    
+    .dropdown-arrow {
+        font-size: 0.75rem;
+        transition: transform 0.2s;
+    }
+    
+    .dropdown-wrapper:hover .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+    
+    .dropdown-content {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        min-width: 200px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 0.5rem;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .dropdown-wrapper:hover .dropdown-content {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .dropdown-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #4b5563;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+    
+    .dropdown-link:hover {
+        background: #f3f4f6;
+        color: #2563eb;
+        transform: translateX(4px);
+    }
+    
+    .dropdown-link.logout {
+        color: #ef4444;
+    }
+    
+    .dropdown-link.logout:hover {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+    
+    .dropdown-link i {
+        width: 20px;
+        text-align: center;
+        font-size: 1rem;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 0.5rem 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+        .mobile-toggle {
+            display: flex;
+        }
+        
+        .nav-menu {
+            position: fixed;
+            top: 70px;
+            right: -100%;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: white;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            padding: 1.5rem;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s;
+            overflow-y: auto;
+        }
+        
+        .nav-menu.active {
+            right: 0;
+        }
+        
+        .nav-item,
+        .nav-item-btn,
+        .dropdown-trigger {
+            width: 100%;
+            justify-content: flex-start;
+            margin: 0.25rem 0;
+        }
+        
+        .dropdown-content {
+            position: static;
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            box-shadow: none;
+            margin-top: 0.5rem;
+            margin-left: 1rem;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        
+        .dropdown-wrapper.active .dropdown-content {
+            max-height: 500px;
+        }
+        
+        .dropdown-wrapper.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-link:hover {
+            transform: translateX(0);
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .qr-navbar .container {
+            padding: 0 1rem;
+        }
+        
+        .brand-text {
+            font-size: 1.1rem;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+        
+        // Mobile dropdown toggle
+        const dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+        dropdownTriggers.forEach(trigger => {
+            trigger.addEventListener('click', function() {
+                if (window.innerWidth <= 991) {
+                    this.parentElement.classList.toggle('active');
+                }
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 991) {
+                if (!event.target.closest('.navbar-wrapper')) {
+                    navMenu.classList.remove('active');
+                    mobileToggle.classList.remove('active');
+                }
+            }
+        });
+    });
+</script>

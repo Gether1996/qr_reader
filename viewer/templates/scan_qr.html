@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Scan QR Code{% endblock %}
+
+{% block extra_css %}
+<style>
+    .scan-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .location-status {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container scan-container mt-5">
+    <div class="card">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="fas fa-qrcode fa-4x text-primary mb-3"></i>
+                <h3>{{ qr_code.name }}</h3>
+                <p class="text-muted">
+                    <i class="fas fa-map-marker-alt me-2"></i>{{ qr_code.location }}
+                </p>
+                {% if qr_code.additional_info %}
+                <p class="small">{{ qr_code.additional_info }}</p>
+                {% endif %}
+            </div>
+
+            <div id="locationStatus" class="location-status alert alert-info">
+                <i class="fas fa-spinner fa-spin me-2"></i>Getting your location...
+            </div>
+
+            <div class="text-center">
+                <button id="recordScanBtn" class="btn btn-primary btn-lg" disabled>
+                    <i class="fas fa-check-circle me-2"></i>Record Scan
+                </button>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    We need your location to record this scan
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let userLocation = null;
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Get user location on page load
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            userLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+            
+            document.getElementById('locationStatus').innerHTML = 
+                '<i class="fas fa-check-circle me-2"></i>Location acquired: ' + 
+                userLocation.latitude.toFixed(6) + ', ' + userLocation.longitude.toFixed(6);
+            document.getElementById('locationStatus').className = 'location-status alert alert-success';
+            document.getElementById('recordScanBtn').disabled = false;
+        },
+        function(error) {
+            document.getElementById('locationStatus').innerHTML = 
+                '<i class="fas fa-exclamation-triangle me-2"></i>Unable to get location. Please enable location services.';
+            document.getElementById('locationStatus').className = 'location-status alert alert-warning';
+        }
+    );
+} else {
+    document.getElementById('locationStatus').innerHTML = 
+        '<i class="fas fa-times-circle me-2"></i>Geolocation is not supported by your browser';
+    document.getElementById('locationStatus').className = 'location-status alert alert-danger';
+}
+
+document.getElementById('recordScanBtn').addEventListener('click', function() {
+    if (!userLocation) {
+        Swal.fire('Error!', 'Location not available', 'error');
+        return;
+    }
+
+    const data = {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        device_info: navigator.userAgent
+    };
+
+    fetch('{% url "scan_qr" qr_code.uuid %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Scan recorded successfully!',
+                confirmButtonColor: '#10b981'
+            });
+            document.getElementById('recordScanBtn').disabled = true;
+            document.getElementById('recordScanBtn').innerHTML = 
+                '<i class="fas fa-check me-2"></i>Scan Recorded';
+        } else {
+            Swal.fire('Error!', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error!', 'Failed to record scan', 'error');
+    });
+});
+</script>
+{% endblock %}

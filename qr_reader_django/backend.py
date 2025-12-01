@@ -19,14 +19,16 @@ def add_qr_code(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Nesprávny request.'})
 
-def record_scan(request, qr_uuid):
+def record_scan(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            uuid = data.get('uuid')
             latitude = data.get('latitude')
             longitude = data.get('longitude')
 
-            qr_profile = QRCodeProfile.objects.get(uuid=qr_uuid)
+            qr_profile = QRCodeProfile.objects.get(uuid=uuid)
+
             ScanEvent.objects.create(qr_code=qr_profile, latitude=latitude, longitude=longitude)
             return JsonResponse({'status': 'success'})
         except Exception as e:
