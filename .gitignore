@@ -3,9 +3,15 @@
 *.pot
 *.pyc
 __pycache__
-logs/log
-logs/debug.log
-logs/debug
+logs/
+db.sqlite3
+db.sqlite3.backup*
+media/
+staticfiles/
+
+# Environment
+.env
+.env.local
 
 # Backup files #
 *.bak

@@ -6,7 +6,8 @@ SECRET_KEY = 'django-insecure-gn!*2)1f&rnjn7(7v9h64zoc9(3dl7ic+!+=e15!i&^k*%za#l
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dqr.314.sk', 'localhost', '127.0.0.1', '*']
+CSRF_TRUSTED_ORIGINS = ['http://dqr.314.sk', 'https://dqr.314.sk']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -20,13 +21,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'qr_reader_django.urls'
@@ -83,7 +84,7 @@ USE_I18N = True
 USE_TZ = False
 
 # Base URL for QR code generation
-BASE_URL = 'http://localhost:8000'
+BASE_URL = 'https://dqr.314.sk'
 
 MEDIA_FOLDER = 'media'
 

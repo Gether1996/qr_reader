@@ -3,9 +3,11 @@ services:
     container_name: qr_reader
     build: .
     ports:
-      - "8000:8000"
+      - "9005:8000"
     volumes:
+      - ./db.sqlite3:/app/db.sqlite3
       - .:/app
+      - ./static:/app/static
     environment:
       - DEBUG=0
     restart: unless-stopped

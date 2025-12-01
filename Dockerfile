@@ -1,23 +1,40 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt /app/
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the current directory contents into the container at /app
 COPY . /app/
-ENV DJANGO_SETTINGS_MODULE=qr_reader_django.settings
-# Ensure STATIC_ROOT exists and build hashed assets
-# (this creates /app/staticfiles/** and staticfiles.json)
-RUN mkdir -p /app/staticfiles \
- && python manage.py collectstatic --clear --noinput -v 2
 
-# Expose the port the Django app runs on
+# Create necessary directories
+RUN mkdir -p /app/staticfiles /app/media /app/logs
+
+# Collect static files
+ENV DJANGO_SETTINGS_MODULE=qr_reader_django.settings
+RUN python manage.py collectstatic --clear --noinput
+
+# Create a non-root user
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+# Expose the port
 EXPOSE 8000
 
-# Run the Django app
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120", "qr_reader_django.wsgi:application"]
