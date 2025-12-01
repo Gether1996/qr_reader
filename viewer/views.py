@@ -179,6 +179,69 @@ def user_dashboard(request):
     return render(request, 'user_dashboard.html', context)
 
 
+def user_scan_qr(request):
+    """User QR scanner page"""
+    if 'user_id' not in request.session or request.session.get('user_type') != 'user':
+        messages.error(request, 'Please login as a user')
+        return redirect('user_login')
+
+    user = get_object_or_404(User, id=request.session['user_id'])
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            uuid = data.get('uuid')
+            latitude = data.get('latitude')
+            longitude = data.get('longitude')
+            
+            # Check if QR code exists and belongs to user's company
+            qr_code = QRCodeProfile.objects.filter(uuid=uuid, is_active=True).first()
+            
+            if not qr_code:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'QR code not found or inactive'
+                }, status=404)
+            
+            if qr_code.company != user.company:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'This QR code does not belong to your company'
+                }, status=403)
+            
+            # Record the scan
+            scan = ScanEvent.objects.create(
+                qr_code=qr_code,
+                scanned_by=user,
+                latitude=latitude,
+                longitude=longitude,
+                device_info=request.META.get('HTTP_USER_AGENT', '')
+            )
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Scan recorded successfully!',
+                'data': {
+                    'qr_name': qr_code.name,
+                    'qr_location': qr_code.location,
+                    'scan_timestamp': scan.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                    'scan_latitude': latitude,
+                    'scan_longitude': longitude
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
+    
+    context = {
+        'user': user,
+    }
+    return render(request, 'user_scan_qr.html', context)
+
+
 # ============= COMPANY ACTIONS =============
 
 def create_qr_code(request):

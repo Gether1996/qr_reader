@@ -22,6 +22,7 @@ urlpatterns = [
     path('user/login/', views.user_login, name='user_login'),
     path('user/logout/', views.user_logout, name='user_logout'),
     path('user/dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('user/scan/', views.user_scan_qr, name='user_scan_qr'),
     
     # QR Code management (company actions)
     path('qr/create/', views.create_qr_code, name='create_qr_code'),

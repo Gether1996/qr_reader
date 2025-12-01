@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Scan QR Code{% endblock %}
+
+{% block extra_css %}
+<style>
+    .scanner-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .camera-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        margin-bottom: 2rem;
+    }
+    
+    #scanner-video {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 12px;
+        background: #000;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    #manual-input-section {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .scan-result {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        margin-top: 2rem;
+        display: none;
+    }
+    
+    .result-success {
+        border-left: 4px solid #10b981;
+    }
+    
+    .result-error {
+        border-left: 4px solid #ef4444;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .info-item {
+        background: #f9fafb;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .info-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container scanner-container">
+    <div class="text-center mb-4">
+        <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary mb-3">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+        <h2><i class="fas fa-camera me-2"></i>Scan QR Code</h2>
+        <p class="text-muted">Scan a QR code from your company to record location and time</p>
+    </div>
+
+    <div class="camera-section">
+        <div class="text-center mb-3">
+            <button id="startScanBtn" class="btn btn-primary btn-lg">
+                <i class="fas fa-camera me-2"></i>Start Camera
+            </button>
+            <button id="stopScanBtn" class="btn btn-danger btn-lg" style="display: none;">
+                <i class="fas fa-stop me-2"></i>Stop Camera
+            </button>
+        </div>
+        
+        <video id="scanner-video" style="display: none;"></video>
+        
+        <div id="manual-input-section">
+            <h5 class="mb-3"><i class="fas fa-keyboard me-2"></i>Or Enter UUID Manually</h5>
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" id="manual-uuid" class="form-control" placeholder="Enter QR code UUID">
+                </div>
+                <div class="col-md-4">
+                    <button id="manual-scan-btn" class="btn btn-success w-100">
+                        <i class="fas fa-check me-2"></i>Scan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scan-result" class="scan-result">
+        <!-- Result will be populated here -->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+let html5QrcodeScanner = null;
+let userLocation = null;
+
+// Get user location on page load
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            userLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+        },
+        function(error) {
+            console.error('Location error:', error);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Location Required',
+                text: 'Please enable location services to scan QR codes',
+                confirmButtonColor: '#2563eb'
+            });
+        }
+    );
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function processScan(uuid) {
+    if (!userLocation) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Location Required',
+            text: 'Please enable location services',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
+
+    // Extract UUID from URL if it's a full URL
+    let extractedUuid = uuid;
+    if (uuid.includes('/scan/')) {
+        const parts = uuid.split('/scan/');
+        if (parts.length > 1) {
+            extractedUuid = parts[1].replace('/', '');
+        }
+    }
+
+    fetch('{% url "user_scan_qr" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            uuid: extractedUuid,
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultDiv = document.getElementById('scan-result');
+        
+        if (data.status === 'success') {
+            resultDiv.className = 'scan-result result-success';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h4 class="text-success mb-3">
+                    <i class="fas fa-check-circle me-2"></i>Scan Successful!
+                </h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">QR Code Name</div>
+                        <div class="info-value">${data.data.qr_name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">QR Location</div>
+                        <div class="info-value">${data.data.qr_location}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Scanned At</div>
+                        <div class="info-value">${data.data.scan_timestamp}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Your Location</div>
+                        <div class="info-value">
+                            <a href="https://www.google.com/maps?q=${data.data.scan_latitude},${data.data.scan_longitude}" target="_blank">
+                                ${data.data.scan_latitude.toFixed(6)}, ${data.data.scan_longitude.toFixed(6)}
+                                <i class="fas fa-external-link-alt ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button onclick="location.reload()" class="btn btn-primary">
+                        <i class="fas fa-redo me-2"></i>Scan Another
+                    </button>
+                </div>
+            `;
+            
+            // Stop camera if running
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop();
+                document.getElementById('scanner-video').style.display = 'none';
+                document.getElementById('startScanBtn').style.display = 'inline-block';
+                document.getElementById('stopScanBtn').style.display = 'none';
+            }
+        } else {
+            resultDiv.className = 'scan-result result-error';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h4 class="text-danger mb-3">
+                    <i class="fas fa-exclamation-circle me-2"></i>Scan Failed
+                </h4>
+                <p>${data.message}</p>
+                <button onclick="location.reload()" class="btn btn-secondary">
+                    <i class="fas fa-redo me-2"></i>Try Again
+                </button>
+            `;
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to process scan',
+            confirmButtonColor: '#2563eb'
+        });
+    });
+}
+
+// Start camera scanner
+document.getElementById('startScanBtn').addEventListener('click', function() {
+    if (!userLocation) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Location Required',
+            text: 'Please enable location services first',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
+
+    const videoElement = document.getElementById('scanner-video');
+    videoElement.style.display = 'block';
+    this.style.display = 'none';
+    document.getElementById('stopScanBtn').style.display = 'inline-block';
+
+    html5QrcodeScanner = new Html5Qrcode("scanner-video");
+    
+    html5QrcodeScanner.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+        },
+        (decodedText) => {
+            processScan(decodedText);
+        },
+        (errorMessage) => {
+            // Ignore scanning errors
+        }
+    ).catch(err => {
+        console.error('Camera error:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Camera Error',
+            text: 'Unable to access camera. Please check permissions.',
+            confirmButtonColor: '#2563eb'
+        });
+    });
+});
+
+// Stop camera
+document.getElementById('stopScanBtn').addEventListener('click', function() {
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.stop();
+        document.getElementById('scanner-video').style.display = 'none';
+        document.getElementById('startScanBtn').style.display = 'inline-block';
+        this.style.display = 'none';
+    }
+});
+
+// Manual scan
+document.getElementById('manual-scan-btn').addEventListener('click', function() {
+    const uuid = document.getElementById('manual-uuid').value.trim();
+    if (!uuid) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'UUID Required',
+            text: 'Please enter a QR code UUID',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
+    processScan(uuid);
+});
+
+// Enter key on manual input
+document.getElementById('manual-uuid').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('manual-scan-btn').click();
+    }
+});
+</script>
+{% endblock %}
