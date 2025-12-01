@@ -210,8 +210,8 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="https://www.google.com/maps?q={{ scan.latitude }},{{ scan.longitude }}" target="_blank">
-                                            <i class="fas fa-map-marker-alt me-1"></i>
+                                        <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude }},{{ scan.longitude }}" target="_blank" class="text-decoration-none">
+                                            <i class="fas fa-map-marker-alt me-1 text-danger"></i>
                                             {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
                                         </a>
                                     </td>
