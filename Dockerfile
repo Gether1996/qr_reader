@@ -27,12 +27,6 @@ RUN mkdir -p /app/staticfiles /app/media /app/logs
 ENV DJANGO_SETTINGS_MODULE=qr_reader_django.settings
 RUN python manage.py collectstatic --clear --noinput
 
-# Create a non-root user
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
-
-USER appuser
-
 # Expose the port
 EXPOSE 8000
 

@@ -6,8 +6,10 @@ services:
       - "9005:8000"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
-      - .:/app
-      - ./static:/app/static
+      - ./media:/app/media
+      - ./logs:/app/logs
     environment:
-      - DEBUG=0
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-gn!*2)1f&rnjn7(7v9h64zoc9(3dl7ic+!+=e15!i&^k*%za#l}
+      - ALLOWED_HOSTS=dqr.314.sk,localhost,127.0.0.1
     restart: unless-stopped
