@@ -59,7 +59,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude }},{{ scan.longitude }}" 
+                                        <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" 
                                            target="_blank" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-map-marker-alt me-1"></i>View on Map
                                         </a>
