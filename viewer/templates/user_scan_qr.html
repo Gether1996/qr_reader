@@ -133,36 +133,56 @@
 let html5QrcodeScanner = null;
 let userLocation = null;
 let isScanning = false;
+let locationRequested = false;
 
-// Get user location on page load
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            userLocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-            console.log('Location acquired:', userLocation);
-        },
-        function(error) {
-            console.error('Location error:', error);
-            Swal.fire({
-                icon: 'warning',
-                title: 'Location Required',
-                text: 'Please enable location services to scan QR codes. You can still use manual input.',
-                confirmButtonColor: '#2563eb'
-            });
+// Function to request location
+function requestLocation() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error('Geolocation not supported'));
+            return;
         }
-    );
-} else {
-    console.error('Geolocation not supported');
-    Swal.fire({
-        icon: 'error',
-        title: 'Geolocation Not Supported',
-        text: 'Your browser does not support geolocation. Please use manual input.',
-        confirmButtonColor: '#2563eb'
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                userLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                console.log('Location acquired:', userLocation);
+                resolve(userLocation);
+            },
+            function(error) {
+                console.error('Location error:', error);
+                let errorMsg = 'Unable to get your location. ';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMsg += 'Please allow location access in your browser settings.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg += 'Location information is unavailable.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMsg += 'Location request timed out.';
+                        break;
+                    default:
+                        errorMsg += 'An unknown error occurred.';
+                }
+                reject(new Error(errorMsg));
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
     });
 }
+
+// Try to get location on page load
+requestLocation().catch(err => {
+    console.log('Initial location request failed:', err.message);
+});
 
 function getCookie(name) {
     let cookieValue = null;
@@ -172,21 +192,26 @@ function getCookie(name) {
             const cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+async function processScan(uuid) {
+    // Prevent multiple scans
+    if (isScanning && html5QrcodeScanner) {
+        await stopScanner();
     }
-    return cookieValue;
-}
 
-async function stopScanner() {
-    if (html5QrcodeScanner && isScanning) {
+    // Request location if not available
+    if (!userLocation) {
         try {
-            await html5QrcodeScanner.stop();
-            console.log('Scanner stopped successfully');
-        } catch (err) {
-            console.error('Error stopping scanner:', err);
+            await requestLocation();
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Location Required',
+                text: error.message,
+                confirmButtonColor: '#2563eb'
+            });
+            return;
         }
+    }   }
         isScanning = false;
         html5QrcodeScanner = null;
     }
@@ -297,21 +322,26 @@ async function processScan(uuid) {
             icon: 'error',
             title: 'Error',
             text: 'Failed to process scan: ' + error.message,
-            confirmButtonColor: '#2563eb'
-        });
-    }
-}
-
 // Start camera scanner
 document.getElementById('startScanBtn').addEventListener('click', async function() {
+    // Request location if not available
     if (!userLocation) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Location Required',
-            text: 'Please enable location services first',
-            confirmButtonColor: '#2563eb'
-        });
-        return;
+        try {
+            await requestLocation();
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Location Required',
+                text: error.message,
+                confirmButtonColor: '#2563eb'
+            });
+            return;
+        }
+    }
+
+    const videoElement = document.getElementById('scanner-video');
+    const startBtn = document.getElementById('startScanBtn');
+    const stopBtn = document.getElementById('stopScanBtn');
     }
 
     const videoElement = document.getElementById('scanner-video');
