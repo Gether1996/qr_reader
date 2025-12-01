@@ -133,11 +133,10 @@
 let html5QrcodeScanner = null;
 let userLocation = null;
 let isScanning = false;
-let locationRequested = false;
 
 // Function to request location
 function requestLocation() {
-    return new Promise((resolve, reject) => {
+    return new Promise(function(resolve, reject) {
         if (!navigator.geolocation) {
             reject(new Error('Geolocation not supported'));
             return;
@@ -154,7 +153,7 @@ function requestLocation() {
             },
             function(error) {
                 console.error('Location error:', error);
-                let errorMsg = 'Unable to get your location. ';
+                var errorMsg = 'Unable to get your location. ';
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
                         errorMsg += 'Please allow location access in your browser settings.';
@@ -180,18 +179,38 @@ function requestLocation() {
 }
 
 // Try to get location on page load
-requestLocation().catch(err => {
+requestLocation().catch(function(err) {
     console.log('Initial location request failed:', err.message);
 });
 
 function getCookie(name) {
-    let cookieValue = null;
+    var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function stopScanner() {
+    if (html5QrcodeScanner && isScanning) {
+        try {
+            await html5QrcodeScanner.stop();
+            console.log('Scanner stopped successfully');
+        } catch (err) {
+            console.error('Error stopping scanner:', err);
+        }
+        isScanning = false;
+        html5QrcodeScanner = null;
+    }
+}
+
 async function processScan(uuid) {
     // Prevent multiple scans
     if (isScanning && html5QrcodeScanner) {
@@ -211,32 +230,12 @@ async function processScan(uuid) {
             });
             return;
         }
-    }   }
-        isScanning = false;
-        html5QrcodeScanner = null;
-    }
-}
-
-async function processScan(uuid) {
-    // Prevent multiple scans
-    if (isScanning && html5QrcodeScanner) {
-        await stopScanner();
-    }
-
-    if (!userLocation) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Location Required',
-            text: 'Please enable location services to scan QR codes',
-            confirmButtonColor: '#2563eb'
-        });
-        return;
     }
 
     // Extract UUID from URL if it's a full URL
-    let extractedUuid = uuid.trim();
+    var extractedUuid = uuid.trim();
     if (extractedUuid.includes('/scan/')) {
-        const parts = extractedUuid.split('/scan/');
+        var parts = extractedUuid.split('/scan/');
         if (parts.length > 1) {
             extractedUuid = parts[1].replace(/\//g, '');
         }
@@ -245,7 +244,7 @@ async function processScan(uuid) {
     console.log('Processing scan for UUID:', extractedUuid);
 
     try {
-        const response = await fetch('{% url "user_scan_qr" %}', {
+        var response = await fetch('{% url "user_scan_qr" %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -258,45 +257,13 @@ async function processScan(uuid) {
             })
         });
 
-        const data = await response.json();
-        const resultDiv = document.getElementById('scan-result');
+        var data = await response.json();
+        var resultDiv = document.getElementById('scan-result');
         
         if (data.status === 'success') {
             resultDiv.className = 'scan-result result-success';
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h4 class="text-success mb-3">
-                    <i class="fas fa-check-circle me-2"></i>Scan Successful!
-                </h4>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">QR Code Name</div>
-                        <div class="info-value">${data.data.qr_name}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">QR Location</div>
-                        <div class="info-value">${data.data.qr_location}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Scanned At</div>
-                        <div class="info-value">${data.data.scan_timestamp}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Your Location</div>
-                        <div class="info-value">
-                            <a href="https://www.google.com/maps?q=${data.data.scan_latitude},${data.data.scan_longitude}" target="_blank">
-                                ${data.data.scan_latitude.toFixed(6)}, ${data.data.scan_longitude.toFixed(6)}
-                                <i class="fas fa-external-link-alt ms-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-3">
-                    <button onclick="location.reload()" class="btn btn-primary">
-                        <i class="fas fa-redo me-2"></i>Scan Another
-                    </button>
-                </div>
-            `;
+            resultDiv.innerHTML = '<h4 class="text-success mb-3"><i class="fas fa-check-circle me-2"></i>Scan Successful!</h4><div class="info-grid"><div class="info-item"><div class="info-label">QR Code Name</div><div class="info-value">' + data.data.qr_name + '</div></div><div class="info-item"><div class="info-label">QR Location</div><div class="info-value">' + data.data.qr_location + '</div></div><div class="info-item"><div class="info-label">Scanned At</div><div class="info-value">' + data.data.scan_timestamp + '</div></div><div class="info-item"><div class="info-label">Your Location</div><div class="info-value"><a href="https://www.google.com/maps?q=' + data.data.scan_latitude + ',' + data.data.scan_longitude + '" target="_blank">' + data.data.scan_latitude.toFixed(6) + ', ' + data.data.scan_longitude.toFixed(6) + ' <i class="fas fa-external-link-alt ms-1"></i></a></div></div></div><div class="text-center mt-3"><button onclick="location.reload()" class="btn btn-primary"><i class="fas fa-redo me-2"></i>Scan Another</button></div>';
             
             // Stop camera if running
             await stopScanner();
@@ -306,15 +273,7 @@ async function processScan(uuid) {
         } else {
             resultDiv.className = 'scan-result result-error';
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h4 class="text-danger mb-3">
-                    <i class="fas fa-exclamation-circle me-2"></i>Scan Failed
-                </h4>
-                <p>${data.message}</p>
-                <button onclick="location.reload()" class="btn btn-secondary">
-                    <i class="fas fa-redo me-2"></i>Try Again
-                </button>
-            `;
+            resultDiv.innerHTML = '<h4 class="text-danger mb-3"><i class="fas fa-exclamation-circle me-2"></i>Scan Failed</h4><p>' + data.message + '</p><button onclick="location.reload()" class="btn btn-secondary"><i class="fas fa-redo me-2"></i>Try Again</button>';
         }
     } catch (error) {
         console.error('Scan processing error:', error);
@@ -322,6 +281,11 @@ async function processScan(uuid) {
             icon: 'error',
             title: 'Error',
             text: 'Failed to process scan: ' + error.message,
+            confirmButtonColor: '#2563eb'
+        });
+    }
+}
+
 // Start camera scanner
 document.getElementById('startScanBtn').addEventListener('click', async function() {
     // Request location if not available
@@ -339,18 +303,13 @@ document.getElementById('startScanBtn').addEventListener('click', async function
         }
     }
 
-    const videoElement = document.getElementById('scanner-video');
-    const startBtn = document.getElementById('startScanBtn');
-    const stopBtn = document.getElementById('stopScanBtn');
-    }
-
-    const videoElement = document.getElementById('scanner-video');
-    const startBtn = document.getElementById('startScanBtn');
-    const stopBtn = document.getElementById('stopScanBtn');
+    var videoElement = document.getElementById('scanner-video');
+    var startBtn = document.getElementById('startScanBtn');
+    var stopBtn = document.getElementById('stopScanBtn');
 
     try {
         // Get available cameras
-        const devices = await Html5Qrcode.getCameras();
+        var devices = await Html5Qrcode.getCameras();
         
         if (!devices || devices.length === 0) {
             throw new Error('No cameras found on this device');
@@ -365,8 +324,9 @@ document.getElementById('startScanBtn').addEventListener('click', async function
         html5QrcodeScanner = new Html5Qrcode("scanner-video");
         
         // Prefer back camera (environment)
-        let cameraId = devices[0].id;
-        for (let device of devices) {
+        var cameraId = devices[0].id;
+        for (var i = 0; i < devices.length; i++) {
+            var device = devices[i];
             if (device.label.toLowerCase().includes('back') || 
                 device.label.toLowerCase().includes('rear') ||
                 device.label.toLowerCase().includes('environment')) {
@@ -377,7 +337,7 @@ document.getElementById('startScanBtn').addEventListener('click', async function
 
         console.log('Starting camera:', cameraId);
 
-        const config = {
+        var config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
             aspectRatio: 1.0,
@@ -387,12 +347,11 @@ document.getElementById('startScanBtn').addEventListener('click', async function
         await html5QrcodeScanner.start(
             cameraId,
             config,
-            (decodedText) => {
+            function(decodedText) {
                 console.log('QR Code detected:', decodedText);
-                // Process the scan (this will stop the scanner)
                 processScan(decodedText);
             },
-            (errorMessage) => {
+            function(errorMessage) {
                 // Ignore continuous scanning errors
             }
         );
