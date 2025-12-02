@@ -171,8 +171,8 @@
                 <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
                     <div class="mobile-scan-header">
                         <div class="mobile-scan-title">
-                            {% if scan.user %}
-                                {{ scan.user.first_name }} {{ scan.user.last_name }}
+                            {% if scan.scanned_by %}
+                                {{ scan.scanned_by.name }}
                             {% else %}
                                 {% trans "Anonymous" %}
                             {% endif %}
