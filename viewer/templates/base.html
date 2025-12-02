@@ -17,6 +17,24 @@
 <body>
     {% include 'navbar.html' %}
 
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" %}error{% elif message.tags == "warning" %}warning{% else %}info{% endif %}',
+                        text: '{{ message|escapejs }}',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        position: 'top-end',
+                        toast: true
+                    });
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
     {% block content %}{% endblock %}
 
     <script src="{% static 'scripts/jquery-3.6.0.min.js' %}"></script>
