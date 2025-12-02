@@ -567,7 +567,7 @@ function submitScan(uuid) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': csrfToken
         },
         body: JSON.stringify({
             uuid: extractedUuid,

@@ -37,6 +37,9 @@
 
     {% block content %}{% endblock %}
 
+    <script>
+        var csrfToken = "{{ csrf_token }}";
+    </script>
     <script src="{% static 'scripts/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'scripts/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'scripts/sweetalert2@11.js' %}"></script>

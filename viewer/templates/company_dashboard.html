@@ -194,13 +194,13 @@
                                             <a href="{% url 'view_user_details' user.id %}" class="btn btn-info" title="{% trans 'View Details' %}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <button class="btn btn-warning" 
-                                                    onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.is_active|lower }})"
+                                            <button type="button" class="btn btn-warning" 
+                                                    onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.is_active|lower }}); return false;"
                                                     title="{% trans 'Edit User' %}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-danger" 
-                                                    onclick="deleteUser({{ user.id }}, '{{ user.name }}')"
+                                            <button type="button" class="btn btn-danger" 
+                                                    onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;"
                                                     title="{% trans 'Delete User' %}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -240,12 +240,12 @@
                         <a href="{% url 'view_user_details' user.id %}" class="btn btn-info btn-sm flex-fill">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
-                        <button class="btn btn-warning btn-sm flex-fill" 
-                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.is_active|lower }})">
+                        <button type="button" class="btn btn-warning btn-sm flex-fill" 
+                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.is_active|lower }}); return false;">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
-                        <button class="btn btn-danger btn-sm flex-fill" 
-                                onclick="deleteUser({{ user.id }}, '{{ user.name }}')">
+                        <button type="button" class="btn btn-danger btn-sm flex-fill" 
+                                onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;">
                             <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
                         </button>
                     </div>
@@ -369,6 +369,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'scripts/general.js' %}"></script>
 <script>
 function createQRCode() {
     const data = {
@@ -381,7 +382,7 @@ function createQRCode() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': csrfToken
         },
         body: JSON.stringify(data)
     })
@@ -410,7 +411,7 @@ function createUser() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': csrfToken
         },
         body: JSON.stringify(data)
     })
@@ -452,11 +453,14 @@ function updateUser() {
         data.password = password;
     }
 
-    fetch('/company/user/' + userId + '/edit/', {
+    const langCode = window.location.pathname.split('/')[1];
+    const editUrl = `/${langCode}/company/user/${userId}/edit/`;
+    
+    fetch(editUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': csrfToken
         },
         body: JSON.stringify(data)
     })
@@ -475,6 +479,7 @@ function updateUser() {
 }
 
 function deleteUser(userId, userName) {
+    console.log('deleteUser called:', userId, userName);
     Swal.fire({
         title: translations.deleteUserTitle,
         text: `${translations.deleteUserText} ${userName}? ${translations.deleteUserWarning}`,
@@ -485,12 +490,17 @@ function deleteUser(userId, userName) {
         confirmButtonText: translations.confirmDelete,
         cancelButtonText: translations.cancel
     }).then((result) => {
+        console.log('Swal result:', result);
         if (result.isConfirmed) {
-            fetch('/company/user/' + userId + '/delete/', {
+            const langCode = window.location.pathname.split('/')[1];
+            const deleteUrl = `/${langCode}/company/user/${userId}/delete/`;
+            console.log('Delete URL:', deleteUrl);
+            console.log('CSRF Token:', csrfToken);
+            fetch(deleteUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
+                    'X-CSRFToken': csrfToken
                 }
             })
             .then(response => response.json())
