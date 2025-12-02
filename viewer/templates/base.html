@@ -17,9 +17,7 @@
 <body>
     {% include 'navbar.html' %}
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 
     <script src="{% static 'scripts/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'scripts/bootstrap.bundle.min.js' %}"></script>
