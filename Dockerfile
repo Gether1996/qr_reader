@@ -27,9 +27,6 @@ RUN mkdir -p /app/staticfiles /app/media /app/logs
 ENV DJANGO_SETTINGS_MODULE=qr_reader_django.settings
 RUN python manage.py collectstatic --clear --noinput
 
-# 🔹 TU: vytvorenie DB ak neexistuje (migrate ju vytvorí)
-RUN python manage.py migrate --noinput
-
 # Expose the port
 EXPOSE 8000
 
