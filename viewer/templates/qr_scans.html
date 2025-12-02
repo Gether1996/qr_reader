@@ -165,11 +165,55 @@
                 </table>
             </div>
             
-            <!-- Pagination -->
-            {% if page_obj.paginator.num_pages > 1 %}
-                {% include 'paginator.html' %}
-            {% endif %}
+            <!-- Mobile View -->
+            <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+                {% for scan in page_obj %}
+                <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
+                    <div class="mobile-scan-header">
+                        <div class="mobile-scan-title">
+                            {% if scan.user %}
+                                {{ scan.user.first_name }} {{ scan.user.last_name }}
+                            {% else %}
+                                {% trans "Anonymous" %}
+                            {% endif %}
+                        </div>
+                        <div class="mobile-scan-type {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
+                            <i class="fas fa-{% if scan.scan_type == 'arrival' %}sign-in-alt{% else %}sign-out-alt{% endif %} me-1"></i>
+                            {% if scan.scan_type == 'arrival' %}{% trans "Arrival" %}{% else %}{% trans "Departure" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="mobile-scan-info">
+                        <div class="mobile-scan-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>{{ scan.timestamp|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        {% if scan.address %}
+                        <div class="mobile-scan-info-item">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <strong>{{ scan.address }}</strong>
+                        </div>
+                        {% endif %}
+                        <div class="mobile-scan-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
+                                {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                    <p>{% trans "No scans found" %}</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.paginator.num_pages > 1 %}
+            {% include 'paginator.html' %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}
