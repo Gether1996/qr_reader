@@ -113,11 +113,6 @@ function requestLocation() {
     });
 }
 
-// Try to get location on page load
-requestLocation().catch(function(err) {
-    console.log('Initial location request failed:', err.message);
-});
-
 // Scan type selection handler
 var scanTypeButtons = document.querySelectorAll('.scan-type-btn');
 scanTypeButtons.forEach(function(button) {
