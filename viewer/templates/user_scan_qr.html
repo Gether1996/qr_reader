@@ -623,7 +623,35 @@ document.getElementById('startScanBtn').addEventListener('click', function() {
         return;
     }
     
-    startScanner();
+    // Re-check and get fresh location before starting scanner
+    if (!userLocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                userLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                console.log('Location refreshed:', userLocation);
+                startScanner();
+            },
+            function(error) {
+                console.error('Location error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: translations.locationRequired || 'Location Required',
+                    text: translations.allowLocationAccess || 'Please allow location access in your browser settings',
+                    confirmButtonText: 'OK'
+                });
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            }
+        );
+    } else {
+        startScanner();
+    }
 });
 
 function startScanner() {

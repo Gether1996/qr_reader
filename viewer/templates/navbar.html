@@ -98,6 +98,11 @@
                         <span>{% trans "Dashboard" %}</span>
                     </a>
                     
+                    <a href="{% url 'user_scan_qr' %}" class="nav-item" style="background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 600;">
+                        <i class="fas fa-camera"></i>
+                        <span>{% trans "Scan QR" %}</span>
+                    </a>
+                    
                     <div class="nav-item dropdown-wrapper">
                         <button class="dropdown-trigger" type="button">
                             <i class="fas fa-user-circle"></i>
@@ -337,6 +342,17 @@
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Dashboard" %}</span>
                         <span class="subtitle">{% trans "Your QR Codes" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'user_scan_qr' %}" class="mobile-menu-item secondary">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Scan QR Code" %}</span>
+                        <span class="subtitle">{% trans "Scan to record location" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
