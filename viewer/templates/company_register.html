@@ -33,13 +33,19 @@
                             <label for="password" class="form-label">
                                 <i class="fas fa-lock me-1"></i>{% trans "Password" %}
                             </label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="position-relative">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <i class="fas fa-eye position-absolute" id="togglePassword" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+                            </div>
                         </div>
                         <div class="mb-4">
                             <label for="confirm_password" class="form-label">
                                 <i class="fas fa-lock me-1"></i>{% trans "Confirm Password" %}
                             </label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            <div class="position-relative">
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                <i class="fas fa-eye position-absolute" id="toggleConfirmPassword" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+                            </div>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
@@ -61,4 +67,27 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const togglePassword = document.querySelector('#togglePassword');
+const password = document.querySelector('#password');
+const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
+const confirmPassword = document.querySelector('#confirm_password');
+
+togglePassword.addEventListener('click', function () {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+});
+
+toggleConfirmPassword.addEventListener('click', function () {
+    const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+    confirmPassword.setAttribute('type', type);
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+});
+</script>
 {% endblock %}
