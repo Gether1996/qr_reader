@@ -8,6 +8,8 @@ services:
       - ./db.sqlite3:/app/db.sqlite3
       - ./media:/app/media
       - ./logs:/app/logs
+    env_file:
+      - .env
     environment:
       - DEBUG=False
     restart: unless-stopped
