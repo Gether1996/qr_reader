@@ -4,146 +4,256 @@
 
 {% block title %}{% trans "User Details" %} - {{ user.name }}{% endblock %}
 
-{% block extra_css %}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <!-- Back Button -->
-    <div class="row mb-3">
-        <div class="col">
-            <a href="{% url 'company_dashboard' %}" class="btn btn-outline-secondary">
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <a href="{% url 'company_dashboard' %}" class="btn btn-outline-primary mb-3">
                 <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
             </a>
+            <h3><i class="fas fa-user me-2"></i>{{ user.name }}</h3>
+            <p class="text-muted mb-0">
+                <i class="fas fa-envelope me-2"></i>{{ user.email }}
+            </p>
+        </div>
+        <div class="col-md-6 text-md-end">
+            {% if user.is_active %}
+                <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                    <i class="fas fa-check-circle me-2"></i>{% trans "Active" %}
+                </span>
+            {% else %}
+                <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                    <i class="fas fa-times-circle me-2"></i>{% trans "Inactive" %}
+                </span>
+            {% endif %}
         </div>
     </div>
 
-    <!-- User Header -->
-    <div class="user-header">
-        <div class="row align-items-center">
-            <div class="col-md-auto text-center text-md-start">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-            </div>
-            <div class="col-md">
-                <h1 class="mb-2">{{ user.name }}</h1>
-                <p class="mb-2">
-                    <i class="fas fa-envelope me-2"></i>{{ user.email }}
-                </p>
-                <p class="mb-0">
-                    <i class="fas fa-calendar me-2"></i>{% trans "Member since" %} {{ user.created_at|date:"d.m.Y" }}
-                </p>
-            </div>
-            <div class="col-md-auto text-center text-md-end">
-                {% if user.is_active %}
-                    <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-check-circle me-2"></i>{% trans "Active" %}
-                    </span>
-                {% else %}
-                    <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-times-circle me-2"></i>{% trans "Inactive" %}
-                    </span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="stat-box">
-                <h3>{{ scans.count }}</h3>
-                <p><i class="fas fa-qrcode me-2"></i>{% trans "Total Scans" %}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-box">
-                <h3>{{ scans|dictsort:"qr_code"|length }}</h3>
-                <p><i class="fas fa-layer-group me-2"></i>{% trans "Unique QR Codes" %}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-box">
-                <h3>
-                    {% if scans.first %}
-                        {{ scans.first.timestamp|date:"d.m.Y" }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </h3>
-                <p><i class="fas fa-clock me-2"></i>{% trans "Last Activity" %}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scan History -->
-    <div class="card">
-        <div class="card-header bg-white">
-            <h4 class="mb-0">
-                <i class="fas fa-history me-2"></i>{% trans "Scan History" %}
-            </h4>
+    <!-- Filters Card -->
+    <div class="card filters-card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6>
+                <i class="fas fa-filter me-2"></i>{% trans "Filters" %}
+            </h6>
+            {% if has_active_filters %}
+                <button class="btn btn-sm btn-light" type="button" onclick="clearFilters()" title="{% trans 'Clear all filters' %}">
+                    <i class="fas fa-times me-1"></i>{% trans "Clear" %}
+                </button>
+            {% endif %}
         </div>
         <div class="card-body">
-            {% if scans %}
-                <div class="scan-timeline">
-                    {% for scan in scans %}
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="mb-2">
-                                        {% if scan.scan_type == 'arrival' %}
-                                            <span class="badge bg-success me-2">
-                                                <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-danger me-2">
-                                                <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
-                                            </span>
-                                        {% endif %}
-                                        <span class="qr-badge">
-                                            <i class="fas fa-qrcode me-1"></i>{{ scan.qr_code.name }}
-                                        </span>
-                                        <span class="text-muted ms-2">
-                                            <i class="fas fa-map-marker-alt me-1"></i>{{ scan.qr_code.location }}
-                                        </span>
-                                    </div>
-                                    
-                                    {% if scan.address %}
-                                    <div class="mb-2">
-                                        <i class="fas fa-location-dot me-2 text-primary"></i>
+            <form method="get" action="{% url 'view_user_details' user.id %}" id="filterForm">
+                <div class="row g-2">
+                    <div class="col-lg-3 col-md-6 col-6 filter-input-group">
+                        <label class="form-label">{% trans "QR Code" %}</label>
+                        <input type="text" name="qr_code" class="form-control" placeholder="{% trans 'Search' %}" value="{{ current_filters.qr_code }}">
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6 filter-input-group">
+                        <label class="form-label">{% trans "Type" %}</label>
+                        <select name="scan_type" class="form-select">
+                            <option value="">{% trans "All" %}</option>
+                            <option value="arrival" {% if current_filters.scan_type == 'arrival' %}selected{% endif %}>{% trans "Arrival" %}</option>
+                            <option value="departure" {% if current_filters.scan_type == 'departure' %}selected{% endif %}>{% trans "Departure" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-6 filter-input-group">
+                        <label class="form-label">{% trans "Date Range" %}</label>
+                        <input type="text" id="dateRangePicker" class="form-control date-range-display" readonly placeholder="{% trans 'Select' %}">
+                        <input type="hidden" name="date_from" id="date_from" value="{{ current_filters.date_from }}">
+                        <input type="hidden" name="date_to" id="date_to" value="{{ current_filters.date_to }}">
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6 filter-input-group">
+                        <label class="form-label">{% trans "Per Page" %}</label>
+                        <select name="per_page" class="form-select">
+                            <option value="10" {% if current_filters.per_page == 10 %}selected{% endif %}>10</option>
+                            <option value="20" {% if current_filters.per_page == 20 %}selected{% endif %}>20</option>
+                            <option value="50" {% if current_filters.per_page == 50 %}selected{% endif %}>50</option>
+                            <option value="100" {% if current_filters.per_page == 100 %}selected{% endif %}>100</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-12 col-12 filter-input-group filter-mobile-full d-flex align-items-end">
+                        <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; font-weight: 600;">
+                            <i class="fas fa-search me-1"></i>{% trans "Apply" %}
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" name="sort" value="{{ current_filters.sort }}">
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card data-table-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>
+                <i class="fas fa-table me-2"></i>{% trans "Scan History" %}
+            </h5>
+            <span class="badge bg-white text-dark fs-6">{{ page_obj.paginator.count }}</span>
+        </div>
+        <div class="card-body p-0">
+            <!-- Desktop Table View -->
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="sortable-th">
+                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'qr_code__name' %}-{% endif %}qr_code__name">
+                                    {% trans "QR Code" %}
+                                    {% if current_filters.sort == 'qr_code__name' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-qr_code__name' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'scan_type' %}-{% endif %}scan_type">
+                                    {% trans "Type" %}
+                                    {% if current_filters.sort == 'scan_type' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-scan_type' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>{% trans "Location" %}</th>
+                            <th class="sortable-th">
+                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'timestamp' %}-{% endif %}timestamp">
+                                    {% trans "Timestamp" %}
+                                    {% if current_filters.sort == 'timestamp' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-timestamp' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in page_obj %}
+                        <tr>
+                            <td><strong>{{ scan.qr_code.name }}</strong></td>
+                            <td>
+                                {% if scan.scan_type == 'arrival' %}
+                                    <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
+                                {% else %}
+                                    <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if scan.address %}
+                                    <div class="mb-1">
+                                        <i class="fas fa-map-marked-alt me-1 text-primary"></i>
                                         <strong>{{ scan.address }}</strong>
                                     </div>
-                                    {% endif %}
-                                    
-                                    <div>
-                                        <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" 
-                                           target="_blank" 
-                                           class="location-link">
-                                            <i class="fas fa-map me-1"></i>
-                                            {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 text-md-end">
-                                    <div class="text-muted">
-                                        <i class="fas fa-calendar-day me-1"></i>
-                                        {{ scan.timestamp|date:"d.m.Y H:i" }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-inbox fa-3x mb-3"></i>
-                    <p>{% trans "No scans recorded yet" %}</p>
-                </div>
+                                {% endif %}
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
+                                    <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                    <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
+                                </a>
+                            </td>
+                            <td>
+                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">{% trans "No scans found" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.paginator.num_pages > 1 %}
+                {% include 'paginator.html' %}
             {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="{% static 'scripts/daterangepicker-locale-' %}{{ LANGUAGE_CODE }}.js"></script>
+<script>
+function clearFilters() {
+    window.location.href = '{% url "view_user_details" user.id %}';
+}
+
+// Auto-submit form on select change
+document.querySelectorAll('#filterForm select').forEach(select => {
+    select.addEventListener('change', () => {
+        document.getElementById('filterForm').submit();
+    });
+});
+
+// Initialize date range picker
+$(function() {
+    var dateFrom = $('#date_from').val();
+    var dateTo = $('#date_to').val();
+    
+    var startDate = dateFrom ? moment(dateFrom, 'YYYY-MM-DD') : null;
+    var endDate = dateTo ? moment(dateTo, 'YYYY-MM-DD') : null;
+    
+    // Get current language code
+    var langCode = '{{ LANGUAGE_CODE }}';
+    var locale = daterangepickerLocale[langCode];
+    
+    // Set initial display value
+    if (startDate && endDate && startDate.isValid() && endDate.isValid()) {
+        $('#dateRangePicker').val(startDate.format('DD.MM.YYYY') + ' - ' + endDate.format('DD.MM.YYYY'));
+    }
+    
+    // Check if mobile device
+    var isMobile = window.innerWidth <= 768;
+    
+    var pickerConfig = {
+        autoUpdateInput: false,
+        timePicker: false,
+        timePicker24Hour: false,
+        showDropdowns: true,
+        opens: isMobile ? 'center' : 'center',
+        drops: isMobile ? 'down' : 'auto',
+        alwaysShowCalendars: true,
+        locale: {
+            cancelLabel: locale.cancelLabel,
+            applyLabel: locale.applyLabel,
+            customRangeLabel: locale.customRangeLabel,
+            daysOfWeek: locale.daysOfWeek,
+            monthNames: locale.monthNames,
+            firstDay: locale.firstDay,
+            format: locale.format
+        },
+        ranges: locale.ranges
+    };
+    
+    if (startDate && endDate && startDate.isValid() && endDate.isValid()) {
+        pickerConfig.startDate = startDate;
+        pickerConfig.endDate = endDate;
+    }
+    
+    $('#dateRangePicker').daterangepicker(pickerConfig);
+    
+    $('#dateRangePicker').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
+        $('#date_from').val(picker.startDate.format('YYYY-MM-DD'));
+        $('#date_to').val(picker.endDate.format('YYYY-MM-DD'));
+        document.getElementById('filterForm').submit();
+    });
+    
+    $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+        $('#date_from').val('');
+        $('#date_to').val('');
+    });
+});
+</script>
 {% endblock %}

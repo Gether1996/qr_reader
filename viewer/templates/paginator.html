@@ -1,0 +1,104 @@
+{% load i18n %}
+
+{% if page_obj.has_other_pages %}
+<nav aria-label="{% trans 'Page navigation' %}" class="pagination-wrapper">
+    <ul class="pagination justify-content-center mb-0">
+        <!-- First Page -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" title="{% trans 'First page' %}">
+                    <i class="fas fa-angle-double-left"></i>
+                    <span class="d-none d-md-inline ms-1">{% trans "First" %}</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="fas fa-angle-double-left"></i>
+                    <span class="d-none d-md-inline ms-1">{% trans "First" %}</span>
+                </span>
+            </li>
+        {% endif %}
+        
+        <!-- Previous Page -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" title="{% trans 'Previous page' %}">
+                    <i class="fas fa-angle-left"></i>
+                    <span class="d-none d-md-inline ms-1">{% trans "Previous" %}</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="fas fa-angle-left"></i>
+                    <span class="d-none d-md-inline ms-1">{% trans "Previous" %}</span>
+                </span>
+            </li>
+        {% endif %}
+        
+        <!-- Page Numbers -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                </li>
+            {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                </li>
+            {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        <!-- Next Page -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" title="{% trans 'Next page' %}">
+                    <span class="d-none d-md-inline me-1">{% trans "Next" %}</span>
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <span class="d-none d-md-inline me-1">{% trans "Next" %}</span>
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </li>
+        {% endif %}
+        
+        <!-- Last Page -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" title="{% trans 'Last page' %}">
+                    <span class="d-none d-md-inline me-1">{% trans "Last" %}</span>
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <span class="d-none d-md-inline me-1">{% trans "Last" %}</span>
+                    <i class="fas fa-angle-double-right"></i>
+                </span>
+            </li>
+        {% endif %}
+    </ul>
+    
+    <!-- Info -->
+    <div class="text-center mt-3 pagination-info">
+        <small class="text-muted">
+            {% trans "Showing" %} <strong>{{ page_obj.start_index }}</strong> - <strong>{{ page_obj.end_index }}</strong> 
+            {% trans "of" %} <strong>{{ page_obj.paginator.count }}</strong> {% trans "scans" %}
+        </small>
+    </div>
+</nav>
+{% endif %}

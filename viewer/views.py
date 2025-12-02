@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from qr_reader_django import crud
 import json
+from viewer.models import ScanEvent
+from django.core.paginator import Paginator
+import datetime
 
 # ============= PUBLIC VIEWS =============
 
@@ -123,7 +126,6 @@ def company_dashboard(request):
         qr.departures_count = qr.scans.filter(scan_type='departure').count()
     
     # Calculate total scans for each user (only from active QR codes)
-    from viewer.models import ScanEvent
     for user in users:
         user.total_scans = ScanEvent.objects.filter(
             scanned_by=user,
@@ -176,10 +178,6 @@ def user_dashboard(request):
         messages.error(request, _('User not found'))
         return redirect('user_login')
     
-    from viewer.models import ScanEvent, User
-    from django.core.paginator import Paginator
-    from django.db.models import Q
-    
     scans = ScanEvent.objects.filter(
         qr_code__company=user.company,
         scanned_by=user,
@@ -199,20 +197,14 @@ def user_dashboard(request):
         scans = scans.filter(scan_type=scan_type_filter)
     
     if date_from:
-        from django.utils import timezone
-        import datetime
         date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-        date_from_obj = timezone.make_aware(date_from_obj)
-        scans = scans.filter(timestamp__gte=date_from_obj)
+        scans = scans.filter(timestamp__date__gte=date_from_obj.date())
     
     if date_to:
-        from django.utils import timezone
-        import datetime
         date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
-        date_to_obj = timezone.make_aware(date_to_obj.replace(hour=23, minute=59, second=59))
-        scans = scans.filter(timestamp__lte=date_to_obj)
+        scans = scans.filter(timestamp__date__lte=date_to_obj.date())
     
-    # Sorting
+    # Sorting - always default to DESC by timestamp if not specified
     sort_by = request.GET.get('sort', '-timestamp')
     valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
                          'scan_type', '-scan_type']
@@ -238,11 +230,15 @@ def user_dashboard(request):
     
     # Get unique QR codes for filter dropdown
     qr_codes = crud.get_company_qr_codes(user.company)
+    
+    # Check if any filters are active
+    has_active_filters = any([qr_code_filter, scan_type_filter, date_from, date_to])
 
     context = {
         'user': user,
         'page_obj': page_obj,
         'qr_codes': qr_codes,
+        'has_active_filters': has_active_filters,
         'current_filters': {
             'qr_code': qr_code_filter,
             'scan_type': scan_type_filter,
@@ -475,7 +471,7 @@ def delete_user(request, user_id):
 
 
 def view_qr_scans(request, qr_id):
-    """View all scans for a specific QR code"""
+    """View all scans for a specific QR code with filtering and pagination"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
@@ -490,18 +486,74 @@ def view_qr_scans(request, qr_id):
         messages.error(request, _('QR code not found'))
         return redirect('company_dashboard')
     
-    scans = crud.get_qr_code_scans(qr_code)
+    scans = ScanEvent.objects.filter(qr_code=qr_code).select_related('qr_code', 'scanned_by')
+    
+    # Filtering
+    user_filter = request.GET.get('user', '')
+    scan_type_filter = request.GET.get('scan_type', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    if user_filter:
+        scans = scans.filter(scanned_by__name__icontains=user_filter)
+    
+    if scan_type_filter:
+        scans = scans.filter(scan_type=scan_type_filter)
+    
+    if date_from:
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        scans = scans.filter(timestamp__date__gte=date_from_obj.date())
+    
+    if date_to:
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+        scans = scans.filter(timestamp__date__lte=date_to_obj.date())
+    
+    # Sorting - always default to DESC by timestamp if not specified
+    sort_by = request.GET.get('sort', '-timestamp')
+    valid_sort_fields = ['timestamp', '-timestamp', 'scanned_by__name', '-scanned_by__name', 
+                         'scan_type', '-scan_type']
+    
+    if sort_by in valid_sort_fields:
+        scans = scans.order_by(sort_by)
+    else:
+        scans = scans.order_by('-timestamp')
+    
+    # Pagination
+    page_number = request.GET.get('page', 1)
+    per_page = request.GET.get('per_page', 20)
+    
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 50, 100]:
+            per_page = 20
+    except:
+        per_page = 20
+    
+    paginator = Paginator(scans, per_page)
+    page_obj = paginator.get_page(page_number)
+    
+    # Check if any filters are active
+    has_active_filters = any([user_filter, scan_type_filter, date_from, date_to])
 
     context = {
         'company': company,
         'qr_code': qr_code,
-        'scans': scans,
+        'page_obj': page_obj,
+        'has_active_filters': has_active_filters,
+        'current_filters': {
+            'user': user_filter,
+            'scan_type': scan_type_filter,
+            'date_from': date_from,
+            'date_to': date_to,
+            'sort': sort_by,
+            'per_page': per_page,
+        }
     }
     return render(request, 'qr_scans.html', context)
 
 
 def view_user_details(request, user_id):
-    """View detailed information about a specific user"""
+    """View detailed information about a specific user with filtering and pagination"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
@@ -517,11 +569,67 @@ def view_user_details(request, user_id):
         return redirect('company_dashboard')
     
     # Get all scans by this user
-    scans = crud.get_user_scans(user)
+    scans = ScanEvent.objects.filter(scanned_by=user).select_related('qr_code', 'scanned_by')
+    
+    # Filtering
+    qr_code_filter = request.GET.get('qr_code', '')
+    scan_type_filter = request.GET.get('scan_type', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    if qr_code_filter:
+        scans = scans.filter(qr_code__name__icontains=qr_code_filter)
+    
+    if scan_type_filter:
+        scans = scans.filter(scan_type=scan_type_filter)
+    
+    if date_from:
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        scans = scans.filter(timestamp__date__gte=date_from_obj.date())
+    
+    if date_to:
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+        scans = scans.filter(timestamp__date__lte=date_to_obj.date())
+    
+    # Sorting - always default to DESC by timestamp
+    sort_by = request.GET.get('sort', '-timestamp')
+    valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
+                         'scan_type', '-scan_type']
+    
+    if sort_by in valid_sort_fields:
+        scans = scans.order_by(sort_by)
+    else:
+        scans = scans.order_by('-timestamp')
+    
+    # Pagination
+    page_number = request.GET.get('page', 1)
+    per_page = request.GET.get('per_page', 20)
+    
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 50, 100]:
+            per_page = 20
+    except:
+        per_page = 20
+    
+    paginator = Paginator(scans, per_page)
+    page_obj = paginator.get_page(page_number)
+    
+    # Check if any filters are active
+    has_active_filters = any([qr_code_filter, scan_type_filter, date_from, date_to])
 
     context = {
         'company': company,
         'user': user,
-        'scans': scans,
+        'page_obj': page_obj,
+        'has_active_filters': has_active_filters,
+        'current_filters': {
+            'qr_code': qr_code_filter,
+            'scan_type': scan_type_filter,
+            'date_from': date_from,
+            'date_to': date_to,
+            'sort': sort_by,
+            'per_page': per_page,
+        }
     }
     return render(request, 'user_details.html', context)
