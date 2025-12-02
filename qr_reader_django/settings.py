@@ -1,10 +1,15 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-gn!*2)1f&rnjn7(7v9h64zoc9(3dl7ic+!+=e15!i&^k*%za#l'
 
-DEBUG = True
+# Load environment variables
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-gn!*2)1f&rnjn7(7v9h64zoc9(3dl7ic+!+=e15!i&^k*%za#l')
+
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['dqr.314.sk', 'localhost', '127.0.0.1', '*']
 CSRF_TRUSTED_ORIGINS = ['http://dqr.314.sk', 'https://dqr.314.sk']
@@ -56,11 +61,11 @@ WSGI_APPLICATION = 'qr_reader_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'c0dqr',
-        'USER': 'c0dqr',
-        'PASSWORD': '8HpXv4rRUe@Cv',
-        'HOST': 'srv.314.sk',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'use_pure': True,
