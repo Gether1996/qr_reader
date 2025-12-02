@@ -4,59 +4,336 @@
 
 {% block title %}{% trans "Scan QR Code" %}{% endblock %}
 
+{% block extra_css %}
+<style>
+.mobile-scan-container {
+    min-height: calc(100vh - 70px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.scan-header {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 70px;
+    z-index: 100;
+}
+
+.scan-type-selector {
+    padding: 1.5rem 1rem;
+    background: white;
+    margin: 0;
+}
+
+.scan-type-btn-mobile {
+    flex: 1;
+    padding: 1.25rem;
+    border: 3px solid #e5e7eb;
+    border-radius: 16px;
+    background: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 120px;
+    justify-content: center;
+}
+
+.scan-type-btn-mobile i {
+    font-size: 2.5rem;
+}
+
+.scan-type-btn-mobile.active.arrival {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-color: #10b981;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    transform: scale(1.05);
+}
+
+.scan-type-btn-mobile.active.departure {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border-color: #ef4444;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+    transform: scale(1.05);
+}
+
+.camera-container {
+    flex: 1;
+    background: #1a1a1a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#qr-reader {
+    width: 100% !important;
+    border: none !important;
+    background: #1a1a1a;
+}
+
+#qr-reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+}
+
+#qr-reader__scan_region {
+    border: none !important;
+}
+
+#qr-reader__dashboard {
+    display: none !important;
+}
+
+.qr-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.qr-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.qr-corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 4px solid #10b981;
+}
+
+.qr-corner.top-left { top: -4px; left: -4px; border-right: none; border-bottom: none; border-radius: 20px 0 0 0; }
+.qr-corner.top-right { top: -4px; right: -4px; border-left: none; border-bottom: none; border-radius: 0 20px 0 0; }
+.qr-corner.bottom-left { bottom: -4px; left: -4px; border-right: none; border-top: none; border-radius: 0 0 0 20px; }
+.qr-corner.bottom-right { bottom: -4px; right: -4px; border-left: none; border-top: none; border-radius: 0 0 20px 0; }
+
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #10b981, transparent);
+    animation: scan 2s linear infinite;
+    top: 0;
+}
+
+@keyframes scan {
+    0%, 100% { transform: translateY(0); opacity: 0; }
+    50% { opacity: 1; }
+    0% { transform: translateY(0); }
+    100% { transform: translateY(280px); }
+}
+
+.scan-instructions {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: center;
+    max-width: 90%;
+    backdrop-filter: blur(10px);
+}
+
+.action-button-mobile {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 2rem);
+    max-width: 400px;
+    padding: 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    z-index: 1000;
+    transition: all 0.3s;
+}
+
+.action-button-mobile:active {
+    transform: translateX(-50%) scale(0.95);
+}
+
+.permission-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.permission-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.permission-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 3rem;
+    color: white;
+}
+
+.loading-overlay-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.loading-spinner {
+    width: 80px;
+    height: 80px;
+    border: 6px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container scanner-container">
-    <div class="text-center mb-4">
-        <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary mb-3">
-            <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
+<div class="mobile-scan-container">
+    <!-- Header -->
+    <div class="scan-header">
+        <a href="{% url 'user_dashboard' %}" style="text-decoration: none; color: #374151; font-weight: 600; font-size: 1.1rem;">
+            <i class="fas fa-arrow-left me-2"></i>{% trans "Back" %}
         </a>
-        <h2><i class="fas fa-camera me-2"></i>{% trans "Scan QR Code" %}</h2>
-        <p class="text-muted">{% trans "Scan a QR code from your company to record location and time" %}</p>
     </div>
 
-    <div class="camera-section">
-        <!-- Scan Type Selection -->
-        <div class="text-center mb-4">
-            <h5 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}</h5>
-            <div class="btn-group btn-group-lg" role="group">
-                <button type="button" class="btn btn-outline-success scan-type-btn" data-type="arrival">
-                    <i class="fas fa-sign-in-alt me-2"></i>{% trans "Arrival" %}
-                </button>
-                <button type="button" class="btn btn-outline-danger scan-type-btn" data-type="departure">
-                    <i class="fas fa-sign-out-alt me-2"></i>{% trans "Departure" %}
-                </button>
-            </div>
-            <div id="scan-type-warning" class="alert alert-warning mt-3" style="display: none;">
-                <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select arrival or departure" %}
-            </div>
-        </div>
-        
-        <div class="text-center mb-3">
-            <button id="startScanBtn" class="btn btn-primary btn-lg" disabled>
-                <i class="fas fa-camera me-2"></i>{% trans "Start QR Scanner" %}
+    <!-- Scan Type Selection -->
+    <div class="scan-type-selector">
+        <h5 class="mb-3 text-center" style="color: #1f2937; font-weight: 700;">
+            <i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}
+        </h5>
+        <div class="d-flex gap-3">
+            <button type="button" class="scan-type-btn-mobile arrival" data-type="arrival">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>{% trans "Arrival" %}</span>
             </button>
-            <button id="stopScanBtn" class="btn btn-danger btn-lg" style="display: none;">
-                <i class="fas fa-stop me-2"></i>{% trans "Stop Scanner" %}
+            <button type="button" class="scan-type-btn-mobile departure" data-type="departure">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>{% trans "Departure" %}</span>
             </button>
         </div>
-        
-        <div id="qr-reader" style="display: none;"></div>
+        <div id="scan-type-warning" class="alert alert-warning mt-3 mb-0" style="display: none;">
+            <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select arrival or departure" %}
+        </div>
     </div>
 
-    <div id="scan-result" class="scan-result">
-        <!-- Result will be populated here -->
-    </div>
-    
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-        <div style="text-align: center; color: white;">
-            <div class="spinner-border" role="status" style="width: 4rem; height: 4rem; border-width: 0.4rem;">
-                <span class="visually-hidden">Loading...</span>
+    <!-- Camera Container -->
+    <div class="camera-container" id="camera-container" style="display: none;">
+        <div id="qr-reader"></div>
+        <div class="qr-overlay">
+            <div class="qr-frame">
+                <div class="qr-corner top-left"></div>
+                <div class="qr-corner top-right"></div>
+                <div class="qr-corner bottom-left"></div>
+                <div class="qr-corner bottom-right"></div>
+                <div class="scan-line"></div>
             </div>
-            <div class="mt-3" style="font-size: 1.2rem; font-weight: 600;">
-                <i class="fas fa-sync fa-spin me-2"></i>{% trans "Processing scan..." %}
+            <div class="scan-instructions">
+                <i class="fas fa-qrcode me-2"></i>{% trans "Align QR code within the frame" %}
             </div>
         </div>
+    </div>
+
+    <!-- Start Button -->
+    <button id="startScanBtn" class="btn btn-primary action-button-mobile" style="display: none;">
+        <i class="fas fa-camera"></i>
+        <span>{% trans "Start Scanner" %}</span>
+    </button>
+
+    <!-- Stop Button -->
+    <button id="stopScanBtn" class="btn btn-danger action-button-mobile" style="display: none;">
+        <i class="fas fa-stop"></i>
+        <span>{% trans "Stop Scanner" %}</span>
+    </button>
+</div>
+
+<!-- Permission Screen -->
+<div class="permission-screen" id="permission-screen">
+    <div class="permission-card">
+        <div class="permission-icon">
+            <i class="fas fa-camera"></i>
+        </div>
+        <h4 class="mb-3" style="font-weight: 700; color: #1f2937;">{% trans "Camera & Location Required" %}</h4>
+        <p class="mb-4" style="color: #6b7280; line-height: 1.6;">
+            {% trans "To scan QR codes and record your location, we need permission to access your camera and location." %}
+        </p>
+        <button id="grant-permission-btn" class="btn btn-primary w-100" style="padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 12px;">
+            <i class="fas fa-shield-alt me-2"></i>{% trans "Grant Permissions" %}
+        </button>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay-mobile" id="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="mt-4 text-white" style="font-size: 1.2rem; font-weight: 600;">
+        <i class="fas fa-sync fa-spin me-2"></i>{% trans "Processing scan..." %}
     </div>
 </div>
 {% endblock %}
@@ -68,12 +345,60 @@ var html5QrcodeScanner = null;
 var userLocation = null;
 var isScanning = false;
 var selectedScanType = null;
+var permissionsGranted = false;
+var cameraPermission = false;
+var locationPermission = false;
 
-// Function to request location
-function requestLocation() {
+// Check if permissions were granted before
+function checkExistingPermissions() {
+    // Check camera permission
+    if (navigator.permissions) {
+        navigator.permissions.query({ name: 'camera' }).then(function(result) {
+            cameraPermission = result.state === 'granted';
+            if (result.state === 'granted') {
+                checkLocationPermission();
+            }
+        }).catch(function() {
+            // Permissions API not supported, show permission screen
+            showPermissionScreen();
+        });
+    } else {
+        showPermissionScreen();
+    }
+}
+
+function checkLocationPermission() {
+    if (navigator.permissions) {
+        navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+            locationPermission = result.state === 'granted';
+            if (result.state === 'granted') {
+                permissionsGranted = true;
+                hidePermissionScreen();
+            } else {
+                showPermissionScreen();
+            }
+        }).catch(function() {
+            showPermissionScreen();
+        });
+    } else {
+        showPermissionScreen();
+    }
+}
+
+function showPermissionScreen() {
+    document.getElementById('permission-screen').style.display = 'flex';
+}
+
+function hidePermissionScreen() {
+    document.getElementById('permission-screen').style.display = 'none';
+}
+
+// Request all permissions
+function requestPermissions() {
     return new Promise(function(resolve, reject) {
+        // First request location
         if (!navigator.geolocation) {
-            reject(new Error(translations.geolocationNotSupported));
+            reject(new Error(translations.geolocationNotSupported || 'Geolocation not supported'));
             return;
         }
 
@@ -83,40 +408,91 @@ function requestLocation() {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                 };
-                console.log('Location acquired:', userLocation);
-                resolve(userLocation);
+                locationPermission = true;
+                console.log('Location permission granted:', userLocation);
+                
+                // Then try camera
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                        .then(function(stream) {
+                            // Stop the stream immediately, we just needed permission
+                            stream.getTracks().forEach(function(track) { track.stop(); });
+                            cameraPermission = true;
+                            permissionsGranted = true;
+                            console.log('Camera permission granted');
+                            resolve();
+                        })
+                        .catch(function(err) {
+                            reject(new Error(translations.cameraPermissionDenied || 'Camera permission denied'));
+                        });
+                } else {
+                    reject(new Error(translations.cameraNotSupported || 'Camera not supported'));
+                }
             },
             function(error) {
                 console.error('Location error:', error);
-                var errorMsg = translations.unableToGetLocation + ' ';
+                var errorMsg = translations.unableToGetLocation || 'Unable to get location';
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
-                        errorMsg += translations.allowLocationAccess;
+                        errorMsg = translations.allowLocationAccess || 'Please allow location access';
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        errorMsg += translations.locationUnavailable;
+                        errorMsg = translations.locationUnavailable || 'Location unavailable';
                         break;
                     case error.TIMEOUT:
-                        errorMsg += translations.locationTimeout;
+                        errorMsg = translations.locationTimeout || 'Location request timeout';
                         break;
-                    default:
-                        errorMsg += translations.unknownError;
                 }
                 reject(new Error(errorMsg));
             },
             {
                 enableHighAccuracy: true,
-                timeout: 10000,
+                timeout: 15000,
                 maximumAge: 0
             }
         );
     });
 }
 
+// Grant permissions button
+document.getElementById('grant-permission-btn').addEventListener('click', function() {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations.requesting || 'Requesting permissions...');
+    
+    requestPermissions()
+        .then(function() {
+            hidePermissionScreen();
+            Swal.fire({
+                icon: 'success',
+                title: translations.permissionsGranted || 'Permissions Granted',
+                text: translations.canNowScan || 'You can now scan QR codes',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        })
+        .catch(function(error) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-shield-alt me-2"></i>' + (translations.grantPermissions || 'Grant Permissions');
+            
+            Swal.fire({
+                icon: 'error',
+                title: translations.permissionError || 'Permission Error',
+                text: error.message,
+                confirmButtonText: translations.tryAgain || 'Try Again'
+            });
+        });
+});
+
 // Scan type selection handler
-var scanTypeButtons = document.querySelectorAll('.scan-type-btn');
+var scanTypeButtons = document.querySelectorAll('.scan-type-btn-mobile');
 scanTypeButtons.forEach(function(button) {
     button.addEventListener('click', function() {
+        if (!permissionsGranted) {
+            showPermissionScreen();
+            return;
+        }
+        
         // Remove active class from all buttons
         scanTypeButtons.forEach(function(btn) {
             btn.classList.remove('active');
@@ -131,8 +507,8 @@ scanTypeButtons.forEach(function(button) {
         // Hide warning
         document.getElementById('scan-type-warning').style.display = 'none';
         
-        // Enable start button
-        document.getElementById('startScanBtn').disabled = false;
+        // Show start button
+        document.getElementById('startScanBtn').style.display = 'flex';
         
         console.log('Scan type selected:', selectedScanType);
     });
@@ -140,10 +516,13 @@ scanTypeButtons.forEach(function(button) {
 
 function stopScanner() {
     if (html5QrcodeScanner && isScanning) {
-        html5QrcodeScanner.clear().then(function() {
+        html5QrcodeScanner.stop().then(function() {
             console.log('Scanner stopped successfully');
             isScanning = false;
             html5QrcodeScanner = null;
+            document.getElementById('camera-container').style.display = 'none';
+            document.getElementById('stopScanBtn').style.display = 'none';
+            document.getElementById('startScanBtn').style.display = 'flex';
         }).catch(function(err) {
             console.error('Error stopping scanner:', err);
             isScanning = false;
@@ -153,36 +532,29 @@ function stopScanner() {
 }
 
 function processScan(uuid) {
-    // Prevent multiple scans
     if (isScanning) {
         stopScanner();
     }
-
-    // Request location if not available
-    if (!userLocation) {
-        requestLocation().then(function() {
-            submitScan(uuid);
-        }).catch(function(error) {
-            showError(translations.locationRequired, error.message);
-        });
-    } else {
-        submitScan(uuid);
-    }
+    submitScan(uuid);
 }
 
 function submitScan(uuid) {
-    // Validate scan type is selected
     if (!selectedScanType) {
         document.getElementById('scan-type-warning').style.display = 'block';
-        showWarning(translations.scanTypeRequired || 'Scan Type Required', translations.pleaseSelectScanType || 'Please select arrival or departure');
         return;
     }
     
-    // Show loading overlay
-    var loadingOverlay = document.getElementById('loading-overlay');
-    loadingOverlay.style.display = 'flex';
+    if (!userLocation) {
+        Swal.fire({
+            icon: 'error',
+            title: translations.locationRequired || 'Location Required',
+            text: translations.pleaseEnableLocation || 'Please enable location'
+        });
+        return;
+    }
     
-    // Extract UUID from URL if it's a full URL
+    document.getElementById('loading-overlay').style.display = 'flex';
+    
     var extractedUuid = uuid.trim();
     if (extractedUuid.includes('/scan/')) {
         var parts = extractedUuid.split('/scan/');
@@ -190,8 +562,6 @@ function submitScan(uuid) {
             extractedUuid = parts[1].replace(/\//g, '');
         }
     }
-
-    console.log('Processing scan for UUID:', extractedUuid, 'Type:', selectedScanType);
 
     fetch('{% url "user_scan_qr" %}', {
         method: 'POST',
@@ -208,121 +578,109 @@ function submitScan(uuid) {
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
-        // Hide loading overlay
         document.getElementById('loading-overlay').style.display = 'none';
         
         if (data.status === 'success') {
-            // Stop scanner
-            stopScanner();
-            document.getElementById('qr-reader').style.display = 'none';
-            
-            // Show success message for 1 second then redirect
             Swal.fire({
                 icon: 'success',
-                title: translations.scanSuccessful,
+                title: translations.scanSuccessful || 'Scan Successful',
                 text: data.data.qr_name + ' - ' + data.data.qr_location,
-                timer: 1000,
+                timer: 1500,
                 showConfirmButton: false,
                 allowOutsideClick: false
             }).then(function() {
-                // Redirect to user dashboard
                 window.location.href = '{% url "user_dashboard" %}';
             });
         } else {
-            var resultDiv = document.getElementById('scan-result');
-            resultDiv.className = 'scan-result result-error';
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<h4 class="text-danger mb-3"><i class="fas fa-exclamation-circle me-2"></i>' + translations.scanFailed + '</h4><p>' + data.message + '</p><button onclick="location.reload()" class="btn btn-secondary"><i class="fas fa-redo me-2"></i>' + translations.tryAgain + '</button>';
+            Swal.fire({
+                icon: 'error',
+                title: translations.scanFailed || 'Scan Failed',
+                text: data.message,
+                confirmButtonText: translations.tryAgain || 'Try Again'
+            });
         }
     })
     .catch(function(error) {
-        // Hide loading overlay
         document.getElementById('loading-overlay').style.display = 'none';
         console.error('Scan processing error:', error);
-        showError(translations.error, translations.failedToProcess + ': ' + error.message);
+        Swal.fire({
+            icon: 'error',
+            title: translations.error || 'Error',
+            text: error.message
+        });
     });
 }
 
 // Start QR scanner
 document.getElementById('startScanBtn').addEventListener('click', function() {
-    // Request location if not available
-    if (!userLocation) {
-        requestLocation().then(function() {
-            startScanner();
-        }).catch(function(error) {
-            showError(translations.locationRequired, error.message);
-        });
-    } else {
-        startScanner();
-    }
-});
-
-function startScanner() {
-    // Validate scan type is selected
-    if (!selectedScanType) {
-        document.getElementById('scan-type-warning').style.display = 'block';
-        showWarning(translations.scanTypeRequired || 'Scan Type Required', translations.pleaseSelectScanType || 'Please select arrival or departure');
+    if (!permissionsGranted) {
+        showPermissionScreen();
         return;
     }
     
-    var readerDiv = document.getElementById('qr-reader');
+    if (!selectedScanType) {
+        document.getElementById('scan-type-warning').style.display = 'block';
+        return;
+    }
+    
+    startScanner();
+});
+
+function startScanner() {
+    var cameraContainer = document.getElementById('camera-container');
     var startBtn = document.getElementById('startScanBtn');
     var stopBtn = document.getElementById('stopScanBtn');
 
-    readerDiv.style.display = 'block';
+    cameraContainer.style.display = 'flex';
     startBtn.style.display = 'none';
-    stopBtn.style.display = 'inline-block';
+    stopBtn.style.display = 'flex';
 
-    try {
-        html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader",
-            { 
-                fps: 10,
-                qrbox: 250,
-                rememberLastUsedCamera: true,
-                aspectRatio: 1.0,
-                // Prefer rear camera (environment facing)
-                videoConstraints: {
-                    facingMode: { ideal: "environment" }
-                }
-            },
-            false
-        );
-
-        html5QrcodeScanner.render(
-            function(decodedText) {
-                console.log('QR Code detected:', decodedText);
-                processScan(decodedText);
-            },
-            function(error) {
-                // Ignore continuous scanning errors (they happen every frame)
-                // console.log('Scan error:', error);
-            }
-        );
-
+    html5QrcodeScanner = new Html5Qrcode("qr-reader");
+    
+    html5QrcodeScanner.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        },
+        function(decodedText) {
+            console.log('QR Code detected:', decodedText);
+            processScan(decodedText);
+        },
+        function(errorMessage) {
+            // Ignore scan errors (they happen every frame)
+        }
+    ).then(function() {
         isScanning = true;
         console.log('Scanner started successfully');
-    } catch (err) {
+    }).catch(function(err) {
         console.error('Scanner initialization error:', err);
-        showError(translations.scannerError, translations.failedToStart + ': ' + err.message);
+        Swal.fire({
+            icon: 'error',
+            title: translations.scannerError || 'Scanner Error',
+            text: err.message || (translations.failedToStart || 'Failed to start scanner')
+        });
         
-        readerDiv.style.display = 'none';
-        startBtn.style.display = 'inline-block';
+        cameraContainer.style.display = 'none';
+        startBtn.style.display = 'flex';
         stopBtn.style.display = 'none';
-    }
+    });
 }
 
 // Stop scanner
 document.getElementById('stopScanBtn').addEventListener('click', function() {
     stopScanner();
-    document.getElementById('qr-reader').style.display = 'none';
-    document.getElementById('startScanBtn').style.display = 'inline-block';
-    this.style.display = 'none';
 });
+
+// Check permissions on page load
+checkExistingPermissions();
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', function() {
-    stopScanner();
+    if (isScanning) {
+        stopScanner();
+    }
 });
 </script>
 {% endblock %}
