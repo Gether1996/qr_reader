@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-02 11:54+0100\n"
+"POT-Creation-Date: 2025-12-02 13:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr "Email už existuje"
 msgid "User not found"
 msgstr "Používateľ nebol nájdený"
 
-#: .\qr_reader_django\crud.py:145 .\viewer\views.py:421
+#: .\qr_reader_django\crud.py:145 .\viewer\views.py:423
 msgid "QR code not found"
 msgstr "QR kód nebol nájdený"
 
@@ -1303,7 +1303,7 @@ msgid "Register"
 msgstr "Registrovať"
 
 #: .\viewer\templates\company_dashboard.html:78
-#: .\viewer\templates\user_dashboard.html:100
+#: .\viewer\templates\user_dashboard.html:114
 msgid "QR Code"
 msgstr "QR kódy"
 
@@ -1318,12 +1318,14 @@ msgstr "Názov"
 #: .\viewer\templates\company_dashboard.html:79
 #: .\viewer\templates\company_dashboard.html:280
 #: .\viewer\templates\qr_scans.html:48
-#: .\viewer\templates\user_dashboard.html:101
+#: .\viewer\templates\user_dashboard.html:116
+#: .\viewer\templates\user_dashboard.html:194
 msgid "Location"
 msgstr "Poloha"
 
 #: .\viewer\templates\company_dashboard.html:80
 #: .\viewer\templates\company_dashboard.html:174
+#: .\viewer\templates\user_dashboard.html:36
 msgid "Scans"
 msgstr "Skenovania"
 
@@ -1406,7 +1408,8 @@ msgstr ""
 "Zatiaľ žiadni používatelia. Zaregistrujte používateľov, aby mali prístup!"
 
 #: .\viewer\templates\company_dashboard.html:236
-#: .\viewer\templates\user_dashboard.html:78
+#: .\viewer\templates\user_dashboard.html:61
+#: .\viewer\templates\user_dashboard.html:93
 msgid "scans"
 msgstr "skenovaní"
 
@@ -1495,7 +1498,7 @@ msgstr "Už máte účet?"
 msgid "Login Here"
 msgstr "Prihláste sa tu"
 
-#: .\viewer\templates\landing.html:4 .\viewer\templates\user_dashboard.html:11
+#: .\viewer\templates\landing.html:4 .\viewer\templates\user_dashboard.html:12
 msgid "Welcome"
 msgstr "Vítajte"
 
@@ -1635,33 +1638,41 @@ msgid "Scan History"
 msgstr "História skenovaní"
 
 #: .\viewer\templates\qr_scans.html:46
+#: .\viewer\templates\user_dashboard.html:115
+#: .\viewer\templates\user_dashboard.html:178
 msgid "Type"
 msgstr "Typ"
 
 #: .\viewer\templates\qr_scans.html:47
-#: .\viewer\templates\user_dashboard.html:102
+#: .\viewer\templates\user_dashboard.html:117
+#: .\viewer\templates\user_dashboard.html:186
 msgid "Scanned By"
 msgstr "Naskenoval"
 
 #: .\viewer\templates\qr_scans.html:49
-#: .\viewer\templates\user_dashboard.html:103
+#: .\viewer\templates\user_dashboard.html:118
 msgid "Timestamp"
 msgstr "Čas"
 
 #: .\viewer\templates\qr_scans.html:59 .\viewer\templates\scan_qr.html:32
+#: .\viewer\templates\user_dashboard.html:127
+#: .\viewer\templates\user_dashboard.html:180
 #: .\viewer\templates\user_details.html:98
 #: .\viewer\templates\user_scan_qr.html:23
 msgid "Arrival"
 msgstr "Príchod"
 
 #: .\viewer\templates\qr_scans.html:63 .\viewer\templates\scan_qr.html:35
+#: .\viewer\templates\user_dashboard.html:129
+#: .\viewer\templates\user_dashboard.html:182
 #: .\viewer\templates\user_details.html:102
 #: .\viewer\templates\user_scan_qr.html:26
 msgid "Departure"
 msgstr "Odchod"
 
 #: .\viewer\templates\qr_scans.html:71
-#: .\viewer\templates\user_dashboard.html:126
+#: .\viewer\templates\user_dashboard.html:148
+#: .\viewer\templates\user_dashboard.html:190
 msgid "Anonymous"
 msgstr "Anonymný"
 
@@ -1673,7 +1684,7 @@ msgstr "Zobraziť na mape"
 msgid "No scans recorded yet"
 msgstr "Zatiaľ žiadne zaznamenané skenovania"
 
-#: .\viewer\templates\scan_qr.html:5 .\viewer\templates\user_dashboard.html:40
+#: .\viewer\templates\scan_qr.html:5 .\viewer\templates\user_dashboard.html:22
 #: .\viewer\templates\user_scan_qr.html:5
 #: .\viewer\templates\user_scan_qr.html:13
 msgid "Scan QR Code"
@@ -1711,7 +1722,7 @@ msgstr "Chyba!"
 msgid "Deleted!"
 msgstr "Vymazané!"
 
-#: .\viewer\templates\translations_js.html:11 .\viewer\views.py:284
+#: .\viewer\templates\translations_js.html:11 .\viewer\views.py:286
 msgid "QR code created successfully"
 msgstr "QR kód úspešne vytvorený"
 
@@ -1735,7 +1746,7 @@ msgstr "Používateľ úspešne zaregistrovaný"
 msgid "Failed to register user"
 msgstr "Nepodarilo sa zaregistrovať používateľa"
 
-#: .\viewer\templates\translations_js.html:19 .\viewer\views.py:374
+#: .\viewer\templates\translations_js.html:19 .\viewer\views.py:376
 msgid "User updated successfully"
 msgstr "Používateľ úspešne aktualizovaný"
 
@@ -1824,7 +1835,7 @@ msgid "Scanned At"
 msgstr "Naskenované o"
 
 #: .\viewer\templates\translations_js.html:45 .\viewer\views.py:44
-#: .\viewer\views.py:235
+#: .\viewer\views.py:237
 msgid "Scan recorded successfully!"
 msgstr "Skenovanie úspešne zaznamenané!"
 
@@ -1864,21 +1875,19 @@ msgstr "Prosím zadajte UUID QR kódu"
 msgid "User Dashboard"
 msgstr "Dashboard"
 
-#: .\viewer\templates\user_dashboard.html:22
-msgid "Available QR Codes"
-msgstr "Dostupné QR kódy"
-
-#: .\viewer\templates\user_dashboard.html:30
-msgid "Recent Scans"
-msgstr "Nedávne skenovania"
-
-#: .\viewer\templates\user_dashboard.html:85
+#: .\viewer\templates\user_dashboard.html:68
+#: .\viewer\templates\user_dashboard.html:99
 msgid "No QR codes available yet"
 msgstr "Zatiaľ žiadne dostupné QR kódy"
 
-#: .\viewer\templates\user_dashboard.html:133
+#: .\viewer\templates\user_dashboard.html:155
+#: .\viewer\templates\user_dashboard.html:206
 msgid "No scans yet"
 msgstr "Zatiaľ žiadne skenovania"
+
+#: .\viewer\templates\user_dashboard.html:199
+msgid "Open Map"
+msgstr "Zobraziť na mape"
 
 #: .\viewer\templates\user_details.html:5
 msgid "User Details"
@@ -1916,19 +1925,11 @@ msgstr "Spustiť QR skener"
 msgid "Stop Scanner"
 msgstr "Zastaviť skener"
 
-#: .\viewer\templates\user_scan_qr.html:46
-msgid "Or Enter UUID Manually"
-msgstr "Alebo zadajte UUID manuálne"
+#: .\viewer\templates\user_scan_qr.html:57
+msgid "Processing scan..."
+msgstr "Spracuvávam sken..."
 
-#: .\viewer\templates\user_scan_qr.html:49
-msgid "Enter QR code UUID"
-msgstr "Zadajte UUID QR kódu"
-
-#: .\viewer\templates\user_scan_qr.html:53
-msgid "Submit"
-msgstr "Odoslať"
-
-#: .\viewer\views.py:19 .\viewer\views.py:215
+#: .\viewer\views.py:19 .\viewer\views.py:216
 msgid "QR code not found or inactive"
 msgstr "QR kód nebol nájdený alebo je neaktívny"
 
@@ -1956,9 +1957,9 @@ msgstr "Úspešne odhlásený"
 msgid "Please login as a company"
 msgstr "Prosím prihláste sa ako firma"
 
-#: .\viewer\views.py:113 .\viewer\views.py:270 .\viewer\views.py:302
-#: .\viewer\views.py:324 .\viewer\views.py:356 .\viewer\views.py:391
-#: .\viewer\views.py:416 .\viewer\views.py:442
+#: .\viewer\views.py:113 .\viewer\views.py:272 .\viewer\views.py:304
+#: .\viewer\views.py:326 .\viewer\views.py:358 .\viewer\views.py:393
+#: .\viewer\views.py:418 .\viewer\views.py:444
 msgid "Company not found"
 msgstr "Firma nebola nájdená"
 
@@ -1966,41 +1967,41 @@ msgstr "Firma nebola nájdená"
 msgid "Please login as a user"
 msgstr "Prosím prihláste sa ako používateľ"
 
-#: .\viewer\views.py:221
+#: .\viewer\views.py:222
 msgid "This QR code does not belong to your company"
 msgstr "Tento QR kód nepatrí vašej firme"
 
-#: .\viewer\views.py:242
+#: .\viewer\views.py:244
 msgid "Address not available"
 msgstr "Adresa nie je dostupná"
 
-#: .\viewer\views.py:263 .\viewer\views.py:297 .\viewer\views.py:317
-#: .\viewer\views.py:350 .\viewer\views.py:385 .\viewer\views.py:411
-#: .\viewer\views.py:437
+#: .\viewer\views.py:265 .\viewer\views.py:299 .\viewer\views.py:319
+#: .\viewer\views.py:352 .\viewer\views.py:387 .\viewer\views.py:413
+#: .\viewer\views.py:439
 msgid "Unauthorized"
 msgstr "Neautorizované"
 
-#: .\viewer\views.py:291 .\viewer\views.py:344 .\viewer\views.py:379
-#: .\viewer\views.py:405
+#: .\viewer\views.py:293 .\viewer\views.py:346 .\viewer\views.py:381
+#: .\viewer\views.py:407
 msgid "Invalid method"
 msgstr "Neplatná metóda"
 
-#: .\viewer\views.py:307
+#: .\viewer\views.py:309
 msgid "QR code deactivated successfully"
 msgstr "QR kód úspešne deaktivovaný"
 
-#: .\viewer\views.py:309
+#: .\viewer\views.py:311
 msgid "Failed to deactivate QR code"
 msgstr "Nepodarilo sa deaktivovať QR kód"
 
-#: .\viewer\views.py:338
+#: .\viewer\views.py:340
 msgid "User created successfully"
 msgstr "Používateľ úspešne vytvorený"
 
-#: .\viewer\views.py:398
+#: .\viewer\views.py:400
 msgid "User deleted successfully"
 msgstr "Používateľ úspešne vymazaný"
 
-#: .\viewer\views.py:447
+#: .\viewer\views.py:449
 msgid "User not found or inactive"
 msgstr "QR kód nebol nájdený alebo je neaktívny"

@@ -41,20 +41,6 @@
         </div>
         
         <div id="qr-reader" style="display: none;"></div>
-        
-        <div id="manual-input-section">
-            <h5 class="mb-3"><i class="fas fa-keyboard me-2"></i>{% trans "Or Enter UUID Manually" %}</h5>
-            <div class="row">
-                <div class="col-md-8">
-                    <input type="text" id="manual-uuid" class="form-control" placeholder="{% trans 'Enter QR code UUID' %}">
-                </div>
-                <div class="col-md-4">
-                    <button id="manual-scan-btn" class="btn btn-success w-100" disabled>
-                        <i class="fas fa-check me-2"></i>{% trans "Submit" %}
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="scan-result" class="scan-result">
@@ -152,7 +138,6 @@ scanTypeButtons.forEach(function(button) {
         
         // Enable start button
         document.getElementById('startScanBtn').disabled = false;
-        document.getElementById('manual-scan-btn').disabled = false;
         
         console.log('Scan type selected:', selectedScanType);
     });
@@ -338,23 +323,6 @@ document.getElementById('stopScanBtn').addEventListener('click', function() {
     document.getElementById('qr-reader').style.display = 'none';
     document.getElementById('startScanBtn').style.display = 'inline-block';
     this.style.display = 'none';
-});
-
-// Manual scan
-document.getElementById('manual-scan-btn').addEventListener('click', function() {
-    var uuid = document.getElementById('manual-uuid').value.trim();
-    if (!uuid) {
-        showWarning(translations.uuidRequired, translations.pleaseEnterUuid);
-        return;
-    }
-    processScan(uuid);
-});
-
-// Enter key on manual input
-document.getElementById('manual-uuid').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        document.getElementById('manual-scan-btn').click();
-    }
 });
 
 // Cleanup on page unload
