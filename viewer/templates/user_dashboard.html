@@ -2,212 +2,246 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "User Dashboard" %}{% endblock %}
+{% block title %}{% trans "Dashboard" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
-    <!-- Compact Header -->
-    <div class="row mb-3">
-        <div class="col">
-            <h4 class="mb-1"><i class="fas fa-user me-2"></i>{% trans "Welcome" %}, {{ user.name }}!</h4>
-            <p class="text-muted small mb-0">{{ user.company.name }}</p>
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3><i class="fas fa-user me-2"></i>{% trans "Welcome" %}, {{ user.name }}!</h3>
+            <p class="text-muted mb-0">{{ user.company.name }}</p>
         </div>
-    </div>
-
-    <!-- Action Button -->
-    <div class="row mb-3">
-        <div class="col">
-            <a href="{% url 'user_scan_qr' %}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" style="padding: 0.85rem;">
-                <i class="fas fa-camera"></i>
-                <span>{% trans "Scan QR Code" %}</span>
+        <div class="col-md-6 text-md-end">
+            <a href="{% url 'user_scan_qr' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-camera me-2"></i>{% trans "Scan QR Code" %}
             </a>
         </div>
     </div>
 
-    <!-- Tabs -->
-    <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist" style="display: flex; flex-direction: row;">
-        <li class="nav-item" style="flex: 1;">
-            <button class="nav-link active" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#qr-codes-tab">
-                <i class="fas fa-qrcode me-1"></i><span>QR</span>
-            </button>
-        </li>
-        <li class="nav-item" style="flex: 1;">
-            <button class="nav-link" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#scans-tab">
-                <i class="fas fa-mouse-pointer me-1"></i><span>{% trans "Scans" %}</span>
-            </button>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <!-- QR Codes Tab -->
-        <div class="tab-pane fade show active" id="qr-codes-tab">
-            <!-- Desktop View -->
-            <div class="row d-none d-lg-flex">
-                {% for qr in qr_codes %}
-                <div class="col-lg-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <img src="{{ qr.qr_code.url }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 180px;">
-                            <h5 class="card-title">{{ qr.name }}</h5>
-                            <p class="text-muted mb-2 small">
-                                <i class="fas fa-map-marker-alt me-1"></i>{{ qr.location }}
-                            </p>
-                            {% if qr.additional_info %}
-                            <p class="small text-muted">{{ qr.additional_info }}</p>
-                            {% endif %}
-                            <p class="small text-muted mb-2">
-                                <i class="fas fa-calendar me-1"></i>{{ qr.created_at|date:"d.m.Y" }}
-                            </p>
-                            <span class="badge bg-info">{{ qr.scans.count }} {% trans "scans" %}</span>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        <i class="fas fa-info-circle me-2"></i>{% trans "No QR codes available yet" %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- Mobile View -->
-            <div class="d-lg-none">
-                {% for qr in qr_codes %}
-                <div class="mobile-card mb-3">
-                    <div class="mobile-card-image">
-                        <img src="{{ qr.qr_code.url }}" alt="QR Code">
-                    </div>
-                    <div class="mobile-card-content">
-                        <h6 class="mobile-card-title">{{ qr.name }}</h6>
-                        <p class="mobile-card-subtitle">
-                            <i class="fas fa-map-marker-alt me-1"></i>{{ qr.location }}
-                        </p>
-                        {% if qr.additional_info %}
-                        <p class="mobile-card-info">{{ qr.additional_info|truncatechars:50 }}</p>
-                        {% endif %}
-                        <div class="d-flex align-items-center justify-content-between">
-                            <small class="text-muted">
-                                <i class="fas fa-calendar me-1"></i>{{ qr.created_at|date:"d.m.Y" }}
-                            </small>
-                            <span class="badge bg-info">{{ qr.scans.count }} {% trans "scans" %}</span>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i>{% trans "No QR codes available yet" %}
-                </div>
-                {% endfor %}
-            </div>
+    <!-- Filters Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-filter me-2"></i>{% trans "Filters" %}
+                <button class="btn btn-sm btn-outline-secondary float-end" type="button" onclick="clearFilters()">
+                    <i class="fas fa-times me-1"></i>{% trans "Clear Filters" %}
+                </button>
+            </h5>
         </div>
-
-        <!-- Scans Tab -->
-        <div class="tab-pane fade" id="scans-tab">
-            <!-- Desktop Table View -->
-            <div class="card d-none d-lg-block">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>{% trans "QR Code" %}</th>
-                                    <th>{% trans "Type" %}</th>
-                                    <th>{% trans "Location" %}</th>
-                                    <th>{% trans "Scanned By" %}</th>
-                                    <th>{% trans "Timestamp" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for scan in recent_scans %}
-                                <tr>
-                                    <td><strong>{{ scan.qr_code.name }}</strong></td>
-                                    <td>
-                                        {% if scan.scan_type == 'arrival' %}
-                                            <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
-                                        {% else %}
-                                            <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if scan.address %}
-                                            <div class="mb-1">
-                                                <i class="fas fa-map-marked-alt me-1 text-primary"></i>
-                                                <strong>{{ scan.address }}</strong>
-                                            </div>
-                                        {% endif %}
-                                        <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
-                                            <i class="fas fa-map-marker-alt me-1 text-danger"></i>
-                                            <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {% if scan.scanned_by %}
-                                            {{ scan.scanned_by.name }}
-                                        {% else %}
-                                            <span class="text-muted">{% trans "Anonymous" %}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ scan.timestamp|date:"d.m.Y H:i" }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">{% trans "No scans yet" %}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+        <div class="card-body">
+            <form method="get" action="{% url 'user_dashboard' %}" id="filterForm">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">{% trans "QR Code" %}</label>
+                        <input type="text" name="qr_code" class="form-control" placeholder="{% trans 'Search by name' %}" value="{{ current_filters.qr_code }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{% trans "Type" %}</label>
+                        <select name="scan_type" class="form-select">
+                            <option value="">{% trans "All" %}</option>
+                            <option value="arrival" {% if current_filters.scan_type == 'arrival' %}selected{% endif %}>{% trans "Arrival" %}</option>
+                            <option value="departure" {% if current_filters.scan_type == 'departure' %}selected{% endif %}>{% trans "Departure" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{% trans "User" %}</label>
+                        <input type="text" name="user" class="form-control" placeholder="{% trans 'Search user' %}" value="{{ current_filters.user }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{% trans "Date From" %}</label>
+                        <input type="date" name="date_from" class="form-control" value="{{ current_filters.date_from }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{% trans "Date To" %}</label>
+                        <input type="date" name="date_to" class="form-control" value="{{ current_filters.date_to }}">
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label">{% trans "Per Page" %}</label>
+                        <select name="per_page" class="form-select">
+                            <option value="10" {% if current_filters.per_page == 10 %}selected{% endif %}>10</option>
+                            <option value="20" {% if current_filters.per_page == 20 %}selected{% endif %}>20</option>
+                            <option value="50" {% if current_filters.per_page == 50 %}selected{% endif %}>50</option>
+                            <option value="100" {% if current_filters.per_page == 100 %}selected{% endif %}>100</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-
-            <!-- Mobile Card View -->
-            <div class="d-lg-none">
-                {% for scan in recent_scans %}
-                <div class="mobile-card mb-3">
-                    <div class="mobile-card-header">
-                        <div>
-                            <h6 class="mb-1"><i class="fas fa-qrcode me-2"></i>{{ scan.qr_code.name }}</h6>
-                            <small class="text-muted">
-                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
-                            </small>
-                        </div>
-                    </div>
-                    <div class="mobile-card-body">
-                        <div class="mb-2">
-                            <strong class="d-block mb-1"><i class="fas fa-tag me-1"></i>{% trans "Type" %}</strong>
-                            {% if scan.scan_type == 'arrival' %}
-                                <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
-                            {% else %}
-                                <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}</span>
-                            {% endif %}
-                        </div>
-                        <div class="mb-2">
-                            <strong class="d-block mb-1"><i class="fas fa-user me-1"></i>{% trans "Scanned By" %}</strong>
-                            {% if scan.scanned_by %}
-                                <span>{{ scan.scanned_by.name }}</span>
-                            {% else %}
-                                <span class="text-muted">{% trans "Anonymous" %}</span>
-                            {% endif %}
-                        </div>
-                        <div>
-                            <strong class="d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i>{% trans "Location" %}</strong>
-                            {% if scan.address %}
-                                <div class="mb-1">{{ scan.address }}</div>
-                            {% endif %}
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-external-link-alt me-1"></i>{% trans "Open Map" %}
-                            </a>
-                        </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>{% trans "Apply Filters" %}
+                        </button>
                     </div>
                 </div>
-                {% empty %}
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i>{% trans "No scans yet" %}
-                </div>
-                {% endfor %}
-            </div>
+                <input type="hidden" name="sort" value="{{ current_filters.sort }}">
+            </form>
         </div>
     </div>
+
+    <!-- Scans Table Card -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>{% trans "Scan History" %}
+                <span class="badge bg-primary ms-2">{{ page_obj.paginator.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="?sort={% if current_filters.sort == 'qr_code__name' %}-{% endif %}qr_code__name&{{ request.GET.urlencode }}" class="text-decoration-none text-dark">
+                                    {% trans "QR Code" %}
+                                    {% if current_filters.sort == 'qr_code__name' %}
+                                        <i class="fas fa-sort-up"></i>
+                                    {% elif current_filters.sort == '-qr_code__name' %}
+                                        <i class="fas fa-sort-down"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort text-muted"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="?sort={% if current_filters.sort == 'scan_type' %}-{% endif %}scan_type&{{ request.GET.urlencode }}" class="text-decoration-none text-dark">
+                                    {% trans "Type" %}
+                                    {% if current_filters.sort == 'scan_type' %}
+                                        <i class="fas fa-sort-up"></i>
+                                    {% elif current_filters.sort == '-scan_type' %}
+                                        <i class="fas fa-sort-down"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort text-muted"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>{% trans "Location" %}</th>
+                            <th>
+                                <a href="?sort={% if current_filters.sort == 'scanned_by__name' %}-{% endif %}scanned_by__name&{{ request.GET.urlencode }}" class="text-decoration-none text-dark">
+                                    {% trans "Scanned By" %}
+                                    {% if current_filters.sort == 'scanned_by__name' %}
+                                        <i class="fas fa-sort-up"></i>
+                                    {% elif current_filters.sort == '-scanned_by__name' %}
+                                        <i class="fas fa-sort-down"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort text-muted"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="?sort={% if current_filters.sort == 'timestamp' %}-{% endif %}timestamp&{{ request.GET.urlencode }}" class="text-decoration-none text-dark">
+                                    {% trans "Timestamp" %}
+                                    {% if current_filters.sort == 'timestamp' %}
+                                        <i class="fas fa-sort-up"></i>
+                                    {% elif current_filters.sort == '-timestamp' %}
+                                        <i class="fas fa-sort-down"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort text-muted"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in page_obj %}
+                        <tr>
+                            <td><strong>{{ scan.qr_code.name }}</strong></td>
+                            <td>
+                                {% if scan.scan_type == 'arrival' %}
+                                    <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
+                                {% else %}
+                                    <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if scan.address %}
+                                    <div class="mb-1">
+                                        <i class="fas fa-map-marked-alt me-1 text-primary"></i>
+                                        <strong>{{ scan.address }}</strong>
+                                    </div>
+                                {% endif %}
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
+                                    <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                    <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
+                                </a>
+                            </td>
+                            <td>
+                                {% if scan.scanned_by %}
+                                    <i class="fas fa-user me-1"></i>{{ scan.scanned_by.name }}
+                                {% else %}
+                                    <span class="text-muted">{% trans "Anonymous" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">{% trans "No scans found" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&{{ request.GET.urlencode }}">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="text-center mt-2 text-muted small">
+                {% trans "Showing" %} {{ page_obj.start_index }} - {{ page_obj.end_index }} {% trans "of" %} {{ page_obj.paginator.count }} {% trans "scans" %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
+
+<script>
+function clearFilters() {
+    window.location.href = '{% url "user_dashboard" %}';
+}
+
+// Auto-submit form on select change
+document.querySelectorAll('#filterForm select').forEach(select => {
+    select.addEventListener('change', () => {
+        document.getElementById('filterForm').submit();
+    });
+});
+</script>
 {% endblock %}

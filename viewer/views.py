@@ -167,7 +167,6 @@ def user_logout(request):
 
 
 def user_dashboard(request):
-    """User dashboard - view company QR codes and scans"""
     if 'user_id' not in request.session or request.session.get('user_type') != 'user':
         messages.error(request, _('Please login as a user'))
         return redirect('user_login')
@@ -177,13 +176,91 @@ def user_dashboard(request):
         messages.error(request, _('User not found'))
         return redirect('user_login')
     
+    from viewer.models import ScanEvent, User
+    from django.core.paginator import Paginator
+    from django.db.models import Q
+    
+    scans = ScanEvent.objects.filter(
+        qr_code__company=user.company,
+        scanned_by=user,
+        qr_code__is_active=True
+    ).select_related('qr_code', 'scanned_by')
+    
+    # Filtering
+    qr_code_filter = request.GET.get('qr_code', '')
+    scan_type_filter = request.GET.get('scan_type', '')
+    user_filter = request.GET.get('user', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    if qr_code_filter:
+        scans = scans.filter(qr_code__name__icontains=qr_code_filter)
+    
+    if scan_type_filter:
+        scans = scans.filter(scan_type=scan_type_filter)
+    
+    if user_filter:
+        scans = scans.filter(
+            Q(scanned_by__name__icontains=user_filter) | 
+            Q(scanned_by__email__icontains=user_filter)
+        )
+    
+    if date_from:
+        from django.utils import timezone
+        import datetime
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        date_from_obj = timezone.make_aware(date_from_obj)
+        scans = scans.filter(timestamp__gte=date_from_obj)
+    
+    if date_to:
+        from django.utils import timezone
+        import datetime
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+        date_to_obj = timezone.make_aware(date_to_obj.replace(hour=23, minute=59, second=59))
+        scans = scans.filter(timestamp__lte=date_to_obj)
+    
+    # Sorting
+    sort_by = request.GET.get('sort', '-timestamp')
+    valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
+                         'scan_type', '-scan_type', 'scanned_by__name', '-scanned_by__name']
+    
+    if sort_by in valid_sort_fields:
+        scans = scans.order_by(sort_by)
+    else:
+        scans = scans.order_by('-timestamp')
+    
+    # Pagination
+    page_number = request.GET.get('page', 1)
+    per_page = request.GET.get('per_page', 20)
+    
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 50, 100]:
+            per_page = 20
+    except:
+        per_page = 20
+    
+    paginator = Paginator(scans, per_page)
+    page_obj = paginator.get_page(page_number)
+    
+    # Get unique QR codes and users for filter dropdowns
     qr_codes = crud.get_company_qr_codes(user.company)
-    recent_scans = crud.get_company_scans(user.company, limit=20)
+    company_users = crud.get_company_users(user.company)
 
     context = {
         'user': user,
+        'page_obj': page_obj,
         'qr_codes': qr_codes,
-        'recent_scans': recent_scans,
+        'company_users': company_users,
+        'current_filters': {
+            'qr_code': qr_code_filter,
+            'scan_type': scan_type_filter,
+            'user': user_filter,
+            'date_from': date_from,
+            'date_to': date_to,
+            'sort': sort_by,
+            'per_page': per_page,
+        }
     }
     return render(request, 'user_dashboard.html', context)
 
