@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from viewer.models import Company, User, QRCodeProfile, ScanEvent
 
 # ============= COMPANY CRUD =============
@@ -5,7 +6,7 @@ from viewer.models import Company, User, QRCodeProfile, ScanEvent
 def create_company(name, email, password):
     """Create a new company"""
     if Company.objects.filter(email=email).exists():
-        return None, 'Email already registered'
+        return None, str(_('Email already registered'))
     
     company = Company.objects.create(name=name, email=email)
     company.set_password(password)
@@ -34,7 +35,7 @@ def get_company_by_id(company_id):
 def create_user(company, name, email, password):
     """Create a new user under a company"""
     if User.objects.filter(email=email).exists():
-        return None, 'Email already exists'
+        return None, str(_('Email already exists'))
     
     user = User.objects.create(
         company=company,
@@ -70,7 +71,7 @@ def update_user(user_id, company, name=None, email=None, password=None, is_activ
         # Check if email is being changed and if it already exists
         if email and email != user.email:
             if User.objects.filter(email=email).exists():
-                return None, 'Email already exists'
+                return None, str(_('Email already exists'))
             user.email = email
         
         # Update name if provided
@@ -88,17 +89,18 @@ def update_user(user_id, company, name=None, email=None, password=None, is_activ
         user.save()
         return user, None
     except User.DoesNotExist:
-        return None, 'User not found'
+        return None, str(_('User not found'))
 
 
 def delete_user(user_id, company):
-    """Delete a user"""
+    """Deactivate a user (soft delete)"""
     try:
         user = User.objects.get(id=user_id, company=company)
-        user.delete()
+        user.is_active = False
+        user.save()
         return True, None
     except User.DoesNotExist:
-        return False, 'User not found'
+        return False, str(_('User not found'))
 
 
 # ============= QR CODE CRUD =============
@@ -140,23 +142,24 @@ def deactivate_qr_code(qr_id, company):
         qr_code.save()
         return True, None
     except QRCodeProfile.DoesNotExist:
-        return False, 'QR code not found'
+        return False, str(_('QR code not found'))
 
 
 def get_company_qr_codes(company):
-    """Get all QR codes for a company"""
-    return company.qr_codes.all().order_by('-created_at')
+    """Get all active QR codes for a company"""
+    return company.qr_codes.filter(is_active=True).order_by('-created_at')
 
 
 def get_company_users(company):
-    """Get all users for a company"""
-    return company.users.all().order_by('-created_at')
+    """Get all active users for a company"""
+    return company.users.filter(is_active=True).order_by('-created_at')
 
 
 def get_company_scans(company, limit=20):
-    """Get recent scans for a company"""
+    """Get recent scans for a company (from active QR codes only)"""
     return ScanEvent.objects.filter(
-        qr_code__company=company
+        qr_code__company=company,
+        qr_code__is_active=True
     ).order_by('-timestamp')[:limit]
 
 
@@ -165,13 +168,21 @@ def get_qr_code_scans(qr_code):
     return qr_code.scans.all().order_by('-timestamp')
 
 
+def get_user_scans(user):
+    """Get all scans by a specific active user"""
+    if not user.is_active:
+        return ScanEvent.objects.none()
+    return ScanEvent.objects.filter(scanned_by=user).order_by('-timestamp')
+
+
 # ============= SCAN EVENT CRUD =============
 
-def create_scan_event(qr_code, latitude, longitude, scanned_by=None, device_info=''):
+def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info=''):
     """Create a new scan event"""
     scan = ScanEvent.objects.create(
         qr_code=qr_code,
         scanned_by=scanned_by,
+        scan_type=scan_type,
         latitude=latitude,
         longitude=longitude,
         device_info=device_info

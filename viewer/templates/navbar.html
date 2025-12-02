@@ -1,7 +1,8 @@
 {% load static %}
 {% load i18n %}
 
-<nav class="qr-navbar">
+<!-- Desktop Navbar -->
+<nav class="qr-navbar desktop-navbar">
     <div class="container">
         <div class="navbar-wrapper">
             <a class="brand-logo" href="{% url 'landing_page' %}">
@@ -11,19 +12,14 @@
                 <span class="brand-text">QR Reader</span>
             </a>
             
-            <button class="mobile-toggle" id="mobileToggle" type="button">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            
-            <div class="nav-menu" id="navMenu">
+            <div class="nav-menu-desktop">
                 {% if request.session.user_type == 'company' %}
                     <!-- Company Navigation -->
                     <a href="{% url 'company_dashboard' %}" class="nav-item">
                         <i class="fas fa-chart-line"></i>
                         <span>{% trans "Dashboard" %}</span>
                     </a>
+                    
                     <div class="nav-item dropdown-wrapper">
                         <button class="dropdown-trigger" type="button">
                             <i class="fas fa-building"></i>
@@ -46,6 +42,50 @@
                             </a>
                         </div>
                     </div>
+                    
+                    <!-- Language Switcher -->
+                    <div class="nav-item dropdown-wrapper language-switcher">
+                        <button class="dropdown-trigger" type="button">
+                            {% if LANGUAGE_CODE == 'sk' %}
+                                <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                            {% elif LANGUAGE_CODE == 'en' %}
+                                <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                            {% elif LANGUAGE_CODE == 'es' %}
+                                <span class="fi fi-es flag-icon"></span>
+                            {% elif LANGUAGE_CODE == 'de' %}
+                                <span class="fi fi-de flag-icon"></span>
+                            {% endif %}
+                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <form action="{% url 'set_language' %}" method="post" class="language-form">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
+                                    <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                                    <span>Slovenčina</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'sk' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="en" class="dropdown-link {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                    <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                                    <span>English</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'en' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="es" class="dropdown-link {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                                    <span class="fi fi-es flag-icon"></span>
+                                    <span>Español</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'es' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="de" class="dropdown-link {% if LANGUAGE_CODE == 'de' %}active{% endif %}">
+                                    <span class="fi fi-de flag-icon"></span>
+                                    <span>Deutsch</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'de' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
                     <div class="nav-item user-info">
                         <i class="fas fa-building text-primary"></i>
                         <span class="ms-2">{{ current_company.name }}</span>
@@ -57,6 +97,7 @@
                         <i class="fas fa-chart-line"></i>
                         <span>{% trans "Dashboard" %}</span>
                     </a>
+                    
                     <div class="nav-item dropdown-wrapper">
                         <button class="dropdown-trigger" type="button">
                             <i class="fas fa-user-circle"></i>
@@ -75,6 +116,50 @@
                             </a>
                         </div>
                     </div>
+                    
+                    <!-- Language Switcher -->
+                    <div class="nav-item dropdown-wrapper language-switcher">
+                        <button class="dropdown-trigger" type="button">
+                            {% if LANGUAGE_CODE == 'sk' %}
+                                <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                            {% elif LANGUAGE_CODE == 'en' %}
+                                <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                            {% elif LANGUAGE_CODE == 'es' %}
+                                <span class="fi fi-es flag-icon"></span>
+                            {% elif LANGUAGE_CODE == 'de' %}
+                                <span class="fi fi-de flag-icon"></span>
+                            {% endif %}
+                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <form action="{% url 'set_language' %}" method="post" class="language-form">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
+                                    <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                                    <span>Slovenčina</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'sk' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="en" class="dropdown-link {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                    <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                                    <span>English</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'en' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="es" class="dropdown-link {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                                    <span class="fi fi-es flag-icon"></span>
+                                    <span>Español</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'es' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="de" class="dropdown-link {% if LANGUAGE_CODE == 'de' %}active{% endif %}">
+                                    <span class="fi fi-de flag-icon"></span>
+                                    <span>Deutsch</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'de' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
                     <div class="nav-item user-info">
                         <i class="fas fa-user text-success"></i>
                         <span class="ms-2">{{ current_user.name }}</span>
@@ -86,484 +171,333 @@
                         <i class="fas fa-home"></i>
                         <span>{% trans "Home" %}</span>
                     </a>
-                    <a href="{% url 'company_login' %}" class="nav-item-btn primary">
-                        <i class="fas fa-building"></i>
-                        <span>{% trans "Company Login" %}</span>
-                    </a>
-                    <a href="{% url 'user_login' %}" class="nav-item-btn secondary">
-                        <i class="fas fa-user"></i>
-                        <span>{% trans "User Login" %}</span>
-                    </a>
-                {% endif %}
-                
-                <!-- Language Switcher -->
-                <div class="nav-item dropdown-wrapper language-switcher">
-                    <button class="dropdown-trigger" type="button">
-                        {% if LANGUAGE_CODE == 'sk' %}
-                            <span class="flag-icon">🇸🇰</span>
-                        {% elif LANGUAGE_CODE == 'en' %}
-                            <span class="flag-icon">🇬🇧</span>
-                        {% elif LANGUAGE_CODE == 'es' %}
-                            <span class="flag-icon">🇪🇸</span>
-                        {% elif LANGUAGE_CODE == 'de' %}
-                            <span class="flag-icon">🇩🇪</span>
-                        {% endif %}
-                        <span>{{ LANGUAGE_CODE|upper }}</span>
-                        <i class="fas fa-chevron-down dropdown-arrow"></i>
-                    </button>
-                    <div class="dropdown-content">
-                        <form action="{% url 'set_language' %}" method="post" class="language-form">
-                            {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.path }}">
-                            <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
-                                <span class="flag-icon">🇸🇰</span>
-                                <span>Slovenčina</span>
-                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'sk' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
-                            </button>
-                            <button type="submit" name="language" value="en" class="dropdown-link {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
-                                <span class="flag-icon">🇬🇧</span>
-                                <span>English</span>
-                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'en' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
-                            </button>
-                            <button type="submit" name="language" value="es" class="dropdown-link {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
-                                <span class="flag-icon">🇪🇸</span>
-                                <span>Español</span>
-                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'es' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
-                            </button>
-                            <button type="submit" name="language" value="de" class="dropdown-link {% if LANGUAGE_CODE == 'de' %}active{% endif %}">
-                                <span class="flag-icon">🇩🇪</span>
-                                <span>Deutsch</span>
-                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'de' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
-                            </button>
-                        </form>
+                    
+                    <!-- Language Switcher -->
+                    <div class="nav-item dropdown-wrapper language-switcher">
+                        <button class="dropdown-trigger" type="button">
+                            {% if LANGUAGE_CODE == 'sk' %}
+                                <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                            {% elif LANGUAGE_CODE == 'en' %}
+                                <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                            {% elif LANGUAGE_CODE == 'es' %}
+                                <span class="fi fi-es flag-icon"></span>
+                            {% elif LANGUAGE_CODE == 'de' %}
+                                <span class="fi fi-de flag-icon"></span>
+                            {% endif %}
+                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <form action="{% url 'set_language' %}" method="post" class="language-form">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
+                                    <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                                    <span>Slovenčina</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'sk' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="en" class="dropdown-link {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                    <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                                    <span>English</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'en' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="es" class="dropdown-link {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                                    <span class="fi fi-es flag-icon"></span>
+                                    <span>Español</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'es' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                                <button type="submit" name="language" value="de" class="dropdown-link {% if LANGUAGE_CODE == 'de' %}active{% endif %}">
+                                    <span class="fi fi-de flag-icon"></span>
+                                    <span>Deutsch</span>
+                                    <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'de' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                    
+                    <div class="desktop-auth-buttons">
+                        <a href="{% url 'company_login' %}" class="nav-item-btn primary">
+                            <i class="fas fa-building"></i>
+                            <span>{% trans "Company Login" %}</span>
+                        </a>
+                        <a href="{% url 'user_login' %}" class="nav-item-btn secondary">
+                            <i class="fas fa-user"></i>
+                            <span>{% trans "User Login" %}</span>
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </nav>
 
-<style>
-    /* Reset and base navbar styles */
-    .qr-navbar {
-        background: #ffffff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        border-bottom: 1px solid #e5e7eb;
-    }
+<!-- Mobile Navbar -->
+<nav class="qr-navbar mobile-navbar">
+    <div class="mobile-navbar-top">
+        <div class="container">
+            <div class="mobile-navbar-wrapper">
+                <a class="brand-logo" href="{% url 'landing_page' %}">
+                    <div class="logo-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <span class="brand-text">QR</span>
+                </a>
+                
+                {% if request.session.user_type == 'company' %}
+                    <div class="mobile-user-badge">
+                        <i class="fas fa-building"></i>
+                        <span>{{ current_company.name|truncatechars:12 }}</span>
+                    </div>
+                {% elif request.session.user_type == 'user' %}
+                    <div class="mobile-user-badge">
+                        <i class="fas fa-user"></i>
+                        <span>{{ current_user.name|truncatechars:12 }}</span>
+                    </div>
+                {% endif %}
+                
+                <button class="mobile-menu-btn" id="mobileMegaMenuBtn" type="button">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
     
-    .qr-navbar .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-    }
-    
-    .navbar-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 70px;
-    }
-    
-    /* Brand logo */
-    .brand-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        text-decoration: none;
-        color: #1f2937;
-        font-weight: 700;
-        font-size: 1.25rem;
-        transition: transform 0.2s;
-    }
-    
-    .brand-logo:hover {
-        transform: translateY(-2px);
-        color: #2563eb;
-    }
-    
-    .logo-icon {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.25rem;
-        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-    }
-    
-    .brand-text {
-        font-size: 1.25rem;
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    /* Mobile toggle */
-    .mobile-toggle {
-        display: none;
-        flex-direction: column;
-        gap: 5px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 8px;
-    }
-    
-    .mobile-toggle span {
-        width: 25px;
-        height: 3px;
-        background: #1f2937;
-        border-radius: 3px;
-        transition: all 0.3s;
-    }
-    
-    .mobile-toggle.active span:nth-child(1) {
-        transform: rotate(45deg) translate(8px, 8px);
-    }
-    
-    .mobile-toggle.active span:nth-child(2) {
-        opacity: 0;
-    }
-    
-    .mobile-toggle.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -7px);
-    }
-    
-    /* Navigation menu */
-    .nav-menu {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    /* Nav items */
-    .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.625rem 1.25rem;
-        color: #4b5563;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-        white-space: nowrap;
-    }
-    
-    .nav-item:hover {
-        background: #f3f4f6;
-        color: #2563eb;
-    }
-    
-    .nav-item i {
-        font-size: 1rem;
-    }
-    
-    /* Button style nav items */
-    .nav-item-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.625rem 1.5rem;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-        white-space: nowrap;
-    }
-    
-    .nav-item-btn.primary {
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        color: white;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-    }
-    
-    .nav-item-btn.primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-        color: white;
-    }
-    
-    .nav-item-btn.secondary {
-        background: #10b981;
-        color: white;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    }
-    
-    .nav-item-btn.secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        background: #059669;
-        color: white;
-    }
-    
-    /* User info display */
-    .nav-item.user-info {
-        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-        border: 1px solid #d1d5db;
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        color: #374151;
-        cursor: default;
-    }
-    
-    .nav-item.user-info:hover {
-        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-        color: #374151;
-    }
-    
-    .nav-item.user-info i {
-        font-size: 1.1rem;
-    }
-    
-    /* Dropdown */
-    .dropdown-wrapper {
-        position: relative;
-    }
-    
-    .dropdown-trigger {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.625rem 1.25rem;
-        color: #4b5563;
-        background: none;
-        border: none;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        white-space: nowrap;
-    }
-    
-    .dropdown-trigger:hover {
-        background: #f3f4f6;
-        color: #2563eb;
-    }
-    
-    .dropdown-arrow {
-        font-size: 0.75rem;
-        transition: transform 0.2s;
-    }
-    
-    .dropdown-wrapper:hover .dropdown-arrow {
-        transform: rotate(180deg);
-    }
-    
-    .dropdown-content {
-        position: absolute;
-        top: calc(100% + 0.5rem);
-        right: 0;
-        min-width: 200px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        padding: 0.5rem;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.2s;
-        border: 1px solid #e5e7eb;
-    }
-    
-    .dropdown-wrapper:hover .dropdown-content {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-    
-    .dropdown-link {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-        color: #4b5563;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-        background: none;
-        border: none;
-        width: 100%;
-        text-align: left;
-        cursor: pointer;
-        font-family: inherit;
-    }
-    
-    .dropdown-link:hover {
-        background: #f3f4f6;
-        color: #2563eb;
-        transform: translateX(4px);
-    }
-    
-    .dropdown-link.active {
-        color: #2563eb;
-        font-weight: 600;
-    }
-    
-    .dropdown-link.logout {
-        color: #ef4444;
-    }
-    
-    .dropdown-link.logout:hover {
-        background: #fef2f2;
-        color: #dc2626;
-    }
-    
-    .dropdown-link i {
-        width: 20px;
-        text-align: center;
-        font-size: 1rem;
-    }
-    
-    .dropdown-divider {
-        height: 1px;
-        background: #e5e7eb;
-        margin: 0.5rem 0;
-    }
-    
-    /* Language switcher form */
-    .language-form {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .language-switcher .dropdown-content {
-        min-width: 180px;
-    }
-    
-    /* Responsive */
-    @media (max-width: 991px) {
-        .mobile-toggle {
-            display: flex;
-        }
+    <!-- Mobile Mega Menu Overlay -->
+    <div class="mobile-mega-menu" id="mobileMegaMenu">
+        <div class="mobile-mega-menu-header">
+            <h3>
+                {% if request.session.user_type == 'company' %}
+                    <i class="fas fa-building"></i> {{ current_company.name }}
+                {% elif request.session.user_type == 'user' %}
+                    <i class="fas fa-user"></i> {{ current_user.name }}
+                {% else %}
+                    <i class="fas fa-qrcode"></i> QR Reader
+                {% endif %}
+            </h3>
+            <button class="mobile-menu-close" id="mobileMegaMenuClose" type="button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
         
-        .nav-menu {
-            position: fixed;
-            top: 70px;
-            right: -100%;
-            width: 280px;
-            height: calc(100vh - 70px);
-            background: white;
-            flex-direction: column;
-            align-items: stretch;
-            gap: 0;
-            padding: 1.5rem;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s;
-            overflow-y: auto;
-        }
-        
-        .nav-menu.active {
-            right: 0;
-        }
-        
-        .nav-item,
-        .nav-item-btn,
-        .dropdown-trigger {
-            width: 100%;
-            justify-content: flex-start;
-            margin: 0.25rem 0;
-        }
-        
-        .dropdown-content {
-            position: static;
-            opacity: 1;
-            visibility: visible;
-            transform: none;
-            box-shadow: none;
-            margin-top: 0.5rem;
-            margin-left: 1rem;
-            border: 1px solid #e5e7eb;
-            background: #f9fafb;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s;
-        }
-        
-        .dropdown-wrapper.active .dropdown-content {
-            max-height: 500px;
-        }
-        
-        .dropdown-wrapper.active .dropdown-arrow {
-            transform: rotate(180deg);
-        }
-        
-        .dropdown-link:hover {
-            transform: translateX(0);
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .qr-navbar .container {
-            padding: 0 1rem;
-        }
-        
-        .brand-text {
-            font-size: 1.1rem;
-        }
-        
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            font-size: 1.1rem;
-        }
-    }
-    
-    /* Flag icon styles */
-    .flag-icon {
-        font-size: 1.25rem;
-        line-height: 1;
-        display: inline-block;
-    }
-    
-    .dropdown-link .flag-icon {
-        margin-right: 0.5rem;
-    }
-</style>
+        <div class="mobile-mega-menu-content">
+            {% if request.session.user_type == 'company' %}
+                <!-- Company Mobile Menu -->
+                <a href="{% url 'company_dashboard' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Dashboard" %}</span>
+                        <span class="subtitle">{% trans "Overview & Statistics" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'company_dashboard' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "QR Codes" %}</span>
+                        <span class="subtitle">{% trans "Manage QR Codes" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'company_dashboard' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Users" %}</span>
+                        <span class="subtitle">{% trans "Manage Users" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <a href="{% url 'company_logout' %}" class="mobile-menu-item danger">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Logout" %}</span>
+                        <span class="subtitle">{% trans "Sign out from account" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+            {% elif request.session.user_type == 'user' %}
+                <!-- User Mobile Menu -->
+                <a href="{% url 'user_dashboard' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Dashboard" %}</span>
+                        <span class="subtitle">{% trans "Your QR Codes" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <a href="{% url 'user_logout' %}" class="mobile-menu-item danger">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Logout" %}</span>
+                        <span class="subtitle">{% trans "Sign out from account" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+            {% else %}
+                <!-- Public Mobile Menu -->
+                <a href="{% url 'landing_page' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Home" %}</span>
+                        <span class="subtitle">{% trans "Back to homepage" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <a href="{% url 'company_login' %}" class="mobile-menu-item primary">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Company Login" %}</span>
+                        <span class="subtitle">{% trans "For organizations" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'user_login' %}" class="mobile-menu-item secondary">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "User Login" %}</span>
+                        <span class="subtitle">{% trans "For individuals" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+            
+            <!-- Language Switcher Section -->
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-language-section">
+                <div class="mobile-language-title">
+                    <i class="fas fa-globe"></i>
+                    <span>{% trans "Language" %}</span>
+                </div>
+                <form action="{% url 'set_language' %}" method="post" class="mobile-language-grid">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.path }}">
+                    <button type="submit" name="language" value="sk" class="mobile-language-btn {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
+                        <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
+                        <span>SK</span>
+                        {% if LANGUAGE_CODE == 'sk' %}<i class="fas fa-check"></i>{% endif %}
+                    </button>
+                    <button type="submit" name="language" value="en" class="mobile-language-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                        <img src="{% static 'images/eng_vlajka.jpg' %}" class="flag-icon" alt="EN">
+                        <span>EN</span>
+                        {% if LANGUAGE_CODE == 'en' %}<i class="fas fa-check"></i>{% endif %}
+                    </button>
+                    <button type="submit" name="language" value="es" class="mobile-language-btn {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                        <span class="fi fi-es flag-icon"></span>
+                        <span>ES</span>
+                        {% if LANGUAGE_CODE == 'es' %}<i class="fas fa-check"></i>{% endif %}
+                    </button>
+                    <button type="submit" name="language" value="de" class="mobile-language-btn {% if LANGUAGE_CODE == 'de' %}active{% endif %}">
+                        <span class="fi fi-de flag-icon"></span>
+                        <span>DE</span>
+                        {% if LANGUAGE_CODE == 'de' %}<i class="fas fa-check"></i>{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
 
 <script>
-    // Mobile menu toggle
     document.addEventListener('DOMContentLoaded', function() {
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navMenu = document.getElementById('navMenu');
-        
-        if (mobileToggle) {
-            mobileToggle.addEventListener('click', function() {
-                this.classList.toggle('active');
-                navMenu.classList.toggle('active');
-            });
-        }
-        
-        // Mobile dropdown toggle
-        const dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
-        dropdownTriggers.forEach(trigger => {
-            trigger.addEventListener('click', function() {
-                if (window.innerWidth <= 991) {
-                    this.parentElement.classList.toggle('active');
+        // Desktop dropdown functionality
+        const desktopDropdowns = document.querySelectorAll('.desktop-navbar .dropdown-trigger');
+        desktopDropdowns.forEach(trigger => {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const parent = this.parentElement;
+                const wasActive = parent.classList.contains('active');
+                
+                // Close all dropdowns
+                document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(d => {
+                    d.classList.remove('active');
+                });
+                
+                // Toggle current
+                if (!wasActive) {
+                    parent.classList.add('active');
                 }
             });
         });
         
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth <= 991) {
-                if (!event.target.closest('.navbar-wrapper')) {
-                    navMenu.classList.remove('active');
-                    mobileToggle.classList.remove('active');
-                }
+        // Close desktop dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.desktop-navbar .dropdown-wrapper')) {
+                document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(d => {
+                    d.classList.remove('active');
+                });
             }
         });
+        
+        // Mobile mega menu functionality
+        const mobileMegaMenuBtn = document.getElementById('mobileMegaMenuBtn');
+        const mobileMegaMenu = document.getElementById('mobileMegaMenu');
+        const mobileMegaMenuClose = document.getElementById('mobileMegaMenuClose');
+        const body = document.body;
+        
+        function openMobileMenu() {
+            mobileMegaMenu.classList.add('active');
+            body.classList.add('mobile-menu-open');
+        }
+        
+        function closeMobileMenu() {
+            mobileMegaMenu.classList.remove('active');
+            body.classList.remove('mobile-menu-open');
+        }
+        
+        if (mobileMegaMenuBtn) {
+            mobileMegaMenuBtn.addEventListener('click', openMobileMenu);
+        }
+        
+        if (mobileMegaMenuClose) {
+            mobileMegaMenuClose.addEventListener('click', closeMobileMenu);
+        }
+        
+        // Close on menu item click
+        const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
+        mobileMenuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                setTimeout(closeMobileMenu, 200);
+            });
+        });
+        
+        // Close on background click
+        if (mobileMegaMenu) {
+            mobileMegaMenu.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeMobileMenu();
+                }
+            });
+        }
     });
 </script>

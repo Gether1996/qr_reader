@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "User Details" %} - {{ user.name }}{% endblock %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Back Button -->
+    <div class="row mb-3">
+        <div class="col">
+            <a href="{% url 'company_dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- User Header -->
+    <div class="user-header">
+        <div class="row align-items-center">
+            <div class="col-md-auto text-center text-md-start">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <div class="col-md">
+                <h1 class="mb-2">{{ user.name }}</h1>
+                <p class="mb-2">
+                    <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                </p>
+                <p class="mb-0">
+                    <i class="fas fa-calendar me-2"></i>{% trans "Member since" %} {{ user.created_at|date:"d.m.Y" }}
+                </p>
+            </div>
+            <div class="col-md-auto text-center text-md-end">
+                {% if user.is_active %}
+                    <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-check-circle me-2"></i>{% trans "Active" %}
+                    </span>
+                {% else %}
+                    <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-times-circle me-2"></i>{% trans "Inactive" %}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-box">
+                <h3>{{ scans.count }}</h3>
+                <p><i class="fas fa-qrcode me-2"></i>{% trans "Total Scans" %}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box">
+                <h3>{{ scans|dictsort:"qr_code"|length }}</h3>
+                <p><i class="fas fa-layer-group me-2"></i>{% trans "Unique QR Codes" %}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box">
+                <h3>
+                    {% if scans.first %}
+                        {{ scans.first.timestamp|date:"d.m.Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </h3>
+                <p><i class="fas fa-clock me-2"></i>{% trans "Last Activity" %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan History -->
+    <div class="card">
+        <div class="card-header bg-white">
+            <h4 class="mb-0">
+                <i class="fas fa-history me-2"></i>{% trans "Scan History" %}
+            </h4>
+        </div>
+        <div class="card-body">
+            {% if scans %}
+                <div class="scan-timeline">
+                    {% for scan in scans %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-2">
+                                        {% if scan.scan_type == 'arrival' %}
+                                            <span class="badge bg-success me-2">
+                                                <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger me-2">
+                                                <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
+                                            </span>
+                                        {% endif %}
+                                        <span class="qr-badge">
+                                            <i class="fas fa-qrcode me-1"></i>{{ scan.qr_code.name }}
+                                        </span>
+                                        <span class="text-muted ms-2">
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ scan.qr_code.location }}
+                                        </span>
+                                    </div>
+                                    
+                                    {% if scan.address %}
+                                    <div class="mb-2">
+                                        <i class="fas fa-location-dot me-2 text-primary"></i>
+                                        <strong>{{ scan.address }}</strong>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div>
+                                        <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" 
+                                           target="_blank" 
+                                           class="location-link">
+                                            <i class="fas fa-map me-1"></i>
+                                            {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="text-muted">
+                                        <i class="fas fa-calendar-day me-1"></i>
+                                        {{ scan.timestamp|date:"d.m.Y H:i" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                    <p>{% trans "No scans recorded yet" %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

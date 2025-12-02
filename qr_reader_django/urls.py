@@ -37,6 +37,7 @@ urlpatterns += i18n_patterns(
     path('user/create/', views.create_user, name='create_user'),
     path('company/user/<int:user_id>/edit/', views.edit_user, name='edit_user'),
     path('company/user/<int:user_id>/delete/', views.delete_user, name='delete_user'),
+    path('company/user/<int:user_id>/details/', views.view_user_details, name='view_user_details'),
     
     # Public scan endpoint
     path('scan/<str:uuid>/', views.scan_qr, name='scan_qr'),

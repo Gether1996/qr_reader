@@ -102,8 +102,14 @@ class QRCodeProfile(models.Model):
 
 class ScanEvent(models.Model):
     """Log of QR code scans with location and timestamp"""
+    SCAN_TYPE_CHOICES = [
+        ('arrival', 'Príchod'),
+        ('departure', 'Odchod'),
+    ]
+    
     qr_code = models.ForeignKey(QRCodeProfile, on_delete=models.CASCADE, related_name='scans')
     scanned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='scans')
+    scan_type = models.CharField(max_length=10, choices=SCAN_TYPE_CHOICES, default='arrival')
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.CharField(max_length=500, blank=True, null=True, help_text="Human-readable address")

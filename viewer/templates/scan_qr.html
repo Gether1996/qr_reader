@@ -4,19 +4,7 @@
 
 {% block title %}{% trans "Scan QR Code" %}{% endblock %}
 
-{% block extra_css %}
-<style>
-    .scan-container {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    .location-status {
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-</style>
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
 <div class="container scan-container mt-5">
@@ -35,6 +23,18 @@
 
             <div id="locationStatus" class="location-status alert alert-info">
                 <i class="fas fa-spinner fa-spin me-2"></i>{% trans "Getting your location..." %}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">{% trans "Select scan type" %}:</label>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success btn-lg scan-type-btn" data-type="arrival">
+                        <i class="fas fa-sign-in-alt me-2"></i>{% trans "Arrival" %}
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-lg scan-type-btn" data-type="departure">
+                        <i class="fas fa-sign-out-alt me-2"></i>{% trans "Departure" %}
+                    </button>
+                </div>
             </div>
 
             <div class="text-center">
@@ -57,6 +57,42 @@
 {% block extra_js %}
 <script>
 let userLocation = null;
+let selectedScanType = null;
+
+// Scan type selection
+document.querySelectorAll('.scan-type-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.scan-type-btn').forEach(b => {
+            b.classList.remove('btn-success', 'btn-danger');
+            if (b.dataset.type === 'arrival') {
+                b.classList.add('btn-outline-success');
+            } else {
+                b.classList.add('btn-outline-danger');
+            }
+        });
+        
+        // Add active class to clicked button
+        this.classList.remove('btn-outline-success', 'btn-outline-danger');
+        if (this.dataset.type === 'arrival') {
+            this.classList.add('btn-success');
+        } else {
+            this.classList.add('btn-danger');
+        }
+        
+        selectedScanType = this.dataset.type;
+        updateRecordButton();
+    });
+});
+
+function updateRecordButton() {
+    const btn = document.getElementById('recordScanBtn');
+    if (userLocation && selectedScanType) {
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
+}
 
 // Get user location on page load
 if (navigator.geolocation) {
@@ -71,7 +107,7 @@ if (navigator.geolocation) {
                 '<i class="fas fa-check-circle me-2"></i>Location acquired: ' + 
                 userLocation.latitude.toFixed(6) + ', ' + userLocation.longitude.toFixed(6);
             document.getElementById('locationStatus').className = 'location-status alert alert-success';
-            document.getElementById('recordScanBtn').disabled = false;
+            updateRecordButton();
         },
         function(error) {
             document.getElementById('locationStatus').innerHTML = 
@@ -90,10 +126,16 @@ document.getElementById('recordScanBtn').addEventListener('click', function() {
         showError(translations.error, translations.locationNotAvailable);
         return;
     }
+    
+    if (!selectedScanType) {
+        showError(translations.error, '{% trans "Please select arrival or departure" %}');
+        return;
+    }
 
     const data = {
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
+        scan_type: selectedScanType,
         device_info: navigator.userAgent
     };
 

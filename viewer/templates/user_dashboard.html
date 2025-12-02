@@ -5,53 +5,35 @@
 {% block title %}{% trans "User Dashboard" %}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
+<div class="container-fluid py-4">
+    <!-- Compact Header -->
+    <div class="row mb-3">
         <div class="col">
-            <h2><i class="fas fa-user me-2"></i>{% trans "Welcome" %}, {{ user.name }}!</h2>
-            <p class="text-muted">{{ user.company.name }}</p>
-        </div>
-    </div>
-
-    <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                <div class="card-body">
-                    <h4><i class="fas fa-qrcode me-2"></i>{{ qr_codes.count }}</h4>
-                    <p class="mb-0">{% trans "Available QR Codes" %}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
-                <div class="card-body">
-                    <h4><i class="fas fa-mouse-pointer me-2"></i>{{ recent_scans.count }}</h4>
-                    <p class="mb-0">{% trans "Recent Scans" %}</p>
-                </div>
-            </div>
+            <h4 class="mb-1"><i class="fas fa-user me-2"></i>{% trans "Welcome" %}, {{ user.name }}!</h4>
+            <p class="text-muted small mb-0">{{ user.company.name }}</p>
         </div>
     </div>
 
     <!-- Action Button -->
     <div class="row mb-3">
         <div class="col">
-            <a href="{% url 'user_scan_qr' %}" class="btn btn-primary btn-lg">
-                <i class="fas fa-camera me-2"></i>{% trans "Scan QR Code" %}
+            <a href="{% url 'user_scan_qr' %}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" style="padding: 0.85rem;">
+                <i class="fas fa-camera"></i>
+                <span>{% trans "Scan QR Code" %}</span>
             </a>
         </div>
     </div>
 
     <!-- Tabs -->
-    <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist">
-        <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#qr-codes-tab">
-                <i class="fas fa-qrcode me-2"></i>QR Codes
+    <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist" style="display: flex; flex-direction: row;">
+        <li class="nav-item" style="flex: 1;">
+            <button class="nav-link active" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#qr-codes-tab">
+                <i class="fas fa-qrcode me-1"></i><span>QR</span>
             </button>
         </li>
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#scans-tab">
-                <i class="fas fa-mouse-pointer me-2"></i>Recent Scans
+        <li class="nav-item" style="flex: 1;">
+            <button class="nav-link" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#scans-tab">
+                <i class="fas fa-mouse-pointer me-1"></i><span>{% trans "Scans" %}</span>
             </button>
         </li>
     </ul>
@@ -59,21 +41,22 @@
     <div class="tab-content">
         <!-- QR Codes Tab -->
         <div class="tab-pane fade show active" id="qr-codes-tab">
-            <div class="row">
+            <!-- Desktop View -->
+            <div class="row d-none d-lg-flex">
                 {% for qr in qr_codes %}
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4 mb-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
-                            <img src="{{ qr.qr_code.url }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 200px;">
+                            <img src="{{ qr.qr_code.url }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 180px;">
                             <h5 class="card-title">{{ qr.name }}</h5>
-                            <p class="text-muted mb-2">
+                            <p class="text-muted mb-2 small">
                                 <i class="fas fa-map-marker-alt me-1"></i>{{ qr.location }}
                             </p>
                             {% if qr.additional_info %}
                             <p class="small text-muted">{{ qr.additional_info }}</p>
                             {% endif %}
-                            <p class="small text-muted">
-                                <i class="fas fa-calendar me-1"></i>{{ qr.created_at|date:"Y-m-d" }}
+                            <p class="small text-muted mb-2">
+                                <i class="fas fa-calendar me-1"></i>{{ qr.created_at|date:"d.m.Y" }}
                             </p>
                             <span class="badge bg-info">{{ qr.scans.count }} {% trans "scans" %}</span>
                         </div>
@@ -81,9 +64,39 @@
                 </div>
                 {% empty %}
                 <div class="col-12">
-                    <div class="alert alert-info">
+                    <div class="alert alert-info text-center">
                         <i class="fas fa-info-circle me-2"></i>{% trans "No QR codes available yet" %}
                     </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Mobile View -->
+            <div class="d-lg-none">
+                {% for qr in qr_codes %}
+                <div class="mobile-card mb-3">
+                    <div class="mobile-card-image">
+                        <img src="{{ qr.qr_code.url }}" alt="QR Code">
+                    </div>
+                    <div class="mobile-card-content">
+                        <h6 class="mobile-card-title">{{ qr.name }}</h6>
+                        <p class="mobile-card-subtitle">
+                            <i class="fas fa-map-marker-alt me-1"></i>{{ qr.location }}
+                        </p>
+                        {% if qr.additional_info %}
+                        <p class="mobile-card-info">{{ qr.additional_info|truncatechars:50 }}</p>
+                        {% endif %}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>{{ qr.created_at|date:"d.m.Y" }}
+                            </small>
+                            <span class="badge bg-info">{{ qr.scans.count }} {% trans "scans" %}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>{% trans "No QR codes available yet" %}
                 </div>
                 {% endfor %}
             </div>
@@ -91,10 +104,11 @@
 
         <!-- Scans Tab -->
         <div class="tab-pane fade" id="scans-tab">
-            <div class="card">
-                <div class="card-body">
+            <!-- Desktop Table View -->
+            <div class="card d-none d-lg-block">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>{% trans "QR Code" %}</th>
@@ -106,7 +120,7 @@
                             <tbody>
                                 {% for scan in recent_scans %}
                                 <tr>
-                                    <td>{{ scan.qr_code.name }}</td>
+                                    <td><strong>{{ scan.qr_code.name }}</strong></td>
                                     <td>
                                         {% if scan.address %}
                                             <div class="mb-1">
@@ -126,17 +140,56 @@
                                             <span class="text-muted">{% trans "Anonymous" %}</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ scan.timestamp|date:"Y-m-d H:i:s" }}</td>
+                                    <td>{{ scan.timestamp|date:"d.m.Y H:i" }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">{% trans "No scans yet" %}</td>
+                                    <td colspan="4" class="text-center text-muted py-4">{% trans "No scans yet" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="d-lg-none">
+                {% for scan in recent_scans %}
+                <div class="mobile-card mb-3">
+                    <div class="mobile-card-header">
+                        <div>
+                            <h6 class="mb-1"><i class="fas fa-qrcode me-2"></i>{{ scan.qr_code.name }}</h6>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="mobile-card-body">
+                        <div class="mb-2">
+                            <strong class="d-block mb-1"><i class="fas fa-user me-1"></i>{% trans "Scanned By" %}</strong>
+                            {% if scan.scanned_by %}
+                                <span>{{ scan.scanned_by.name }}</span>
+                            {% else %}
+                                <span class="text-muted">{% trans "Anonymous" %}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <strong class="d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i>{% trans "Location" %}</strong>
+                            {% if scan.address %}
+                                <div class="mb-1">{{ scan.address }}</div>
+                            {% endif %}
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt me-1"></i>{% trans "Open Map" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>{% trans "No scans yet" %}
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

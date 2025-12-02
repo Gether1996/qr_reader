@@ -4,91 +4,6 @@
 
 {% block title %}{% trans "Scan QR Code" %}{% endblock %}
 
-{% block extra_css %}
-<style>
-    .scanner-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-    
-    .camera-section {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-        margin-bottom: 2rem;
-    }
-    
-    #qr-reader {
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    
-    #qr-reader video {
-        width: 100%;
-        border-radius: 12px;
-    }
-    
-    #qr-reader__scan_region {
-        border-radius: 12px !important;
-    }
-    
-    #qr-reader__camera_selection {
-        margin-top: 1rem;
-    }
-    
-    #manual-input-section {
-        background: #f9fafb;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-top: 1.5rem;
-    }
-    
-    .scan-result {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-        margin-top: 2rem;
-        display: none;
-    }
-    
-    .result-success {
-        border-left: 4px solid #10b981;
-    }
-    
-    .result-error {
-        border-left: 4px solid #ef4444;
-    }
-    
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-    
-    .info-item {
-        background: #f9fafb;
-        padding: 1rem;
-        border-radius: 8px;
-    }
-    
-    .info-label {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-bottom: 0.25rem;
-    }
-    
-    .info-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #1f2937;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="container scanner-container">
     <div class="text-center mb-4">
@@ -100,8 +15,24 @@
     </div>
 
     <div class="camera-section">
+        <!-- Scan Type Selection -->
+        <div class="text-center mb-4">
+            <h5 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}</h5>
+            <div class="btn-group btn-group-lg" role="group">
+                <button type="button" class="btn btn-outline-success scan-type-btn" data-type="arrival">
+                    <i class="fas fa-sign-in-alt me-2"></i>{% trans "Arrival" %}
+                </button>
+                <button type="button" class="btn btn-outline-danger scan-type-btn" data-type="departure">
+                    <i class="fas fa-sign-out-alt me-2"></i>{% trans "Departure" %}
+                </button>
+            </div>
+            <div id="scan-type-warning" class="alert alert-warning mt-3" style="display: none;">
+                <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select arrival or departure" %}
+            </div>
+        </div>
+        
         <div class="text-center mb-3">
-            <button id="startScanBtn" class="btn btn-primary btn-lg">
+            <button id="startScanBtn" class="btn btn-primary btn-lg" disabled>
                 <i class="fas fa-camera me-2"></i>{% trans "Start QR Scanner" %}
             </button>
             <button id="stopScanBtn" class="btn btn-danger btn-lg" style="display: none;">
@@ -118,7 +49,7 @@
                     <input type="text" id="manual-uuid" class="form-control" placeholder="{% trans 'Enter QR code UUID' %}">
                 </div>
                 <div class="col-md-4">
-                    <button id="manual-scan-btn" class="btn btn-success w-100">
+                    <button id="manual-scan-btn" class="btn btn-success w-100" disabled>
                         <i class="fas fa-check me-2"></i>{% trans "Submit" %}
                     </button>
                 </div>
@@ -138,6 +69,7 @@
 var html5QrcodeScanner = null;
 var userLocation = null;
 var isScanning = false;
+var selectedScanType = null;
 
 // Function to request location
 function requestLocation() {
@@ -188,6 +120,32 @@ requestLocation().catch(function(err) {
     console.log('Initial location request failed:', err.message);
 });
 
+// Scan type selection handler
+var scanTypeButtons = document.querySelectorAll('.scan-type-btn');
+scanTypeButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        scanTypeButtons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Store selected scan type
+        selectedScanType = this.getAttribute('data-type');
+        
+        // Hide warning
+        document.getElementById('scan-type-warning').style.display = 'none';
+        
+        // Enable start button
+        document.getElementById('startScanBtn').disabled = false;
+        document.getElementById('manual-scan-btn').disabled = false;
+        
+        console.log('Scan type selected:', selectedScanType);
+    });
+});
+
 function stopScanner() {
     if (html5QrcodeScanner && isScanning) {
         html5QrcodeScanner.clear().then(function() {
@@ -221,6 +179,13 @@ function processScan(uuid) {
 }
 
 function submitScan(uuid) {
+    // Validate scan type is selected
+    if (!selectedScanType) {
+        document.getElementById('scan-type-warning').style.display = 'block';
+        showWarning(translations.scanTypeRequired || 'Scan Type Required', translations.pleaseSelectScanType || 'Please select arrival or departure');
+        return;
+    }
+    
     // Extract UUID from URL if it's a full URL
     var extractedUuid = uuid.trim();
     if (extractedUuid.includes('/scan/')) {
@@ -230,7 +195,7 @@ function submitScan(uuid) {
         }
     }
 
-    console.log('Processing scan for UUID:', extractedUuid);
+    console.log('Processing scan for UUID:', extractedUuid, 'Type:', selectedScanType);
 
     fetch('{% url "user_scan_qr" %}', {
         method: 'POST',
@@ -241,7 +206,8 @@ function submitScan(uuid) {
         body: JSON.stringify({
             uuid: extractedUuid,
             latitude: userLocation.latitude,
-            longitude: userLocation.longitude
+            longitude: userLocation.longitude,
+            scan_type: selectedScanType
         })
     })
     .then(function(response) { return response.json(); })
@@ -252,7 +218,10 @@ function submitScan(uuid) {
             resultDiv.className = 'scan-result result-success';
             resultDiv.style.display = 'block';
             var addressHtml = data.data.scan_address ? '<div class="info-item" style="grid-column: 1 / -1;"><div class="info-label">' + translations.address + '</div><div class="info-value"><i class="fas fa-map-marked-alt me-2 text-primary"></i>' + data.data.scan_address + '</div></div>' : '';
-            resultDiv.innerHTML = '<h4 class="text-success mb-3"><i class="fas fa-check-circle me-2"></i>' + translations.scanSuccessful + '</h4><div class="info-grid"><div class="info-item"><div class="info-label">' + translations.qrCodeName + '</div><div class="info-value">' + data.data.qr_name + '</div></div><div class="info-item"><div class="info-label">' + translations.qrLocation + '</div><div class="info-value">' + data.data.qr_location + '</div></div><div class="info-item"><div class="info-label">' + translations.scannedAt + '</div><div class="info-value">' + data.data.scan_timestamp + '</div></div><div class="info-item"><div class="info-label">' + translations.gpsCoordinates + '</div><div class="info-value"><a href="https://www.google.com/maps/search/?api=1&query=' + data.data.scan_latitude + ',' + data.data.scan_longitude + '" target="_blank" class="text-decoration-none"><i class="fas fa-map-marker-alt me-1 text-danger"></i>' + data.data.scan_latitude.toFixed(6) + ', ' + data.data.scan_longitude.toFixed(6) + '</a></div></div>' + addressHtml + '</div><div class="text-center mt-3"><button onclick="location.reload()" class="btn btn-primary"><i class="fas fa-redo me-2"></i>' + translations.scanAnother + '</button></div>';
+            var scanTypeIcon = selectedScanType === 'arrival' ? 'fa-sign-in-alt text-success' : 'fa-sign-out-alt text-danger';
+            var scanTypeText = selectedScanType === 'arrival' ? (translations.arrival || 'Arrival') : (translations.departure || 'Departure');
+            var scanTypeHtml = '<div class="info-item"><div class="info-label">' + (translations.scanType || 'Scan Type') + '</div><div class="info-value"><i class="fas ' + scanTypeIcon + ' me-2"></i>' + scanTypeText + '</div></div>';
+            resultDiv.innerHTML = '<h4 class="text-success mb-3"><i class="fas fa-check-circle me-2"></i>' + translations.scanSuccessful + '</h4><div class="info-grid">' + scanTypeHtml + '<div class="info-item"><div class="info-label">' + translations.qrCodeName + '</div><div class="info-value">' + data.data.qr_name + '</div></div><div class="info-item"><div class="info-label">' + translations.qrLocation + '</div><div class="info-value">' + data.data.qr_location + '</div></div><div class="info-item"><div class="info-label">' + translations.scannedAt + '</div><div class="info-value">' + data.data.scan_timestamp + '</div></div><div class="info-item"><div class="info-label">' + translations.gpsCoordinates + '</div><div class="info-value"><a href="https://www.google.com/maps/search/?api=1&query=' + data.data.scan_latitude + ',' + data.data.scan_longitude + '" target="_blank" class="text-decoration-none"><i class="fas fa-map-marker-alt me-1 text-danger"></i>' + data.data.scan_latitude.toFixed(6) + ', ' + data.data.scan_longitude.toFixed(6) + '</a></div></div>' + addressHtml + '</div><div class="text-center mt-3"><button onclick="location.reload()" class="btn btn-primary"><i class="fas fa-redo me-2"></i>' + translations.scanAnother + '</button></div>';
             
             // Stop scanner
             stopScanner();
@@ -286,6 +255,13 @@ document.getElementById('startScanBtn').addEventListener('click', function() {
 });
 
 function startScanner() {
+    // Validate scan type is selected
+    if (!selectedScanType) {
+        document.getElementById('scan-type-warning').style.display = 'block';
+        showWarning(translations.scanTypeRequired || 'Scan Type Required', translations.pleaseSelectScanType || 'Please select arrival or departure');
+        return;
+    }
+    
     var readerDiv = document.getElementById('qr-reader');
     var startBtn = document.getElementById('startScanBtn');
     var stopBtn = document.getElementById('stopScanBtn');
@@ -300,7 +276,12 @@ function startScanner() {
             { 
                 fps: 10,
                 qrbox: 250,
-                rememberLastUsedCamera: true
+                rememberLastUsedCamera: true,
+                aspectRatio: 1.0,
+                // Prefer rear camera (environment facing)
+                videoConstraints: {
+                    facingMode: { ideal: "environment" }
+                }
             },
             false
         );

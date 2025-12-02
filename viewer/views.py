@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
 from qr_reader_django import crud
 import json
 
@@ -15,7 +16,7 @@ def scan_qr(request, uuid):
     """Public page for scanning QR codes - logs location and timestamp"""
     qr_code = crud.get_qr_code_by_uuid(uuid)
     if not qr_code:
-        messages.error(request, 'QR code not found or inactive')
+        messages.error(request, _('QR code not found or inactive'))
         return redirect('landing_page')
     
     if request.method == 'POST':
@@ -23,6 +24,7 @@ def scan_qr(request, uuid):
             data = json.loads(request.body)
             latitude = data.get('latitude')
             longitude = data.get('longitude')
+            scan_type = data.get('scan_type', 'arrival')
             device_info = data.get('device_info', '')
 
             # Get user if logged in
@@ -34,11 +36,12 @@ def scan_qr(request, uuid):
                 qr_code=qr_code,
                 latitude=latitude,
                 longitude=longitude,
+                scan_type=scan_type,
                 scanned_by=user,
                 device_info=device_info
             )
             
-            return JsonResponse({'status': 'success', 'message': 'Scan recorded successfully!'})
+            return JsonResponse({'status': 'success', 'message': str(_('Scan recorded successfully!'))})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     
@@ -56,11 +59,11 @@ def company_register(request):
         confirm_password = request.POST.get('confirm_password')
 
         if not all([name, email, password, confirm_password]):
-            messages.error(request, 'All fields are required')
+            messages.error(request, _('All fields are required'))
             return render(request, 'company_register.html')
 
         if password != confirm_password:
-            messages.error(request, 'Passwords do not match')
+            messages.error(request, _('Passwords do not match'))
             return render(request, 'company_register.html')
 
         company, error = crud.create_company(name, email, password)
@@ -68,7 +71,7 @@ def company_register(request):
             messages.error(request, error)
             return render(request, 'company_register.html')
 
-        messages.success(request, 'Company registered successfully! Please login.')
+        messages.success(request, _('Company registered successfully! Please login.'))
         return redirect('company_login')
 
     return render(request, 'company_register.html')
@@ -87,7 +90,7 @@ def company_login(request):
             messages.success(request, f'Welcome back, {company.name}!')
             return redirect('company_dashboard')
         else:
-            messages.error(request, 'Invalid credentials')
+            messages.error(request, _('Invalid credentials'))
 
     return render(request, 'company_login.html')
 
@@ -95,24 +98,37 @@ def company_login(request):
 def company_logout(request):
     """Company logout"""
     request.session.flush()
-    messages.success(request, 'Logged out successfully')
+    messages.success(request, _('Logged out successfully'))
     return redirect('landing_page')
 
 
 def company_dashboard(request):
     """Company dashboard - manage QR codes and users"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        messages.error(request, 'Please login as a company')
+        messages.error(request, _('Please login as a company'))
         return redirect('company_login')
 
     company = crud.get_company_by_id(request.session['company_id'])
     if not company:
-        messages.error(request, 'Company not found')
+        messages.error(request, _('Company not found'))
         return redirect('company_login')
     
     qr_codes = crud.get_company_qr_codes(company)
     users = crud.get_company_users(company)
     recent_scans = crud.get_company_scans(company, limit=20)
+    
+    # Calculate arrivals and departures for each QR code
+    for qr in qr_codes:
+        qr.arrivals_count = qr.scans.filter(scan_type='arrival').count()
+        qr.departures_count = qr.scans.filter(scan_type='departure').count()
+    
+    # Calculate total scans for each user (only from active QR codes)
+    from viewer.models import ScanEvent
+    for user in users:
+        user.total_scans = ScanEvent.objects.filter(
+            scanned_by=user,
+            qr_code__is_active=True
+        ).count()
 
     context = {
         'company': company,
@@ -138,7 +154,7 @@ def user_login(request):
             messages.success(request, f'Welcome back, {user.name}!')
             return redirect('user_dashboard')
         else:
-            messages.error(request, 'Invalid credentials')
+            messages.error(request, _('Invalid credentials'))
 
     return render(request, 'user_login.html')
 
@@ -146,22 +162,22 @@ def user_login(request):
 def user_logout(request):
     """User logout"""
     request.session.flush()
-    messages.success(request, 'Logged out successfully')
+    messages.success(request, _('Logged out successfully'))
     return redirect('landing_page')
 
 
 def user_dashboard(request):
     """User dashboard - view company QR codes and scans"""
     if 'user_id' not in request.session or request.session.get('user_type') != 'user':
-        messages.error(request, 'Please login as a user')
+        messages.error(request, _('Please login as a user'))
         return redirect('user_login')
 
     user = crud.get_user_by_id(request.session['user_id'])
     if not user:
-        messages.error(request, 'User not found')
+        messages.error(request, _('User not found'))
         return redirect('user_login')
     
-    qr_codes = user.company.qr_codes.filter(is_active=True).order_by('-created_at')
+    qr_codes = crud.get_company_qr_codes(user.company)
     recent_scans = crud.get_company_scans(user.company, limit=20)
 
     context = {
@@ -175,12 +191,12 @@ def user_dashboard(request):
 def user_scan_qr(request):
     """User QR scanner page"""
     if 'user_id' not in request.session or request.session.get('user_type') != 'user':
-        messages.error(request, 'Please login as a user')
+        messages.error(request, _('Please login as a user'))
         return redirect('user_login')
 
     user = crud.get_user_by_id(request.session['user_id'])
     if not user:
-        messages.error(request, 'User not found')
+        messages.error(request, _('User not found'))
         return redirect('user_login')
     
     if request.method == 'POST':
@@ -196,13 +212,13 @@ def user_scan_qr(request):
             if not qr_code:
                 return JsonResponse({
                     'status': 'error',
-                    'message': 'QR code not found or inactive'
+                    'message': str(_('QR code not found or inactive'))
                 }, status=404)
             
             if qr_code.company != user.company:
                 return JsonResponse({
                     'status': 'error',
-                    'message': 'This QR code does not belong to your company'
+                    'message': str(_('This QR code does not belong to your company'))
                 }, status=403)
             
             # Record the scan
@@ -216,14 +232,14 @@ def user_scan_qr(request):
             
             return JsonResponse({
                 'status': 'success',
-                'message': 'Scan recorded successfully!',
+                'message': str(_('Scan recorded successfully!')),
                 'data': {
                     'qr_name': qr_code.name,
                     'qr_location': qr_code.location,
                     'scan_timestamp': scan.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                     'scan_latitude': latitude,
                     'scan_longitude': longitude,
-                    'scan_address': address or 'Address not available'
+                    'scan_address': address or str(_('Address not available'))
                 }
             })
             
@@ -244,14 +260,14 @@ def user_scan_qr(request):
 def create_qr_code(request):
     """Create a new QR code (company only)"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             company = crud.get_company_by_id(request.session['company_id'])
             if not company:
-                return JsonResponse({'status': 'error', 'message': 'Company not found'}, status=404)
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
             qr_code, error = crud.create_qr_code(
                 company=company,
@@ -265,32 +281,32 @@ def create_qr_code(request):
             
             return JsonResponse({
                 'status': 'success',
-                'message': 'QR code created successfully',
+                'message': str(_('QR code created successfully')),
                 'qr_code_id': qr_code.id,
                 'uuid': qr_code.uuid
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
-    return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
 
 
 def delete_qr_code(request, qr_id):
     """Delete/deactivate a QR code (company only)"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        messages.error(request, 'Unauthorized')
+        messages.error(request, _('Unauthorized'))
         return redirect('company_login')
 
     company = crud.get_company_by_id(request.session['company_id'])
     if not company:
-        messages.error(request, 'Company not found')
+        messages.error(request, _('Company not found'))
         return redirect('company_login')
     
     success, error = crud.deactivate_qr_code(qr_id, company)
     if success:
-        messages.success(request, 'QR code deactivated successfully')
+        messages.success(request, _('QR code deactivated successfully'))
     else:
-        messages.error(request, error or 'Failed to deactivate QR code')
+        messages.error(request, error or _('Failed to deactivate QR code'))
     
     return redirect('company_dashboard')
 
@@ -298,14 +314,14 @@ def delete_qr_code(request, qr_id):
 def create_user(request):
     """Register a new user under the company (company only)"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             company = crud.get_company_by_id(request.session['company_id'])
             if not company:
-                return JsonResponse({'status': 'error', 'message': 'Company not found'}, status=404)
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
             user, error = crud.create_user(
                 company=company,
@@ -319,25 +335,25 @@ def create_user(request):
             
             return JsonResponse({
                 'status': 'success',
-                'message': 'User created successfully',
+                'message': str(_('User created successfully')),
                 'user_id': user.id
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
-    return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
 
 
 def edit_user(request, user_id):
     """Edit user details (company only)"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             company = crud.get_company_by_id(request.session['company_id'])
             if not company:
-                return JsonResponse({'status': 'error', 'message': 'Company not found'}, status=404)
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
             data = json.loads(request.body)
             
@@ -355,54 +371,54 @@ def edit_user(request, user_id):
             
             return JsonResponse({
                 'status': 'success',
-                'message': 'User updated successfully'
+                'message': str(_('User updated successfully'))
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
-    return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
 
 
 def delete_user(request, user_id):
     """Delete user (company only)"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             company = crud.get_company_by_id(request.session['company_id'])
             if not company:
-                return JsonResponse({'status': 'error', 'message': 'Company not found'}, status=404)
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
             success, error = crud.delete_user(user_id, company)
             
             if success:
                 return JsonResponse({
                     'status': 'success',
-                    'message': 'User deleted successfully'
+                    'message': str(_('User deleted successfully'))
                 })
             else:
                 return JsonResponse({'status': 'error', 'message': error}, status=404)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
-    return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
 
 
 def view_qr_scans(request, qr_id):
     """View all scans for a specific QR code"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        messages.error(request, 'Unauthorized')
+        messages.error(request, _('Unauthorized'))
         return redirect('company_login')
 
     company = crud.get_company_by_id(request.session['company_id'])
     if not company:
-        messages.error(request, 'Company not found')
+        messages.error(request, _('Company not found'))
         return redirect('company_login')
     
     qr_code = crud.get_qr_code_by_id(qr_id, company)
     if not qr_code:
-        messages.error(request, 'QR code not found')
+        messages.error(request, _('QR code not found'))
         return redirect('company_dashboard')
     
     scans = crud.get_qr_code_scans(qr_code)
@@ -413,3 +429,30 @@ def view_qr_scans(request, qr_id):
         'scans': scans,
     }
     return render(request, 'qr_scans.html', context)
+
+
+def view_user_details(request, user_id):
+    """View detailed information about a specific user"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        messages.error(request, _('Unauthorized'))
+        return redirect('company_login')
+
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('company_login')
+    
+    user = crud.get_user_by_id(user_id)
+    if not user or user.company != company:
+        messages.error(request, _('User not found or inactive'))
+        return redirect('company_dashboard')
+    
+    # Get all scans by this user
+    scans = crud.get_user_scans(user)
+
+    context = {
+        'company': company,
+        'user': user,
+        'scans': scans,
+    }
+    return render(request, 'user_details.html', context)
