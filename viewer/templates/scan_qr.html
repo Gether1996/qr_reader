@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Scan QR Code{% endblock %}
+{% block title %}{% trans "Scan QR Code" %}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -33,19 +34,19 @@
             </div>
 
             <div id="locationStatus" class="location-status alert alert-info">
-                <i class="fas fa-spinner fa-spin me-2"></i>Getting your location...
+                <i class="fas fa-spinner fa-spin me-2"></i>{% trans "Getting your location..." %}
             </div>
 
             <div class="text-center">
                 <button id="recordScanBtn" class="btn btn-primary btn-lg" disabled>
-                    <i class="fas fa-check-circle me-2"></i>Record Scan
+                    <i class="fas fa-check-circle me-2"></i>{% trans "Record Scan" %}
                 </button>
             </div>
 
             <div class="text-center mt-4">
                 <p class="text-muted small">
                     <i class="fas fa-info-circle me-1"></i>
-                    We need your location to record this scan
+                    {% trans "We need your location to record this scan" %}
                 </p>
             </div>
         </div>
@@ -56,21 +57,6 @@
 {% block extra_js %}
 <script>
 let userLocation = null;
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
 
 // Get user location on page load
 if (navigator.geolocation) {
@@ -101,7 +87,7 @@ if (navigator.geolocation) {
 
 document.getElementById('recordScanBtn').addEventListener('click', function() {
     if (!userLocation) {
-        Swal.fire('Error!', 'Location not available', 'error');
+        showError(translations.error, translations.locationNotAvailable);
         return;
     }
 
@@ -122,21 +108,16 @@ document.getElementById('recordScanBtn').addEventListener('click', function() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Scan recorded successfully!',
-                confirmButtonColor: '#10b981'
-            });
+            showSuccess(translations.success, translations.scanRecorded);
             document.getElementById('recordScanBtn').disabled = true;
             document.getElementById('recordScanBtn').innerHTML = 
-                '<i class="fas fa-check me-2"></i>Scan Recorded';
+                '<i class="fas fa-check me-2"></i>' + translations.scanRecordedBtn;
         } else {
-            Swal.fire('Error!', data.message, 'error');
+            showError(translations.error, data.message);
         }
     })
     .catch(error => {
-        Swal.fire('Error!', 'Failed to record scan', 'error');
+        showError(translations.error, translations.failedToRecord);
     });
 });
 </script>

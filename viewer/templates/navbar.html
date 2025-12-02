@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <nav class="qr-navbar">
     <div class="container">
@@ -21,71 +22,122 @@
                     <!-- Company Navigation -->
                     <a href="{% url 'company_dashboard' %}" class="nav-item">
                         <i class="fas fa-chart-line"></i>
-                        <span>Dashboard</span>
+                        <span>{% trans "Dashboard" %}</span>
                     </a>
                     <div class="nav-item dropdown-wrapper">
                         <button class="dropdown-trigger" type="button">
                             <i class="fas fa-building"></i>
-                            <span>Manage</span>
+                            <span>{% trans "Manage" %}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
                             <a href="{% url 'company_dashboard' %}" class="dropdown-link">
                                 <i class="fas fa-qrcode"></i>
-                                <span>QR Codes</span>
+                                <span>{% trans "QR Codes" %}</span>
                             </a>
                             <a href="{% url 'company_dashboard' %}" class="dropdown-link">
                                 <i class="fas fa-users"></i>
-                                <span>Users</span>
+                                <span>{% trans "Users" %}</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'company_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
-                                <span>Logout</span>
+                                <span>{% trans "Logout" %}</span>
                             </a>
                         </div>
+                    </div>
+                    <div class="nav-item user-info">
+                        <i class="fas fa-building text-primary"></i>
+                        <span class="ms-2">{{ current_company.name }}</span>
                     </div>
                     
                 {% elif request.session.user_type == 'user' %}
                     <!-- User Navigation -->
                     <a href="{% url 'user_dashboard' %}" class="nav-item">
                         <i class="fas fa-chart-line"></i>
-                        <span>Dashboard</span>
+                        <span>{% trans "Dashboard" %}</span>
                     </a>
                     <div class="nav-item dropdown-wrapper">
                         <button class="dropdown-trigger" type="button">
                             <i class="fas fa-user-circle"></i>
-                            <span>Account</span>
+                            <span>{% trans "Account" %}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
                             <a href="{% url 'user_dashboard' %}" class="dropdown-link">
                                 <i class="fas fa-qrcode"></i>
-                                <span>QR Codes</span>
+                                <span>{% trans "QR Codes" %}</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'user_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
-                                <span>Logout</span>
+                                <span>{% trans "Logout" %}</span>
                             </a>
                         </div>
+                    </div>
+                    <div class="nav-item user-info">
+                        <i class="fas fa-user text-success"></i>
+                        <span class="ms-2">{{ current_user.name }}</span>
                     </div>
                     
                 {% else %}
                     <!-- Public Navigation -->
                     <a href="{% url 'landing_page' %}" class="nav-item">
                         <i class="fas fa-home"></i>
-                        <span>Home</span>
+                        <span>{% trans "Home" %}</span>
                     </a>
                     <a href="{% url 'company_login' %}" class="nav-item-btn primary">
                         <i class="fas fa-building"></i>
-                        <span>Company Login</span>
+                        <span>{% trans "Company Login" %}</span>
                     </a>
                     <a href="{% url 'user_login' %}" class="nav-item-btn secondary">
                         <i class="fas fa-user"></i>
-                        <span>User Login</span>
+                        <span>{% trans "User Login" %}</span>
                     </a>
                 {% endif %}
+                
+                <!-- Language Switcher -->
+                <div class="nav-item dropdown-wrapper language-switcher">
+                    <button class="dropdown-trigger" type="button">
+                        {% if LANGUAGE_CODE == 'sk' %}
+                            <span class="flag-icon">🇸🇰</span>
+                        {% elif LANGUAGE_CODE == 'en' %}
+                            <span class="flag-icon">🇬🇧</span>
+                        {% elif LANGUAGE_CODE == 'es' %}
+                            <span class="flag-icon">🇪🇸</span>
+                        {% elif LANGUAGE_CODE == 'de' %}
+                            <span class="flag-icon">🇩🇪</span>
+                        {% endif %}
+                        <span>{{ LANGUAGE_CODE|upper }}</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <form action="{% url 'set_language' %}" method="post" class="language-form">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}">
+                            <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
+                                <span class="flag-icon">🇸🇰</span>
+                                <span>Slovenčina</span>
+                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'sk' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                            </button>
+                            <button type="submit" name="language" value="en" class="dropdown-link {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                <span class="flag-icon">🇬🇧</span>
+                                <span>English</span>
+                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'en' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                            </button>
+                            <button type="submit" name="language" value="es" class="dropdown-link {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                                <span class="flag-icon">🇪🇸</span>
+                                <span>Español</span>
+                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'es' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                            </button>
+                            <button type="submit" name="language" value="de" class="dropdown-link {% if LANGUAGE_CODE == 'de' %}active{% endif %}">
+                                <span class="flag-icon">🇩🇪</span>
+                                <span>Deutsch</span>
+                                <i class="fas fa-check" style="opacity: {% if LANGUAGE_CODE == 'de' %}1{% else %}0{% endif %}; margin-left: auto;"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -254,6 +306,25 @@
         color: white;
     }
     
+    /* User info display */
+    .nav-item.user-info {
+        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        border: 1px solid #d1d5db;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        color: #374151;
+        cursor: default;
+    }
+    
+    .nav-item.user-info:hover {
+        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        color: #374151;
+    }
+    
+    .nav-item.user-info i {
+        font-size: 1.1rem;
+    }
+    
     /* Dropdown */
     .dropdown-wrapper {
         position: relative;
@@ -321,12 +392,23 @@
         border-radius: 8px;
         font-size: 0.95rem;
         transition: all 0.2s;
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        font-family: inherit;
     }
     
     .dropdown-link:hover {
         background: #f3f4f6;
         color: #2563eb;
         transform: translateX(4px);
+    }
+    
+    .dropdown-link.active {
+        color: #2563eb;
+        font-weight: 600;
     }
     
     .dropdown-link.logout {
@@ -348,6 +430,17 @@
         height: 1px;
         background: #e5e7eb;
         margin: 0.5rem 0;
+    }
+    
+    /* Language switcher form */
+    .language-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .language-switcher .dropdown-content {
+        min-width: 180px;
     }
     
     /* Responsive */
@@ -426,6 +519,17 @@
             height: 36px;
             font-size: 1.1rem;
         }
+    }
+    
+    /* Flag icon styles */
+    .flag-icon {
+        font-size: 1.25rem;
+        line-height: 1;
+        display: inline-block;
+    }
+    
+    .dropdown-link .flag-icon {
+        margin-right: 0.5rem;
     }
 </style>
 

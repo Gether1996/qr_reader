@@ -162,13 +162,13 @@
         {% block content %}{% endblock %}
     </main>
 
-    <script>
-        var csrfToken = "{{ csrf_token }}";
-    </script>
     <script src="{% static 'scripts/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'scripts/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'scripts/sweetalert2@11.js' %}"></script>
     <script src="{% static 'scripts/general.js' %}"></script>
+    <script>
+        {% include 'translations_js.html' %}
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

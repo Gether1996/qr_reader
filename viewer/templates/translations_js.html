@@ -1,0 +1,56 @@
+{% load i18n %}
+// Translated strings - Generated from Django translations
+const translations = {
+    // General
+    success: '{% trans "Success!" %}',
+    error: '{% trans "Error!" %}',
+    deleted: '{% trans "Deleted!" %}',
+    cancel: '{% trans "Cancel" %}',
+    
+    // QR Code related
+    qrCodeCreated: '{% trans "QR code created successfully" %}',
+    qrCodeCreateFailed: '{% trans "Failed to create QR code" %}',
+    qrCodeName: '{% trans "QR Code Name" %}',
+    qrLocation: '{% trans "QR Location" %}',
+    
+    // User related
+    userRegistered: '{% trans "User registered successfully" %}',
+    userRegisterFailed: '{% trans "Failed to register user" %}',
+    userUpdated: '{% trans "User updated successfully" %}',
+    userUpdateFailed: '{% trans "Failed to update user" %}',
+    userDeleted: '{% trans "User has been deleted" %}',
+    userDeleteFailed: '{% trans "Failed to delete user" %}',
+    deleteUserTitle: '{% trans "Delete User?" %}',
+    deleteUserText: '{% trans "Are you sure you want to delete" %}',
+    deleteUserWarning: '{% trans "This action cannot be undone." %}',
+    confirmDelete: '{% trans "Yes, delete it!" %}',
+    
+    // Location related
+    locationRequired: '{% trans "Location Required" %}',
+    locationNotAvailable: '{% trans "Location not available" %}',
+    geolocationNotSupported: '{% trans "Geolocation not supported" %}',
+    unableToGetLocation: '{% trans "Unable to get your location." %}',
+    allowLocationAccess: '{% trans "Please allow location access in your browser settings." %}',
+    locationUnavailable: '{% trans "Location information is unavailable." %}',
+    locationTimeout: '{% trans "Location request timed out." %}',
+    
+    // Scanner related
+    scannerError: '{% trans "Scanner Error" %}',
+    uuidRequired: '{% trans "UUID Required" %}',
+    scanSuccessful: '{% trans "Scan Successful!" %}',
+    scanFailed: '{% trans "Scan Failed" %}',
+    tryAgain: '{% trans "Try Again" %}',
+    scanAnother: '{% trans "Scan Another" %}',
+    scannedAt: '{% trans "Scanned At" %}',
+    scanRecorded: '{% trans "Scan recorded successfully!" %}',
+    scanRecordedBtn: '{% trans "Scan Recorded" %}',
+    
+    // Other
+    gpsCoordinates: '{% trans "GPS Coordinates" %}',
+    address: '{% trans "Address" %}',
+    unknownError: '{% trans "An unknown error occurred." %}',
+    failedToProcess: '{% trans "Failed to process scan" %}',
+    failedToStart: '{% trans "Failed to start scanner" %}',
+    failedToRecord: '{% trans "Failed to record scan" %}',
+    pleaseEnterUuid: '{% trans "Please enter a QR code UUID" %}'
+};

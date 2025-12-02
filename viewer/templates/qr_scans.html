@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Scan Details - {{ qr_code.name }}{% endblock %}
+{% block title %}{% trans "Scan Details" %} - {{ qr_code.name }}{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row mb-4">
         <div class="col">
             <a href="{% url 'company_dashboard' %}" class="btn btn-outline-primary mb-3">
-                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
             </a>
             <h2><i class="fas fa-qrcode me-2"></i>{{ qr_code.name }}</h2>
             <p class="text-muted">
@@ -22,11 +23,11 @@
             <div class="card">
                 <div class="card-body text-center">
                     <img src="{{ qr_code.qr_code.url }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 250px;">
-                    <p class="mb-1"><strong>UUID:</strong></p>
+                    <p class="mb-1"><strong>{% trans "UUID" %}:</strong></p>
                     <p class="small text-muted">{{ qr_code.uuid }}</p>
-                    <p class="mb-1"><strong>Created:</strong></p>
+                    <p class="mb-1"><strong>{% trans "Created" %}:</strong></p>
                     <p class="small text-muted">{{ qr_code.created_at|date:"Y-m-d H:i:s" }}</p>
-                    <span class="badge bg-primary">{{ scans.count }} Total Scans</span>
+                    <span class="badge bg-primary">{{ scans.count }} {% trans "Total Scans" %}</span>
                 </div>
             </div>
         </div>
@@ -34,7 +35,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Scan History</h5>
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>{% trans "Scan History" %}</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -42,9 +43,9 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Scanned By</th>
-                                    <th>Location</th>
-                                    <th>Timestamp</th>
+                                    <th>{% trans "Scanned By" %}</th>
+                                    <th>{% trans "Location" %}</th>
+                                    <th>{% trans "Timestamp" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,7 +56,7 @@
                                         {% if scan.scanned_by %}
                                             <i class="fas fa-user me-1"></i>{{ scan.scanned_by.name }}
                                         {% else %}
-                                            <span class="text-muted">Anonymous</span>
+                                            <span class="text-muted">{% trans "Anonymous" %}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -67,7 +68,7 @@
                                         {% endif %}
                                         <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" 
                                            target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-map-marker-alt me-1"></i>View on Map
+                                            <i class="fas fa-map-marker-alt me-1"></i>{% trans "View on Map" %}
                                         </a>
                                         <br>
                                         <small class="text-muted">
@@ -78,7 +79,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No scans recorded yet</td>
+                                    <td colspan="4" class="text-center text-muted">{% trans "No scans recorded yet" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

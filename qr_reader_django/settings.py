@@ -23,6 +23,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -41,8 +42,10 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'viewer.context_processors.current_user_info',
             ],
         },
     },
@@ -75,8 +78,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'sk'
 LANGUAGES = [
+    ('sk', 'Slovenčina'),
     ('en', 'English'),
-    ('sk', 'Slovak'),
+    ('es', 'Español'),
+    ('de', 'Deutsch'),
 ]
 
 TIME_ZONE = 'Europe/Bratislava'

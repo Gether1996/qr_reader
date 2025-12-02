@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}User Dashboard{% endblock %}
+{% block title %}{% trans "User Dashboard" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col">
-            <h2><i class="fas fa-user me-2"></i>Welcome, {{ user.name }}!</h2>
+            <h2><i class="fas fa-user me-2"></i>{% trans "Welcome" %}, {{ user.name }}!</h2>
             <p class="text-muted">{{ user.company.name }}</p>
         </div>
     </div>
@@ -18,7 +19,7 @@
             <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                 <div class="card-body">
                     <h4><i class="fas fa-qrcode me-2"></i>{{ qr_codes.count }}</h4>
-                    <p class="mb-0">Available QR Codes</p>
+                    <p class="mb-0">{% trans "Available QR Codes" %}</p>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
             <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
                 <div class="card-body">
                     <h4><i class="fas fa-mouse-pointer me-2"></i>{{ recent_scans.count }}</h4>
-                    <p class="mb-0">Recent Scans</p>
+                    <p class="mb-0">{% trans "Recent Scans" %}</p>
                 </div>
             </div>
         </div>
@@ -36,7 +37,7 @@
     <div class="row mb-3">
         <div class="col">
             <a href="{% url 'user_scan_qr' %}" class="btn btn-primary btn-lg">
-                <i class="fas fa-camera me-2"></i>Scan QR Code
+                <i class="fas fa-camera me-2"></i>{% trans "Scan QR Code" %}
             </a>
         </div>
     </div>
@@ -74,14 +75,14 @@
                             <p class="small text-muted">
                                 <i class="fas fa-calendar me-1"></i>{{ qr.created_at|date:"Y-m-d" }}
                             </p>
-                            <span class="badge bg-info">{{ qr.scans.count }} scans</span>
+                            <span class="badge bg-info">{{ qr.scans.count }} {% trans "scans" %}</span>
                         </div>
                     </div>
                 </div>
                 {% empty %}
                 <div class="col-12">
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>No QR codes available yet
+                        <i class="fas fa-info-circle me-2"></i>{% trans "No QR codes available yet" %}
                     </div>
                 </div>
                 {% endfor %}
@@ -96,10 +97,10 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>QR Code</th>
-                                    <th>Location</th>
-                                    <th>Scanned By</th>
-                                    <th>Timestamp</th>
+                                    <th>{% trans "QR Code" %}</th>
+                                    <th>{% trans "Location" %}</th>
+                                    <th>{% trans "Scanned By" %}</th>
+                                    <th>{% trans "Timestamp" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -122,14 +123,14 @@
                                         {% if scan.scanned_by %}
                                             {{ scan.scanned_by.name }}
                                         {% else %}
-                                            <span class="text-muted">Anonymous</span>
+                                            <span class="text-muted">{% trans "Anonymous" %}</span>
                                         {% endif %}
                                     </td>
                                     <td>{{ scan.timestamp|date:"Y-m-d H:i:s" }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No scans yet</td>
+                                    <td colspan="4" class="text-center text-muted">{% trans "No scans yet" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
