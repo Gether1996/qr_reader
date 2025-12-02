@@ -189,7 +189,6 @@ def user_dashboard(request):
     # Filtering
     qr_code_filter = request.GET.get('qr_code', '')
     scan_type_filter = request.GET.get('scan_type', '')
-    user_filter = request.GET.get('user', '')
     date_from = request.GET.get('date_from', '')
     date_to = request.GET.get('date_to', '')
     
@@ -198,12 +197,6 @@ def user_dashboard(request):
     
     if scan_type_filter:
         scans = scans.filter(scan_type=scan_type_filter)
-    
-    if user_filter:
-        scans = scans.filter(
-            Q(scanned_by__name__icontains=user_filter) | 
-            Q(scanned_by__email__icontains=user_filter)
-        )
     
     if date_from:
         from django.utils import timezone
@@ -222,7 +215,7 @@ def user_dashboard(request):
     # Sorting
     sort_by = request.GET.get('sort', '-timestamp')
     valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
-                         'scan_type', '-scan_type', 'scanned_by__name', '-scanned_by__name']
+                         'scan_type', '-scan_type']
     
     if sort_by in valid_sort_fields:
         scans = scans.order_by(sort_by)
@@ -243,19 +236,16 @@ def user_dashboard(request):
     paginator = Paginator(scans, per_page)
     page_obj = paginator.get_page(page_number)
     
-    # Get unique QR codes and users for filter dropdowns
+    # Get unique QR codes for filter dropdown
     qr_codes = crud.get_company_qr_codes(user.company)
-    company_users = crud.get_company_users(user.company)
 
     context = {
         'user': user,
         'page_obj': page_obj,
         'qr_codes': qr_codes,
-        'company_users': company_users,
         'current_filters': {
             'qr_code': qr_code_filter,
             'scan_type': scan_type_filter,
-            'user': user_filter,
             'date_from': date_from,
             'date_to': date_to,
             'sort': sort_by,
