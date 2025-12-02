@@ -206,9 +206,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<script src="{% static 'scripts/daterangepicker-locale-' %}{{ LANGUAGE_CODE }}.js"></script>
 <script>
 function clearFilters() {
     window.location.href = '{% url "user_dashboard" %}';
@@ -230,8 +227,7 @@ $(function() {
     var endDate = dateTo ? moment(dateTo, 'YYYY-MM-DD') : null;
     
     // Get current language code
-    var langCode = '{{ LANGUAGE_CODE }}';
-    var locale = daterangepickerLocale[langCode];
+    var locale = daterangepickerLocale[currentLanguage];
     
     // Set initial display value
     if (startDate && endDate && startDate.isValid() && endDate.isValid()) {

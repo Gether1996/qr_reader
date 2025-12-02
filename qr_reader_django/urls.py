@@ -8,9 +8,12 @@ from viewer import views
 
 urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
+
+# Static files served by WhiteNoise in production
+if settings.DEBUG:
+    urlpatterns.append(re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}))
 
 urlpatterns += i18n_patterns(
     # Landing page

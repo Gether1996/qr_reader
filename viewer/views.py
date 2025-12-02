@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from qr_reader_django import crud
 import json
 from viewer.models import ScanEvent
@@ -148,14 +149,19 @@ def user_login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
+        print(f"USER LOGIN ATTEMPT - Email: {email}, DEBUG: {settings.DEBUG}")
 
         user = crud.get_user_by_email(email)
+        print(f"User found: {user}, User active: {user.is_active if user else 'N/A'}")
+        
         if user and user.check_password(password):
+            print(f"Password check passed for user: {user.name}")
             request.session['user_id'] = user.id
             request.session['user_type'] = 'user'
             messages.success(request, f'Welcome back, {user.name}!')
             return redirect('user_dashboard')
         else:
+            print(f"Login failed - User: {user}, Password check: {user.check_password(password) if user else 'N/A'}")
             messages.error(request, _('Invalid credentials'))
 
     return render(request, 'user_login.html')
