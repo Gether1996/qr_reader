@@ -205,6 +205,7 @@ def user_scan_qr(request):
             uuid = data.get('uuid')
             latitude = data.get('latitude')
             longitude = data.get('longitude')
+            scan_type = data.get('scan_type', 'arrival')
             
             # Check if QR code exists and belongs to user's company
             qr_code = crud.get_qr_code_by_uuid(uuid)
@@ -227,6 +228,7 @@ def user_scan_qr(request):
                 scanned_by=user,
                 latitude=latitude,
                 longitude=longitude,
+                scan_type=scan_type,
                 device_info=request.META.get('HTTP_USER_AGENT', '')
             )
             

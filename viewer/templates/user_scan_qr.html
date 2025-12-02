@@ -60,6 +60,18 @@
     <div id="scan-result" class="scan-result">
         <!-- Result will be populated here -->
     </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="text-align: center; color: white;">
+            <div class="spinner-border" role="status" style="width: 4rem; height: 4rem; border-width: 0.4rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="mt-3" style="font-size: 1.2rem; font-weight: 600;">
+                <i class="fas fa-sync fa-spin me-2"></i>{% trans "Processing scan..." %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -186,6 +198,10 @@ function submitScan(uuid) {
         return;
     }
     
+    // Show loading overlay
+    var loadingOverlay = document.getElementById('loading-overlay');
+    loadingOverlay.style.display = 'flex';
+    
     // Extract UUID from URL if it's a full URL
     var extractedUuid = uuid.trim();
     if (extractedUuid.includes('/scan/')) {
@@ -212,6 +228,9 @@ function submitScan(uuid) {
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
+        // Hide loading overlay
+        document.getElementById('loading-overlay').style.display = 'none';
+        
         if (data.status === 'success') {
             // Stop scanner
             stopScanner();
@@ -237,6 +256,8 @@ function submitScan(uuid) {
         }
     })
     .catch(function(error) {
+        // Hide loading overlay
+        document.getElementById('loading-overlay').style.display = 'none';
         console.error('Scan processing error:', error);
         showError(translations.error, translations.failedToProcess + ': ' + error.message);
     });
