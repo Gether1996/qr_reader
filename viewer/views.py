@@ -29,13 +29,20 @@ def scan_qr(request, uuid):
             if 'user_id' in request.session:
                 user = User.objects.filter(id=request.session['user_id']).first()
 
-            ScanEvent.objects.create(
+            scan = ScanEvent.objects.create(
                 qr_code=qr_code,
                 scanned_by=user,
                 latitude=latitude,
                 longitude=longitude,
                 device_info=device_info
             )
+            
+            # Get address from coordinates
+            address = scan.get_address_from_coordinates()
+            if address:
+                scan.address = address
+                scan.save()
+            
             return JsonResponse({'status': 'success', 'message': 'Scan recorded successfully!'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
@@ -218,6 +225,12 @@ def user_scan_qr(request):
                 device_info=request.META.get('HTTP_USER_AGENT', '')
             )
             
+            # Get address from coordinates
+            address = scan.get_address_from_coordinates()
+            if address:
+                scan.address = address
+                scan.save()
+            
             return JsonResponse({
                 'status': 'success',
                 'message': 'Scan recorded successfully!',
@@ -226,7 +239,8 @@ def user_scan_qr(request):
                     'qr_location': qr_code.location,
                     'scan_timestamp': scan.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                     'scan_latitude': latitude,
-                    'scan_longitude': longitude
+                    'scan_longitude': longitude,
+                    'scan_address': address or 'Address not available'
                 }
             })
             

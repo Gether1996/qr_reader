@@ -107,9 +107,15 @@
                                 <tr>
                                     <td>{{ scan.qr_code.name }}</td>
                                     <td>
+                                        {% if scan.address %}
+                                            <div class="mb-1">
+                                                <i class="fas fa-map-marked-alt me-1 text-primary"></i>
+                                                <strong>{{ scan.address }}</strong>
+                                            </div>
+                                        {% endif %}
                                         <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
                                             <i class="fas fa-map-marker-alt me-1 text-danger"></i>
-                                            {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
+                                            <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
                                         </a>
                                     </td>
                                     <td>

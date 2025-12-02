@@ -3,8 +3,7 @@ from io import BytesIO
 from django.core.files import File
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-import hashlib
-import time
+import requests
 import uuid as uuid_lib
 
 class Company(models.Model):
@@ -107,6 +106,7 @@ class ScanEvent(models.Model):
     scanned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='scans')
     latitude = models.FloatField()
     longitude = models.FloatField()
+    address = models.CharField(max_length=500, blank=True, null=True, help_text="Human-readable address")
     timestamp = models.DateTimeField(auto_now_add=True)
     device_info = models.TextField(blank=True, null=True, help_text="Browser/device information")
 
@@ -115,3 +115,60 @@ class ScanEvent(models.Model):
 
     def __str__(self):
         return f"{self.qr_code.name} scanned at {self.timestamp}"
+    
+    def get_address_from_coordinates(self):
+        """Reverse geocode coordinates to get human-readable address"""
+        try:
+            # Using Nominatim (OpenStreetMap) - free and no API key required
+            url = f"https://nominatim.openstreetmap.org/reverse"
+            params = {
+                'lat': self.latitude,
+                'lon': self.longitude,
+                'format': 'json',
+                'addressdetails': 1
+            }
+            headers = {
+                'User-Agent': 'QRReaderApp/1.0'  # Required by Nominatim
+            }
+            response = requests.get(url, params=params, headers=headers, timeout=5)
+            
+            if response.status_code == 200:
+                data = response.json()
+                address_parts = data.get('address', {})
+                
+                # Build address string
+                address_components = []
+                
+                # Street
+                road = address_parts.get('road') or address_parts.get('street')
+                house_number = address_parts.get('house_number')
+                if road:
+                    if house_number:
+                        address_components.append(f"{road} {house_number}")
+                    else:
+                        address_components.append(road)
+                
+                # City/Town
+                city = (address_parts.get('city') or 
+                       address_parts.get('town') or 
+                       address_parts.get('village') or
+                       address_parts.get('municipality'))
+                postcode = address_parts.get('postcode')
+                
+                if postcode and city:
+                    address_components.append(f"{postcode} {city}")
+                elif city:
+                    address_components.append(city)
+                elif postcode:
+                    address_components.append(postcode)
+                
+                # Country
+                country = address_parts.get('country')
+                if country:
+                    address_components.append(country)
+                
+                return ', '.join(address_components) if address_components else None
+                
+        except Exception as e:
+            print(f"Geocoding error: {e}")
+            return None
