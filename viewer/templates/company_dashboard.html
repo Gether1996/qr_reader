@@ -14,7 +14,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
                     <h4 class="mb-1"><i class="fas fa-building me-2"></i>{{ company.name }}</h4>
-                    <p class="text-muted small mb-0 d-none d-sm-block">{% trans "Manage your QR codes and users" %}</p>
+                    <p class="text-muted small mb-0 d-none d-sm-block">{% trans "Manage your QR codes and employees" %}</p>
                 </div>
             </div>
             
@@ -35,7 +35,7 @@
                     </div>
                     <div>
                         <div class="stats-number">{{ users.count }}</div>
-                        <div class="stats-label">{% trans "Users" %}</div>
+                        <div class="stats-label">{% trans "Employees" %}</div>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                     <i class="fas fa-plus me-1"></i><span class="d-none d-sm-inline">{% trans "Create QR Code" %}</span><span class="d-inline d-sm-none">{% trans "Create QR" %}</span>
                 </button>
                 <button class="btn btn-success flex-fill flex-sm-grow-0" data-bs-toggle="modal" data-bs-target="#createUserModal">
-                    <i class="fas fa-user-plus me-1"></i><span class="d-none d-sm-inline">{% trans "Register User" %}</span><span class="d-inline d-sm-none">{% trans "Register" %}</span>
+                    <i class="fas fa-user-plus me-1"></i><span class="d-none d-sm-inline">{% trans "Register Employee" %}</span><span class="d-inline d-sm-none">{% trans "Register" %}</span>
                 </button>
             </div>
         </div>
@@ -61,7 +61,7 @@
         </li>
         <li class="nav-item" style="flex: 1;">
             <button class="nav-link" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#users-tab">
-                <i class="fas fa-users me-1"></i><span>{% trans "Users" %}</span>
+                <i class="fas fa-users me-1"></i><span>{% trans "Employees" %}</span>
             </button>
         </li>
     </ul>
@@ -86,7 +86,7 @@
                             </thead>
                             <tbody>
                                 {% for qr in qr_codes %}
-                                <tr>
+                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_qr_scans' qr.id %}'" style="cursor: pointer;">
                                     <td>
                                         <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-small">
                                     </td>
@@ -103,15 +103,15 @@
                                         </span>
                                     </td>
                                     <td><small>{{ qr.created_at|date:"d.m.Y H:i" }}</small></td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-info" title="{% trans 'View Scans' %}">
+                                    <td onclick="event.stopPropagation();">
+                                        <div class="action-buttons">
+                                            <a href="{% url 'view_qr_scans' qr.id %}" class="action-icon-btn action-btn-view" title="{% trans 'View Scans' %}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{% url 'delete_qr_code' qr.id %}" class="btn btn-danger" 
-                                               onclick="return confirm('Deactivate this QR code?')" title="{% trans 'Delete' %}">
+                                            <button type="button" class="action-icon-btn action-btn-delete" 
+                                                    onclick="deleteQRCode({{ qr.id }}, '{{ qr.name }}'); return false;" title="{% trans 'Delete' %}">
                                                 <i class="fas fa-trash"></i>
-                                            </a>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -146,10 +146,10 @@
                         <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-info btn-sm flex-fill">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
-                        <a href="{% url 'delete_qr_code' qr.id %}" class="btn btn-danger btn-sm flex-fill" 
-                           onclick="return confirm('Deactivate this QR code?')">
+                        <button type="button" class="btn btn-danger btn-sm flex-fill" 
+                                onclick="deleteQRCode({{ qr.id }}, '{{ qr.name }}'); return false;">
                             <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
-                        </a>
+                        </button>
                     </div>
                 </div>
                 {% empty %}
@@ -170,38 +170,39 @@
                             <thead>
                                 <tr>
                                     <th>{% trans "Name" %} / {% trans "Email" %}</th>
-                                    <th>{% trans "Created" %}</th>
                                     <th>{% trans "Scans" %}</th>
-                                    <th>{% trans "Status" %}</th>
+                                    <th>{% trans "At Work" %}</th>
                                     <th style="width: 120px;">{% trans "Actions" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for user in users %}
-                                <tr>
+                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_user_details' user.id %}'" style="cursor: pointer;">
                                     <td><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong><br><small class="text-muted">{{ user.email }}</small></td>
-                                    <td><small>{{ user.created_at|date:"d.m.Y H:i" }}</small></td>
                                     <td><span class="badge bg-info">{{ user.total_scans }}</span></td>
                                     <td>
-                                        {% if user.is_active %}
-                                            <span class="badge bg-success">{% trans "Active" %}</span>
+                                        {% if user.is_at_work %}
+                                            <span class="badge bg-success">{% trans "Yes" %}</span>
+                                            {% if user.work_location %}
+                                                <br><small class="text-muted">({{ user.work_location }})</small>
+                                            {% endif %}
                                         {% else %}
-                                            <span class="badge bg-secondary">{% trans "Inactive" %}</span>
+                                            <span class="badge bg-secondary">{% trans "No" %}</span>
                                         {% endif %}
                                     </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{% url 'view_user_details' user.id %}" class="btn btn-info" title="{% trans 'View Details' %}">
+                                    <td onclick="event.stopPropagation();">
+                                        <div class="action-buttons">
+                                            <a href="{% url 'view_user_details' user.id %}" class="action-icon-btn action-btn-view" title="{% trans 'View Details' %}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <button type="button" class="btn btn-warning" 
-                                                    onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.is_active|lower }}); return false;"
-                                                    title="{% trans 'Edit User' %}">
+                                            <button type="button" class="action-icon-btn action-btn-edit" 
+                                                    onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}'); return false;"
+                                                    title="{% trans 'Edit Employee' %}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger" 
+                                            <button type="button" class="action-icon-btn action-btn-delete" 
                                                     onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;"
-                                                    title="{% trans 'Delete User' %}">
+                                                    title="{% trans 'Deactivate Employee' %}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -209,7 +210,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">{% trans "No users yet. Register users to give them access!" %}</td>
+                                    <td colspan="4" class="text-center text-muted">{% trans "No employees yet. Register employees to give them access!" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -221,39 +222,40 @@
             <div class="d-lg-none">
                 {% for user in users %}
                 <div class="mobile-card mb-3">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <h6 class="mb-1"><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong></h6>
-                            <p class="text-muted small mb-2"><i class="fas fa-envelope me-1"></i>{{ user.email }}</p>
-                        </div>
-                        {% if user.is_active %}
-                            <span class="badge bg-success">{% trans "Active" %}</span>
+                    <div class="mb-2">
+                        <h6 class="mb-1"><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong></h6>
+                        <p class="text-muted small mb-2"><i class="fas fa-envelope me-1"></i>{{ user.email }}</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap mb-2">
+                        <span class="badge bg-info"><i class="fas fa-chart-line me-1"></i>{{ user.total_scans }} {% trans "scans" %}</span>
+                        {% if user.is_at_work %}
+                            <span class="badge bg-success"><i class="fas fa-briefcase me-1"></i>{% trans "At Work" %}</span>
                         {% else %}
-                            <span class="badge bg-secondary">{% trans "Inactive" %}</span>
+                            <span class="badge bg-secondary"><i class="fas fa-home me-1"></i>{% trans "Off Work" %}</span>
                         {% endif %}
                     </div>
-                    <div class="d-flex gap-2 mb-2">
-                        <span class="badge bg-info"><i class="fas fa-chart-line me-1"></i>{{ user.total_scans }} {% trans "scans" %}</span>
-                        <small class="text-muted"><i class="fas fa-clock me-1"></i>{{ user.created_at|date:"d.m.Y H:i" }}</small>
-                    </div>
+                    {% if user.is_at_work and user.work_location %}
+                        <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ user.work_location }}</p>
+                    {% endif %}
+                    <small class="text-muted"><i class="fas fa-clock me-1"></i>{{ user.created_at|date:"d.m.Y H:i" }}</small>
                     <div class="d-flex gap-2">
                         <a href="{% url 'view_user_details' user.id %}" class="btn btn-info btn-sm flex-fill">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
                         <button type="button" class="btn btn-warning btn-sm flex-fill" 
-                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.is_active|lower }}); return false;">
+                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}'); return false;">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
                         <button type="button" class="btn btn-danger btn-sm flex-fill" 
                                 onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;">
-                            <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
+                            <i class="fas fa-trash me-1"></i>{% trans "Deactivate" %}
                         </button>
                     </div>
                 </div>
                 {% empty %}
                 <div class="text-center text-muted py-5">
                     <i class="fas fa-users fa-3x mb-3 d-block"></i>
-                    {% trans "No users yet. Register users to give them access!" %}
+                    {% trans "No employees yet. Register employees to give them access!" %}
                 </div>
                 {% endfor %}
             </div>
@@ -299,7 +301,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>{% trans "Register New User" %}</h5>
+                <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>{% trans "Register New Employee" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -332,7 +334,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>{% trans "Edit User" %}</h5>
+                <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>{% trans "Edit Employee" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -351,12 +353,6 @@
                         <label for="edit_user_password" class="form-label">{% trans "Password (leave blank to keep current)" %}</label>
                         <input type="password" class="form-control" id="edit_user_password" placeholder="••••••••">
                     </div>
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="edit_user_is_active">
-                            <label class="form-check-label" for="edit_user_is_active">{% trans "Active" %}</label>
-                        </div>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -369,154 +365,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'scripts/general.js' %}"></script>
-<script>
-function createQRCode() {
-    const data = {
-        name: document.getElementById('qr_name').value,
-        location: document.getElementById('qr_location').value,
-        additional_info: document.getElementById('qr_info').value
-    };
-
-    fetch('{% url "create_qr_code" %}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccess(translations.success, translations.qrCodeCreated);
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showError(translations.error, data.message);
-        }
-    })
-    .catch(error => {
-        showError(translations.error, translations.qrCodeCreateFailed);
-    });
-}
-
-function createUser() {
-    const data = {
-        name: document.getElementById('user_name').value,
-        email: document.getElementById('user_email').value,
-        password: document.getElementById('user_password').value
-    };
-
-    fetch('{% url "create_user" %}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccess(translations.success, translations.userRegistered);
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showError(translations.error, data.message);
-        }
-    })
-    .catch(error => {
-        showError(translations.error, translations.userRegisterFailed);
-    });
-}
-
-function editUser(userId, name, email, isActive) {
-    document.getElementById('edit_user_id').value = userId;
-    document.getElementById('edit_user_name').value = name;
-    document.getElementById('edit_user_email').value = email;
-    document.getElementById('edit_user_password').value = '';
-    document.getElementById('edit_user_is_active').checked = isActive;
-    
-    const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
-    modal.show();
-}
-
-function updateUser() {
-    const userId = document.getElementById('edit_user_id').value;
-    const data = {
-        name: document.getElementById('edit_user_name').value,
-        email: document.getElementById('edit_user_email').value,
-        is_active: document.getElementById('edit_user_is_active').checked
-    };
-    
-    const password = document.getElementById('edit_user_password').value;
-    if (password) {
-        data.password = password;
-    }
-
-    const langCode = window.location.pathname.split('/')[1];
-    const editUrl = `/${langCode}/company/user/${userId}/edit/`;
-    
-    fetch(editUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccess(translations.success, translations.userUpdated);
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showError(translations.error, data.message);
-        }
-    })
-    .catch(error => {
-        showError(translations.error, translations.userUpdateFailed);
-    });
-}
-
-function deleteUser(userId, userName) {
-    console.log('deleteUser called:', userId, userName);
-    Swal.fire({
-        title: translations.deleteUserTitle,
-        text: `${translations.deleteUserText} ${userName}? ${translations.deleteUserWarning}`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: translations.confirmDelete,
-        cancelButtonText: translations.cancel
-    }).then((result) => {
-        console.log('Swal result:', result);
-        if (result.isConfirmed) {
-            const langCode = window.location.pathname.split('/')[1];
-            const deleteUrl = `/${langCode}/company/user/${userId}/delete/`;
-            console.log('Delete URL:', deleteUrl);
-            console.log('CSRF Token:', csrfToken);
-            fetch(deleteUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showSuccess(translations.deleted, translations.userDeleted);
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showError(translations.error, data.message);
-                }
-            })
-            .catch(error => {
-                showError(translations.error, translations.userDeleteFailed);
-            });
-        }
-    });
-}
-</script>
+<script src="{% static 'scripts/company-dashboard.js' %}"></script>
 {% endblock %}

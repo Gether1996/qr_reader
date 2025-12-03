@@ -72,10 +72,8 @@ class QRCodeProfile(models.Model):
         if not self.uuid:
             self.uuid = self.generate_uuid()
 
-        # Generate QR data content - URL to scan endpoint with UUID
-        from django.conf import settings
-        base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
-        qr_data = f"{base_url}/scan/{self.uuid}/"
+        # Generate QR data content - just the UUID (scanned via user app)
+        qr_data = self.uuid
 
         # Generate the QR code image
         qr = qrcode.QRCode(

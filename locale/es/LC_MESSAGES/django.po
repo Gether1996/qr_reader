@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-02 15:30+0100\n"
+"POT-Creation-Date: 2025-12-03 12:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,11 +28,11 @@ msgid "Email already exists"
 msgstr "El correo electrónico ya existe"
 
 #: .\qr_reader_django\crud.py:92 .\qr_reader_django\crud.py:103
-#: .\viewer\views.py:178 .\viewer\views.py:262
+#: .\viewer\views.py:161 .\viewer\views.py:245 .\viewer\views.py:648
 msgid "User not found"
 msgstr "Usuario no encontrado"
 
-#: .\qr_reader_django\crud.py:145 .\viewer\views.py:486
+#: .\qr_reader_django\crud.py:145 .\viewer\views.py:469
 msgid "QR code not found"
 msgstr "Código QR no encontrado"
 
@@ -629,7 +629,6 @@ msgstr ""
 #: .\venv\Lib\site-packages\django\forms\formsets.py:499
 #: .\viewer\templates\company_dashboard.html:112
 #: .\viewer\templates\company_dashboard.html:151
-#: .\viewer\templates\company_dashboard.html:249
 msgid "Delete"
 msgstr ""
 
@@ -675,9 +674,7 @@ msgid ""
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:527
-#: .\viewer\templates\qr_scans.html:34
-#: .\viewer\templates\user_dashboard.html:34
-#: .\viewer\templates\user_details.html:45
+#: .\viewer\templates\filters_card.html:10
 msgid "Clear"
 msgstr ""
 
@@ -694,10 +691,12 @@ msgid "Unknown"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:867
+#: .\viewer\templates\company_dashboard.html:185
 msgid "Yes"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:868
+#: .\viewer\templates\company_dashboard.html:190
 msgid "No"
 msgstr ""
 
@@ -1271,8 +1270,8 @@ msgid "Company Dashboard"
 msgstr "Panel de empresa"
 
 #: .\viewer\templates\company_dashboard.html:17
-msgid "Manage your QR codes and users"
-msgstr "Administre sus códigos QR y usuarios"
+msgid "Manage your QR codes and employees"
+msgstr "Administre sus códigos QR y empleados"
 
 #: .\viewer\templates\company_dashboard.html:29
 #: .\viewer\templates\company_dashboard.html:59
@@ -1281,8 +1280,8 @@ msgstr "Códigos QR"
 
 #: .\viewer\templates\company_dashboard.html:38
 #: .\viewer\templates\company_dashboard.html:64
-msgid "Users"
-msgstr "Usuarios"
+msgid "Employees"
+msgstr "Empleados"
 
 #: .\viewer\templates\company_dashboard.html:46
 msgid "Create QR Code"
@@ -1293,41 +1292,45 @@ msgid "Create QR"
 msgstr "Crear QR"
 
 #: .\viewer\templates\company_dashboard.html:49
-msgid "Register User"
-msgstr "Registrar usuario"
+msgid "Register Employee"
+msgstr "Registrar empleado"
 
 #: .\viewer\templates\company_dashboard.html:49
-#: .\viewer\templates\company_dashboard.html:324
-#: .\viewer\templates\company_register.html:46
+#: .\viewer\templates\company_dashboard.html:326
+#: .\viewer\templates\company_register.html:53
 msgid "Register"
 msgstr "Registrar"
 
 #: .\viewer\templates\company_dashboard.html:78
-#: .\viewer\templates\user_dashboard.html:42
-#: .\viewer\templates\user_dashboard.html:94
-#: .\viewer\templates\user_details.html:53
-#: .\viewer\templates\user_details.html:106
+#: .\viewer\templates\user_dashboard.html:26
+#: .\viewer\templates\user_dashboard.html:43
+#: .\viewer\templates\user_details.html:33
+#: .\viewer\templates\user_details.html:51
 msgid "QR Code"
 msgstr "Código QR"
 
 #: .\viewer\templates\company_dashboard.html:79
 #: .\viewer\templates\company_dashboard.html:172
-#: .\viewer\templates\company_dashboard.html:276
-#: .\viewer\templates\company_dashboard.html:309
-#: .\viewer\templates\company_dashboard.html:343
+#: .\viewer\templates\company_dashboard.html:278
+#: .\viewer\templates\company_dashboard.html:311
+#: .\viewer\templates\company_dashboard.html:345
 msgid "Name"
 msgstr "Nombre"
 
 #: .\viewer\templates\company_dashboard.html:79
-#: .\viewer\templates\company_dashboard.html:280
-#: .\viewer\templates\qr_scans.html:113
-#: .\viewer\templates\user_dashboard.html:112
-#: .\viewer\templates\user_details.html:124
+#: .\viewer\templates\company_dashboard.html:282
+#: .\viewer\templates\qr_scans.html:62
+#: .\viewer\templates\user_dashboard.html:61
+#: .\viewer\templates\user_details.html:69 .\viewer\views.py:763
 msgid "Location"
 msgstr "Ubicación"
 
+#: .\viewer\views.py:766
+msgid "Scanned QR"
+msgstr "QR Escaneado"
+
 #: .\viewer\templates\company_dashboard.html:80
-#: .\viewer\templates\company_dashboard.html:174
+#: .\viewer\templates\company_dashboard.html:173
 msgid "Scans"
 msgstr "Escaneos"
 
@@ -1340,12 +1343,11 @@ msgid "Departures"
 msgstr "Salidas"
 
 #: .\viewer\templates\company_dashboard.html:83
-#: .\viewer\templates\company_dashboard.html:173
 msgid "Created"
 msgstr "Creado"
 
 #: .\viewer\templates\company_dashboard.html:84
-#: .\viewer\templates\company_dashboard.html:176
+#: .\viewer\templates\company_dashboard.html:175
 msgid "Actions"
 msgstr "Acciones"
 
@@ -1359,143 +1361,197 @@ msgid "No QR codes yet. Create one to get started!"
 msgstr "Aún no hay códigos QR. ¡Crea uno para comenzar!"
 
 #: .\viewer\templates\company_dashboard.html:147
-#: .\viewer\templates\company_dashboard.html:241
+#: .\viewer\templates\company_dashboard.html:243
 msgid "View"
-msgstr ""
+msgstr "Ver"
 
 #: .\viewer\templates\company_dashboard.html:172
-#: .\viewer\templates\company_dashboard.html:313
-#: .\viewer\templates\company_dashboard.html:347
-#: .\viewer\templates\company_login.html:22
-#: .\viewer\templates\company_register.html:28
-#: .\viewer\templates\user_login.html:22
+#: .\viewer\templates\company_dashboard.html:315
+#: .\viewer\templates\company_dashboard.html:349
+#: .\viewer\templates\company_login.html:23
+#: .\viewer\templates\company_register.html:29
+#: .\viewer\templates\user_login.html:23
 msgid "Email"
 msgstr "Correo electrónico"
 
-#: .\viewer\templates\company_dashboard.html:175
-msgid "Status"
-msgstr "Estado"
-
-#: .\viewer\templates\company_dashboard.html:187
-#: .\viewer\templates\company_dashboard.html:230
-#: .\viewer\templates\company_dashboard.html:357
-#: .\viewer\templates\user_details.html:27
-msgid "Active"
-msgstr "Activo"
-
-#: .\viewer\templates\company_dashboard.html:189
+#: .\viewer\templates\company_dashboard.html:174
 #: .\viewer\templates\company_dashboard.html:232
-#: .\viewer\templates\user_details.html:31
-msgid "Inactive"
-msgstr "Inactivo"
+msgid "At Work"
+msgstr "En el trabajo"
 
-#: .\viewer\templates\company_dashboard.html:194
+#: .\viewer\templates\company_dashboard.html:195
 msgid "View Details"
 msgstr "Ver detalles"
 
-#: .\viewer\templates\company_dashboard.html:199
-#: .\viewer\templates\company_dashboard.html:335
-msgid "Edit User"
-msgstr "Editar usuario"
+#: .\viewer\templates\company_dashboard.html:200
+#: .\viewer\templates\company_dashboard.html:337
+msgid "Edit Employee"
+msgstr "Editar empleado"
 
-#: .\viewer\templates\company_dashboard.html:204
-msgid "Delete User"
-msgstr "Eliminar usuario"
+#: .\viewer\templates\company_dashboard.html:205
+msgid "Deactivate Employee"
+msgstr "Desactivar empleado"
 
-#: .\viewer\templates\company_dashboard.html:212
-#: .\viewer\templates\company_dashboard.html:256
-msgid "No users yet. Register users to give them access!"
-msgstr "Aún no hay usuarios. ¡Registra usuarios para darles acceso!"
+#: .\viewer\templates\company_dashboard.html:213
+#: .\viewer\templates\company_dashboard.html:258
+msgid "No employees yet. Register employees to give them access!"
+msgstr "¡Aún no hay empleados. ¡Registra empleados para darles acceso!"
 
-#: .\viewer\templates\company_dashboard.html:236
+#: .\viewer\templates\company_dashboard.html:230
 #: .\viewer\templates\paginator.html:100
 msgid "scans"
 msgstr "escaneos"
 
-#: .\viewer\templates\company_dashboard.html:245
+#: .\viewer\templates\company_dashboard.html:234
+msgid "Off Work"
+msgstr "Fuera del trabajo"
+
+#: .\viewer\templates\company_dashboard.html:247
 msgid "Edit"
 msgstr "Editar"
 
-#: .\viewer\templates\company_dashboard.html:269
+#: .\viewer\templates\company_dashboard.html:251
+msgid "Deactivate"
+msgstr "Desactivar"
+
+#: .\viewer\templates\company_dashboard.html:271
 msgid "Create New QR Code"
 msgstr "Crear nuevo código QR"
 
-#: .\viewer\templates\company_dashboard.html:284
+#: .\viewer\templates\company_dashboard.html:286
 msgid "Additional Info (Optional)"
 msgstr "Información adicional (Opcional)"
 
-#: .\viewer\templates\company_dashboard.html:290
-#: .\viewer\templates\company_dashboard.html:323
+#: .\viewer\templates\company_dashboard.html:292
+#: .\viewer\templates\company_dashboard.html:325
 #: .\viewer\templates\translations_js.html:8
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: .\viewer\templates\company_dashboard.html:291
+#: .\viewer\templates\company_dashboard.html:293
 msgid "Create"
 msgstr "Crear"
 
-#: .\viewer\templates\company_dashboard.html:302
-msgid "Register New User"
-msgstr "Registrar nuevo usuario"
+#: .\viewer\templates\company_dashboard.html:304
+msgid "Register New Employee"
+msgstr "Registrar nuevo empleado"
 
-#: .\viewer\templates\company_dashboard.html:317
-#: .\viewer\templates\company_login.html:28
-#: .\viewer\templates\company_register.html:34
-#: .\viewer\templates\user_login.html:28
+#: .\viewer\templates\company_dashboard.html:319
+#: .\viewer\templates\company_login.html:29
+#: .\viewer\templates\company_register.html:35
+#: .\viewer\templates\user_login.html:29
 msgid "Password"
 msgstr "Contraseña"
 
-#: .\viewer\templates\company_dashboard.html:351
+#: .\viewer\templates\company_dashboard.html:353
 msgid "Password (leave blank to keep current)"
 msgstr "Contraseña (dejar en blanco para mantener la actual)"
 
-#: .\viewer\templates\company_login.html:4
-#: .\viewer\templates\company_login.html:14 .\viewer\templates\navbar.html:200
+#: .\viewer\templates\company_login.html:5
+#: .\viewer\templates\company_login.html:15 .\viewer\templates\navbar.html:200
 #: .\viewer\templates\navbar.html:333
 msgid "Company Login"
 msgstr "Acceso de empresa"
 
-#: .\viewer\templates\company_login.html:15
+#: .\viewer\templates\company_login.html:16
 msgid "Sign in to manage your QR codes"
 msgstr "Inicie sesión para administrar sus códigos QR"
 
-#: .\viewer\templates\company_login.html:34 .\viewer\templates\landing.html:34
-#: .\viewer\templates\user_login.html:34
+#: .\viewer\templates\company_login.html:38 .\viewer\templates\landing.html:34
+#: .\viewer\templates\user_login.html:38
 msgid "Login"
 msgstr "Iniciar sesión"
 
-#: .\viewer\templates\company_login.html:42
+#: .\viewer\templates\company_login.html:46
 msgid "Don't have an account?"
 msgstr "¿No tienes una cuenta?"
 
-#: .\viewer\templates\company_login.html:44
-#: .\viewer\templates\company_register.html:4
+#: .\viewer\templates\company_login.html:48
+#: .\viewer\templates\company_register.html:5
 msgid "Register Company"
 msgstr "Registrar empresa"
 
-#: .\viewer\templates\company_register.html:14
+#: .\viewer\templates\company_register.html:15
 msgid "Register Your Company"
 msgstr "Registre su empresa"
 
-#: .\viewer\templates\company_register.html:15
+#: .\viewer\templates\company_register.html:16
 msgid "Create an account to start managing QR codes"
 msgstr "Cree una cuenta para comenzar a administrar códigos QR"
 
-#: .\viewer\templates\company_register.html:22
+#: .\viewer\templates\company_register.html:23
 msgid "Company Name"
 msgstr "Nombre de la empresa"
 
-#: .\viewer\templates\company_register.html:40
+#: .\viewer\templates\company_register.html:44
 msgid "Confirm Password"
 msgstr "Confirmar contraseña"
 
-#: .\viewer\templates\company_register.html:54
+#: .\viewer\templates\company_register.html:61
 msgid "Already have an account?"
 msgstr "¿Ya tienes una cuenta?"
 
-#: .\viewer\templates\company_register.html:56
+#: .\viewer\templates\company_register.html:63
 msgid "Login Here"
 msgstr "Inicie sesión aquí"
+
+#: .\viewer\templates\filters_card.html:6
+msgid "Filters"
+msgstr "Filtros"
+
+#: .\viewer\templates\filters_card.html:9
+msgid "Clear all filters"
+msgstr "Limpiar todos los filtros"
+
+#: .\viewer\templates\filters_card.html:19
+msgid "Search"
+msgstr "Buscar"
+
+#: .\viewer\templates\filters_card.html:22 .\viewer\templates\qr_scans.html:54
+#: .\viewer\templates\user_dashboard.html:53
+#: .\viewer\templates\user_details.html:61
+msgid "Type"
+msgstr "Tipo"
+
+#: .\viewer\templates\filters_card.html:24
+msgid "All"
+msgstr "Todos"
+
+#: .\viewer\templates\filters_card.html:25 .\viewer\templates\qr_scans.html:87
+#: .\viewer\templates\qr_scans.html:131
+#: .\viewer\templates\user_dashboard.html:80
+#: .\viewer\templates\user_dashboard.html:118
+#: .\viewer\templates\user_details.html:88
+#: .\viewer\templates\user_details.html:126
+#: .\viewer\templates\user_scan_qr.html:28 .\viewer\views.py:763
+msgid "Arrival"
+msgstr "Llegada"
+
+#: .\viewer\templates\filters_card.html:26 .\viewer\templates\qr_scans.html:89
+#: .\viewer\templates\qr_scans.html:131
+#: .\viewer\templates\user_dashboard.html:82
+#: .\viewer\templates\user_dashboard.html:118
+#: .\viewer\templates\user_details.html:90
+#: .\viewer\templates\user_details.html:126
+#: .\viewer\templates\user_scan_qr.html:32 .\viewer\views.py:763
+msgid "Departure"
+msgstr "Salida"
+
+#: .\viewer\templates\filters_card.html:30
+msgid "Date Range"
+msgstr "Rango de fechas"
+
+#: .\viewer\templates\filters_card.html:31
+msgid "Select"
+msgstr "Seleccionar"
+
+#: .\viewer\templates\filters_card.html:36
+msgid "Per Page"
+msgstr "Por página"
+
+#: .\viewer\templates\filters_card.html:46
+msgid "Apply"
+msgstr "Aplicar"
 
 #: .\viewer\templates\landing.html:4 .\viewer\templates\user_dashboard.html:16
 msgid "Welcome"
@@ -1535,8 +1591,8 @@ msgstr ""
 "Vea los códigos QR de su empresa y acceda al historial de escaneos y análisis"
 
 #: .\viewer\templates\landing.html:55 .\viewer\templates\navbar.html:204
-#: .\viewer\templates\navbar.html:344 .\viewer\templates\user_login.html:4
-#: .\viewer\templates\user_login.html:14
+#: .\viewer\templates\navbar.html:344 .\viewer\templates\user_login.html:5
+#: .\viewer\templates\user_login.html:15
 msgid "User Login"
 msgstr "Acceso de usuario"
 
@@ -1568,10 +1624,8 @@ msgid "Logout"
 msgstr "Cerrar sesión"
 
 #: .\viewer\templates\navbar.html:82
-#, fuzzy
-#| msgid "Scan QR Code"
 msgid "Scan QR"
-msgstr "Escanear código QR"
+msgstr "Escanear QR"
 
 #: .\viewer\templates\navbar.html:151 .\viewer\templates\navbar.html:320
 msgid "Home"
@@ -1589,17 +1643,14 @@ msgstr "Cerrar sesión"
 msgid "Your QR Codes"
 msgstr "Tus códigos QR"
 
-#: .\viewer\templates\navbar.html:294 .\viewer\templates\scan_qr.html:5
-#: .\viewer\templates\user_dashboard.html:21
+#: .\viewer\templates\navbar.html:294 .\viewer\templates\user_dashboard.html:21
 #: .\viewer\templates\user_scan_qr.html:5
 msgid "Scan QR Code"
 msgstr "Escanear código QR"
 
 #: .\viewer\templates\navbar.html:295
-#, fuzzy
-#| msgid "Failed to record scan"
 msgid "Scan to record location"
-msgstr "Error al registrar el escaneo"
+msgstr "Escanear para registrar ubicación"
 
 #: .\viewer\templates\navbar.html:321
 msgid "Back to homepage"
@@ -1669,130 +1720,33 @@ msgstr "Detalles del escaneo"
 msgid "Back to Dashboard"
 msgstr "Volver al tablero"
 
-#: .\viewer\templates\qr_scans.html:30
-#: .\viewer\templates\user_dashboard.html:30
-#: .\viewer\templates\user_details.html:41
-msgid "Filters"
-msgstr "Filtros"
-
-#: .\viewer\templates\qr_scans.html:33
-#: .\viewer\templates\user_dashboard.html:33
-#: .\viewer\templates\user_details.html:44
-msgid "Clear all filters"
-msgstr "Limpiar todos los filtros"
-
-#: .\viewer\templates\qr_scans.html:42 .\viewer\templates\qr_scans.html:95
+#: .\viewer\templates\qr_scans.html:26 .\viewer\templates\qr_scans.html:44
 msgid "Employee"
 msgstr "Empleado"
 
-#: .\viewer\templates\qr_scans.html:43
-#: .\viewer\templates\user_dashboard.html:43
-#: .\viewer\templates\user_details.html:54
-msgid "Search"
-msgstr "Buscar"
-
-#: .\viewer\templates\qr_scans.html:46 .\viewer\templates\qr_scans.html:105
-#: .\viewer\templates\user_dashboard.html:46
-#: .\viewer\templates\user_dashboard.html:104
-#: .\viewer\templates\user_details.html:57
-#: .\viewer\templates\user_details.html:116
-msgid "Type"
-msgstr "Tipo"
-
-#: .\viewer\templates\qr_scans.html:48
-#: .\viewer\templates\user_dashboard.html:48
-#: .\viewer\templates\user_details.html:59
-msgid "All"
-msgstr "Todos"
-
-#: .\viewer\templates\qr_scans.html:49 .\viewer\templates\qr_scans.html:138
-#: .\viewer\templates\scan_qr.html:32 .\viewer\templates\user_dashboard.html:49
-#: .\viewer\templates\user_dashboard.html:131
-#: .\viewer\templates\user_dashboard.html:169
-#: .\viewer\templates\user_details.html:60
-#: .\viewer\templates\user_details.html:143
-#: .\viewer\templates\user_scan_qr.html:274
-msgid "Arrival"
-msgstr "Llegada"
-
-#: .\viewer\templates\qr_scans.html:50 .\viewer\templates\qr_scans.html:140
-#: .\viewer\templates\scan_qr.html:35 .\viewer\templates\user_dashboard.html:50
-#: .\viewer\templates\user_dashboard.html:133
-#: .\viewer\templates\user_dashboard.html:169
-#: .\viewer\templates\user_details.html:61
-#: .\viewer\templates\user_details.html:145
-#: .\viewer\templates\user_scan_qr.html:278
-msgid "Departure"
-msgstr "Salida"
-
-#: .\viewer\templates\qr_scans.html:54
-#: .\viewer\templates\user_dashboard.html:54
-#: .\viewer\templates\user_details.html:65
-msgid "Date Range"
-msgstr "Rango de fechas"
-
-#: .\viewer\templates\qr_scans.html:55
-#: .\viewer\templates\user_dashboard.html:55
-#: .\viewer\templates\user_details.html:66
-msgid "Select"
-msgstr "Seleccionar"
-
-#: .\viewer\templates\qr_scans.html:60
-#: .\viewer\templates\user_dashboard.html:60
-#: .\viewer\templates\user_details.html:71
-msgid "Per Page"
-msgstr "Por página"
-
-#: .\viewer\templates\qr_scans.html:70
-#: .\viewer\templates\user_dashboard.html:70
-#: .\viewer\templates\user_details.html:81
-msgid "Apply"
-msgstr "Aplicar"
-
-#: .\viewer\templates\qr_scans.html:83
-#: .\viewer\templates\user_dashboard.html:83
-#: .\viewer\templates\user_details.html:94
+#: .\viewer\templates\qr_scans.html:32
+#: .\viewer\templates\user_dashboard.html:32
+#: .\viewer\templates\user_details.html:39
 msgid "Scan History"
 msgstr "Historial de escaneos"
 
-#: .\viewer\templates\qr_scans.html:116
-#: .\viewer\templates\user_dashboard.html:115
-#: .\viewer\templates\user_details.html:127
+#: .\viewer\templates\qr_scans.html:65
+#: .\viewer\templates\user_dashboard.html:64
+#: .\viewer\templates\user_details.html:72
 msgid "Timestamp"
 msgstr "Fecha y hora"
 
-#: .\viewer\templates\qr_scans.html:133
+#: .\viewer\templates\qr_scans.html:82 .\viewer\templates\qr_scans.html:126
 msgid "Anonymous"
 msgstr "Anónimo"
 
-#: .\viewer\templates\qr_scans.html:161
-#: .\viewer\templates\user_dashboard.html:154
-#: .\viewer\templates\user_dashboard.html:194
-#: .\viewer\templates\user_details.html:166
-#, fuzzy
-#| msgid "No scans yet"
+#: .\viewer\templates\qr_scans.html:110 .\viewer\templates\qr_scans.html:156
+#: .\viewer\templates\user_dashboard.html:103
+#: .\viewer\templates\user_dashboard.html:143
+#: .\viewer\templates\user_details.html:111
+#: .\viewer\templates\user_details.html:151
 msgid "No scans found"
-msgstr "Aún no hay escaneos"
-
-#: .\viewer\templates\scan_qr.html:25
-msgid "Getting your location..."
-msgstr "Obteniendo su ubicación..."
-
-#: .\viewer\templates\scan_qr.html:29 .\viewer\templates\user_scan_qr.html:269
-msgid "Select scan type"
-msgstr "Seleccione el tipo de escaneo"
-
-#: .\viewer\templates\scan_qr.html:42
-msgid "Record Scan"
-msgstr "Registrar escaneo"
-
-#: .\viewer\templates\scan_qr.html:49
-msgid "We need your location to record this scan"
-msgstr "Necesitamos su ubicación para registrar este escaneo"
-
-#: .\viewer\templates\scan_qr.html:131 .\viewer\templates\user_scan_qr.html:282
-msgid "Please select arrival or departure"
-msgstr "Por favor seleccione llegada o salida"
+msgstr "No se encontraron escaneos"
 
 #: .\viewer\templates\translations_js.html:5
 msgid "Success!"
@@ -1806,7 +1760,7 @@ msgstr "¡Error!"
 msgid "Deleted!"
 msgstr "¡Eliminado!"
 
-#: .\viewer\templates\translations_js.html:11 .\viewer\views.py:349
+#: .\viewer\templates\translations_js.html:11 .\viewer\views.py:332
 msgid "QR code created successfully"
 msgstr "Código QR creado exitosamente"
 
@@ -1830,7 +1784,7 @@ msgstr "Usuario registrado exitosamente"
 msgid "Failed to register user"
 msgstr "Error al registrar usuario"
 
-#: .\viewer\templates\translations_js.html:19 .\viewer\views.py:439
+#: .\viewer\templates\translations_js.html:19 .\viewer\views.py:422
 msgid "User updated successfully"
 msgstr "Usuario actualizado exitosamente"
 
@@ -1839,161 +1793,188 @@ msgid "Failed to update user"
 msgstr "Error al actualizar usuario"
 
 #: .\viewer\templates\translations_js.html:21
-msgid "User has been deleted"
-msgstr "El usuario ha sido eliminado"
+msgid "User has been deactivated"
+msgstr "El usuario ha sido desactivado"
 
 #: .\viewer\templates\translations_js.html:22
-msgid "Failed to delete user"
-msgstr "Error al eliminar usuario"
+msgid "Failed to deactivate user"
+msgstr "Error al desactivar el usuario"
 
 #: .\viewer\templates\translations_js.html:23
-msgid "Delete User?"
-msgstr "¿Eliminar usuario?"
+msgid "Deactivate User?"
+msgstr "¿Desactivar usuario?"
 
 #: .\viewer\templates\translations_js.html:24
-msgid "Are you sure you want to delete"
-msgstr "¿Está seguro de que desea eliminar"
+msgid "Are you sure you want to deactivate"
+msgstr "¿Está seguro de que desea desactivar"
 
 #: .\viewer\templates\translations_js.html:25
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
 #: .\viewer\templates\translations_js.html:26
-msgid "Yes, delete it!"
-msgstr "¡Sí, elimínalo!"
+msgid "Yes, deactivate!"
+msgstr "¡Sí, desactivar!"
 
 #: .\viewer\templates\translations_js.html:29
+msgid "Deactivate QR Code?"
+msgstr "¿Desactivar código QR?"
+
+#: .\viewer\templates\translations_js.html:30
+msgid "Are you sure you want to deactivate this QR code?"
+msgstr "¿Está seguro de que desea desactivar este código QR?"
+
+#: .\viewer\templates\translations_js.html:31
+msgid "QR code has been deactivated"
+msgstr "El código QR ha sido desactivado"
+
+#: .\viewer\templates\translations_js.html:32 .\viewer\views.py:357
+msgid "Failed to deactivate QR code"
+msgstr "Error al desactivar el código QR"
+
+#: .\viewer\templates\translations_js.html:35
 msgid "Location Required"
 msgstr "Ubicación requerida"
 
-#: .\viewer\templates\translations_js.html:30
+#: .\viewer\templates\translations_js.html:36
 msgid "Location not available"
 msgstr "Ubicación no disponible"
 
-#: .\viewer\templates\translations_js.html:31
+#: .\viewer\templates\translations_js.html:37
 msgid "Geolocation not supported"
 msgstr "Geolocalización no soportada"
 
-#: .\viewer\templates\translations_js.html:32
+#: .\viewer\templates\translations_js.html:38
 msgid "Unable to get your location."
 msgstr "No se puede obtener su ubicación."
 
-#: .\viewer\templates\translations_js.html:33
+#: .\viewer\templates\translations_js.html:39
 msgid "Please allow location access in your browser settings."
 msgstr ""
 "Por favor, permita el acceso a la ubicación en la configuración de su "
 "navegador."
 
-#: .\viewer\templates\translations_js.html:34
+#: .\viewer\templates\translations_js.html:40
 msgid "Location information is unavailable."
 msgstr "La información de ubicación no está disponible."
 
-#: .\viewer\templates\translations_js.html:35
+#: .\viewer\templates\translations_js.html:41
 msgid "Location request timed out."
 msgstr "La solicitud de ubicación expiró."
 
-#: .\viewer\templates\translations_js.html:38
+#: .\viewer\templates\translations_js.html:44
 msgid "Scanner Error"
 msgstr "Error del escáner"
 
-#: .\viewer\templates\translations_js.html:39
+#: .\viewer\templates\translations_js.html:45
 msgid "UUID Required"
 msgstr "UUID requerido"
 
-#: .\viewer\templates\translations_js.html:40
+#: .\viewer\templates\translations_js.html:46
 msgid "Scan Successful!"
 msgstr "¡Escaneo exitoso!"
 
-#: .\viewer\templates\translations_js.html:41
+#: .\viewer\templates\translations_js.html:47
 msgid "Scan Failed"
 msgstr "Escaneo fallido"
 
-#: .\viewer\templates\translations_js.html:42
+#: .\viewer\templates\translations_js.html:48
 msgid "Try Again"
 msgstr "Intentar de nuevo"
 
-#: .\viewer\templates\translations_js.html:43
+#: .\viewer\templates\translations_js.html:49
 msgid "Scan Another"
 msgstr "Escanear otro"
 
-#: .\viewer\templates\translations_js.html:44
+#: .\viewer\templates\translations_js.html:50
 msgid "Scanned At"
 msgstr "Escaneado a las"
 
-#: .\viewer\templates\translations_js.html:45 .\viewer\views.py:47
-#: .\viewer\views.py:300
+#: .\viewer\templates\translations_js.html:51 .\viewer\views.py:283
 msgid "Scan recorded successfully!"
 msgstr "¡Escaneo registrado exitosamente!"
 
-#: .\viewer\templates\translations_js.html:46
+#: .\viewer\templates\translations_js.html:52
 msgid "Scan Recorded"
 msgstr "Escaneo registrado"
 
-#: .\viewer\templates\translations_js.html:49
+#: .\viewer\templates\translations_js.html:55
 msgid "GPS Coordinates"
 msgstr "Coordenadas GPS"
 
-#: .\viewer\templates\translations_js.html:50
+#: .\viewer\templates\translations_js.html:56
 msgid "Address"
 msgstr "Dirección"
 
-#: .\viewer\templates\translations_js.html:51
+#: .\viewer\templates\translations_js.html:57
 msgid "An unknown error occurred."
 msgstr "Ocurrió un error desconocido."
 
-#: .\viewer\templates\translations_js.html:52
+#: .\viewer\templates\translations_js.html:58
 msgid "Failed to process scan"
 msgstr "Error al procesar el escaneo"
 
-#: .\viewer\templates\translations_js.html:53
+#: .\viewer\templates\translations_js.html:59
 msgid "Failed to start scanner"
 msgstr "Error al iniciar el escáner"
 
-#: .\viewer\templates\translations_js.html:54
+#: .\viewer\templates\translations_js.html:60
 msgid "Failed to record scan"
 msgstr "Error al registrar el escaneo"
 
-#: .\viewer\templates\translations_js.html:55
+#: .\viewer\templates\translations_js.html:61
 msgid "Please enter a QR code UUID"
 msgstr "Por favor, ingrese el UUID del código QR"
+
+#: .\viewer\templates\translations_js.html:62
+msgid "Please select a date range first!"
+msgstr "¡Por favor seleccione un rango de fechas primero!"
 
 #: .\viewer\templates\user_details.html:5
 msgid "User Details"
 msgstr "Detalles del usuario"
 
-#: .\viewer\templates\user_login.html:15
+#: .\viewer\templates\user_details.html:27
+msgid "Generate PDF"
+msgstr "Generar PDF"
+
+#: .\viewer\templates\user_login.html:16
 msgid "Access your company's QR codes"
 msgstr "Acceda a los códigos QR de su empresa"
 
-#: .\viewer\templates\user_login.html:44
+#: .\viewer\templates\user_login.html:48
 msgid "Users are registered by their company administrator"
 msgstr "Los usuarios son registrados por el administrador de su empresa"
 
-#: .\viewer\templates\user_scan_qr.html:262
+#: .\viewer\templates\user_scan_qr.html:16
 msgid "Back"
 msgstr "Atrás"
 
-#: .\viewer\templates\user_scan_qr.html:298
+#: .\viewer\templates\user_scan_qr.html:23
+msgid "Select scan type"
+msgstr "Seleccione el tipo de escaneo"
+
+#: .\viewer\templates\user_scan_qr.html:36
+msgid "Please select arrival or departure"
+msgstr "Por favor seleccione llegada o salida"
+
+#: .\viewer\templates\user_scan_qr.html:52
 msgid "Align QR code within the frame"
 msgstr "Alinee el código QR dentro del marco"
 
-#: .\viewer\templates\user_scan_qr.html:306
-#, fuzzy
-#| msgid "Start QR Scanner"
+#: .\viewer\templates\user_scan_qr.html:60
 msgid "Start Scanner"
-msgstr "Iniciar escáner QR"
+msgstr "Iniciar escáner"
 
-#: .\viewer\templates\user_scan_qr.html:312
+#: .\viewer\templates\user_scan_qr.html:66
 msgid "Stop Scanner"
 msgstr "Detener escáner"
 
-#: .\viewer\templates\user_scan_qr.html:322
-#, fuzzy
-#| msgid "Location Required"
+#: .\viewer\templates\user_scan_qr.html:76
 msgid "Camera & Location Required"
-msgstr "Ubicación requerida"
+msgstr "Cámara y ubicación requeridas"
 
-#: .\viewer\templates\user_scan_qr.html:324
+#: .\viewer\templates\user_scan_qr.html:78
 msgid ""
 "To scan QR codes and record your location, we need permission to access your "
 "camera and location."
@@ -2001,135 +1982,158 @@ msgstr ""
 "Para escanear códigos QR y registrar su ubicación, necesitamos permiso para "
 "acceder a su cámara y ubicación."
 
-#: .\viewer\templates\user_scan_qr.html:327
+#: .\viewer\templates\user_scan_qr.html:81
 msgid "Grant Permissions"
 msgstr "Conceder permisos"
 
-#: .\viewer\templates\user_scan_qr.html:336
+#: .\viewer\templates\user_scan_qr.html:90
 msgid "Processing scan..."
 msgstr "Procesando escaneo..."
 
-#: .\viewer\views.py:22 .\viewer\views.py:279
-msgid "QR code not found or inactive"
-msgstr "Código QR no encontrado o inactivo"
-
-#: .\viewer\views.py:65
+#: .\viewer\views.py:30
 msgid "All fields are required"
 msgstr "Todos los campos son obligatorios"
 
-#: .\viewer\views.py:69
+#: .\viewer\views.py:34
 msgid "Passwords do not match"
 msgstr "Las contraseñas no coinciden"
 
-#: .\viewer\views.py:77
+#: .\viewer\views.py:42
 msgid "Company registered successfully! Please login."
 msgstr "¡Empresa registrada exitosamente! Por favor inicie sesión."
 
-#: .\viewer\views.py:96 .\viewer\views.py:159
+#: .\viewer\views.py:61 .\viewer\views.py:142
 msgid "Invalid credentials"
 msgstr "Credenciales inválidas"
 
-#: .\viewer\views.py:104 .\viewer\views.py:167
+#: .\viewer\views.py:69 .\viewer\views.py:150
 msgid "Logged out successfully"
 msgstr "Sesión cerrada exitosamente"
 
-#: .\viewer\views.py:111
+#: .\viewer\views.py:76
 msgid "Please login as a company"
 msgstr "Por favor inicie sesión como empresa"
 
-#: .\viewer\views.py:116 .\viewer\views.py:335 .\viewer\views.py:367
-#: .\viewer\views.py:389 .\viewer\views.py:421 .\viewer\views.py:456
-#: .\viewer\views.py:481 .\viewer\views.py:563
+#: .\viewer\views.py:81 .\viewer\views.py:318 .\viewer\views.py:350
+#: .\viewer\views.py:372 .\viewer\views.py:404 .\viewer\views.py:439
+#: .\viewer\views.py:464 .\viewer\views.py:546 .\viewer\views.py:643
 msgid "Company not found"
 msgstr "Empresa no encontrada"
 
-#: .\viewer\views.py:173 .\viewer\views.py:257
+#: .\viewer\views.py:156 .\viewer\views.py:240
 msgid "Please login as a user"
 msgstr "Por favor inicie sesión como usuario"
 
-#: .\viewer\views.py:285
+#: .\viewer\views.py:262
+msgid "QR code not found or inactive"
+msgstr "Código QR no encontrado o inactivo"
+
+#: .\viewer\views.py:268
 msgid "This QR code does not belong to your company"
 msgstr "Este código QR no pertenece a su empresa"
 
-#: .\viewer\views.py:307
+#: .\viewer\views.py:290
 msgid "Address not available"
 msgstr "Dirección no disponible"
 
-#: .\viewer\views.py:328 .\viewer\views.py:362 .\viewer\views.py:382
-#: .\viewer\views.py:415 .\viewer\views.py:450 .\viewer\views.py:476
-#: .\viewer\views.py:558
+#: .\viewer\views.py:311 .\viewer\views.py:345 .\viewer\views.py:365
+#: .\viewer\views.py:398 .\viewer\views.py:433 .\viewer\views.py:459
+#: .\viewer\views.py:541 .\viewer\views.py:638
 msgid "Unauthorized"
 msgstr "No autorizado"
 
-#: .\viewer\views.py:356 .\viewer\views.py:409 .\viewer\views.py:444
-#: .\viewer\views.py:470
+#: .\viewer\views.py:339 .\viewer\views.py:392 .\viewer\views.py:427
+#: .\viewer\views.py:453
 msgid "Invalid method"
 msgstr "Método inválido"
 
-#: .\viewer\views.py:372
+#: .\viewer\views.py:355
 msgid "QR code deactivated successfully"
 msgstr "Código QR desactivado exitosamente"
 
-#: .\viewer\views.py:374
-msgid "Failed to deactivate QR code"
-msgstr "Error al desactivar el código QR"
-
-#: .\viewer\views.py:403
+#: .\viewer\views.py:386
 msgid "User created successfully"
 msgstr "Usuario creado exitosamente"
 
-#: .\viewer\views.py:463
+#: .\viewer\views.py:446
 msgid "User deleted successfully"
 msgstr "Usuario eliminado exitosamente"
 
-#: .\viewer\views.py:568
+#: .\viewer\views.py:551
 msgid "User not found or inactive"
 msgstr "Usuario no encontrado o inactivo"
 
-#~ msgid "Manage"
-#~ msgstr "Administrar"
+#: .\viewer\views.py:667
+msgid "Invalid date range"
+msgstr "Rango de fechas inválido"
 
-#~ msgid "Account"
-#~ msgstr "Cuenta"
+#: .\viewer\views.py:670
+msgid "Invalid date format"
+msgstr "Formato de fecha inválido"
 
-#~ msgid "Manage QR Codes"
-#~ msgstr "Administrar códigos QR"
+#: .\viewer\views.py:744
+msgid "Attendance Report"
+msgstr "Informe de asistencia"
 
-#~ msgid "Manage Users"
-#~ msgstr "Administrar usuarios"
+#: .\viewer\views.py:745
+msgid "Period"
+msgstr "Período"
 
-#~ msgid "UUID"
-#~ msgstr "UUID"
+#: .\viewer\views.py:746
+msgid "Company"
+msgstr "Empresa"
 
-#~ msgid "Total Scans"
-#~ msgstr "Total de escaneos"
+#: .\viewer\views.py:761
+msgid "Daily Attendance"
+msgstr "Asistencia diaria"
 
-#~ msgid "Scanned By"
-#~ msgstr "Escaneado por"
+#: .\viewer\views.py:763
+msgid "Date"
+msgstr "Fecha"
 
-#~ msgid "View on Map"
-#~ msgstr "Ver en el mapa"
+#: .\viewer\views.py:763
+msgid "Day"
+msgstr "Día"
 
-#~ msgid "No scans recorded yet"
-#~ msgstr "Aún no se han registrado escaneos"
+#: .\viewer\views.py:763
+msgid "Hours"
+msgstr "Horas"
 
-#~ msgid "User Dashboard"
-#~ msgstr "Panel de usuario"
+#: .\viewer\views.py:763
+msgid "Notes"
+msgstr "Notas"
 
-#~ msgid "No QR codes available yet"
-#~ msgstr "Aún no hay códigos QR disponibles"
+#: .\viewer\views.py:779
+msgid "No scans"
+msgstr "Sin escaneos"
 
-#~ msgid "Open Map"
-#~ msgstr "Ver en el mapa"
+#: .\viewer\views.py:789
+msgid "Missing arrival"
+msgstr "Falta llegada"
 
-#~ msgid "Member since"
-#~ msgstr "Miembro desde"
+#: .\viewer\views.py:792
+msgid "Missing departure"
+msgstr "Falta salida"
 
-#~ msgid "Unique QR Codes"
-#~ msgstr "Códigos QR únicos"
+#: .\viewer\views.py:844
+msgid "Summary Statistics"
+msgstr "Estadísticas resumidas"
 
-#~ msgid "Last Activity"
-#~ msgstr "Última actividad"
+#: .\viewer\views.py:849
+msgid "Total Working Days"
+msgstr "Total de días laborables"
 
-#~ msgid "Scan a QR code from your company to record location and time"
-#~ msgstr "Escanee un código QR de su empresa para registrar ubicación y hora"
+#: .\viewer\views.py:850
+msgid "Total Hours Worked"
+msgstr "Total de horas trabajadas"
+
+#: .\viewer\views.py:851
+msgid "Average Hours per Day"
+msgstr "Promedio de horas por día"
+
+#: .\viewer\views.py:852
+msgid "Days with Issues"
+msgstr "Días con problemas"
+
+#~ msgid "Hours Worked"
+#~ msgstr "Horas trabajadas"

@@ -18,12 +18,18 @@ const translations = {
     userRegisterFailed: '{% trans "Failed to register user" %}',
     userUpdated: '{% trans "User updated successfully" %}',
     userUpdateFailed: '{% trans "Failed to update user" %}',
-    userDeleted: '{% trans "User has been deleted" %}',
-    userDeleteFailed: '{% trans "Failed to delete user" %}',
-    deleteUserTitle: '{% trans "Delete User?" %}',
-    deleteUserText: '{% trans "Are you sure you want to delete" %}',
+    userDeleted: '{% trans "User has been deactivated" %}',
+    userDeleteFailed: '{% trans "Failed to deactivate user" %}',
+    deleteUserTitle: '{% trans "Deactivate User?" %}',
+    deleteUserText: '{% trans "Are you sure you want to deactivate" %}',
     deleteUserWarning: '{% trans "This action cannot be undone." %}',
-    confirmDelete: '{% trans "Yes, delete it!" %}',
+    confirmDeactivate: '{% trans "Yes, deactivate!" %}',
+    
+    // QR Code deactivate related
+    deleteQRTitle: '{% trans "Deactivate QR Code?" %}',
+    deleteQRText: '{% trans "Are you sure you want to deactivate this QR code?" %}',
+    qrCodeDeleted: '{% trans "QR code has been deactivated" %}',
+    qrCodeDeleteFailed: '{% trans "Failed to deactivate QR code" %}',
     
     // Location related
     locationRequired: '{% trans "Location Required" %}',
@@ -52,5 +58,6 @@ const translations = {
     failedToProcess: '{% trans "Failed to process scan" %}',
     failedToStart: '{% trans "Failed to start scanner" %}',
     failedToRecord: '{% trans "Failed to record scan" %}',
-    pleaseEnterUuid: '{% trans "Please enter a QR code UUID" %}'
+    pleaseEnterUuid: '{% trans "Please enter a QR code UUID" %}',
+    selectDateRange: '{% trans "Please select a date range first!" %}'
 };

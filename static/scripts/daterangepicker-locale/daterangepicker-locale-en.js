@@ -1,6 +1,8 @@
 // English locale for daterangepicker
-var daterangepickerLocale = {
-    en: {
+if (typeof daterangepickerLocale === 'undefined') {
+    var daterangepickerLocale = {};
+}
+daterangepickerLocale.en = {
         cancelLabel: 'Clear',
         applyLabel: 'Apply',
         customRangeLabel: 'Custom Range',
@@ -20,5 +22,4 @@ var daterangepickerLocale = {
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
-    }
 };

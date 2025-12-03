@@ -5,87 +5,34 @@
 {% block title %}{% trans "User Details" %} - {{ user.name }}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/daterangepicker.css' %}" />
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-12">
             <a href="{% url 'company_dashboard' %}" class="btn btn-outline-primary mb-3">
                 <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
             </a>
-            <h3><i class="fas fa-user me-2"></i>{{ user.name }}</h3>
-            <p class="text-muted mb-0">
-                <i class="fas fa-envelope me-2"></i>{{ user.email }}
-            </p>
-        </div>
-        <div class="col-md-6 text-md-end">
-            {% if user.is_active %}
-                <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
-                    <i class="fas fa-check-circle me-2"></i>{% trans "Active" %}
-                </span>
-            {% else %}
-                <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
-                    <i class="fas fa-times-circle me-2"></i>{% trans "Inactive" %}
-                </span>
-            {% endif %}
+            <div class="d-flex align-items-center justify-content-between justify-content-md-start">
+                <div>
+                    <h3 class="mb-1 d-inline-flex align-items-center">
+                        <i class="fas fa-user me-2"></i>{{ user.name }}
+                        <button type="button" class="btn btn-danger btn-sm ms-2" onclick="generateAttendancePDF({{ user.id }})" title="{% trans 'Generate PDF' %}" style="padding: 0.25rem 0.5rem;">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                    </h3>
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Filters Card -->
-    <div class="card filters-card mb-3">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h6>
-                <i class="fas fa-filter me-2"></i>{% trans "Filters" %}
-            </h6>
-            {% if has_active_filters %}
-                <button class="btn btn-sm btn-light" type="button" onclick="clearFilters()" title="{% trans 'Clear all filters' %}">
-                    <i class="fas fa-times me-1"></i>{% trans "Clear" %}
-                </button>
-            {% endif %}
-        </div>
-        <div class="card-body">
-            <form method="get" action="{% url 'view_user_details' user.id %}" id="filterForm">
-                <div class="row g-2">
-                    <div class="col-lg-3 col-md-6 col-6 filter-input-group">
-                        <label class="form-label">{% trans "QR Code" %}</label>
-                        <input type="text" name="qr_code" class="form-control" placeholder="{% trans 'Search' %}" value="{{ current_filters.qr_code }}">
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-6 filter-input-group">
-                        <label class="form-label">{% trans "Type" %}</label>
-                        <select name="scan_type" class="form-select">
-                            <option value="">{% trans "All" %}</option>
-                            <option value="arrival" {% if current_filters.scan_type == 'arrival' %}selected{% endif %}>{% trans "Arrival" %}</option>
-                            <option value="departure" {% if current_filters.scan_type == 'departure' %}selected{% endif %}>{% trans "Departure" %}</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-6 filter-input-group">
-                        <label class="form-label">{% trans "Date Range" %}</label>
-                        <input type="text" id="dateRangePicker" class="form-control date-range-display" readonly placeholder="{% trans 'Select' %}">
-                        <input type="hidden" name="date_from" id="date_from" value="{{ current_filters.date_from }}">
-                        <input type="hidden" name="date_to" id="date_to" value="{{ current_filters.date_to }}">
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-6 filter-input-group">
-                        <label class="form-label">{% trans "Per Page" %}</label>
-                        <select name="per_page" class="form-select">
-                            <option value="10" {% if current_filters.per_page == 10 %}selected{% endif %}>10</option>
-                            <option value="20" {% if current_filters.per_page == 20 %}selected{% endif %}>20</option>
-                            <option value="50" {% if current_filters.per_page == 50 %}selected{% endif %}>50</option>
-                            <option value="100" {% if current_filters.per_page == 100 %}selected{% endif %}>100</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-2 col-md-12 col-12 filter-input-group filter-mobile-full d-flex align-items-end">
-                        <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; font-weight: 600;">
-                            <i class="fas fa-search me-1"></i>{% trans "Apply" %}
-                        </button>
-                    </div>
-                </div>
-                <input type="hidden" name="sort" value="{{ current_filters.sort }}">
-            </form>
-        </div>
-    </div>
+    {% include 'filters_card.html' with form_action=request.path clear_url=request.path first_filter_label=_('QR Code') first_filter_name='qr_code' first_filter_value=current_filters.qr_code %}
 
     <!-- Data Table Card -->
     <div class="card data-table-card">
@@ -210,84 +157,14 @@
         </div>
         
         <!-- Pagination -->
-        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="card-footer bg-light">
             {% include 'paginator.html' %}
-        {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-function clearFilters() {
-    window.location.href = '{% url "view_user_details" user.id %}';
-}
-
-// Auto-submit form on select change
-document.querySelectorAll('#filterForm select').forEach(select => {
-    select.addEventListener('change', () => {
-        document.getElementById('filterForm').submit();
-    });
-});
-
-// Initialize date range picker
-$(function() {
-    var dateFrom = $('#date_from').val();
-    var dateTo = $('#date_to').val();
-    
-    var startDate = dateFrom ? moment(dateFrom, 'YYYY-MM-DD') : null;
-    var endDate = dateTo ? moment(dateTo, 'YYYY-MM-DD') : null;
-    
-    // Get current language code
-    var locale = daterangepickerLocale[currentLanguage];
-    
-    // Set initial display value
-    if (startDate && endDate && startDate.isValid() && endDate.isValid()) {
-        $('#dateRangePicker').val(startDate.format('DD.MM.YYYY') + ' - ' + endDate.format('DD.MM.YYYY'));
-    }
-    
-    // Check if mobile device
-    var isMobile = window.innerWidth <= 768;
-    
-    var pickerConfig = {
-        autoUpdateInput: false,
-        timePicker: false,
-        timePicker24Hour: false,
-        showDropdowns: true,
-        opens: isMobile ? 'center' : 'center',
-        drops: isMobile ? 'down' : 'auto',
-        alwaysShowCalendars: true,
-        locale: {
-            cancelLabel: locale.cancelLabel,
-            applyLabel: locale.applyLabel,
-            customRangeLabel: locale.customRangeLabel,
-            daysOfWeek: locale.daysOfWeek,
-            monthNames: locale.monthNames,
-            firstDay: locale.firstDay,
-            format: locale.format
-        },
-        ranges: locale.ranges
-    };
-    
-    if (startDate && endDate && startDate.isValid() && endDate.isValid()) {
-        pickerConfig.startDate = startDate;
-        pickerConfig.endDate = endDate;
-    }
-    
-    $('#dateRangePicker').daterangepicker(pickerConfig);
-    
-    $('#dateRangePicker').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
-        $('#date_from').val(picker.startDate.format('YYYY-MM-DD'));
-        $('#date_to').val(picker.endDate.format('YYYY-MM-DD'));
-        document.getElementById('filterForm').submit();
-    });
-    
-    $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-        $('#date_from').val('');
-        $('#date_to').val('');
-    });
-});
-</script>
+<script src="{% static 'scripts/filter-utils.js' %}"></script>
+<script src="{% static 'scripts/attendance-pdf.js' %}"></script>
 {% endblock %}

@@ -1,6 +1,8 @@
 // Spanish locale for daterangepicker
-var daterangepickerLocale = {
-    es: {
+if (typeof daterangepickerLocale === 'undefined') {
+    var daterangepickerLocale = {};
+}
+daterangepickerLocale.es = {
         cancelLabel: 'Borrar',
         applyLabel: 'Aplicar',
         customRangeLabel: 'Rango personalizado',
@@ -20,5 +22,4 @@ var daterangepickerLocale = {
             'Este mes': [moment().startOf('month'), moment().endOf('month')],
             'Mes pasado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
-    }
 };
