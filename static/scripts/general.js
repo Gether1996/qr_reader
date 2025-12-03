@@ -34,16 +34,18 @@ function showSuccess(title, text) {
 
 /**
  * Show an error message using SweetAlert2
- * @param {string} title - Message title
+ * @param {string} title - Message title (not used in toast mode)
  * @param {string} text - Message text
  */
 function showError(title, text) {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
             icon: 'error',
-            title: title,
             text: text,
-            confirmButtonColor: swalConfig.confirmButtonColor
+            timer: 1500,
+            showConfirmButton: false,
+            position: 'top-end',
+            toast: true
         });
     }
 }

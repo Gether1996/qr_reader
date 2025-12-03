@@ -8,39 +8,17 @@
 
 {% block content %}
 <div class="container-fluid px-2 px-md-3 py-4">
-    <!-- Mobile Header -->
-    <div class="row mb-3">
+    <!-- Header -->
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                    <h4 class="mb-1"><i class="fas fa-building me-2"></i>{{ company.name }}</h4>
-                    <p class="text-muted small mb-0 d-none d-sm-block">{% trans "Manage your QR codes and employees" %}</p>
-                </div>
-            </div>
-            
-            <!-- Compact Statistics -->
-            <div class="d-flex gap-2 mb-3">
-                <div class="stats-card-compact flex-fill">
-                    <div class="stats-icon-compact bg-primary">
-                        <i class="fas fa-qrcode"></i>
-                    </div>
-                    <div>
-                        <div class="stats-number">{{ qr_codes.count }}</div>
-                        <div class="stats-label">{% trans "QR Codes" %}</div>
-                    </div>
-                </div>
-                <div class="stats-card-compact flex-fill">
-                    <div class="stats-icon-compact bg-success">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <div class="stats-number">{{ users.count }}</div>
-                        <div class="stats-label">{% trans "Employees" %}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Action Buttons - Mobile Responsive -->
+            <h4 class="mb-1"><i class="fas fa-building me-2"></i>{{ company.name }}</h4>
+            <p class="text-muted small mb-0">{% trans "Manage your QR codes and employees" %}</p>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-12">
             <div class="d-grid gap-2 d-sm-flex">
                 <button class="btn btn-primary flex-fill flex-sm-grow-0" data-bs-toggle="modal" data-bs-target="#createQRModal">
                     <i class="fas fa-plus me-1"></i><span class="d-none d-sm-inline">{% trans "Create QR Code" %}</span><span class="d-inline d-sm-none">{% trans "Create QR" %}</span>
@@ -52,19 +30,57 @@
         </div>
     </div>
 
-    <!-- Tabs -->
-    <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist" style="display: flex; flex-direction: row;">
-        <li class="nav-item" style="flex: 1;">
-            <button class="nav-link active" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#qr-codes-tab">
-                <i class="fas fa-qrcode me-1"></i><span>{% trans "QR Codes" %}</span>
-            </button>
-        </li>
-        <li class="nav-item" style="flex: 1;">
-            <button class="nav-link" style="width: 100%;" data-bs-toggle="tab" data-bs-target="#users-tab">
-                <i class="fas fa-users me-1"></i><span>{% trans "Employees" %}</span>
-            </button>
-        </li>
-    </ul>
+    <!-- Dashboard Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card dashboard-card" onclick="switchToTab('qr-codes-tab')" style="cursor: pointer; transition: all 0.3s ease; border: 2px solid #e5e7eb;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                                <i class="fas fa-qrcode fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">{% trans "QR Codes" %}</h5>
+                            <p class="text-muted mb-2 small">{% trans "Manage your QR codes" %}</p>
+                            <div class="d-flex align-items-center">
+                                <h2 class="mb-0 me-2" style="color: #2563eb; font-weight: 700;">{{ qr_codes.count }}</h2>
+                                <span class="text-muted">{% trans "total" %}</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chevron-right fa-lg text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card dashboard-card" onclick="switchToTab('users-tab')" style="cursor: pointer; transition: all 0.3s ease; border: 2px solid #e5e7eb;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669);">
+                                <i class="fas fa-users fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">{% trans "Employees" %}</h5>
+                            <p class="text-muted mb-2 small">{% trans "Manage your employees" %}</p>
+                            <div class="d-flex align-items-center">
+                                <h2 class="mb-0 me-2" style="color: #10b981; font-weight: 700;">{{ users.count }}</h2>
+                                <span class="text-muted">{% trans "total" %}</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chevron-right fa-lg text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="tab-content">
         <!-- QR Codes Tab -->
@@ -139,15 +155,15 @@
                                 <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{{ qr.arrivals_count }}</span>
                                 <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{{ qr.departures_count }}</span>
                             </div>
-                            <small class="text-muted"><i class="fas fa-clock me-1"></i>{{ qr.created_at|date:"d.m.Y H:i" }}</small>
                         </div>
                     </div>
                     <div class="d-flex gap-2 mt-3">
-                        <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-info btn-sm flex-fill">
+                        <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; font-weight: 600;">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
-                        <button type="button" class="btn btn-danger btn-sm flex-fill" 
-                                onclick="deleteQRCode({{ qr.id }}, '{{ qr.name }}'); return false;">
+                        <button type="button" class="btn btn-sm flex-fill" 
+                                onclick="deleteQRCode({{ qr.id }}, '{{ qr.name }}'); return false;"
+                                style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; font-weight: 600;">
                             <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
                         </button>
                     </div>
@@ -227,7 +243,6 @@
                         <p class="text-muted small mb-2"><i class="fas fa-envelope me-1"></i>{{ user.email }}</p>
                     </div>
                     <div class="d-flex gap-2 flex-wrap mb-2">
-                        <span class="badge bg-info"><i class="fas fa-chart-line me-1"></i>{{ user.total_scans }} {% trans "scans" %}</span>
                         {% if user.is_at_work %}
                             <span class="badge bg-success"><i class="fas fa-briefcase me-1"></i>{% trans "At Work" %}</span>
                         {% else %}
@@ -237,17 +252,18 @@
                     {% if user.is_at_work and user.work_location %}
                         <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ user.work_location }}</p>
                     {% endif %}
-                    <small class="text-muted"><i class="fas fa-clock me-1"></i>{{ user.created_at|date:"d.m.Y H:i" }}</small>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'view_user_details' user.id %}" class="btn btn-info btn-sm flex-fill">
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{% url 'view_user_details' user.id %}" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; font-weight: 600;">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
-                        <button type="button" class="btn btn-warning btn-sm flex-fill" 
-                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}'); return false;">
+                        <button type="button" class="btn btn-sm flex-fill" 
+                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}'); return false;"
+                                style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; font-weight: 600;">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm flex-fill" 
-                                onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;">
+                        <button type="button" class="btn btn-sm flex-fill" 
+                                onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;"
+                                style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; font-weight: 600;">
                             <i class="fas fa-trash me-1"></i>{% trans "Deactivate" %}
                         </button>
                     </div>
@@ -356,8 +372,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-warning" onclick="updateUser()">Update</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn" onclick="updateUser()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-weight: 600;">{% trans "Update" %}</button>
             </div>
         </div>
     </div>
@@ -366,4 +382,51 @@
 
 {% block extra_js %}
 <script src="{% static 'scripts/company-dashboard.js' %}"></script>
+<script>
+function switchToTab(tabId) {
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('show', 'active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Show the selected tab
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('show', 'active');
+    }
+    
+    // Activate the corresponding tab button
+    const tabButton = document.querySelector(`[data-bs-target="#${tabId}"]`);
+    if (tabButton) {
+        tabButton.classList.add('active');
+    }
+    
+    // Scroll to the tab content
+    setTimeout(() => {
+        targetTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+}
+
+// Add hover effect to cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+            this.style.borderColor = this.querySelector('.fa-qrcode') ? '#2563eb' : '#10b981';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '';
+            this.style.borderColor = '#e5e7eb';
+        });
+    });
+});
+</script>
 {% endblock %}

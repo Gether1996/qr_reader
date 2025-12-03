@@ -39,6 +39,16 @@
                     <thead>
                         <tr>
                             <th class="sortable-th">
+                                <a href="?sort={% if current_filters.sort == 'timestamp' %}-timestamp{% else %}timestamp{% endif %}{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Timestamp" %}
+                                    {% if current_filters.sort == 'timestamp' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-timestamp' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
                                 <a href="?sort={% if current_filters.sort == 'qr_code__name' %}-qr_code__name{% else %}qr_code__name{% endif %}{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
                                     {% trans "QR Code" %}
                                     {% if current_filters.sort == 'qr_code__name' %}
@@ -59,21 +69,14 @@
                                 </a>
                             </th>
                             <th>{% trans "Location" %}</th>
-                            <th class="sortable-th">
-                                <a href="?sort={% if current_filters.sort == 'timestamp' %}-timestamp{% else %}timestamp{% endif %}{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
-                                    {% trans "Timestamp" %}
-                                    {% if current_filters.sort == 'timestamp' %}
-                                        <i class="fas fa-sort-up sort-icon"></i>
-                                    {% elif current_filters.sort == '-timestamp' %}
-                                        <i class="fas fa-sort-down sort-icon"></i>
-                                    {% endif %}
-                                </a>
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for scan in page_obj %}
                         <tr>
+                            <td>
+                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
+                            </td>
                             <td><strong>{{ scan.qr_code.name }}</strong></td>
                             <td>
                                 {% if scan.scan_type == 'arrival' %}
@@ -88,14 +91,12 @@
                                         <i class="fas fa-map-marked-alt me-1 text-primary"></i>
                                         <strong>{{ scan.address }}</strong>
                                     </div>
+                                {% elif scan.latitude and scan.longitude%}
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                        <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
+                                    </a>
                                 {% endif %}
-                                <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
-                                    <i class="fas fa-map-marker-alt me-1 text-danger"></i>
-                                    <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
-                                </a>
-                            </td>
-                            <td>
-                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
                             </td>
                         </tr>
                         {% empty %}
@@ -128,13 +129,14 @@
                             <i class="fas fa-map-marked-alt"></i>
                             <strong>{{ scan.address }}</strong>
                         </div>
-                        {% endif %}
+                        {% elif scan.latitude and scan.longitude%}
                         <div class="mobile-scan-info-item">
                             <i class="fas fa-map-marker-alt"></i>
                             <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
                                 {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
                             </a>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% empty %}

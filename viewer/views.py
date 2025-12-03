@@ -13,6 +13,12 @@ import datetime
 
 def landing_page(request):
     """Landing page with links to company and user login"""
+    # Redirect to dashboard if already logged in
+    if 'company_id' in request.session and request.session.get('user_type') == 'company':
+        return redirect('company_dashboard')
+    elif 'user_id' in request.session and request.session.get('user_type') == 'user':
+        return redirect('user_dashboard')
+    
     return render(request, 'landing.html')
 
 
@@ -213,6 +219,7 @@ def user_dashboard(request):
     
     # Get unique QR codes for filter dropdown
     qr_codes = crud.get_company_qr_codes(user.company)
+    qr_code_names = [qr.name for qr in qr_codes]
     
     # Check if any filters are active
     has_active_filters = any([qr_code_filter, scan_type_filter, date_from, date_to])
@@ -222,6 +229,7 @@ def user_dashboard(request):
         'page_obj': page_obj,
         'qr_codes': qr_codes,
         'has_active_filters': has_active_filters,
+        'datalist_items': qr_code_names,
         'current_filters': {
             'qr_code': qr_code_filter,
             'scan_type': scan_type_filter,

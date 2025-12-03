@@ -11,5 +11,5 @@ services:
     env_file:
       - .env
     environment:
-      - DEBUG=False
+      - DEBUG=True
     restart: unless-stopped
