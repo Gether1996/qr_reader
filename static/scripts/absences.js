@@ -171,7 +171,7 @@ function addVacation(users) {
     });
 
     Swal.fire({
-        title: t.addLeave,
+        title: t.addAbsence,
         html: `
             <div class="container-fluid px-0">
                 <div class="row g-3">
@@ -435,7 +435,7 @@ function addVacationForUser(userId, userName) {
     let endDate = null;
 
     Swal.fire({
-        title: t.addLeave,
+        title: t.addAbsence,
         html: `
             <div class="container-fluid px-0">
                 <div class="row g-3">
@@ -564,7 +564,7 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
     const displayRange = `${formatDate(currentDateFrom)} - ${formatDate(currentDateTo)}`;
 
     Swal.fire({
-        title: t.editLeave,
+        title: t.editAbsence,
         html: `
             <div class="container-fluid px-0">
                 <div class="row g-3">
