@@ -76,6 +76,9 @@ function generateAttendancePDF(userId, buttonElement) {
     
     const locale = daterangepickerLocale[langCode] || daterangepickerLocale.sk;
     
+    // Check if mobile
+    const isMobile = window.innerWidth <= 768;
+    
     // Initialize daterangepicker directly on the button or near it
     $(tempInput).daterangepicker({
         locale: {
@@ -89,48 +92,66 @@ function generateAttendancePDF(userId, buttonElement) {
         },
         ranges: locale.ranges,
         autoUpdateInput: false,
-        opens: 'left',
+        opens: isMobile ? 'center' : 'left',
         drops: 'down',
-        alwaysShowCalendars: true
+        alwaysShowCalendars: true,
+        parentEl: 'body'
     });
     
     // Show the daterangepicker immediately
     $(tempInput).data('daterangepicker').show();
     
-    // Position it near the button if buttonElement is provided
-    if (buttonElement) {
+    // Position and lock the picker for desktop
+    if (buttonElement && !isMobile) {
         const rect = buttonElement.getBoundingClientRect();
         const picker = $(tempInput).data('daterangepicker').container[0];
-        const pickerWidth = 640; // Approximate width of daterangepicker
-        const pickerHeight = 350; // Approximate height of daterangepicker
+        const pickerWidth = 640;
+        const pickerHeight = 350;
         
-        picker.style.position = 'fixed';
-        picker.style.zIndex = '9999';
-        
-        // Calculate vertical position (prefer below button, but show above if not enough space)
+        // Calculate vertical position
         let top = rect.bottom + 5;
         if (top + pickerHeight > window.innerHeight) {
-            // Not enough space below, show above
             top = rect.top - pickerHeight - 5;
-            // If still not enough space, just show at the top with some margin
             if (top < 0) {
                 top = 10;
             }
         }
         
-        // Calculate horizontal position (prefer aligned with button, but adjust if overflows)
+        // Calculate horizontal position
         let left = rect.right - pickerWidth;
-        // Make sure it doesn't overflow left side
         if (left < 10) {
             left = 10;
         }
-        // Make sure it doesn't overflow right side
         if (left + pickerWidth > window.innerWidth - 10) {
             left = window.innerWidth - pickerWidth - 10;
         }
         
+        // Set position
+        picker.style.position = 'fixed';
+        picker.style.zIndex = '9999';
         picker.style.top = top + 'px';
         picker.style.left = left + 'px';
+        
+        // Lock position with MutationObserver to prevent daterangepicker from changing it
+        const observer = new MutationObserver(() => {
+            if (picker.style.position !== 'fixed' || 
+                picker.style.top !== top + 'px' || 
+                picker.style.left !== left + 'px') {
+                picker.style.position = 'fixed';
+                picker.style.top = top + 'px';
+                picker.style.left = left + 'px';
+            }
+        });
+        
+        observer.observe(picker, { 
+            attributes: true, 
+            attributeFilter: ['style'] 
+        });
+        
+        // Clean up observer when picker is hidden
+        $(tempInput).on('hide.daterangepicker', () => {
+            observer.disconnect();
+        });
     }
     
     // Handle date selection
