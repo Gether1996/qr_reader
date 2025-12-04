@@ -12,14 +12,31 @@
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-12">
             <a href="{% url 'company_dashboard' %}" class="btn btn-outline-primary mb-3">
                 <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
             </a>
-            <h3><i class="fas fa-qrcode me-2"></i>{{ qr_code.name }}</h3>
-            <p class="text-muted mb-0">
-                <i class="fas fa-map-marker-alt me-2"></i>{{ qr_code.location }}
-            </p>
+        </div>
+    </div>
+
+    <!-- QR Code Info Card -->
+    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                            <i class="fas fa-qrcode fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">{{ qr_code.name }}</h4>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-map-marker-alt me-2"></i>{{ qr_code.location }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

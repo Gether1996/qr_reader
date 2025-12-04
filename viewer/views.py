@@ -7,6 +7,7 @@ from qr_reader_django import crud
 import json
 from viewer.models import ScanEvent, Vacation
 from django.core.paginator import Paginator
+from django.db.models import Q
 import datetime
 from django.utils.formats import date_format
 
@@ -78,7 +79,7 @@ def company_logout(request):
 
 
 def company_dashboard(request):
-    """Company dashboard - manage QR codes and users"""
+    """Company dashboard - manage QR codes, users, and absences"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
         messages.error(request, _('Please login as a company'))
         return redirect('company_login')
@@ -88,17 +89,95 @@ def company_dashboard(request):
         messages.error(request, _('Company not found'))
         return redirect('company_login')
     
-    qr_codes = crud.get_company_qr_codes(company)
-    users = crud.get_company_users(company)
-    recent_scans = crud.get_company_scans(company, limit=20)
+    # Get active tab from query params
+    active_tab = request.GET.get('tab', 'qr-codes')
     
-    # Calculate arrivals and departures for each QR code
-    for qr in qr_codes:
+    # Get filter parameters
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    vacation_type = request.GET.get('vacation_type', '')
+    user_filter = request.GET.get('user', '')
+    absence_employee_name = request.GET.get('absence_employee_name', '')
+    qr_name = request.GET.get('qr_name', '')
+    employee_name = request.GET.get('employee_name', '')
+    work_status = request.GET.get('work_status', '')
+    items_per_page = request.GET.get('items_per_page', '25')
+    sort = request.GET.get('sort', '')
+    page_number = request.GET.get('page', 1)
+    
+    # Set default sorting based on active tab if not specified
+    if not sort:
+        if active_tab == 'qr-codes':
+            sort = 'name'
+        elif active_tab == 'users':
+            sort = 'name'
+        elif active_tab == 'absences':
+            sort = '-date_from'
+    
+    # Validate items per page
+    try:
+        items_per_page = int(items_per_page)
+        if items_per_page not in [10, 25, 50, 100]:
+            items_per_page = 25
+    except (ValueError, TypeError):
+        items_per_page = 25
+    
+    # Get all QR codes for datalist (unfiltered)
+    all_qr_codes = crud.get_company_qr_codes(company)
+    
+    # Get QR codes with filtering
+    qr_codes = crud.get_company_qr_codes(company)
+    if qr_name:
+        qr_codes = qr_codes.filter(name__icontains=qr_name)
+    
+    # Apply sorting for QR codes (default: ASC on name)
+    if active_tab == 'qr-codes':
+        if sort:
+            if sort == 'name':
+                qr_codes = qr_codes.order_by('name')
+            elif sort == '-name':
+                qr_codes = qr_codes.order_by('-name')
+            elif sort == 'created_at':
+                qr_codes = qr_codes.order_by('created_at')
+            elif sort == '-created_at':
+                qr_codes = qr_codes.order_by('-created_at')
+        else:
+            # Default sort: ASC on name
+            qr_codes = qr_codes.order_by('name')
+    
+    # Get all users for datalist (unfiltered)
+    all_users = crud.get_company_users(company)
+    
+    # Get users with filtering
+    users = crud.get_company_users(company)
+    if employee_name:
+        users = users.filter(name__icontains=employee_name)
+    
+    # Calculate arrivals and departures for each QR code and annotate scan count
+    qr_codes_list = list(qr_codes)
+    for qr in qr_codes_list:
         qr.arrivals_count = qr.scans.filter(scan_type='arrival').count()
         qr.departures_count = qr.scans.filter(scan_type='departure').count()
+        qr.total_scans = qr.scans.count()
+    
+    # Apply sorting for QR codes (on scan count - requires list)
+    if active_tab == 'qr-codes' and sort:
+        if sort == 'scans':
+            qr_codes_list.sort(key=lambda x: x.total_scans)
+        elif sort == '-scans':
+            qr_codes_list.sort(key=lambda x: x.total_scans, reverse=True)
+    
+    # Paginate QR codes
+    if active_tab == 'qr-codes':
+        qr_paginator = Paginator(qr_codes_list, items_per_page)
+        qr_codes_page = qr_paginator.get_page(page_number)
+    else:
+        qr_codes_page = None
     
     # Calculate total scans for each user (only from active QR codes)
-    for user in users:
+    # Store users as list to allow filtering by work status
+    users_list = list(users)
+    for user in users_list:
         user.total_scans = ScanEvent.objects.filter(
             scanned_by=user,
             qr_code__is_active=True
@@ -116,12 +195,128 @@ def company_dashboard(request):
         else:
             user.is_at_work = False
             user.work_location = None
+    
+    # Apply work status filter
+    if work_status:
+        if work_status == 'at_work':
+            users_list = [u for u in users_list if u.is_at_work]
+        elif work_status == 'not_at_work':
+            users_list = [u for u in users_list if not u.is_at_work]
+    
+    # Apply sorting for users (default: ASC on name)
+    if active_tab == 'users':
+        if sort:
+            if sort == 'name':
+                users_list.sort(key=lambda x: x.name.lower())
+            elif sort == '-name':
+                users_list.sort(key=lambda x: x.name.lower(), reverse=True)
+            elif sort == 'scans':
+                users_list.sort(key=lambda x: x.total_scans)
+            elif sort == '-scans':
+                users_list.sort(key=lambda x: x.total_scans, reverse=True)
+            elif sort == 'at_work':
+                users_list.sort(key=lambda x: x.is_at_work)
+            elif sort == '-at_work':
+                users_list.sort(key=lambda x: x.is_at_work, reverse=True)
+        else:
+            # Default sort: ASC on name
+            users_list.sort(key=lambda x: x.name.lower())
+    
+    # Paginate users
+    if active_tab == 'users':
+        users_paginator = Paginator(users_list, items_per_page)
+        users_page = users_paginator.get_page(page_number)
+    else:
+        users_page = None
+    
+    # Get absences for the company
+    absences = Vacation.objects.filter(
+        user__company=company,
+        user__is_active=True
+    ).select_related('user')
+    
+    # Apply filters to absences
+    if date_from and date_to:
+        try:
+            date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+            date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
+            # Filter absences that overlap with the selected date range
+            # Absence overlaps if it starts before the end of range AND ends after the start of range
+            absences = absences.filter(
+                date_from__lte=date_to_obj,
+                date_to__gte=date_from_obj
+            )
+        except ValueError:
+            pass
+    
+    if vacation_type and vacation_type != 'all':
+        absences = absences.filter(type=vacation_type)
+    
+    if user_filter:
+        absences = absences.filter(user__id=user_filter)
+    
+    if absence_employee_name:
+        absences = absences.filter(user__name__icontains=absence_employee_name)
+    
+    # Apply sorting for absences (default: DESC on date_from)
+    if active_tab == 'absences':
+        if sort:
+            if sort == 'name':
+                absences = absences.order_by('user__name')
+            elif sort == '-name':
+                absences = absences.order_by('-user__name')
+            elif sort == 'date_from':
+                absences = absences.order_by('date_from')
+            elif sort == '-date_from':
+                absences = absences.order_by('-date_from')
+            elif sort == 'date_to':
+                absences = absences.order_by('date_to')
+            elif sort == '-date_to':
+                absences = absences.order_by('-date_to')
+            elif sort == 'type':
+                absences = absences.order_by('type')
+            elif sort == '-type':
+                absences = absences.order_by('-type')
+        else:
+            # Default sort: DESC on date_from
+            absences = absences.order_by('-date_from')
+    
+    # Paginate absences
+    if active_tab == 'absences':
+        absences_paginator = Paginator(absences, items_per_page)
+        absences_page = absences_paginator.get_page(page_number)
+    else:
+        absences_page = None
+
+    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in all_users])     
 
     context = {
         'company': company,
-        'qr_codes': qr_codes,
-        'users': users,
-        'recent_scans': recent_scans,
+        'all_qr_codes': all_qr_codes,  # All QR codes for datalist
+        'qr_codes': qr_codes_list if active_tab == 'qr-codes' else [],
+        'users': all_users,  # All users for datalist
+        'users_json': users_json,
+        'users_list': users_list if active_tab == 'users' else [],
+        'absences': absences if active_tab == 'absences' else [],
+        'qr_codes_page': qr_codes_page,
+        'users_page': users_page,
+        'absences_page': absences_page,
+        'active_tab': active_tab,
+        'current_filters': {
+            'date_from': date_from,
+            'date_to': date_to,
+            'vacation_type': vacation_type,
+            'user': user_filter,
+            'absence_employee_name': absence_employee_name,
+            'qr_name': qr_name,
+            'employee_name': employee_name,
+            'work_status': work_status,
+            'items_per_page': str(items_per_page),
+            'sort': sort,
+        },
+        'qr_codes_count': len(qr_codes_list),
+        'users_count': len(users_list),
+        'absences_count': absences.count(),
     }
     return render(request, 'company_dashboard.html', context)
 
@@ -168,17 +363,37 @@ def user_dashboard(request):
         messages.error(request, _('User not found'))
         return redirect('user_login')
     
+    # Get active tab from query parameter, default to 'scans'
+    active_tab = request.GET.get('tab', 'scans')
+    
+    # Get unique QR codes for filter dropdown
+    qr_codes = crud.get_company_qr_codes(user.company)
+    qr_code_names = [qr.name for qr in qr_codes]
+    
+    # Shared filter parameters
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    sort_by = request.GET.get('sort', '-timestamp' if active_tab == 'scans' else '-date_from')
+    page_number = request.GET.get('page', 1)
+    per_page = request.GET.get('per_page', 20)
+    
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 50, 100]:
+            per_page = 20
+    except:
+        per_page = 20
+    
+    # ===== SCANS TAB =====
     scans = ScanEvent.objects.filter(
         qr_code__company=user.company,
         scanned_by=user,
         qr_code__is_active=True
     ).select_related('qr_code', 'scanned_by')
     
-    # Filtering
+    # Scans-specific filters
     qr_code_filter = request.GET.get('qr_code', '')
     scan_type_filter = request.GET.get('scan_type', '')
-    date_from = request.GET.get('date_from', '')
-    date_to = request.GET.get('date_to', '')
     
     if qr_code_filter:
         scans = scans.filter(qr_code__name__icontains=qr_code_filter)
@@ -194,46 +409,68 @@ def user_dashboard(request):
         date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
         scans = scans.filter(timestamp__date__lte=date_to_obj.date())
     
-    # Sorting - always default to DESC by timestamp if not specified
-    sort_by = request.GET.get('sort', '-timestamp')
-    valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
+    # Sorting for scans
+    valid_scan_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
                          'scan_type', '-scan_type']
     
-    if sort_by in valid_sort_fields:
+    if active_tab == 'scans' and sort_by in valid_scan_sort_fields:
         scans = scans.order_by(sort_by)
     else:
         scans = scans.order_by('-timestamp')
     
-    # Pagination
-    page_number = request.GET.get('page', 1)
-    per_page = request.GET.get('per_page', 20)
+    # Pagination for scans
+    scans_paginator = Paginator(scans, per_page)
+    page_obj = scans_paginator.get_page(page_number)
+    scans_count = scans.count()
     
-    try:
-        per_page = int(per_page)
-        if per_page not in [10, 20, 50, 100]:
-            per_page = 20
-    except:
-        per_page = 20
+    # ===== ABSENCES TAB =====
+    absences = Vacation.objects.filter(user=user).order_by('-date_from')
     
-    paginator = Paginator(scans, per_page)
-    page_obj = paginator.get_page(page_number)
+    # Absences-specific filters
+    vacation_type_filter = request.GET.get('vacation_type', '')
     
-    # Get unique QR codes for filter dropdown
-    qr_codes = crud.get_company_qr_codes(user.company)
-    qr_code_names = [qr.name for qr in qr_codes]
+    if vacation_type_filter:
+        absences = absences.filter(type=vacation_type_filter)
+    
+    if date_from and date_to:
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
+        absences = absences.filter(
+            date_from__lte=date_to_obj,
+            date_to__gte=date_from_obj
+        )
+    
+    # Sorting for absences
+    valid_absence_sort_fields = ['date_from', '-date_from', 'date_to', '-date_to', 
+                                  'created_at', '-created_at']
+    
+    if active_tab == 'absences' and sort_by in valid_absence_sort_fields:
+        absences = absences.order_by(sort_by)
+    else:
+        absences = absences.order_by('-date_from')
+    
+    # Pagination for absences
+    absences_paginator = Paginator(absences, per_page)
+    absences_page = absences_paginator.get_page(page_number)
+    absences_count = absences.count()
     
     # Check if any filters are active
-    has_active_filters = any([qr_code_filter, scan_type_filter, date_from, date_to])
+    has_active_filters = any([qr_code_filter, scan_type_filter, vacation_type_filter, date_from, date_to])
 
     context = {
         'user': user,
         'page_obj': page_obj,
+        'absences_page': absences_page,
+        'scans_count': scans_count,
+        'absences_count': absences_count,
+        'active_tab': active_tab,
         'qr_codes': qr_codes,
         'has_active_filters': has_active_filters,
         'datalist_items': qr_code_names,
         'current_filters': {
             'qr_code': qr_code_filter,
             'scan_type': scan_type_filter,
+            'vacation_type': vacation_type_filter,
             'date_from': date_from,
             'date_to': date_to,
             'sort': sort_by,
@@ -593,14 +830,20 @@ def view_user_details(request, user_id):
         if vacation_type_filter:
             vacations = vacations.filter(type=vacation_type_filter)
         
-        # Apply date filters
-        if date_from:
-            date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-            vacations = vacations.filter(date_from__gte=date_from_obj.date())
-        
-        if date_to:
-            date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
-            vacations = vacations.filter(date_to__lte=date_to_obj.date())
+        # Date filter: show vacations that overlap with the date range
+        if date_from and date_to:
+            date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+            date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
+            vacations = vacations.filter(
+                date_from__lte=date_to_obj,
+                date_to__gte=date_from_obj
+            )
+        elif date_from:
+            date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+            vacations = vacations.filter(date_to__gte=date_from_obj)
+        elif date_to:
+            date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
+            vacations = vacations.filter(date_from__lte=date_to_obj)
         
         # Sorting - default to DESC by date_from
         sort_by = request.GET.get('sort', '-date_from')
@@ -734,13 +977,20 @@ def company_absences(request):
     if user_filter:
         vacations = vacations.filter(user__name__icontains=user_filter)
     
-    if date_from:
-        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-        vacations = vacations.filter(date_from__gte=date_from_obj.date())
-    
-    if date_to:
-        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
-        vacations = vacations.filter(date_to__lte=date_to_obj.date())
+    # Date filter: show vacations that overlap with the date range
+    if date_from and date_to:
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
+        vacations = vacations.filter(
+            date_from__lte=date_to_obj,
+            date_to__gte=date_from_obj
+        )
+    elif date_from:
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+        vacations = vacations.filter(date_to__gte=date_from_obj)
+    elif date_to:
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
+        vacations = vacations.filter(date_from__lte=date_to_obj)
     
     if vacation_type_filter:
         vacations = vacations.filter(type=vacation_type_filter)

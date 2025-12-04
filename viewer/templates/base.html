@@ -12,6 +12,38 @@
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     
+    <style>
+        .container-fluid {
+            max-width: 100%;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .container-fluid {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container-fluid {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+        
+        @media (min-width: 1600px) {
+            .container-fluid {
+                max-width: 1800px;
+                margin-left: auto;
+                margin-right: auto;
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+    </style>
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body>

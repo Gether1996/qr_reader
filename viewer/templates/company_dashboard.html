@@ -4,110 +4,126 @@
 
 {% block title %}{% trans "Company Dashboard" %}{% endblock %}
 
-{% block extra_css %}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/daterangepicker.css' %}" />
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-2 px-md-3 py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h4 class="mb-1"><i class="fas fa-building me-2"></i>{{ company.name }}</h4>
-            <p class="text-muted small mb-0">{% trans "Manage your QR codes and employees" %}</p>
-        </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-grid gap-2 d-sm-flex">
-                <button class="btn btn-primary flex-fill flex-sm-grow-0" data-bs-toggle="modal" data-bs-target="#createQRModal">
-                    <i class="fas fa-plus me-1"></i><span class="d-none d-sm-inline">{% trans "Create QR Code" %}</span><span class="d-inline d-sm-none">{% trans "Create QR" %}</span>
-                </button>
-                <button class="btn btn-success flex-fill flex-sm-grow-0" data-bs-toggle="modal" data-bs-target="#createUserModal">
-                    <i class="fas fa-user-plus me-1"></i><span class="d-none d-sm-inline">{% trans "Register Employee" %}</span><span class="d-inline d-sm-none">{% trans "Register" %}</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dashboard Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-6">
-            <div class="card dashboard-card" onclick="switchToTab('qr-codes-tab')" style="cursor: pointer; transition: all 0.3s ease; border: 2px solid #e5e7eb;">
-                <div class="card-body p-4">
+    <!-- Company Info Card -->
+    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
                     <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
-                                <i class="fas fa-qrcode fa-2x text-white"></i>
-                            </div>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                            <i class="fas fa-building fa-2x text-white"></i>
                         </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-1">{% trans "QR Codes" %}</h5>
-                            <p class="text-muted mb-2 small">{% trans "Manage your QR codes" %}</p>
-                            <div class="d-flex align-items-center">
-                                <h2 class="mb-0 me-2" style="color: #2563eb; font-weight: 700;">{{ qr_codes.count }}</h2>
-                                <span class="text-muted">{% trans "total" %}</span>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-chevron-right fa-lg text-muted"></i>
+                        <div>
+                            <h4 class="mb-1 fw-bold">{{ company.name }}</h4>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-envelope me-2"></i>{{ company.email }}
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card dashboard-card" onclick="switchToTab('users-tab')" style="cursor: pointer; transition: all 0.3s ease; border: 2px solid #e5e7eb;">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669);">
-                                <i class="fas fa-users fa-2x text-white"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-1">{% trans "Employees" %}</h5>
-                            <p class="text-muted mb-2 small">{% trans "Manage your employees" %}</p>
-                            <div class="d-flex align-items-center">
-                                <h2 class="mb-0 me-2" style="color: #10b981; font-weight: 700;">{{ users.count }}</h2>
-                                <span class="text-muted">{% trans "total" %}</span>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-chevron-right fa-lg text-muted"></i>
-                        </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="d-flex gap-2 justify-content-lg-end justify-content-start flex-wrap">
+                        <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="createQRCode()">
+                            <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus"></i></span>{% trans "Create QR Code" %}
+                        </button>
+                        <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="createUser()">
+                            <i class="fas fa-user-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-user-plus"></i></span>{% trans "Register Employee" %}
+                        </button>
+                        <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="addVacation(usersData)">
+                            <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus"></i></span>{% trans "Add Absence" %}
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="tab-content">
-        <!-- QR Codes Tab -->
-        <div class="tab-pane fade show active" id="qr-codes-tab">
+    <!-- Filters for each tab -->
+    {% if active_tab == 'qr-codes' %}
+        {% include 'filters_card.html' with form_action=request.path clear_url=request.path hide_date_range=True show_first_filter=True first_filter_label=_("QR Code Name") first_filter_name="qr_name" first_filter_value=current_filters.qr_name datalist_items=all_qr_codes has_active_filters=current_filters.qr_name active_tab='qr-codes' %}
+    {% elif active_tab == 'users' %}
+        {% include 'filters_card.html' with form_action=request.path clear_url=request.path hide_date_range=True show_first_filter=True first_filter_label=_("Employee Name") first_filter_name="employee_name" first_filter_value=current_filters.employee_name datalist_items=users show_work_status=True has_active_filters=current_filters.employee_name|default:current_filters.work_status active_tab='users' %}
+    {% elif active_tab == 'absences' %}
+        {% include 'filters_card.html' with form_action=request.path clear_url=request.path show_first_filter=True first_filter_label=_("Employee Name") first_filter_name="absence_employee_name" first_filter_value=current_filters.absence_employee_name datalist_items=users show_vacation_type=True has_active_filters=current_filters.date_from|default:current_filters.date_to|default:current_filters.vacation_type|default:current_filters.absence_employee_name active_tab='absences' %}
+    {% endif %}
+
+    <!-- Data Table Card with Tabs as Header -->
+    <div class="card data-table-card">
+        <!-- Tabs Navigation replacing header -->
+        <div class="card-header p-0" style="background: transparent; border: none;">
+            <div class="d-flex">
+                <button class="flex-fill text-center" onclick="window.location.href='?tab=qr-codes&sort=name'" style="border: none; border-radius: 12px 0 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'qr-codes' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                    <i class="fas fa-qrcode me-2"></i>{% trans "QR Codes" %}
+                    <span class="badge {% if active_tab == 'qr-codes' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ qr_codes_count }}</span>
+                </button>
+                <button class="flex-fill text-center" onclick="window.location.href='?tab=users&sort=name'" style="border: none; border-radius: 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'users' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                    <i class="fas fa-users me-2"></i>{% trans "Employees" %}
+                    <span class="badge {% if active_tab == 'users' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ users_count }}</span>
+                </button>
+                <button class="flex-fill text-center" onclick="window.location.href='?tab=absences&sort=-date_from'" style="border: none; border-radius: 0 12px 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'absences' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                    <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absences" %}
+                    <span class="badge {% if active_tab == 'absences' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ absences_count }}</span>
+                </button>
+            </div>
+        </div>
+
+    {% if active_tab == 'qr-codes' %}
+        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
             <!-- Desktop Table View -->
-            <div class="table-container d-none d-lg-block">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th style="width: 100px;">{% trans "QR Code" %}</th>
-                                    <th>{% trans "Name" %} / {% trans "Location" %}</th>
-                                    <th>{% trans "Scans" %}</th>
-                                    <th>{% trans "Arrivals" %}</th>
-                                    <th>{% trans "Departures" %}</th>
-                                    <th>{% trans "Created" %}</th>
-                                    <th class="text-center" style="width: 100px;">{% trans "Actions" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for qr in qr_codes %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">{% trans "QR Code" %}</th>
+                            <th class="sortable-th">
+                                <a href="?tab=qr-codes&sort={% if current_filters.sort == 'name' %}-name{% else %}name{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Name" %} / {% trans "Location" %}
+                                    {% if current_filters.sort == 'name' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-name' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?tab=qr-codes&sort={% if current_filters.sort == 'scans' %}-scans{% else %}scans{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Scans" %}
+                                    {% if current_filters.sort == 'scans' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-scans' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>{% trans "Arrivals" %}</th>
+                            <th>{% trans "Departures" %}</th>
+                            <th class="sortable-th">
+                                <a href="?tab=qr-codes&sort={% if current_filters.sort == 'created_at' %}-created_at{% else %}created_at{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Created" %}
+                                    {% if current_filters.sort == 'created_at' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-created_at' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="text-center" style="width: 100px;">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for qr in qr_codes_page %}
                                 <tr class="clickable-row" onclick="window.location.href='{% url 'view_qr_scans' qr.id %}'" style="cursor: pointer;">
                                     <td>
                                         <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-small">
                                     </td>
                                     <td><strong>{{ qr.name }}</strong><br><small class="text-muted">{{ qr.location }}</small></td>
-                                    <td><span class="badge bg-info">{{ qr.scans.count }}</span></td>
+                                    <td><span class="badge bg-info">{{ qr.total_scans }}</span></td>
                                     <td>
                                         <span class="badge bg-success">
                                             <i class="fas fa-sign-in-alt me-1"></i>{{ qr.arrivals_count }}
@@ -142,8 +158,8 @@
             </div>
             
             <!-- Mobile Card View -->
-            <div class="d-lg-none">
-                {% for qr in qr_codes %}
+            <div class="d-lg-none" style="padding: 1rem;">
+                {% for qr in qr_codes_page %}
                 <div class="mobile-card mb-3">
                     <div class="d-flex gap-3">
                         <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-mobile">
@@ -151,7 +167,7 @@
                             <h6 class="mb-1"><strong>{{ qr.name }}</strong></h6>
                             <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ qr.location }}</p>
                             <div class="d-flex gap-2 flex-wrap mb-2">
-                                <span class="badge bg-info"><i class="fas fa-chart-line me-1"></i>{{ qr.scans.count }}</span>
+                                <span class="badge bg-info"><i class="fas fa-chart-line me-1"></i>{{ qr.total_scans }}</span>
                                 <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{{ qr.arrivals_count }}</span>
                                 <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{{ qr.departures_count }}</span>
                             </div>
@@ -176,23 +192,54 @@
                 {% endfor %}
             </div>
         </div>
-
-        <!-- Users Tab -->
-        <div class="tab-pane fade" id="users-tab">
+        <!-- Pagination -->
+        <div class="card-footer bg-light">
+            {% with page_obj=qr_codes_page %}
+            {% include 'paginator.html' %}
+            {% endwith %}
+        </div>
+    {% elif active_tab == 'users' %}
+        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
             <!-- Desktop Table View -->
-            <div class="table-container d-none d-lg-block">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>{% trans "Name" %} / {% trans "Email" %}</th>
-                                    <th>{% trans "Scans" %}</th>
-                                    <th>{% trans "At Work" %}</th>
-                                    <th class="text-center" style="width: 120px;">{% trans "Actions" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in users %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="sortable-th">
+                                <a href="?tab=users&sort={% if current_filters.sort == 'name' %}-name{% else %}name{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Name" %} / {% trans "Email" %}
+                                    {% if current_filters.sort == 'name' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-name' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?tab=users&sort={% if current_filters.sort == 'scans' %}-scans{% else %}scans{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Scans" %}
+                                    {% if current_filters.sort == 'scans' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-scans' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?tab=users&sort={% if current_filters.sort == 'at_work' %}-at_work{% else %}at_work{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "At Work" %}
+                                    {% if current_filters.sort == 'at_work' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-at_work' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="text-center" style="width: 120px;">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users_page %}
                                 <tr class="clickable-row" onclick="window.location.href='{% url 'view_user_details' user.id %}'" style="cursor: pointer;">
                                     <td><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong><br><small class="text-muted">{{ user.email }}</small></td>
                                     <td><span class="badge bg-info">{{ user.total_scans }}</span></td>
@@ -235,8 +282,8 @@
             </div>
             
             <!-- Mobile Card View -->
-            <div class="d-lg-none">
-                {% for user in users %}
+            <div class="d-lg-none" style="padding: 1rem;">
+                {% for user in users_page %}
                 <div class="mobile-card mb-3">
                     <div class="mb-2">
                         <h6 class="mb-1"><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong></h6>
@@ -276,6 +323,157 @@
                 {% endfor %}
             </div>
         </div>
+        <!-- Pagination -->
+        <div class="card-footer bg-light">
+            {% with page_obj=users_page %}
+            {% include 'paginator.html' %}
+            {% endwith %}
+        </div>
+    {% else %}
+        <!-- Absences Tab -->
+        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
+            <!-- Desktop Table View -->
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="sortable-th">
+                                <a href="?tab=absences&sort={% if current_filters.sort == 'date_from' %}-date_from{% else %}date_from{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Date From" %}
+                                    {% if current_filters.sort == 'date_from' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-date_from' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?tab=absences&sort={% if current_filters.sort == 'date_to' %}-date_to{% else %}date_to{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Date To" %}
+                                    {% if current_filters.sort == 'date_to' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-date_to' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?tab=absences&sort={% if current_filters.sort == 'name' %}-name{% else %}name{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Employee" %}
+                                    {% if current_filters.sort == 'name' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-name' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>{% trans "Days" %}</th>
+                            <th class="sortable-th">
+                                <a href="?tab=absences&sort={% if current_filters.sort == 'type' %}-type{% else %}type{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {% trans "Type" %}
+                                    {% if current_filters.sort == 'type' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-type' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>{% trans "Created" %}</th>
+                            <th class="text-center">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for absence in absences_page %}
+                        <tr>
+                            <td>
+                                <i class="fas fa-calendar-day me-1"></i>{{ absence.date_from|date:"d.m.Y" }}
+                            </td>
+                            <td>
+                                <i class="fas fa-calendar-check me-1"></i>{{ absence.date_to|date:"d.m.Y" }}
+                            </td>
+                            <td>
+                                <i class="fas fa-user me-1"></i><strong>{{ absence.user.name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ absence.days_count }} {% trans "days" %}</span>
+                            </td>
+                            <td>
+                                {% if absence.type == 'sick_leave' %}
+                                    <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                {% elif absence.type == 'vacation' %}
+                                    <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
+                                {% else %}
+                                    <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="action-buttons">
+                                    <button type="button" class="action-icon-btn action-btn-edit" 
+                                            onclick="editVacation({{ absence.id }}, {{ absence.user.id }}, '{{ absence.user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type|default:'vacation' }}', usersData)" title="{% trans 'Edit' %}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="action-icon-btn action-btn-delete" 
+                                            onclick="deleteVacation({{ absence.id }}, '{{ absence.user.name }}')" title="{% trans 'Delete' %}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">{% trans "No absences found" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Mobile View -->
+            <div class="mobile-scan-list d-lg-none" style="padding: 1rem;">
+                {% for absence in absences %}
+                <div class="mobile-card mb-3">
+                    <div class="mb-2">
+                        <h6 class="mb-1"><i class="fas fa-user me-2"></i><strong>{{ absence.user.name }}</strong></h6>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap mb-2">
+                        {% if absence.type == 'sick_leave' %}
+                            <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                        {% elif absence.type == 'vacation' %}
+                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
+                        {% else %}
+                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                        {% endif %}
+                        <span class="badge bg-info">{{ absence.days_count }} {% trans "days" %}</span>
+                    </div>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-calendar-day me-1"></i><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}
+                    </p>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-calendar-check me-1"></i><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}
+                    </p>
+                    <div class="mt-2 d-flex gap-2">
+                        <button type="button" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; border: none; font-weight: 600;" onclick="editVacation({{ absence.id }}, {{ absence.user.id }}, '{{ absence.user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type|default:'vacation' }}', usersData)">
+                            <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger flex-fill" onclick="deleteVacation({{ absence.id }}, '{{ absence.user.name }}')">
+                            <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                    {% trans "No absences found" %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            {% with page_obj=absences_page %}
+            {% include 'paginator.html' %}
+            {% endwith %}
+        </div>
+    {% endif %}
     </div>
 </div>
 
@@ -381,62 +579,21 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'scripts/company-dashboard.js' %}"></script>
-<script>
-function switchToTab(tabId) {
-    // Hide all tab panes
-    document.querySelectorAll('.tab-pane').forEach(pane => {
-        pane.classList.remove('show', 'active');
-    });
-    
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    // Show the selected tab
-    const targetTab = document.getElementById(tabId);
-    if (targetTab) {
-        targetTab.classList.add('show', 'active');
-    }
-    
-    // Activate the corresponding tab button
-    const tabButton = document.querySelector(`[data-bs-target="#${tabId}"]`);
-    if (tabButton) {
-        tabButton.classList.add('active');
-    }
-    
-    // Scroll to the tab content
-    setTimeout(() => {
-        targetTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-}
-
-// Add hover effect to cards
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.dashboard-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
-            this.style.borderColor = this.querySelector('.fa-qrcode') ? '#2563eb' : '#10b981';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '';
-            this.style.borderColor = '#e5e7eb';
-        });
-    });
-
+    <script src="{% static 'scripts/company-dashboard.js' %}"></script>
+    <script src="{% static 'scripts/filter-utils.js' %}"></script>
+    <script src="{% static 'scripts/company-vacations.js' %}"></script>
+    <script>
     // Clear create user form when modal is opened
-    const createUserModal = document.getElementById('createUserModal');
-    if (createUserModal) {
-        createUserModal.addEventListener('show.bs.modal', function() {
-            document.getElementById('user_name').value = '';
-            document.getElementById('user_email').value = '';
-            document.getElementById('user_password').value = '';
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        const createUserModal = document.getElementById('createUserModal');
+        if (createUserModal) {
+            createUserModal.addEventListener('show.bs.modal', function() {
+                document.getElementById('user_name').value = '';
+                document.getElementById('user_email').value = '';
+                document.getElementById('user_password').value = '';
+            });
+        }
+    });
+    const usersData = {{ users_json|safe }};
 </script>
 {% endblock %}

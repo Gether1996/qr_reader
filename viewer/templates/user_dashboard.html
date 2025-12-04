@@ -10,30 +10,62 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h3><i class="fas fa-user me-2"></i>{% trans "Welcome" %}, {{ user.name }}!</h3>
-            <p class="text-muted mb-0">{{ user.company.name }}</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-            <a href="{% url 'user_scan_qr' %}" class="btn btn-success btn-lg">
-                <i class="fas fa-camera me-2"></i>{% trans "Scan QR Code" %}
-            </a>
+    <!-- User Info Card -->
+    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">{{ user.name }}</h4>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-building me-2"></i>{{ user.company.name }}
+                            </p>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="d-flex gap-2 justify-content-lg-end justify-content-start">
+                        <a href="{% url 'user_scan_qr' %}" class="btn btn-success flex-fill flex-lg-grow-0" style="min-width: 140px; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                            <i class="fas fa-camera me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-camera me-1"></i></span>{% trans "Scan QR Code" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    {% include 'filters_card.html' with form_action=request.path clear_url=request.path first_filter_label=_('QR Code') first_filter_name='qr_code' first_filter_value=current_filters.qr_code %}
+    <!-- Filters (Above Tabs) -->
+    {% if active_tab == 'scans' %}
+        {% include 'filters_card.html' with form_action=request.path clear_url=request.path first_filter_label=_('QR Code') first_filter_name='qr_code' first_filter_value=current_filters.qr_code show_first_filter=True show_scan_type=True active_tab='scans' %}
+    {% else %}
+        {% include 'filters_card.html' with form_action=request.path clear_url=request.path show_vacation_type=True active_tab='absences' %}
+    {% endif %}
 
-    <!-- Data Table Card -->
+    <!-- Data Table Card with Tabs as Header -->
     <div class="card data-table-card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>
-                <i class="fas fa-table me-2"></i>{% trans "Scan History" %}
-            </h5>
-            <span class="badge bg-white text-dark fs-6">{{ page_obj.paginator.count }}</span>
+        <!-- Tabs Navigation replacing header -->
+        <div class="card-header p-0" style="background: transparent; border: none;">
+            <div class="d-flex">
+                <button class="flex-fill text-center" onclick="window.location.href='?tab=scans'" style="border: none; border-radius: 12px 0 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'scans' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                    <i class="fas fa-qrcode me-2"></i>{% trans "Scans" %}
+                    <span class="badge {% if active_tab == 'scans' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ scans_count }}</span>
+                </button>
+                <button class="flex-fill text-center" onclick="window.location.href='?tab=absences'" style="border: none; border-radius: 0 12px 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'absences' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                    <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absences" %}
+                    <span class="badge {% if active_tab == 'absences' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ absences_count }}</span>
+                </button>
+            </div>
         </div>
-        <div class="card-body p-0">
+
+    {% if active_tab == 'scans' %}
+        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
@@ -152,6 +184,133 @@
         <div class="card-footer bg-light">
             {% include 'paginator.html' %}
         </div>
+    {% else %}
+        <div class="card-body p-0">
+                    <!-- Desktop Table View -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="sortable-th">
+                                        <a href="?tab=absences&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'date_from' %}-{% endif %}date_from">
+                                            {% trans "Date From" %}
+                                            {% if current_filters.sort == 'date_from' %}
+                                                <i class="fas fa-sort-up sort-icon"></i>
+                                            {% elif current_filters.sort == '-date_from' %}
+                                                <i class="fas fa-sort-down sort-icon"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="sortable-th">
+                                        <a href="?tab=absences&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'date_to' %}-{% endif %}date_to">
+                                            {% trans "Date To" %}
+                                            {% if current_filters.sort == 'date_to' %}
+                                                <i class="fas fa-sort-up sort-icon"></i>
+                                            {% elif current_filters.sort == '-date_to' %}
+                                                <i class="fas fa-sort-down sort-icon"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th>{% trans "Days" %}</th>
+                                    <th>{% trans "Type" %}</th>
+                                    <th class="sortable-th">
+                                        <a href="?tab=absences&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'created_at' %}-{% endif %}created_at">
+                                            {% trans "Created" %}
+                                            {% if current_filters.sort == 'created_at' %}
+                                                <i class="fas fa-sort-up sort-icon"></i>
+                                            {% elif current_filters.sort == '-created_at' %}
+                                                <i class="fas fa-sort-down sort-icon"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for absence in absences_page %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-calendar-day me-1"></i>{{ absence.date_from|date:"d.m.Y" }}
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-calendar-check me-1"></i>{{ absence.date_to|date:"d.m.Y" }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ absence.days_count }} {% trans "days" %}</span>
+                                    </td>
+                                    <td>
+                                        {% if absence.type == 'sick_leave' %}
+                                            <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                        {% elif absence.type == 'vacation' %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-clock me-1"></i>{{ absence.created_at|date:"d.m.Y H:i" }}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">{% trans "No absences found" %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Mobile View -->
+                    <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+                        {% for absence in absences_page %}
+                        <div class="mobile-scan-card">
+                            <div class="mobile-scan-header">
+                                <div class="mobile-scan-title">
+                                    <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absence" %}
+                                </div>
+                            </div>
+                            <div class="mobile-scan-info">
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}</span>
+                                </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}</span>
+                                </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <span><strong>{% trans "Days:" %}</strong> {{ absence.days_count }}</span>
+                                </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-tag"></i>
+                                    <span><strong>{% trans "Type:" %}</strong> 
+                                        {% if absence.type == 'sick_leave' %}
+                                            <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                        {% elif absence.type == 'vacation' %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>{% trans "No absences found" %}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+        <!-- Pagination -->
+        <div class="card-footer bg-light">
+            {% with page_obj=absences_page %}
+            {% include 'paginator.html' %}
+            {% endwith %}
+        </div>
+    {% endif %}
     </div>
 </div>
 {% endblock %}

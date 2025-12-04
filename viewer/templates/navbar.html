@@ -25,10 +25,12 @@
                                 <i class="fas fa-users"></i>
                                 <span>{% trans "Dashboard" %}</span>
                             </a>
+                            {% comment %} Removed Vacation Management Link 
                             <a href="{% url 'company_absences' %}" class="dropdown-link">
                                 <i class="fas fa-umbrella-beach icon"></i>
                                 <span>{% trans "Absences" %}</span>
                             </a>
+                            {% endcomment %}
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'company_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -264,6 +266,7 @@
                     <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                {% comment %} Removed Vacation Management Link 
                 <a href="{% url 'company_absences' %}" class="mobile-menu-item">
                     <div class="mobile-menu-item-icon">
                         <i class="fas fa-umbrella-beach"></i>
@@ -274,6 +277,7 @@
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
+                {% endcomment %}
                 
                 <div class="mobile-menu-divider"></div>
                 
