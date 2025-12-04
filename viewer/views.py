@@ -1584,3 +1584,97 @@ def generate_attendance_pdf(request, user_id):
         response['Content-Disposition'] = f'inline; filename="{filename}"'
     
     return response
+
+
+def generate_qr_code_pdf(request, qr_id):
+    """Generate PDF with QR code for printing on A4"""
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from datetime import datetime
+    import os
+    
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        messages.error(request, _('Unauthorized'))
+        return redirect('company_login')
+    
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('company_login')
+    
+    qr_code = crud.get_qr_code_by_id(qr_id)
+    if not qr_code or qr_code.company != company:
+        messages.error(request, _('QR Code not found'))
+        return redirect('company_dashboard')
+    
+    # Create directory structure for PDF storage
+    now = datetime.now()
+    pdf_dir = os.path.join(settings.MEDIA_ROOT, 'PDF', str(now.year), f"{now.month:02d}")
+    os.makedirs(pdf_dir, exist_ok=True)
+    
+    # Generate filename
+    filename = f"qr_code_{qr_code.name.replace(' ', '_')}_{now.strftime('%Y%m%d_%H%M%S')}.pdf"
+    filepath = os.path.join(pdf_dir, filename)
+    
+    # Register DejaVu fonts for Unicode support
+    try:
+        font_dir = os.path.join(settings.BASE_DIR, 'static', 'fonts')
+        dejavu_path = os.path.join(font_dir, 'DejaVuSans.ttf')
+        dejavu_bold_path = os.path.join(font_dir, 'DejaVuSans-Bold.ttf')
+        
+        if os.path.exists(dejavu_path) and os.path.exists(dejavu_bold_path):
+            pdfmetrics.registerFont(TTFont('DejaVuSans', dejavu_path))
+            pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', dejavu_bold_path))
+            font_name_bold = 'DejaVuSans-Bold'
+        else:
+            raise Exception("DejaVu fonts not found")
+    except:
+        font_name_bold = 'Helvetica-Bold'
+    
+    # Create PDF
+    doc = SimpleDocTemplate(filepath, pagesize=A4,
+                           rightMargin=2*cm, leftMargin=2*cm,
+                           topMargin=3*cm, bottomMargin=3*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title style - centered
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontName=font_name_bold,
+        fontSize=24,
+        alignment=TA_CENTER,
+        spaceAfter=30,
+    )
+    
+    # Add title
+    title = Paragraph(qr_code.name, title_style)
+    elements.append(title)
+    
+    # Add spacer
+    elements.append(Spacer(1, 2*cm))
+    
+    # Add QR code image - centered and larger
+    qr_image_path = os.path.join(settings.MEDIA_ROOT, qr_code.qr_code.name)
+    if os.path.exists(qr_image_path):
+        # Create image with specific size (12cm x 12cm)
+        img = Image(qr_image_path, width=12*cm, height=12*cm)
+        img.hAlign = 'CENTER'
+        elements.append(img)
+    
+    # Build PDF
+    doc.build(elements)
+    
+    # Return PDF response - open in new tab
+    with open(filepath, 'rb') as pdf_file:
+        response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="{filename}"'
+    
+    return response

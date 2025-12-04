@@ -311,3 +311,31 @@ function deleteQRCode(qrId, qrName) {
         }
     });
 }
+
+function showQRPrintModal(qrCodeUrl, qrCodeName, qrCodeId) {
+    const langCode = window.location.pathname.split('/')[1];
+    const printUrl = `/${langCode}/qr/${qrCodeId}/pdf/`;
+    
+    Swal.fire({
+        title: qrCodeName,
+        html: `
+            <div class="text-center">
+                <img src="${qrCodeUrl}" alt="QR Code" style="width: 300px; height: 300px; margin: 20px auto; display: block;">
+            </div>
+        `,
+        width: '500px',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-print me-2"></i>' + (translations.print || 'Tlačiť'),
+        cancelButtonText: translations.close || translations.cancel,
+        customClass: {
+            confirmButton: 'swal-btn-gradient-blue',
+            cancelButton: 'swal-btn-gradient-gray',
+            popup: 'swal-popup-rounded'
+        },
+        buttonsStyling: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.open(printUrl, '_blank');
+        }
+    });
+}

@@ -2558,6 +2558,22 @@ body.mobile-menu-open {
     box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4) !important;
 }
 
+.swal-btn-gradient-blue {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.625rem 1.5rem !important;
+    font-weight: 600 !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal-btn-gradient-blue:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+}
+
 .swal-popup-rounded {
     border-radius: 1rem !important;
     padding: 1.5rem !important;

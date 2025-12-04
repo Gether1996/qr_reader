@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 18:35+0100\n"
+"POT-Creation-Date: 2025-12-04 19:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -632,10 +632,10 @@ msgstr ""
 #: .\venv\Lib\site-packages\django\forms\formsets.py:499
 #: .\viewer\templates\company_absences.html:121
 #: .\viewer\templates\company_absences.html:172
-#: .\viewer\templates\company_dashboard.html:144
-#: .\viewer\templates\company_dashboard.html:183
-#: .\viewer\templates\company_dashboard.html:416
-#: .\viewer\templates\company_dashboard.html:459
+#: .\viewer\templates\company_dashboard.html:146
+#: .\viewer\templates\company_dashboard.html:187
+#: .\viewer\templates\company_dashboard.html:420
+#: .\viewer\templates\company_dashboard.html:463
 #: .\viewer\templates\company_user_details.html:270
 #: .\viewer\templates\company_user_details.html:325
 #: .\viewer\templates\company_vacations.html:136
@@ -702,12 +702,12 @@ msgid "Unknown"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:867
-#: .\viewer\templates\company_dashboard.html:248
+#: .\viewer\templates\company_dashboard.html:252
 msgid "Yes"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:868
-#: .\viewer\templates\company_dashboard.html:253
+#: .\viewer\templates\company_dashboard.html:257
 msgid "No"
 msgstr ""
 
@@ -1295,7 +1295,7 @@ msgstr "Abwesenheit hinzufügen"
 
 #: .\viewer\templates\company_absences.html:26
 #: .\viewer\templates\company_absences.html:64
-#: .\viewer\templates\company_dashboard.html:362
+#: .\viewer\templates\company_dashboard.html:366
 #: .\viewer\templates\company_vacations.html:41
 #: .\viewer\templates\company_vacations.html:79
 #: .\viewer\templates\qr_scans.html:43 .\viewer\templates\qr_scans.html:71
@@ -1318,7 +1318,7 @@ msgid "To"
 msgstr "Bis"
 
 #: .\viewer\templates\company_absences.html:72
-#: .\viewer\templates\company_dashboard.html:370
+#: .\viewer\templates\company_dashboard.html:374
 #: .\viewer\templates\company_user_details.html:224
 #: .\viewer\templates\company_vacations.html:87
 #: .\viewer\templates\user_dashboard.html:214
@@ -1326,7 +1326,7 @@ msgid "Days"
 msgstr "Tage"
 
 #: .\viewer\templates\company_absences.html:73
-#: .\viewer\templates\company_dashboard.html:373
+#: .\viewer\templates\company_dashboard.html:377
 #: .\viewer\templates\company_user_details.html:105
 #: .\viewer\templates\company_user_details.html:225
 #: .\viewer\templates\company_vacations.html:88
@@ -1339,7 +1339,7 @@ msgstr "Typ"
 
 #: .\viewer\templates\company_absences.html:76
 #: .\viewer\templates\company_dashboard.html:108
-#: .\viewer\templates\company_dashboard.html:381
+#: .\viewer\templates\company_dashboard.html:385
 #: .\viewer\templates\company_user_details.html:228
 #: .\viewer\templates\company_vacations.html:91
 #: .\viewer\templates\user_dashboard.html:218
@@ -1348,8 +1348,8 @@ msgstr "Erstellt"
 
 #: .\viewer\templates\company_absences.html:84
 #: .\viewer\templates\company_dashboard.html:116
-#: .\viewer\templates\company_dashboard.html:238
-#: .\viewer\templates\company_dashboard.html:382
+#: .\viewer\templates\company_dashboard.html:242
+#: .\viewer\templates\company_dashboard.html:386
 #: .\viewer\templates\company_user_details.html:236
 #: .\viewer\templates\company_vacations.html:99
 msgid "Actions"
@@ -1357,8 +1357,8 @@ msgstr "Aktionen"
 
 #: .\viewer\templates\company_absences.html:100
 #: .\viewer\templates\company_absences.html:145
-#: .\viewer\templates\company_dashboard.html:398
-#: .\viewer\templates\company_dashboard.html:446
+#: .\viewer\templates\company_dashboard.html:402
+#: .\viewer\templates\company_dashboard.html:450
 #: .\viewer\templates\company_user_details.html:249
 #: .\viewer\templates\company_vacations.html:115
 #: .\viewer\templates\company_vacations.html:160
@@ -1368,8 +1368,8 @@ msgstr "tage"
 
 #: .\viewer\templates\company_absences.html:104
 #: .\viewer\templates\company_absences.html:155
-#: .\viewer\templates\company_dashboard.html:402
-#: .\viewer\templates\company_dashboard.html:440
+#: .\viewer\templates\company_dashboard.html:406
+#: .\viewer\templates\company_dashboard.html:444
 #: .\viewer\templates\company_user_details.html:253
 #: .\viewer\templates\company_user_details.html:311
 #: .\viewer\templates\company_vacations.html:119
@@ -1382,8 +1382,8 @@ msgstr "Krankenstand"
 
 #: .\viewer\templates\company_absences.html:106
 #: .\viewer\templates\company_absences.html:157
-#: .\viewer\templates\company_dashboard.html:404
-#: .\viewer\templates\company_dashboard.html:442
+#: .\viewer\templates\company_dashboard.html:408
+#: .\viewer\templates\company_dashboard.html:446
 #: .\viewer\templates\company_user_details.html:255
 #: .\viewer\templates\company_user_details.html:313
 #: .\viewer\templates\company_vacations.html:121
@@ -1396,8 +1396,8 @@ msgstr "Urlaub"
 
 #: .\viewer\templates\company_absences.html:108
 #: .\viewer\templates\company_absences.html:159
-#: .\viewer\templates\company_dashboard.html:406
-#: .\viewer\templates\company_dashboard.html:444
+#: .\viewer\templates\company_dashboard.html:410
+#: .\viewer\templates\company_dashboard.html:448
 #: .\viewer\templates\company_user_details.html:257
 #: .\viewer\templates\company_user_details.html:291
 #: .\viewer\templates\company_user_details.html:315
@@ -1411,9 +1411,9 @@ msgstr "Abwesenheit"
 
 #: .\viewer\templates\company_absences.html:117
 #: .\viewer\templates\company_absences.html:169
-#: .\viewer\templates\company_dashboard.html:309
-#: .\viewer\templates\company_dashboard.html:412
-#: .\viewer\templates\company_dashboard.html:456
+#: .\viewer\templates\company_dashboard.html:313
+#: .\viewer\templates\company_dashboard.html:416
+#: .\viewer\templates\company_dashboard.html:460
 #: .\viewer\templates\company_user_details.html:266
 #: .\viewer\templates\company_user_details.html:322
 #: .\viewer\templates\company_vacations.html:132
@@ -1471,16 +1471,16 @@ msgid "QR Code"
 msgstr "QR-Code"
 
 #: .\viewer\templates\company_dashboard.html:86
-#: .\viewer\templates\company_dashboard.html:210
-#: .\viewer\templates\company_dashboard.html:492
-#: .\viewer\templates\company_dashboard.html:525
-#: .\viewer\templates\company_dashboard.html:559
+#: .\viewer\templates\company_dashboard.html:214
+#: .\viewer\templates\company_dashboard.html:496
+#: .\viewer\templates\company_dashboard.html:529
+#: .\viewer\templates\company_dashboard.html:563
 #: .\viewer\templates\translations_js.html:16
 msgid "Name"
 msgstr "Name"
 
 #: .\viewer\templates\company_dashboard.html:86
-#: .\viewer\templates\company_dashboard.html:496
+#: .\viewer\templates\company_dashboard.html:500
 #: .\viewer\templates\company_user_details.html:113
 #: .\viewer\templates\qr_scans.html:89
 #: .\viewer\templates\translations_js.html:17
@@ -1489,7 +1489,7 @@ msgid "Location"
 msgstr "Standort"
 
 #: .\viewer\templates\company_dashboard.html:96
-#: .\viewer\templates\company_dashboard.html:220
+#: .\viewer\templates\company_dashboard.html:224
 #: .\viewer\templates\company_user_details.html:66
 #: .\viewer\templates\user_dashboard.html:57
 msgid "Scans"
@@ -1503,23 +1503,28 @@ msgstr "Ankünfte"
 msgid "Departures"
 msgstr "Abgänge"
 
-#: .\viewer\templates\company_dashboard.html:140
+#: .\viewer\templates\company_dashboard.html:125
+#: .\viewer\templates\company_dashboard.html:169
+msgid "Print QR Code"
+msgstr "QR-Code drucken"
+
+#: .\viewer\templates\company_dashboard.html:142
 msgid "View Scans"
 msgstr "Scans anzeigen"
 
-#: .\viewer\templates\company_dashboard.html:152
-#: .\viewer\templates\company_dashboard.html:190
+#: .\viewer\templates\company_dashboard.html:154
+#: .\viewer\templates\company_dashboard.html:194
 msgid "No QR codes yet. Create one to get started!"
 msgstr "Noch keine QR-Codes. Erstellen Sie einen, um zu beginnen!"
 
-#: .\viewer\templates\company_dashboard.html:178
-#: .\viewer\templates\company_dashboard.html:304
+#: .\viewer\templates\company_dashboard.html:182
+#: .\viewer\templates\company_dashboard.html:308
 msgid "View"
 msgstr "Anzeigen"
 
-#: .\viewer\templates\company_dashboard.html:210
-#: .\viewer\templates\company_dashboard.html:529
-#: .\viewer\templates\company_dashboard.html:563
+#: .\viewer\templates\company_dashboard.html:214
+#: .\viewer\templates\company_dashboard.html:533
+#: .\viewer\templates\company_dashboard.html:567
 #: .\viewer\templates\company_login.html:23
 #: .\viewer\templates\company_register.html:29
 #: .\viewer\templates\translations_js.html:33
@@ -1527,97 +1532,97 @@ msgstr "Anzeigen"
 msgid "Email"
 msgstr "E-Mail"
 
-#: .\viewer\templates\company_dashboard.html:230
-#: .\viewer\templates\company_dashboard.html:294
+#: .\viewer\templates\company_dashboard.html:234
+#: .\viewer\templates\company_dashboard.html:298
 #: .\viewer\templates\filters_card.html:95
 msgid "At Work"
 msgstr "Bei der Arbeit"
 
-#: .\viewer\templates\company_dashboard.html:258
+#: .\viewer\templates\company_dashboard.html:262
 msgid "View Details"
 msgstr "Details anzeigen"
 
-#: .\viewer\templates\company_dashboard.html:263
-#: .\viewer\templates\company_dashboard.html:551
+#: .\viewer\templates\company_dashboard.html:267
+#: .\viewer\templates\company_dashboard.html:555
 msgid "Edit Employee"
 msgstr "Mitarbeiter bearbeiten"
 
-#: .\viewer\templates\company_dashboard.html:268
+#: .\viewer\templates\company_dashboard.html:272
 msgid "Deactivate Employee"
 msgstr "Mitarbeiter deaktivieren"
 
-#: .\viewer\templates\company_dashboard.html:276
-#: .\viewer\templates\company_dashboard.html:321
+#: .\viewer\templates\company_dashboard.html:280
+#: .\viewer\templates\company_dashboard.html:325
 msgid "No employees yet. Register employees to give them access!"
 msgstr ""
 "Noch keine Mitarbeiter. Registrieren Sie Mitarbeiter, um ihnen Zugang zu "
 "geben!"
 
-#: .\viewer\templates\company_dashboard.html:296
+#: .\viewer\templates\company_dashboard.html:300
 msgid "Off Work"
 msgstr "Nicht bei der Arbeit"
 
-#: .\viewer\templates\company_dashboard.html:314
+#: .\viewer\templates\company_dashboard.html:318
 msgid "Deactivate"
 msgstr "Deaktivieren"
 
-#: .\viewer\templates\company_dashboard.html:342
+#: .\viewer\templates\company_dashboard.html:346
 #: .\viewer\templates\company_user_details.html:206
 #: .\viewer\templates\user_dashboard.html:196
 msgid "Date From"
 msgstr "Datum Von"
 
-#: .\viewer\templates\company_dashboard.html:352
+#: .\viewer\templates\company_dashboard.html:356
 #: .\viewer\templates\company_user_details.html:216
 #: .\viewer\templates\user_dashboard.html:206
 msgid "Date To"
 msgstr "Datum Bis"
 
-#: .\viewer\templates\company_dashboard.html:424
-#: .\viewer\templates\company_dashboard.html:466
+#: .\viewer\templates\company_dashboard.html:428
+#: .\viewer\templates\company_dashboard.html:470
 #: .\viewer\templates\user_dashboard.html:255
 #: .\viewer\templates\user_dashboard.html:301
 msgid "No absences found"
 msgstr "Keine Abwesenheiten gefunden"
 
-#: .\viewer\templates\company_dashboard.html:449
+#: .\viewer\templates\company_dashboard.html:453
 #: .\viewer\templates\company_user_details.html:297
 #: .\viewer\templates\user_dashboard.html:274
 msgid "From:"
 msgstr "Von:"
 
-#: .\viewer\templates\company_dashboard.html:452
+#: .\viewer\templates\company_dashboard.html:456
 #: .\viewer\templates\company_user_details.html:301
 #: .\viewer\templates\user_dashboard.html:278
 msgid "To:"
 msgstr "Bis:"
 
-#: .\viewer\templates\company_dashboard.html:485
+#: .\viewer\templates\company_dashboard.html:489
 msgid "Create New QR Code"
 msgstr "Neuen QR-Code erstellen"
 
-#: .\viewer\templates\company_dashboard.html:500
+#: .\viewer\templates\company_dashboard.html:504
 #: .\viewer\templates\translations_js.html:18
 msgid "Additional Info (Optional)"
 msgstr "Zusätzliche Informationen (Optional)"
 
-#: .\viewer\templates\company_dashboard.html:506
-#: .\viewer\templates\company_dashboard.html:539
-#: .\viewer\templates\company_dashboard.html:573
+#: .\viewer\templates\company_dashboard.html:510
+#: .\viewer\templates\company_dashboard.html:543
+#: .\viewer\templates\company_dashboard.html:577
 #: .\viewer\templates\translations_js.html:8
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: .\viewer\templates\company_dashboard.html:507
+#: .\viewer\templates\company_dashboard.html:511
 #: .\viewer\templates\translations_js.html:19
 msgid "Create"
 msgstr "Erstellen"
 
-#: .\viewer\templates\company_dashboard.html:518
+#: .\viewer\templates\company_dashboard.html:522
 msgid "Register New Employee"
 msgstr "Neuen Mitarbeiter registrieren"
 
-#: .\viewer\templates\company_dashboard.html:533
+#: .\viewer\templates\company_dashboard.html:537
 #: .\viewer\templates\company_login.html:29
 #: .\viewer\templates\company_register.html:35
 #: .\viewer\templates\translations_js.html:34
@@ -1625,17 +1630,17 @@ msgstr "Neuen Mitarbeiter registrieren"
 msgid "Password"
 msgstr "Passwort"
 
-#: .\viewer\templates\company_dashboard.html:540
+#: .\viewer\templates\company_dashboard.html:544
 #: .\viewer\templates\company_register.html:53
 #: .\viewer\templates\translations_js.html:35
 msgid "Register"
 msgstr "Registrieren"
 
-#: .\viewer\templates\company_dashboard.html:567
+#: .\viewer\templates\company_dashboard.html:571
 msgid "Password (leave blank to keep current)"
 msgstr "Passwort (leer lassen, um aktuelles zu behalten)"
 
-#: .\viewer\templates\company_dashboard.html:574
+#: .\viewer\templates\company_dashboard.html:578
 msgid "Update"
 msgstr "Aktualisieren"
 
@@ -2197,6 +2202,14 @@ msgstr "Bitte geben Sie eine QR-Code UUID ein"
 msgid "Please select a date range first!"
 msgstr "Bitte wählen Sie zuerst einen Datumsbereich aus!"
 
+#: .\viewer\templates\translations_js.html:89
+msgid "Print"
+msgstr "Drucken"
+
+#: .\viewer\templates\translations_js.html:90
+msgid "Close"
+msgstr "Schließen"
+
 #: .\viewer\templates\user_login.html:16
 msgid "Access your company's QR codes"
 msgstr "Greifen Sie auf die QR-Codes Ihres Unternehmens zu"
@@ -2265,7 +2278,7 @@ msgstr "Bitte melden Sie sich als Firma an"
 #: .\viewer\views.py:618 .\viewer\views.py:650 .\viewer\views.py:685
 #: .\viewer\views.py:710 .\viewer\views.py:797 .\viewer\views.py:963
 #: .\viewer\views.py:1058 .\viewer\views.py:1094 .\viewer\views.py:1129
-#: .\viewer\views.py:1166
+#: .\viewer\views.py:1166 .\viewer\views.py:1607
 msgid "Company not found"
 msgstr "Firma nicht gefunden"
 
@@ -2289,6 +2302,7 @@ msgstr "Adresse nicht verfügbar"
 #: .\viewer\views.py:644 .\viewer\views.py:679 .\viewer\views.py:705
 #: .\viewer\views.py:792 .\viewer\views.py:958 .\viewer\views.py:1051
 #: .\viewer\views.py:1088 .\viewer\views.py:1123 .\viewer\views.py:1161
+#: .\viewer\views.py:1602
 msgid "Unauthorized"
 msgstr "Nicht autorisiert"
 
@@ -2413,3 +2427,7 @@ msgstr "Urlaubstage"
 #: .\viewer\views.py:1540
 msgid "Days with Issues"
 msgstr "Tage mit Problemen"
+
+#: .\viewer\views.py:1612
+msgid "QR Code not found"
+msgstr "QR-Code nicht gefunden"
