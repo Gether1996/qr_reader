@@ -78,10 +78,20 @@ function generateAttendancePDF(userId, buttonElement) {
     
     // Initialize daterangepicker directly on the button or near it
     $(tempInput).daterangepicker({
-        locale: locale,
+        locale: {
+            cancelLabel: locale.cancelLabel,
+            applyLabel: locale.applyLabel,
+            customRangeLabel: locale.customRangeLabel,
+            daysOfWeek: locale.daysOfWeek,
+            monthNames: locale.monthNames,
+            firstDay: locale.firstDay,
+            format: locale.format
+        },
+        ranges: locale.ranges,
         autoUpdateInput: false,
         opens: 'left',
-        drops: 'down'
+        drops: 'down',
+        alwaysShowCalendars: false
     });
     
     // Show the daterangepicker immediately
