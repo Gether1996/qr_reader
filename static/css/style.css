@@ -1441,12 +1441,12 @@ body.mobile-menu-open {
 }
 
 .action-icon-btn.action-btn-edit {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, #2563eb, #1e40af);
     color: white;
 }
 
 .action-icon-btn.action-btn-edit:hover {
-    background: linear-gradient(135deg, #d97706, #b45309);
+    background: linear-gradient(135deg, #1e40af, #1e3a8a);
     color: white;
 }
 

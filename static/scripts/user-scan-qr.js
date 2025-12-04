@@ -127,7 +127,10 @@ function initGrantPermissionButton() {
                     title: translations.permissionsGranted || 'Permissions Granted',
                     text: translations.canNowScan || 'You can now scan QR codes',
                     timer: 2000,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'swal-popup-rounded'
+                    }
                 });
             })
             .catch(function(error) {
@@ -138,7 +141,12 @@ function initGrantPermissionButton() {
                     icon: 'error',
                     title: translations.permissionError || 'Permission Error',
                     text: error.message,
-                    confirmButtonText: translations.tryAgain || 'Try Again'
+                    confirmButtonText: translations.tryAgain || 'Try Again',
+                    customClass: {
+                        confirmButton: 'swal-btn-gradient-red',
+                        popup: 'swal-popup-rounded'
+                    },
+                    buttonsStyling: false
                 });
             });
     });
@@ -212,7 +220,12 @@ function submitScan(uuid, scanUrl) {
         Swal.fire({
             icon: 'error',
             title: translations.locationRequired || 'Location Required',
-            text: translations.pleaseEnableLocation || 'Please enable location'
+            text: translations.pleaseEnableLocation || 'Please enable location',
+            customClass: {
+                confirmButton: 'swal-btn-gradient-red',
+                popup: 'swal-popup-rounded'
+            },
+            buttonsStyling: false
         });
         return;
     }
@@ -253,7 +266,10 @@ function submitScan(uuid, scanUrl) {
                 text: data.data.qr_name + ' - ' + data.data.qr_location,
                 timer: 1500,
                 showConfirmButton: false,
-                allowOutsideClick: false
+                allowOutsideClick: false,
+                customClass: {
+                    popup: 'swal-popup-rounded'
+                }
             }).then(function() {
                 const langCode = window.location.pathname.split('/')[1];
                 window.location.href = `/${langCode}/user/dashboard/`;
@@ -263,7 +279,12 @@ function submitScan(uuid, scanUrl) {
                 icon: 'error',
                 title: translations.scanFailed || 'Scan Failed',
                 text: data.message,
-                confirmButtonText: translations.tryAgain || 'Try Again'
+                confirmButtonText: translations.tryAgain || 'Try Again',
+                customClass: {
+                    confirmButton: 'swal-btn-gradient-red',
+                    popup: 'swal-popup-rounded'
+                },
+                buttonsStyling: false
             });
         }
     })
@@ -273,7 +294,12 @@ function submitScan(uuid, scanUrl) {
         Swal.fire({
             icon: 'error',
             title: translations.error || 'Error',
-            text: error.message
+            text: error.message,
+            customClass: {
+                confirmButton: 'swal-btn-gradient-red',
+                popup: 'swal-popup-rounded'
+            },
+            buttonsStyling: false
         });
     });
 }
@@ -321,7 +347,12 @@ function startScanner() {
         Swal.fire({
             icon: 'error',
             title: translations.scannerError || 'Scanner Error',
-            text: err.message || (translations.failedToStart || 'Failed to start scanner')
+            text: err.message || (translations.failedToStart || 'Failed to start scanner'),
+            customClass: {
+                confirmButton: 'swal-btn-gradient-red',
+                popup: 'swal-popup-rounded'
+            },
+            buttonsStyling: false
         });
         
         cameraContainer.style.display = 'none';
@@ -371,7 +402,12 @@ function initStartScanButton() {
                         icon: 'error',
                         title: translations.locationRequired || 'Location Required',
                         text: translations.allowLocationAccess || 'Please allow location access in your browser settings',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'swal-btn-gradient-red',
+                            popup: 'swal-popup-rounded'
+                        },
+                        buttonsStyling: false
                     });
                 },
                 {

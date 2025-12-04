@@ -40,6 +40,11 @@
     <script>
         var csrfToken = "{{ csrf_token }}";
         var currentLanguage = "{{ LANGUAGE_CODE }}";
+        // Get current language code from URL
+        function getLanguageCode() {
+            return window.location.pathname.split('/')[1] || 'sk';
+        }
+        const langCode = getLanguageCode();
     </script>
     <script>
         {% include 'translations_js.html' %}

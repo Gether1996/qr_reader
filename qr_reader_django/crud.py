@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
-from viewer.models import Company, User, QRCodeProfile, ScanEvent
+from viewer.models import Company, User, QRCodeProfile, ScanEvent, Vacation
+from datetime import datetime
 
 # ============= COMPANY CRUD =============
 
@@ -195,3 +196,50 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
         scan.save()
     
     return scan, address
+
+
+# ============= VACATION CRUD =============
+
+def create_vacation(user, date_from, date_to, vacation_type='vacation'):
+    vacation = Vacation.objects.create(
+        user=user,
+        date_from=date_from,
+        date_to=date_to,
+        type=vacation_type
+    )
+    return vacation, None
+
+
+def update_vacation(vacation_id, company, user_id=None, date_from=None, date_to=None, vacation_type=None):
+    try:
+        vacation = Vacation.objects.get(id=vacation_id, user__company=company)
+        
+        if user_id:
+            user = User.objects.get(id=user_id, company=company, is_active=True)
+            vacation.user = user
+        
+        if date_from:
+            vacation.date_from = date_from
+        
+        if date_to:
+            vacation.date_to = date_to
+        
+        if vacation_type:
+            vacation.type = vacation_type
+        
+        vacation.save()
+        return vacation, None
+    except Vacation.DoesNotExist:
+        return None, str(_('Vacation not found'))
+    except User.DoesNotExist:
+        return None, str(_('User not found'))
+
+
+def delete_vacation(vacation_id, company):
+    try:
+        vacation = Vacation.objects.get(id=vacation_id, user__company=company)
+        vacation.is_active = False
+        vacation.save()
+        return True, None
+    except Vacation.DoesNotExist:
+        return False, str(_('Vacation not found'))

@@ -5,9 +5,10 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from qr_reader_django import crud
 import json
-from viewer.models import ScanEvent
+from viewer.models import ScanEvent, Vacation
 from django.core.paginator import Paginator
 import datetime
+from django.utils.formats import date_format
 
 # ============= PUBLIC VIEWS =============
 
@@ -564,38 +565,12 @@ def view_user_details(request, user_id):
         messages.error(request, _('User not found or inactive'))
         return redirect('company_dashboard')
     
-    # Get all scans by this user
-    scans = ScanEvent.objects.filter(scanned_by=user).select_related('qr_code', 'scanned_by')
+    # Determine active tab
+    active_tab = request.GET.get('tab', 'scans')
     
     # Filtering
-    qr_code_filter = request.GET.get('qr_code', '')
-    scan_type_filter = request.GET.get('scan_type', '')
     date_from = request.GET.get('date_from', '')
     date_to = request.GET.get('date_to', '')
-    
-    if qr_code_filter:
-        scans = scans.filter(qr_code__name__icontains=qr_code_filter)
-    
-    if scan_type_filter:
-        scans = scans.filter(scan_type=scan_type_filter)
-    
-    if date_from:
-        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-        scans = scans.filter(timestamp__date__gte=date_from_obj.date())
-    
-    if date_to:
-        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
-        scans = scans.filter(timestamp__date__lte=date_to_obj.date())
-    
-    # Sorting - always default to DESC by timestamp
-    sort_by = request.GET.get('sort', '-timestamp')
-    valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
-                         'scan_type', '-scan_type']
-    
-    if sort_by in valid_sort_fields:
-        scans = scans.order_by(sort_by)
-    else:
-        scans = scans.order_by('-timestamp')
     
     # Pagination
     page_number = request.GET.get('page', 1)
@@ -608,32 +583,314 @@ def view_user_details(request, user_id):
     except:
         per_page = 20
     
-    paginator = Paginator(scans, per_page)
+    if active_tab == 'vacations':
+        # Get all vacations by this user
+        vacations = Vacation.objects.filter(user=user, is_active=True)
+        
+        # Additional filters for vacations
+        vacation_type_filter = request.GET.get('vacation_type', '')
+        
+        if vacation_type_filter:
+            vacations = vacations.filter(type=vacation_type_filter)
+        
+        # Apply date filters
+        if date_from:
+            date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+            vacations = vacations.filter(date_from__gte=date_from_obj.date())
+        
+        if date_to:
+            date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+            vacations = vacations.filter(date_to__lte=date_to_obj.date())
+        
+        # Sorting - default to DESC by date_from
+        sort_by = request.GET.get('sort', '-date_from')
+        valid_sort_fields = ['date_from', '-date_from', 'date_to', '-date_to', 
+                             'created_at', '-created_at']
+        
+        if sort_by in valid_sort_fields:
+            vacations = vacations.order_by(sort_by)
+        else:
+            vacations = vacations.order_by('-date_from')
+        
+        # Pagination
+        paginator = Paginator(vacations, per_page)
+        vacations_page = paginator.get_page(page_number)
+        
+        # Check if any filters are active
+        has_active_filters = any([date_from, date_to, vacation_type_filter])
+        
+        # Get counts
+        scans_count = ScanEvent.objects.filter(scanned_by=user).count()
+        vacations_count = Vacation.objects.filter(user=user).count()
+        
+        context = {
+            'company': company,
+            'user': user,
+            'vacations_page': vacations_page,
+            'page_obj': vacations_page,  # For paginator template
+            'has_active_filters': has_active_filters,
+            'active_tab': active_tab,
+            'scans_count': scans_count,
+            'vacations_count': vacations_count,
+            'current_filters': {
+                'date_from': date_from,
+                'date_to': date_to,
+                'vacation_type': vacation_type_filter,
+                'sort': sort_by,
+                'per_page': per_page,
+            }
+        }
+    else:
+        # Get all scans by this user
+        scans = ScanEvent.objects.filter(scanned_by=user).select_related('qr_code', 'scanned_by')
+        
+        # Additional filters for scans
+        qr_code_filter = request.GET.get('qr_code', '')
+        scan_type_filter = request.GET.get('scan_type', '')
+        
+        if qr_code_filter:
+            scans = scans.filter(qr_code__name__icontains=qr_code_filter)
+        
+        if scan_type_filter:
+            scans = scans.filter(scan_type=scan_type_filter)
+        
+        if date_from:
+            date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+            scans = scans.filter(timestamp__date__gte=date_from_obj.date())
+        
+        if date_to:
+            date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+            scans = scans.filter(timestamp__date__lte=date_to_obj.date())
+        
+        # Sorting - always default to DESC by timestamp
+        sort_by = request.GET.get('sort', '-timestamp')
+        valid_sort_fields = ['timestamp', '-timestamp', 'qr_code__name', '-qr_code__name', 
+                             'scan_type', '-scan_type']
+        
+        if sort_by in valid_sort_fields:
+            scans = scans.order_by(sort_by)
+        else:
+            scans = scans.order_by('-timestamp')
+        
+        # Pagination
+        paginator = Paginator(scans, per_page)
+        page_obj = paginator.get_page(page_number)
+        
+        # Check if any filters are active
+        has_active_filters = any([qr_code_filter, scan_type_filter, date_from, date_to])
+        
+        # Get all QR codes for datalist
+        qr_codes = crud.get_company_qr_codes(company)
+        qr_code_names = [qr.name for qr in qr_codes]
+        
+        # Get counts
+        scans_count = ScanEvent.objects.filter(scanned_by=user).count()
+        vacations_count = Vacation.objects.filter(user=user).count()
+
+        context = {
+            'company': company,
+            'user': user,
+            'page_obj': page_obj,
+            'vacations_page': page_obj,  # Empty for scans tab
+            'has_active_filters': has_active_filters,
+            'datalist_items': qr_code_names,
+            'active_tab': active_tab,
+            'scans_count': scans_count,
+            'vacations_count': vacations_count,
+            'current_filters': {
+                'qr_code': qr_code_filter,
+                'scan_type': scan_type_filter,
+                'date_from': date_from,
+                'date_to': date_to,
+                'sort': sort_by,
+                'per_page': per_page,
+            }
+        }
+    return render(request, 'company_user_details.html', context)
+
+
+def company_absences(request):
+    """Company vacations management page - view and manage all employee vacations"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        messages.error(request, _('Unauthorized'))
+        return redirect('company_login')
+
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('company_login')
+    
+    # Get all vacations for company users
+    vacations = Vacation.objects.filter(
+        user__company=company
+    ).select_related('user')
+    
+    # Filtering
+    user_filter = request.GET.get('user', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    vacation_type_filter = request.GET.get('vacation_type', '')
+    
+    if user_filter:
+        vacations = vacations.filter(user__name__icontains=user_filter)
+    
+    if date_from:
+        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        vacations = vacations.filter(date_from__gte=date_from_obj.date())
+    
+    if date_to:
+        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+        vacations = vacations.filter(date_to__lte=date_to_obj.date())
+    
+    if vacation_type_filter:
+        vacations = vacations.filter(type=vacation_type_filter)
+    
+    # Sorting - default to DESC by created_at
+    sort_by = request.GET.get('sort', '-date_from')
+    valid_sort_fields = ['created_at', '-created_at', 'date_from', '-date_from', 
+                         'date_to', '-date_to', 'user__name', '-user__name']
+    
+    if sort_by in valid_sort_fields:
+        vacations = vacations.order_by(sort_by)
+    else:
+        vacations = vacations.order_by('-date_from')
+    
+    # Pagination
+    page_number = request.GET.get('page', 1)
+    per_page = request.GET.get('per_page', 20)
+    
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 50, 100]:
+            per_page = 20
+    except:
+        per_page = 20
+    
+    paginator = Paginator(vacations, per_page)
     page_obj = paginator.get_page(page_number)
     
     # Check if any filters are active
-    has_active_filters = any([qr_code_filter, scan_type_filter, date_from, date_to])
+    has_active_filters = any([user_filter, date_from, date_to, vacation_type_filter])
     
-    # Get all QR codes for datalist
-    qr_codes = crud.get_company_qr_codes(company)
-    qr_code_names = [qr.name for qr in qr_codes]
+    # Get all users for datalist
+    users = crud.get_company_users(company)
+    user_names = [u.name for u in users]
+    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in users])
 
     context = {
         'company': company,
-        'user': user,
         'page_obj': page_obj,
+        'users': users_json,
         'has_active_filters': has_active_filters,
-        'datalist_items': qr_code_names,
+        'datalist_items': user_names,
         'current_filters': {
-            'qr_code': qr_code_filter,
-            'scan_type': scan_type_filter,
+            'user': user_filter,
             'date_from': date_from,
             'date_to': date_to,
+            'vacation_type': vacation_type_filter,
             'sort': sort_by,
             'per_page': per_page,
         }
     }
-    return render(request, 'user_details.html', context)
+    return render(request, 'company_absences.html', context)
+
+
+def create_vacation(request):
+    """Create a new vacation (company only)"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            company = crud.get_company_by_id(request.session['company_id'])
+            if not company:
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+            
+            user = crud.get_user_by_id(data.get('user_id'))
+            if not user or user.company != company:
+                return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+            
+            vacation, error = crud.create_vacation(
+                user=user,
+                date_from=data.get('date_from'),
+                date_to=data.get('date_to'),
+                vacation_type=data.get('type', 'vacation')
+            )
+            
+            if error:
+                return JsonResponse({'status': 'error', 'message': error}, status=400)
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': str(_('Vacation created successfully')),
+                'vacation_id': vacation.id
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
+
+
+def edit_vacation(request, vacation_id):
+    """Edit vacation details (company only)"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
+
+    if request.method == 'POST':
+        try:
+            company = crud.get_company_by_id(request.session['company_id'])
+            if not company:
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+            
+            data = json.loads(request.body)
+            
+            vacation, error = crud.update_vacation(
+                vacation_id=vacation_id,
+                company=company,
+                user_id=data.get('user_id'),
+                date_from=data.get('date_from'),
+                date_to=data.get('date_to'),
+                vacation_type=data.get('type')
+            )
+            
+            if error:
+                return JsonResponse({'status': 'error', 'message': error}, status=400)
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': str(_('Vacation updated successfully'))
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
+
+
+def delete_vacation(request, vacation_id):
+    """Delete vacation (company only)"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
+
+    if request.method == 'POST':
+        try:
+            company = crud.get_company_by_id(request.session['company_id'])
+            if not company:
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+            
+            success, error = crud.delete_vacation(vacation_id, company)
+            
+            if success:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': str(_('Vacation deleted successfully'))
+                })
+            else:
+                return JsonResponse({'status': 'error', 'message': error}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
 
 
 def generate_attendance_pdf(request, user_id):
@@ -641,15 +898,13 @@ def generate_attendance_pdf(request, user_id):
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib import colors
     from reportlab.lib.units import cm
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, KeepTogether
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-    from reportlab.pdfgen import canvas
+    from reportlab.lib.enums import TA_CENTER
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     from datetime import datetime, timedelta
     from collections import defaultdict
-    from io import BytesIO
     import os
     
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
@@ -694,6 +949,12 @@ def generate_attendance_pdf(request, user_id):
         timestamp__date__gte=date_from.date(),
         timestamp__date__lte=date_to.date()
     ).select_related('qr_code').order_by('timestamp')
+    
+    vacations = Vacation.objects.filter(
+        user=user,
+        date_from__lte=date_to.date(),
+        date_to__gte=date_from.date()
+    ).order_by('date_from')
     
     # Create directory structure for PDF storage
     now = datetime.now()
@@ -770,10 +1031,19 @@ def generate_attendance_pdf(request, user_id):
         day = scan.timestamp.date()
         daily_data[day].append(scan)
     
+    # Create dictionary of vacation days with type
+    vacation_days = {}
+    for vacation in vacations:
+        current = vacation.date_from
+        while current <= vacation.date_to:
+            vacation_days[current] = vacation.type if vacation.type else 'vacation'
+            current += timedelta(days=1)
+    
     # Calculate statistics
     total_days = len(daily_data)
     total_work_hours = 0
     days_with_issues = []
+    total_vacation_days = 0
     
     # Daily attendance table
     elements.append(Paragraph(str(_('Daily Attendance')), heading_style))
@@ -814,16 +1084,47 @@ def generate_attendance_pdf(request, user_id):
         alignment=TA_CENTER
     )
     
-    # Use Django's date formatting for proper localization
-    from django.utils.formats import date_format
-    
     current_date = date_from.date()
     while current_date <= date_to.date():
         day_scans = daily_data.get(current_date, [])
         # Use Django's date_format with 'l' format (day of the week)
         day_name = date_format(current_date, format='l')
         
-        if not day_scans:
+        # Check if this day is a vacation day
+        vacation_type = vacation_days.get(current_date)
+        is_vacation = vacation_type is not None
+        if is_vacation:
+            total_vacation_days += 1
+        
+        if is_vacation and not day_scans:
+            # Vacation day with no scans - display type
+            if vacation_type == 'sick_leave':
+                vacation_style = ParagraphStyle(
+                    'SickLeaveStyle',
+                    parent=cell_style,
+                    textColor=colors.HexColor('#f59e0b'),
+                    fontName=font_name_bold
+                )
+                leave_label = f"🏥 {_('Sick Leave')}"
+            else:
+                vacation_style = ParagraphStyle(
+                    'VacationStyle',
+                    parent=cell_style,
+                    textColor=colors.HexColor('#10b981'),
+                    fontName=font_name_bold
+                )
+                leave_label = f"🏖 {_('Vacation')}"
+            
+            table_data.append([
+                Paragraph(current_date.strftime('%d.%m.%Y'), cell_style_centered),
+                Paragraph(day_name, cell_style),
+                Paragraph('-', cell_style_centered),
+                Paragraph('-', cell_style_centered),
+                Paragraph('-', cell_style_centered),
+                Paragraph('-', cell_style),
+                Paragraph(leave_label, vacation_style)
+            ])
+        elif not day_scans and not is_vacation:
             # No scans for this day
             table_data.append([
                 Paragraph(current_date.strftime('%d.%m.%Y'), cell_style_centered),
@@ -835,12 +1136,22 @@ def generate_attendance_pdf(request, user_id):
                 Paragraph(str(_('No scans')), cell_style)
             ])
         else:
+            # Day with scans (may or may not be vacation)
             # Find arrivals and departures
             arrivals = [s for s in day_scans if s.scan_type == 'arrival']
             departures = [s for s in day_scans if s.scan_type == 'departure']
             
             # Check for issues
             notes = []
+            
+            # Special note if vacation day but has scans (data conflict)
+            if is_vacation:
+                if vacation_type == 'sick_leave':
+                    notes.append(f"⚠ {_('Scans on sick leave day')}")
+                else:
+                    notes.append(f"⚠ {_('Scans on vacation day')}")
+                days_with_issues.append(current_date)
+            
             if not arrivals:
                 notes.append(f"⚠ {_('Missing arrival')}")
                 days_with_issues.append(current_date)
@@ -870,6 +1181,15 @@ def generate_attendance_pdf(request, user_id):
             departure_time = departures[-1].timestamp.strftime('%H:%M') if departures else '-'
             hours_str = f"{int(hours_worked)}:{int((hours_worked % 1) * 60):02d}" if hours_worked > 0 else '0:00'
             
+            # Use conflict style for notes if vacation conflict exists
+            notes_style = cell_style
+            if is_vacation:
+                notes_style = ParagraphStyle(
+                    'ConflictNotesStyle',
+                    parent=cell_style,
+                    textColor=colors.HexColor('#f59e0b')
+                )
+            
             table_data.append([
                 Paragraph(current_date.strftime('%d.%m.%Y'), cell_style_centered),
                 Paragraph(day_name, cell_style),
@@ -877,7 +1197,7 @@ def generate_attendance_pdf(request, user_id):
                 Paragraph(departure_time, cell_style_centered),
                 Paragraph(hours_str, cell_style_centered),
                 Paragraph(qr_info, cell_style),
-                Paragraph(' '.join(notes) if notes else '✓', cell_style)
+                Paragraph(' '.join(notes) if notes else '✓', notes_style)
             ])
         
         current_date += timedelta(days=1)
@@ -926,13 +1246,12 @@ def generate_attendance_pdf(request, user_id):
     
     elements.append(table)
     elements.append(Spacer(1, 1*cm))
-    
-    # Summary statistics
-    elements.append(Paragraph(str(_('Summary Statistics')), heading_style))
+    summary_elements = []
+    summary_elements.append(Paragraph(str(_('Summary Statistics')), heading_style))
     
     avg_hours = total_work_hours / total_days if total_days > 0 else 0
     
-    # Create styled summary data
+    # Create styled summary label and value styles
     summary_label_style = ParagraphStyle(
         'SummaryLabel',
         parent=styles['Normal'],
@@ -949,6 +1268,7 @@ def generate_attendance_pdf(request, user_id):
         leading=13
     )
     
+    # Create styled summary data
     summary_data = [
         [
             Paragraph(str(_('Total Working Days')), summary_label_style),
@@ -961,6 +1281,10 @@ def generate_attendance_pdf(request, user_id):
         [
             Paragraph(str(_('Average Hours per Day')), summary_label_style),
             Paragraph(f"{int(avg_hours)}:{int((avg_hours % 1) * 60):02d}", summary_value_style)
+        ],
+        [
+            Paragraph(str(_('Vacation Days')), summary_label_style),
+            Paragraph(str(total_vacation_days), summary_value_style)
         ],
         [
             Paragraph(str(_('Days with Issues')), summary_label_style),
@@ -996,7 +1320,10 @@ def generate_attendance_pdf(request, user_id):
         ('LINEAFTER', (0, 0), (0, -1), 1, colors.HexColor('#a5b4fc')),
     ]))
     
-    elements.append(summary_table)
+    summary_elements.append(summary_table)
+    
+    # Add summary as a single block that won't be split across pages
+    elements.append(KeepTogether(summary_elements))
     
     # Build PDF
     doc.build(elements)

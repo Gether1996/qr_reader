@@ -25,6 +25,10 @@
                                 <i class="fas fa-users"></i>
                                 <span>{% trans "Dashboard" %}</span>
                             </a>
+                            <a href="{% url 'company_absences' %}" class="dropdown-link">
+                                <i class="fas fa-umbrella-beach icon"></i>
+                                <span>{% trans "Absences" %}</span>
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'company_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -256,6 +260,17 @@
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Dashboard" %}</span>
                         <span class="subtitle">{% trans "Overview & Statistics" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'company_absences' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-umbrella-beach"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Vacations" %}</span>
+                        <span class="subtitle">{% trans "Manage employee vacations" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>

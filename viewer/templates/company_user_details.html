@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "User Details" %} - {{ user.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/daterangepicker.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'company_dashboard' %}" class="btn btn-outline-primary mb-3">
+                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">{{ user.name }}</h4>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="d-flex gap-2 justify-content-lg-end justify-content-start">
+                        <button type="button" class="btn btn-success flex-fill flex-lg-grow-0" onclick="addVacationForUser({{ user.id }}, '{{ user.name }}')" style="min-width: 140px; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                            <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus me-1"></i></span>{% trans "Add Absence" %}
+                        </button>
+                        <button type="button" class="btn btn-danger flex-fill flex-lg-grow-0" onclick="generateAttendancePDF({{ user.id }}, this)" title="{% trans 'Generate PDF' %}" style="min-width: 140px; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                            <i class="fas fa-file-pdf me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-file-pdf me-1"></i></span>{% trans "Generate attendance PDF" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="mb-3">
+        <ul class="nav nav-tabs" role="tablist" style="display: flex; flex-wrap: nowrap;">
+            <li class="nav-item flex-fill" role="presentation">
+                <button class="nav-link {% if active_tab == 'scans' %}active{% endif %} w-100" id="scans-tab" data-bs-toggle="tab" data-bs-target="#scans" type="button" role="tab" aria-controls="scans" aria-selected="{% if active_tab == 'scans' %}true{% else %}false{% endif %}" onclick="window.location.href='?tab=scans'" style="font-size: 0.9rem; padding: 0.6rem 0.5rem;">
+                    <i class="fas fa-qrcode me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-qrcode"></i></span><span class="d-none d-sm-inline">{% trans "Scans" %}</span>
+                    <span class="badge bg-primary ms-1" style="font-size: 0.75rem;">{{ scans_count }}</span>
+                </button>
+            </li>
+            <li class="nav-item flex-fill" role="presentation">
+                <button class="nav-link {% if active_tab == 'vacations' %}active{% endif %} w-100" id="vacations-tab" data-bs-toggle="tab" data-bs-target="#vacations" type="button" role="tab" aria-controls="vacations" aria-selected="{% if active_tab == 'vacations' %}true{% else %}false{% endif %}" onclick="window.location.href='?tab=vacations'" style="font-size: 0.9rem; padding: 0.6rem 0.5rem;">
+                    <i class="fas fa-umbrella-beach me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-umbrella-beach"></i></span><span class="d-none d-sm-inline">{% trans "Absences" %}</span>
+                    <span class="badge bg-primary ms-1" style="font-size: 0.75rem;">{{ vacations_count }}</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="userDetailsTabContent">
+        <!-- Scans Tab -->
+        <div class="tab-pane fade {% if active_tab == 'scans' %}show active{% endif %}" id="scans" role="tabpanel" aria-labelledby="scans-tab">
+            {% include 'filters_card.html' with form_action=request.path clear_url=request.path first_filter_label=_('QR Code') first_filter_name='qr_code' first_filter_value=current_filters.qr_code show_first_filter=True show_scan_type=True active_tab='scans' %}
+
+            <!-- Data Table Card -->
+    <div class="card data-table-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>
+                <i class="fas fa-table me-2"></i>{% trans "Scan History" %}
+            </h5>
+            <span class="badge bg-white text-dark fs-6">{{ page_obj.paginator.count }}</span>
+        </div>
+        <div class="card-body p-0">
+            <!-- Desktop Table View -->
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="sortable-th">
+                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'timestamp' %}-{% endif %}timestamp">
+                                    {% trans "Timestamp" %}
+                                    {% if current_filters.sort == 'timestamp' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-timestamp' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'qr_code__name' %}-{% endif %}qr_code__name">
+                                    {% trans "QR Code" %}
+                                    {% if current_filters.sort == 'qr_code__name' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-qr_code__name' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="sortable-th">
+                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'scan_type' %}-{% endif %}scan_type">
+                                    {% trans "Type" %}
+                                    {% if current_filters.sort == 'scan_type' %}
+                                        <i class="fas fa-sort-up sort-icon"></i>
+                                    {% elif current_filters.sort == '-scan_type' %}
+                                        <i class="fas fa-sort-down sort-icon"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>{% trans "Location" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in page_obj %}
+                        <tr>
+                            <td>
+                                <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
+                            </td>
+                            <td><strong>{{ scan.qr_code.name }}</strong></td>
+                            <td>
+                                {% if scan.scan_type == 'arrival' %}
+                                    <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
+                                {% else %}
+                                    <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if scan.address %}
+                                    <div class="mb-1">
+                                        <i class="fas fa-map-marked-alt me-1 text-primary"></i>
+                                        <strong>{{ scan.address }}</strong>
+                                    </div>
+                                {% elif scan.latitude and scan.longitude %}
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
+                                    <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                    <small>{{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}</small>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">{% trans "No scans found" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Mobile View -->
+            <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+                {% for scan in page_obj %}
+                <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
+                    <div class="mobile-scan-header">
+                        <div class="mobile-scan-title">{{ scan.qr_code.name }}</div>
+                        <div class="mobile-scan-type {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
+                            <i class="fas fa-{% if scan.scan_type == 'arrival' %}sign-in-alt{% else %}sign-out-alt{% endif %} me-1"></i>
+                            {% if scan.scan_type == 'arrival' %}{% trans "Arrival" %}{% else %}{% trans "Departure" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="mobile-scan-info">
+                        <div class="mobile-scan-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>{{ scan.timestamp|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        {% if scan.address %}
+                        <div class="mobile-scan-info-item">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <strong>{{ scan.address }}</strong>
+                        </div>
+                        {% elif scan.latitude and scan.longitude %}
+                        <div class="mobile-scan-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ scan.latitude|stringformat:'f' }},{{ scan.longitude|stringformat:'f' }}" target="_blank" class="text-decoration-none">
+                                {{ scan.latitude|floatformat:6 }}, {{ scan.longitude|floatformat:6 }}
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                    <p>{% trans "No scans found" %}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="card-footer bg-light">
+            {% include 'paginator.html' %}
+        </div>
+    </div>
+        </div>
+
+        <!-- Vacations Tab -->
+        <div class="tab-pane fade {% if active_tab == 'vacations' %}show active{% endif %}" id="vacations" role="tabpanel" aria-labelledby="vacations-tab">
+            {% include 'filters_card.html' with form_action=request.path clear_url=request.path show_vacation_type=True active_tab='vacations' %}
+
+            <!-- Vacations Table Card -->
+            <div class="card data-table-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>
+                        <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absence History" %}
+                    </h5>
+                    <span class="badge bg-white text-dark fs-6">{{ vacations_page.paginator.count }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Desktop Table View -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="sortable-th">
+                                        <a href="?tab=vacations&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'date_from' %}-{% endif %}date_from">
+                                            {% trans "Date From" %}
+                                            {% if current_filters.sort == 'date_from' %}
+                                                <i class="fas fa-sort-up sort-icon"></i>
+                                            {% elif current_filters.sort == '-date_from' %}
+                                                <i class="fas fa-sort-down sort-icon"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="sortable-th">
+                                        <a href="?tab=vacations&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'date_to' %}-{% endif %}date_to">
+                                            {% trans "Date To" %}
+                                            {% if current_filters.sort == 'date_to' %}
+                                                <i class="fas fa-sort-up sort-icon"></i>
+                                            {% elif current_filters.sort == '-date_to' %}
+                                                <i class="fas fa-sort-down sort-icon"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th>{% trans "Days" %}</th>
+                                    <th>{% trans "Type" %}</th>
+                                    <th class="sortable-th">
+                                        <a href="?tab=vacations&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'created_at' %}-{% endif %}created_at">
+                                            {% trans "Created" %}
+                                            {% if current_filters.sort == 'created_at' %}
+                                                <i class="fas fa-sort-up sort-icon"></i>
+                                            {% elif current_filters.sort == '-created_at' %}
+                                                <i class="fas fa-sort-down sort-icon"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="text-center">{% trans "Actions" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vacation in vacations_page %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-calendar-day me-1"></i>{{ vacation.date_from|date:"d.m.Y" }}
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-calendar-check me-1"></i>{{ vacation.date_to|date:"d.m.Y" }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ vacation.days_count }} {% trans "days" %}</span>
+                                    </td>
+                                    <td>
+                                        {% if vacation.type == 'sick_leave' %}
+                                            <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                        {% elif vacation.type == 'vacation' %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-clock me-1"></i>{{ vacation.created_at|date:"d.m.Y H:i" }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="action-buttons">
+                                            <button type="button" class="action-icon-btn action-btn-edit" 
+                                                    onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}')" title="{% trans 'Edit' %}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="action-icon-btn action-btn-delete" 
+                                                    onclick="deleteVacation({{ vacation.id }}, '{{ user.name }}')" title="{% trans 'Delete' %}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">{% trans "No vacations found" %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Mobile View -->
+                    <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+                        {% for vacation in vacations_page %}
+                        <div class="mobile-scan-card">
+                            <div class="mobile-scan-header">
+                                <div class="mobile-scan-title">
+                                    <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absence" %}
+                                </div>
+                            </div>
+                            <div class="mobile-scan-info">
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span><strong>{% trans "From:" %}</strong> {{ vacation.date_from|date:"d.m.Y" }}</span>
+                                </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span><strong>{% trans "To:" %}</strong> {{ vacation.date_to|date:"d.m.Y" }}</span>
+                                </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <span><strong>{% trans "Days:" %}</strong> {{ vacation.days_count }}</span>
+                                </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-tag"></i>
+                                    <span><strong>{% trans "Type:" %}</strong> 
+                                        {% if vacation.type == 'sick_leave' %}
+                                            <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                        {% elif vacation.type == 'vacation' %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-2 d-flex gap-2">
+                                <button type="button" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; border: none; font-weight: 600;" onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}')">
+                                    <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger flex-fill" onclick="deleteVacation({{ vacation.id }}, '{{ user.name }}')">
+                                    <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
+                                </button>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>{% trans "No vacations found" %}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="card-footer bg-light">
+                    {% with page_obj=vacations_page %}
+                    {% include 'paginator.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/filter-utils.js' %}"></script>
+<script src="{% static 'scripts/attendance-pdf.js' %}"></script>
+<script src="{% static 'scripts/company-vacations.js' %}"></script>
+<script>
+    const usersData = [{{ user.id }}];
+</script>
+{% endblock %}

@@ -176,3 +176,27 @@ class ScanEvent(models.Model):
         except Exception as e:
             print(f"Geocoding error: {e}")
             return None
+
+
+class Vacation(models.Model):
+    """Vacation/time-off records for users (managed by company)"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vacations')
+    date_from = models.DateField(help_text="Start date of vacation")
+    date_to = models.DateField(help_text="End date of vacation")
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    type = models.CharField(max_length=100, default=None, blank=True, null=True)
+    
+    class Meta:
+        ordering = ['-date_from']
+    
+    def __str__(self):
+        return f"{self.user.name}: {self.date_from} - {self.date_to}"
+    
+    @property
+    def days_count(self):
+        """Calculate number of days in vacation"""
+        if self.date_from and self.date_to:
+            return (self.date_to - self.date_from).days + 1
+        return 0

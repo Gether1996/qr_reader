@@ -1,7 +1,22 @@
-// Initialize date range picker
-$(function() {
-    var dateFrom = $('#date_from').val();
-    var dateTo = $('#date_to').val();
+// Initialize date range picker - supports multiple instances
+function initDateRangePicker(suffix) {
+    suffix = suffix || 'main';
+    
+    var dateFromId = '#date_from-' + suffix;
+    var dateToId = '#date_to-' + suffix;
+    var dateRangePickerId = '#dateRangePicker-' + suffix;
+    var filterFormId = 'filterForm-' + suffix;
+    
+    // Check if element exists
+    if (!$(dateRangePickerId).length) {
+        console.log('DateRangePicker element not found for suffix:', suffix);
+        return;
+    }
+    
+    console.log('Initializing daterangepicker for:', suffix);
+    
+    var dateFrom = $(dateFromId).val();
+    var dateTo = $(dateToId).val();
     
     var startDate = dateFrom ? moment(dateFrom, 'YYYY-MM-DD') : null;
     var endDate = dateTo ? moment(dateTo, 'YYYY-MM-DD') : null;
@@ -11,7 +26,7 @@ $(function() {
     
     // Set initial display value
     if (startDate && endDate && startDate.isValid() && endDate.isValid()) {
-        $('#dateRangePicker').val(startDate.format('DD.MM.YYYY') + ' - ' + endDate.format('DD.MM.YYYY'));
+        $(dateRangePickerId).val(startDate.format('DD.MM.YYYY') + ' - ' + endDate.format('DD.MM.YYYY'));
     }
     
     // Check if mobile device
@@ -42,18 +57,73 @@ $(function() {
         pickerConfig.endDate = endDate;
     }
     
-    $('#dateRangePicker').daterangepicker(pickerConfig);
+    // Remove existing event handlers
+    $(dateRangePickerId).off('apply.daterangepicker cancel.daterangepicker');
     
-    $('#dateRangePicker').on('apply.daterangepicker', function(ev, picker) {
+    // Initialize daterangepicker
+    $(dateRangePickerId).daterangepicker(pickerConfig);
+    
+    console.log('Daterangepicker initialized for:', suffix);
+    
+    $(dateRangePickerId).on('apply.daterangepicker', function(ev, picker) {
         $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY'));
-        $('#date_from').val(picker.startDate.format('YYYY-MM-DD'));
-        $('#date_to').val(picker.endDate.format('YYYY-MM-DD'));
-        document.getElementById('filterForm').submit();
+        $(dateFromId).val(picker.startDate.format('YYYY-MM-DD'));
+        $(dateToId).val(picker.endDate.format('YYYY-MM-DD'));
+        document.getElementById(filterFormId).submit();
     });
     
-    $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
+    $(dateRangePickerId).on('cancel.daterangepicker', function(ev, picker) {
         $(this).val('');
-        $('#date_from').val('');
-        $('#date_to').val('');
+        $(dateFromId).val('');
+        $(dateToId).val('');
+    });
+}
+
+// Initialize all date range pickers on page load
+$(function() {
+    console.log('Starting daterangepicker initialization...');
+    
+    // Find all dateRangePicker inputs on the page
+    $('[id^="dateRangePicker-"]').each(function() {
+        var $input = $(this);
+        var inputId = $input.attr('id');
+        var suffix = inputId.replace('dateRangePicker-', '');
+        console.log('Found dateRangePicker input:', inputId, 'suffix:', suffix);
+        
+        // Only initialize if visible or if it's in a tab that's currently active
+        var $tabPane = $input.closest('.tab-pane');
+        if ($tabPane.length === 0 || $tabPane.hasClass('active')) {
+            console.log('Initializing immediately (visible):', suffix);
+            initDateRangePicker(suffix);
+        } else {
+            console.log('Skipping hidden tab element:', suffix);
+        }
+    });
+    
+    // Re-initialize daterangepicker when tabs are shown (for Bootstrap tabs)
+    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        console.log('Tab shown event triggered');
+        const targetTab = $(e.target).attr('data-bs-target');
+        console.log('Target tab:', targetTab);
+        
+        // Small delay to ensure tab is fully visible
+        setTimeout(function() {
+            // Find dateRangePicker in the shown tab
+            $(targetTab).find('[id^="dateRangePicker-"]').each(function() {
+                var $input = $(this);
+                var inputId = $input.attr('id');
+                var suffix = inputId.replace('dateRangePicker-', '');
+                console.log('Re-initializing dateRangePicker in tab:', suffix, 'element:', $input[0]);
+                
+                // Destroy existing instance if any
+                if ($input.data('daterangepicker')) {
+                    console.log('Removing existing daterangepicker instance');
+                    $input.data('daterangepicker').remove();
+                }
+                
+                // Initialize
+                initDateRangePicker(suffix);
+            });
+        }, 100);
     });
 });
