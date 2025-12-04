@@ -85,13 +85,13 @@ function generateAttendancePDF(userId, buttonElement) {
             daysOfWeek: locale.daysOfWeek,
             monthNames: locale.monthNames,
             firstDay: locale.firstDay,
-            format: locale.format
+            format: locale.format,
         },
         ranges: locale.ranges,
         autoUpdateInput: false,
         opens: 'left',
         drops: 'down',
-        alwaysShowCalendars: false
+        alwaysShowCalendars: true
     });
     
     // Show the daterangepicker immediately
