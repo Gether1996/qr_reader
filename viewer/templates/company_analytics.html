@@ -512,12 +512,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Daterangepicker Scripts -->
-<script src="{% static 'scripts/libraries/moment.min.js' %}"></script>
-<script src="{% static 'scripts/libraries/daterangepicker.js' %}"></script>
-<script>
-    var currentLanguage = '{{ LANGUAGE_CODE }}';
-</script>
-<script src="{% static 'scripts/daterangepicker-locale/daterangepicker-locale-' %}{{ LANGUAGE_CODE }}.js"></script>
-<script src="{% static 'scripts/daterangepicker-init.js' %}"></script>
+
 {% endblock %}
