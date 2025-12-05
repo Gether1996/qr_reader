@@ -795,6 +795,59 @@ body {
     border-radius: 0 0 12px 12px;
 }
 
+/* Mobile: Equal width tabs */
+@media (max-width: 768px) {
+    .tab-header {
+        display: flex !important;
+    }
+    
+    .tab-header .d-flex {
+        display: flex !important;
+        width: 100%;
+    }
+    
+    .tab-btn {
+        flex: 1 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 1rem 0.5rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0.35rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .tab-btn i {
+        display: block;
+        font-size: 1.1rem;
+        margin: 0 !important;
+    }
+    
+    .tab-btn .badge {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .tab-btn {
+        padding: 0.85rem 0.35rem !important;
+        gap: 0.3rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .tab-btn i {
+        font-size: 1rem;
+    }
+    
+    .tab-btn .badge {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.35rem;
+    }
+}
+
 /* Ensure table and thead have NO rounded corners */
 .data-table-card .table,
 .data-table-card .table thead,

@@ -664,6 +664,78 @@ body.mobile-menu-open {
     }
 }
 
+/* Mobile Theme Toggle in Menu */
+.mobile-theme-section {
+    padding: 0.5rem 0;
+}
+
+.mobile-theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.mobile-theme-toggle:hover {
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.mobile-theme-toggle-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme="dark"] .mobile-theme-toggle-icon {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.mobile-theme-toggle-text {
+    flex: 1;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mobile-theme-toggle-text .title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.mobile-theme-toggle-text .subtitle {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+[data-bs-theme="dark"] .mobile-theme-toggle-text .title {
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .mobile-theme-toggle-text .subtitle {
+    color: #9ca3af;
+}
+
+.mobile-theme-toggle > .fa-chevron-right {
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+
 @media (max-width: 576px) {
     .qr-navbar {
         box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);

@@ -95,16 +95,24 @@ document.addEventListener('DOMContentLoaded', function() {
         // Force reflow to ensure styles are applied immediately
         void htmlElement.offsetHeight;
         
+        // Update mobile menu text
+        const themeToggleTitle = document.getElementById('themeToggleTitle');
+        const themeToggleSubtitle = document.getElementById('themeToggleSubtitle');
+        
         if (theme === 'dark') {
             if (themeIconDark) themeIconDark.style.display = 'none';
             if (themeIconLight) themeIconLight.style.display = 'block';
             if (themeIconDarkMobile) themeIconDarkMobile.style.display = 'none';
             if (themeIconLightMobile) themeIconLightMobile.style.display = 'block';
+            if (themeToggleTitle) themeToggleTitle.textContent = themeToggleTitle.getAttribute('data-light-text') || 'Light Mode';
+            if (themeToggleSubtitle) themeToggleSubtitle.textContent = themeToggleSubtitle.getAttribute('data-light-text') || 'Switch to light theme';
         } else {
             if (themeIconDark) themeIconDark.style.display = 'block';
             if (themeIconLight) themeIconLight.style.display = 'none';
             if (themeIconDarkMobile) themeIconDarkMobile.style.display = 'block';
             if (themeIconLightMobile) themeIconLightMobile.style.display = 'none';
+            if (themeToggleTitle) themeToggleTitle.textContent = themeToggleTitle.getAttribute('data-dark-text') || 'Dark Mode';
+            if (themeToggleSubtitle) themeToggleSubtitle.textContent = themeToggleSubtitle.getAttribute('data-dark-text') || 'Switch to dark theme';
         }
     }
     

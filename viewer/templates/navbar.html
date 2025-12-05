@@ -240,12 +240,6 @@
                 </a>
                 
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <!-- Theme Toggle Button Mobile -->
-                    <button type="button" class="theme-toggle-btn mobile" id="themeToggleMobile" aria-label="Toggle theme">
-                        <i class="fas fa-moon" id="themeIconDarkMobile"></i>
-                        <i class="fas fa-sun" id="themeIconLightMobile" style="display: none;"></i>
-                    </button>
-                    
                     <button class="mobile-menu-btn" id="mobileMegaMenuBtn" type="button">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -383,6 +377,22 @@
                     <i class="fas fa-chevron-right"></i>
                 </a>
             {% endif %}
+            
+            <!-- Theme Toggle Section -->
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-theme-section">
+                <button type="button" class="mobile-theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+                    <div class="mobile-theme-toggle-icon">
+                        <i class="fas fa-moon" id="themeIconDarkMobile"></i>
+                        <i class="fas fa-sun" id="themeIconLightMobile" style="display: none;"></i>
+                    </div>
+                    <div class="mobile-theme-toggle-text">
+                        <span class="title" id="themeToggleTitle" data-dark-text="{% trans 'Dark Mode' %}" data-light-text="{% trans 'Light Mode' %}">{% trans "Dark Mode" %}</span>
+                        <span class="subtitle" id="themeToggleSubtitle" data-dark-text="{% trans 'Switch to dark theme' %}" data-light-text="{% trans 'Switch to light theme' %}">{% trans "Switch to dark theme" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
             
             <!-- Language Switcher Section -->
             <div class="mobile-menu-divider"></div>
