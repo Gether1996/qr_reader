@@ -1,0 +1,107 @@
+/* ============================================
+   Company Dashboard Styles
+   ============================================ */
+
+/* Company Info Card */
+.company-info-card {
+    border: 2px solid #2563eb;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+}
+
+.company-icon-circle {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+/* Table Styles */
+.table-qr-column {
+    width: 100px;
+}
+
+.table-actions-column {
+    width: 100px;
+}
+
+.table-actions-column-wide {
+    width: 120px;
+}
+
+.mobile-view-padding {
+    padding: 1rem;
+}
+
+/* Action Buttons */
+.btn-view-blue {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-edit-blue {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-delete-red {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+/* QR Code Images */
+.qr-code-img-small {
+    max-width: 60px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.25rem;
+    background: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.qr-code-img-small:hover {
+    transform: scale(1.1);
+}
+
+.qr-code-img-mobile {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.25rem;
+    background: white;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+
+/* Small mobile (576px and below) */
+@media (max-width: 576px) {
+    .qr-code-img-mobile {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+
+[data-bs-theme="dark"] .company-info-card {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
+}
+
+[data-bs-theme="dark"] .qr-code-img-small,
+[data-bs-theme="dark"] .qr-code-img-mobile {
+    border-color: #4b5563;
+    background: #374151;
+}

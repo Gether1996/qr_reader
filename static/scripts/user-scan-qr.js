@@ -45,11 +45,13 @@ function checkLocationPermission() {
 }
 
 function showPermissionScreen() {
-    document.getElementById('permission-screen').style.display = 'flex';
+    document.getElementById('permission-screen').classList.remove('d-none');
+    document.getElementById('permission-screen').classList.add('d-flex');
 }
 
 function hidePermissionScreen() {
-    document.getElementById('permission-screen').style.display = 'none';
+    document.getElementById('permission-screen').classList.remove('d-flex');
+    document.getElementById('permission-screen').classList.add('d-none');
 }
 
 // Request all permissions
@@ -173,11 +175,12 @@ function initScanTypeButtons() {
             selectedScanType = this.getAttribute('data-type');
             
             // Hide warning
-            document.getElementById('scan-type-warning').style.display = 'none';
+            document.getElementById('scan-type-warning').classList.add('d-none');
             
             // Show start button
             var startBtn = document.getElementById('startScanBtn');
-            startBtn.style.display = 'flex';
+            startBtn.classList.remove('d-none');
+            startBtn.classList.add('d-flex');
             startBtn.disabled = false;
             startBtn.innerHTML = '<i class="fas fa-camera"></i><span>' + (translations.startScanner || 'Start Scanner') + '</span>';
             
@@ -192,9 +195,11 @@ function stopScanner() {
             console.log('Scanner stopped successfully');
             isScanning = false;
             html5QrcodeScanner = null;
-            document.getElementById('camera-container').style.display = 'none';
-            document.getElementById('stopScanBtn').style.display = 'none';
-            document.getElementById('startScanBtn').style.display = 'flex';
+            document.getElementById('camera-container').classList.add('d-none');
+            document.getElementById('stopScanBtn').classList.add('d-none');
+            const startBtn = document.getElementById('startScanBtn');
+            startBtn.classList.remove('d-none');
+            startBtn.classList.add('d-flex');
         }).catch(function(err) {
             console.error('Error stopping scanner:', err);
             isScanning = false;
@@ -212,7 +217,7 @@ function processScan(uuid, scanUrl) {
 
 function submitScan(uuid, scanUrl) {
     if (!selectedScanType) {
-        document.getElementById('scan-type-warning').style.display = 'block';
+        document.getElementById('scan-type-warning').classList.remove('d-none');
         return;
     }
     
@@ -231,7 +236,8 @@ function submitScan(uuid, scanUrl) {
     }
     
     var loadingOverlay = document.getElementById('loading-overlay');
-    loadingOverlay.style.display = 'flex';
+    loadingOverlay.classList.remove('d-none');
+    loadingOverlay.classList.add('d-flex');
     loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-sync fa-spin me-2"></i>' + (translations.processingScan || 'Processing scan...');
     
     var extractedUuid = uuid.trim();
@@ -257,7 +263,9 @@ function submitScan(uuid, scanUrl) {
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
-        document.getElementById('loading-overlay').style.display = 'none';
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.remove('d-flex');
+        overlay.classList.add('d-none');
         
         if (data.status === 'success') {
             Swal.fire({
@@ -289,7 +297,9 @@ function submitScan(uuid, scanUrl) {
         }
     })
     .catch(function(error) {
-        document.getElementById('loading-overlay').style.display = 'none';
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.remove('d-flex');
+        overlay.classList.add('d-none');
         console.error('Scan processing error:', error);
         Swal.fire({
             icon: 'error',
@@ -310,7 +320,9 @@ function startScanner() {
     var stopBtn = document.getElementById('stopScanBtn');
 
     // Show loading overlay
-    document.getElementById('loading-overlay').style.display = 'flex';
+    const loadingOverlay = document.getElementById('loading-overlay');
+    loadingOverlay.classList.remove('d-none');
+    loadingOverlay.classList.add('d-flex');
     document.getElementById('loading-overlay').querySelector('.text-white').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations.initializingScanner || 'Initializing scanner...');
 
     html5QrcodeScanner = new Html5Qrcode("qr-reader");
@@ -336,13 +348,19 @@ function startScanner() {
         console.log('Scanner started successfully');
         
         // Hide loading and show scanner
-        document.getElementById('loading-overlay').style.display = 'none';
-        cameraContainer.style.display = 'flex';
-        startBtn.style.display = 'none';
-        stopBtn.style.display = 'flex';
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.remove('d-flex');
+        overlay.classList.add('d-none');
+        cameraContainer.classList.remove('d-none');
+        cameraContainer.classList.add('d-flex');
+        startBtn.classList.add('d-none');
+        stopBtn.classList.remove('d-none');
+        stopBtn.classList.add('d-flex');
     }).catch(function(err) {
         console.error('Scanner initialization error:', err);
-        document.getElementById('loading-overlay').style.display = 'none';
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.remove('d-flex');
+        overlay.classList.add('d-none');
         
         Swal.fire({
             icon: 'error',
@@ -355,10 +373,11 @@ function startScanner() {
             buttonsStyling: false
         });
         
-        cameraContainer.style.display = 'none';
-        startBtn.style.display = 'flex';
+        cameraContainer.classList.add('d-none');
+        startBtn.classList.remove('d-none');
+        startBtn.classList.add('d-flex');
         startBtn.disabled = false;
-        stopBtn.style.display = 'none';
+        stopBtn.classList.add('d-none');
     });
 }
 
@@ -372,7 +391,7 @@ function initStartScanButton() {
         }
         
         if (!selectedScanType) {
-            document.getElementById('scan-type-warning').style.display = 'block';
+            document.getElementById('scan-type-warning').classList.remove('d-none');
             return;
         }
         

@@ -6,17 +6,18 @@
 
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/daterangepicker.css' %}" />
+<link rel="stylesheet" href="{% static 'css/company_dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid px-2 px-md-3 py-4">
     <!-- Company Info Card -->
-    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+    <div class="card mb-4 company-info-card">
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 company-icon-circle">
                             <i class="fas fa-building fa-2x text-white"></i>
                         </div>
                         <div>
@@ -56,17 +57,17 @@
     <!-- Data Table Card with Tabs as Header -->
     <div class="card data-table-card">
         <!-- Tabs Navigation replacing header -->
-        <div class="card-header p-0" style="background: transparent; border: none;">
+        <div class="card-header p-0 tab-header">
             <div class="d-flex">
-                <button class="flex-fill text-center" onclick="window.location.href='?tab=qr-codes&sort=name'" style="border: none; border-radius: 12px 0 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'qr-codes' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                <button class="flex-fill text-center tab-btn tab-btn-left{% if active_tab == 'qr-codes' %} active{% endif %}" onclick="window.location.href='?tab=qr-codes&sort=name'">
                     <i class="fas fa-qrcode me-2"></i>{% trans "QR Codes" %}
                     <span class="badge {% if active_tab == 'qr-codes' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ qr_codes_count }}</span>
                 </button>
-                <button class="flex-fill text-center" onclick="window.location.href='?tab=users&sort=name'" style="border: none; border-radius: 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'users' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                <button class="flex-fill text-center tab-btn tab-btn-middle{% if active_tab == 'users' %} active{% endif %}" onclick="window.location.href='?tab=users&sort=name'">
                     <i class="fas fa-users me-2"></i>{% trans "Employees" %}
                     <span class="badge {% if active_tab == 'users' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ users_count }}</span>
                 </button>
-                <button class="flex-fill text-center" onclick="window.location.href='?tab=absences&sort=-date_from'" style="border: none; border-radius: 0 12px 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'absences' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                <button class="flex-fill text-center tab-btn tab-btn-right{% if active_tab == 'absences' %} active{% endif %}" onclick="window.location.href='?tab=absences&sort=-date_from'">
                     <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absences" %}
                     <span class="badge {% if active_tab == 'absences' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ absences_count }}</span>
                 </button>
@@ -74,13 +75,14 @@
         </div>
 
     {% if active_tab == 'qr-codes' %}
-        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
+        <div class="card-body p-0 tab-content-body">
             <!-- Desktop Table View -->
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th style="width: 100px;">{% trans "QR Code" %}</th>
+            <div class="d-none d-lg-block">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="table-qr-column">{% trans "QR Code" %}</th>
                             <th class="sortable-th">
                                 <a href="?tab=qr-codes&sort={% if current_filters.sort == 'name' %}-name{% else %}name{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
                                     {% trans "Name" %} / {% trans "Location" %}
@@ -118,9 +120,9 @@
                     </thead>
                     <tbody>
                         {% for qr in qr_codes_page %}
-                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_qr_scans' qr.id %}'" style="cursor: pointer;">
+                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_qr_scans' qr.id %}'">
                                     <td onclick="event.stopPropagation();">
-                                        <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-small" style="cursor: pointer;" 
+                                        <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-small" 
                                              onclick="showQRPrintModal('{{ qr.qr_code.url }}', '{{ qr.name }}', {{ qr.id }})" 
                                              title="{% trans 'Print QR Code' %}">
                                     </td>
@@ -157,14 +159,15 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
             </div>
             
             <!-- Mobile Card View -->
-            <div class="d-lg-none" style="padding: 1rem;">
+            <div class="d-lg-none mobile-view-padding">
                 {% for qr in qr_codes_page %}
                 <div class="mobile-card mb-3">
                     <div class="d-flex gap-3">
-                        <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-mobile" style="cursor: pointer;" 
+                        <img src="{{ qr.qr_code.url }}" alt="QR" class="qr-code-img-mobile" 
                              onclick="showQRPrintModal('{{ qr.qr_code.url }}', '{{ qr.name }}', {{ qr.id }})" 
                              title="{% trans 'Print QR Code' %}">
                         <div class="flex-grow-1">
@@ -178,12 +181,11 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 mt-3">
-                        <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; font-weight: 600;">
+                        <a href="{% url 'view_qr_scans' qr.id %}" class="btn btn-sm flex-fill btn-view-blue">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
-                        <button type="button" class="btn btn-sm flex-fill" 
-                                onclick="deleteQRCode({{ qr.id }}, '{{ qr.name }}'); return false;"
-                                style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; font-weight: 600;">
+                        <button type="button" class="btn btn-sm flex-fill btn-delete-red" 
+                                onclick="deleteQRCode({{ qr.id }}, '{{ qr.name }}'); return false;">
                             <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
                         </button>
                     </div>
@@ -196,21 +198,21 @@
                 {% endfor %}
             </div>
         </div>
-        <!-- Pagination -->
-        <div class="card-footer bg-light">
+
             {% with page_obj=qr_codes_page %}
             {% include 'paginator.html' %}
             {% endwith %}
-        </div>
+
     {% elif active_tab == 'users' %}
-        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
+        <div class="card-body p-0 tab-content-body">
             <!-- Desktop Table View -->
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="sortable-th">
-                                <a href="?tab=users&sort={% if current_filters.sort == 'name' %}-name{% else %}name{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+            <div class="d-none d-lg-block">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="sortable-th">
+                                    <a href="?tab=users&sort={% if current_filters.sort == 'name' %}-name{% else %}name{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
                                     {% trans "Name" %} / {% trans "Email" %}
                                     {% if current_filters.sort == 'name' %}
                                         <i class="fas fa-sort-up sort-icon"></i>
@@ -239,12 +241,12 @@
                                     {% endif %}
                                 </a>
                             </th>
-                            <th class="text-center" style="width: 120px;">{% trans "Actions" %}</th>
+                            <th class="text-center table-actions-column-wide">{% trans "Actions" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for user in users_page %}
-                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_user_details' user.id %}'" style="cursor: pointer;">
+                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_user_details' user.id %}'">
                                     <td><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong><br><small class="text-muted">{{ user.email }}</small></td>
                                     <td><span class="badge bg-info">{{ user.total_scans }}</span></td>
                                     <td>
@@ -286,7 +288,7 @@
             </div>
             
             <!-- Mobile Card View -->
-            <div class="d-lg-none" style="padding: 1rem;">
+            <div class="d-lg-none mobile-view-padding">
                 {% for user in users_page %}
                 <div class="mobile-card mb-3">
                     <div class="mb-2">
@@ -304,17 +306,15 @@
                         <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ user.work_location }}</p>
                     {% endif %}
                     <div class="d-flex gap-2 mt-3">
-                        <a href="{% url 'view_user_details' user.id %}" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; font-weight: 600;">
+                        <a href="{% url 'view_user_details' user.id %}" class="btn btn-sm flex-fill btn-view-blue">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
-                        <button type="button" class="btn btn-sm flex-fill" 
-                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}'); return false;"
-                                style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; border: none; font-weight: 600;">
+                        <button type="button" class="btn btn-sm flex-fill btn-edit-blue" 
+                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}'); return false;">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
-                        <button type="button" class="btn btn-sm flex-fill" 
-                                onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;"
-                                style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; font-weight: 600;">
+                        <button type="button" class="btn btn-sm flex-fill btn-delete-red" 
+                                onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;">
                             <i class="fas fa-trash me-1"></i>{% trans "Deactivate" %}
                         </button>
                     </div>
@@ -327,19 +327,17 @@
                 {% endfor %}
             </div>
         </div>
-        <!-- Pagination -->
-        <div class="card-footer bg-light">
             {% with page_obj=users_page %}
             {% include 'paginator.html' %}
             {% endwith %}
-        </div>
     {% else %}
         <!-- Absences Tab -->
-        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
+        <div class="card-body p-0 tab-content-body">
             <!-- Desktop Table View -->
-            <div class="table-responsive">
+            <div class="d-none d-lg-block">
+                <div class="table-responsive">
                 <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th class="sortable-th">
                                 <a href="?tab=absences&sort={% if current_filters.sort == 'date_from' %}-date_from{% else %}date_from{% endif %}{% for key, value in current_filters.items %}{% if key != 'sort' and key != 'page' and value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
@@ -410,6 +408,14 @@
                                     <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
                                 {% endif %}
                             </td>
+                            <td>
+                                <small>{{ absence.created_at|date:"d.m.Y H:i" }}</small>
+                                {% if absence.modified_at and absence.created_at != absence.modified_at %}
+                                    <br><span class="badge bg-secondary" title="{% trans 'Last modified:' %} {{ absence.modified_at|date:'d.m.Y H:i' }}">
+                                        <i class="fas fa-edit"></i> {% trans "Edited" %}
+                                    </span>
+                                {% endif %}
+                            </td>
                             <td class="text-center">
                                 <div class="action-buttons">
                                     <button type="button" class="action-icon-btn action-btn-edit" 
@@ -430,10 +436,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
             
             <!-- Mobile View -->
-            <div class="mobile-scan-list d-lg-none" style="padding: 1rem;">
+            <div class="mobile-scan-list d-lg-none mobile-view-padding">
                 {% for absence in absences %}
                 <div class="mobile-card mb-3">
                     <div class="mb-2">
@@ -456,7 +463,7 @@
                         <i class="fas fa-calendar-check me-1"></i><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}
                     </p>
                     <div class="mt-2 d-flex gap-2">
-                        <button type="button" class="btn btn-sm flex-fill" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; border: none; font-weight: 600;" onclick="editVacation({{ absence.id }}, {{ absence.user.id }}, '{{ absence.user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type|default:'vacation' }}', usersData)">
+                        <button type="button" class="btn btn-sm flex-fill btn-edit-blue" onclick="editVacation({{ absence.id }}, {{ absence.user.id }}, '{{ absence.user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type|default:'vacation' }}', usersData)">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
                         <button type="button" class="btn btn-sm btn-danger flex-fill" onclick="deleteVacation({{ absence.id }}, '{{ absence.user.name }}')">
@@ -472,11 +479,9 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="card-footer bg-light">
             {% with page_obj=absences_page %}
             {% include 'paginator.html' %}
             {% endwith %}
-        </div>
     {% endif %}
     </div>
 </div>

@@ -951,100 +951,6 @@ def view_user_details(request, user_id):
         }
     return render(request, 'company_user_details.html', context)
 
-
-def company_absences(request):
-    """Company vacations management page - view and manage all employee vacations"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        messages.error(request, _('Unauthorized'))
-        return redirect('company_login')
-
-    company = crud.get_company_by_id(request.session['company_id'])
-    if not company:
-        messages.error(request, _('Company not found'))
-        return redirect('company_login')
-    
-    # Get all vacations for company users
-    vacations = Vacation.objects.filter(
-        user__company=company
-    ).select_related('user')
-    
-    # Filtering
-    user_filter = request.GET.get('user', '')
-    date_from = request.GET.get('date_from', '')
-    date_to = request.GET.get('date_to', '')
-    vacation_type_filter = request.GET.get('vacation_type', '')
-    
-    if user_filter:
-        vacations = vacations.filter(user__name__icontains=user_filter)
-    
-    # Date filter: show vacations that overlap with the date range
-    if date_from and date_to:
-        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
-        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
-        vacations = vacations.filter(
-            date_from__lte=date_to_obj,
-            date_to__gte=date_from_obj
-        )
-    elif date_from:
-        date_from_obj = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
-        vacations = vacations.filter(date_to__gte=date_from_obj)
-    elif date_to:
-        date_to_obj = datetime.datetime.strptime(date_to, '%Y-%m-%d').date()
-        vacations = vacations.filter(date_from__lte=date_to_obj)
-    
-    if vacation_type_filter:
-        vacations = vacations.filter(type=vacation_type_filter)
-    
-    # Sorting - default to DESC by created_at
-    sort_by = request.GET.get('sort', '-date_from')
-    valid_sort_fields = ['created_at', '-created_at', 'date_from', '-date_from', 
-                         'date_to', '-date_to', 'user__name', '-user__name']
-    
-    if sort_by in valid_sort_fields:
-        vacations = vacations.order_by(sort_by)
-    else:
-        vacations = vacations.order_by('-date_from')
-    
-    # Pagination
-    page_number = request.GET.get('page', 1)
-    per_page = request.GET.get('per_page', 20)
-    
-    try:
-        per_page = int(per_page)
-        if per_page not in [10, 20, 50, 100]:
-            per_page = 20
-    except:
-        per_page = 20
-    
-    paginator = Paginator(vacations, per_page)
-    page_obj = paginator.get_page(page_number)
-    
-    # Check if any filters are active
-    has_active_filters = any([user_filter, date_from, date_to, vacation_type_filter])
-    
-    # Get all users for datalist
-    users = crud.get_company_users(company)
-    user_names = [u.name for u in users]
-    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in users])
-
-    context = {
-        'company': company,
-        'page_obj': page_obj,
-        'users': users_json,
-        'has_active_filters': has_active_filters,
-        'datalist_items': user_names,
-        'current_filters': {
-            'user': user_filter,
-            'date_from': date_from,
-            'date_to': date_to,
-            'vacation_type': vacation_type_filter,
-            'sort': sort_by,
-            'per_page': per_page,
-        }
-    }
-    return render(request, 'company_absences.html', context)
-
-
 def create_vacation(request):
     """Create a new vacation (company only)"""
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
@@ -1202,6 +1108,7 @@ def generate_attendance_pdf(request, user_id):
     
     vacations = Vacation.objects.filter(
         user=user,
+        is_active=True,
         date_from__lte=date_to.date(),
         date_to__gte=date_from.date()
     ).order_by('date_from')
@@ -1678,3 +1585,369 @@ def generate_qr_code_pdf(request, qr_id):
         response['Content-Disposition'] = f'inline; filename="{filename}"'
     
     return response
+
+
+# ============= ANALYTICS VIEWS =============
+
+def company_analytics(request):
+    """Analytics dashboard with statistics and charts"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        messages.error(request, _('Please login as a company'))
+        return redirect('company_login')
+
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('company_login')
+    
+    from django.db.models import Count, Q, Max
+    from django.utils import timezone
+    from datetime import timedelta, datetime
+    from calendar import monthrange
+    
+    today = timezone.now().date()
+    
+    # Get date range from request parameters
+    date_from_param = request.GET.get('date_from')
+    date_to_param = request.GET.get('date_to')
+    
+    # Parse custom date range or use defaults
+    if date_from_param and date_to_param:
+        try:
+            date_from = datetime.strptime(date_from_param, '%Y-%m-%d').date()
+            date_to = datetime.strptime(date_to_param, '%Y-%m-%d').date()
+        except ValueError:
+            date_from = today.replace(day=1)
+            date_to = today
+    else:
+        # Default: current month (from 1st to today)
+        date_from = today.replace(day=1)
+        date_to = today
+    
+    week_ago = today - timedelta(days=7)
+    
+    # Current month (from 1st to today) - for secondary comparison
+    current_month_start = today.replace(day=1)
+    
+    # Previous month (full calendar month) - for secondary comparison
+    if today.month == 1:
+        prev_month_start = today.replace(year=today.year - 1, month=12, day=1)
+        prev_month_end = today.replace(year=today.year - 1, month=12, day=31)
+    else:
+        prev_month_start = today.replace(month=today.month - 1, day=1)
+        days_in_prev_month = monthrange(prev_month_start.year, prev_month_start.month)[1]
+        prev_month_end = prev_month_start.replace(day=days_in_prev_month)
+    
+    # Get all users and QR codes
+    users = crud.get_company_users(company)
+    qr_codes = crud.get_company_qr_codes(company)
+    
+    # Today's statistics (always based on actual today)
+    today_scans = ScanEvent.objects.filter(
+        qr_code__company=company,
+        timestamp__date=today
+    )
+    today_arrivals = today_scans.filter(scan_type='arrival').count()
+    today_departures = today_scans.filter(scan_type='departure').count()
+    
+    # Statistics for selected date range
+    range_scans = ScanEvent.objects.filter(
+        qr_code__company=company,
+        timestamp__date__gte=date_from,
+        timestamp__date__lte=date_to
+    )
+    range_arrivals = range_scans.filter(scan_type='arrival').count()
+    range_departures = range_scans.filter(scan_type='departure').count()
+    range_total_scans = range_scans.count()
+    
+    # Weekly statistics
+    week_scans = ScanEvent.objects.filter(
+        qr_code__company=company,
+        timestamp__date__gte=week_ago
+    ).count()
+    
+    # Current month statistics
+    current_month_scans = ScanEvent.objects.filter(
+        qr_code__company=company,
+        timestamp__date__gte=current_month_start,
+        timestamp__date__lte=today
+    ).count()
+    
+    # Previous month statistics
+    prev_month_scans = ScanEvent.objects.filter(
+        qr_code__company=company,
+        timestamp__date__gte=prev_month_start,
+        timestamp__date__lte=prev_month_end
+    ).count()
+    
+    # Currently in office (last scan was arrival)
+    currently_in_office = []
+    for user in users:
+        last_scan = ScanEvent.objects.filter(
+            scanned_by=user,
+            qr_code__company=company
+        ).order_by('-timestamp').first()
+        
+        if last_scan and last_scan.scan_type == 'arrival':
+            currently_in_office.append({
+                'user': user,
+                'location': last_scan.qr_code.name,
+                'time': last_scan.timestamp
+            })
+    
+    # Top 5 most used QR codes (for selected date range)
+    top_qr_codes = ScanEvent.objects.filter(
+        qr_code__company=company,
+        timestamp__date__gte=date_from,
+        timestamp__date__lte=date_to
+    ).values('qr_code__name', 'qr_code__location').annotate(
+        scan_count=Count('id')
+    ).order_by('-scan_count')[:5]
+    
+    # Calculate working hours for selected date range
+    selected_range_work_hours = []
+    for user in users:
+        scans = ScanEvent.objects.filter(
+            scanned_by=user,
+            qr_code__company=company,
+            timestamp__date__gte=date_from,
+            timestamp__date__lte=date_to
+        ).order_by('timestamp')
+        
+        total_hours = 0
+        arrival_time = None
+        
+        for scan in scans:
+            if scan.scan_type == 'arrival':
+                arrival_time = scan.timestamp
+            elif scan.scan_type == 'departure' and arrival_time:
+                work_duration = (scan.timestamp - arrival_time).total_seconds() / 3600
+                total_hours += work_duration
+                arrival_time = None
+        
+        if total_hours > 0:  # Only include users with hours
+            selected_range_work_hours.append({
+                'user': user,
+                'hours': round(total_hours, 1),
+                'days': scans.values('timestamp__date').distinct().count()
+            })
+    
+    # Calculate working hours for current month (calendar)
+    current_month_work_hours = []
+    for user in users:
+        scans = ScanEvent.objects.filter(
+            scanned_by=user,
+            qr_code__company=company,
+            timestamp__date__gte=current_month_start,
+            timestamp__date__lte=today
+        ).order_by('timestamp')
+        
+        total_hours = 0
+        arrival_time = None
+        
+        for scan in scans:
+            if scan.scan_type == 'arrival':
+                arrival_time = scan.timestamp
+            elif scan.scan_type == 'departure' and arrival_time:
+                work_duration = (scan.timestamp - arrival_time).total_seconds() / 3600
+                total_hours += work_duration
+                arrival_time = None
+        
+        if total_hours > 0:  # Only include users with hours
+            current_month_work_hours.append({
+                'user': user,
+                'hours': round(total_hours, 1),
+                'days': scans.values('timestamp__date').distinct().count()
+            })
+    
+    # Calculate working hours for previous month
+    prev_month_work_hours = []
+    for user in users:
+        scans = ScanEvent.objects.filter(
+            scanned_by=user,
+            qr_code__company=company,
+            timestamp__date__gte=prev_month_start,
+            timestamp__date__lte=prev_month_end
+        ).order_by('timestamp')
+        
+        total_hours = 0
+        arrival_time = None
+        
+        for scan in scans:
+            if scan.scan_type == 'arrival':
+                arrival_time = scan.timestamp
+            elif scan.scan_type == 'departure' and arrival_time:
+                work_duration = (scan.timestamp - arrival_time).total_seconds() / 3600
+                total_hours += work_duration
+                arrival_time = None
+        
+        if total_hours > 0:  # Only include users with hours
+            prev_month_work_hours.append({
+                'user': user,
+                'hours': round(total_hours, 1),
+                'days': scans.values('timestamp__date').distinct().count()
+            })
+    
+    # Sort by hours
+    selected_range_work_hours.sort(key=lambda x: x['hours'], reverse=True)
+    current_month_work_hours.sort(key=lambda x: x['hours'], reverse=True)
+    prev_month_work_hours.sort(key=lambda x: x['hours'], reverse=True)
+    
+    # Active vacations in selected range
+    active_vacations = Vacation.objects.filter(
+        user__company=company,
+        is_active=True,
+        date_from__lte=date_to,
+        date_to__gte=date_from
+    ).count()
+    
+    # Calculate number of days in selected range
+    days_in_range = (date_to - date_from).days + 1
+    
+    context = {
+        'company': company,
+        'today_arrivals': today_arrivals,
+        'today_departures': today_departures,
+        'week_scans': week_scans,
+        'current_month_scans': current_month_scans,
+        'prev_month_scans': prev_month_scans,
+        'current_month_name': current_month_start.strftime('%B %Y'),
+        'prev_month_name': prev_month_start.strftime('%B %Y'),
+        'currently_in_office': currently_in_office,
+        'currently_in_office_count': len(currently_in_office),
+        'top_qr_codes': top_qr_codes,
+        'selected_range_work_hours': selected_range_work_hours,
+        'current_month_work_hours': current_month_work_hours,
+        'prev_month_work_hours': prev_month_work_hours,
+        'total_users': users.count(),
+        'total_qr_codes': qr_codes.count(),
+        'active_vacations': active_vacations,
+        'date_from': date_from.strftime('%Y-%m-%d'),
+        'date_to': date_to.strftime('%Y-%m-%d'),
+        'date_range_display': f"{date_from.strftime('%d.%m.%Y')} - {date_to.strftime('%d.%m.%Y')}",
+        'range_arrivals': range_arrivals,
+        'range_departures': range_departures,
+        'range_total_scans': range_total_scans,
+        'days_in_range': days_in_range,
+    }
+    
+    return render(request, 'company_analytics.html', context)
+
+
+def analytics_chart_data(request):
+    """API endpoint for chart data (JSON)"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        return JsonResponse({'error': 'Company not found'}, status=404)
+    
+    from django.db.models import Count
+    from django.utils import timezone
+    from datetime import timedelta
+    
+    chart_type = request.GET.get('type', 'daily')
+    days = int(request.GET.get('days', 7))
+    
+    today = timezone.now().date()
+    start_date = today - timedelta(days=days-1)
+    
+    if chart_type == 'daily':
+        # Daily scan counts
+        data = []
+        labels = []
+        arrivals_data = []
+        departures_data = []
+        
+        for i in range(days):
+            date = start_date + timedelta(days=i)
+            labels.append(date.strftime('%d.%m'))
+            
+            day_scans = ScanEvent.objects.filter(
+                qr_code__company=company,
+                timestamp__date=date
+            )
+            
+            arrivals = day_scans.filter(scan_type='arrival').count()
+            departures = day_scans.filter(scan_type='departure').count()
+            
+            arrivals_data.append(arrivals)
+            departures_data.append(departures)
+        
+        return JsonResponse({
+            'labels': labels,
+            'datasets': [
+                {
+                    'label': str(_('Arrivals')),
+                    'data': arrivals_data,
+                    'borderColor': 'rgb(16, 185, 129)',
+                    'backgroundColor': 'rgba(16, 185, 129, 0.1)',
+                    'tension': 0.4
+                },
+                {
+                    'label': str(_('Departures')),
+                    'data': departures_data,
+                    'borderColor': 'rgb(239, 68, 68)',
+                    'backgroundColor': 'rgba(239, 68, 68, 0.1)',
+                    'tension': 0.4
+                }
+            ]
+        })
+    
+    elif chart_type == 'qr_usage':
+        # QR code usage pie chart
+        qr_data = ScanEvent.objects.filter(
+            qr_code__company=company,
+            timestamp__date__gte=start_date
+        ).values('qr_code__name').annotate(
+            count=Count('id')
+        ).order_by('-count')[:5]
+        
+        labels = [item['qr_code__name'] for item in qr_data]
+        data = [item['count'] for item in qr_data]
+        
+        colors = [
+            'rgb(37, 99, 235)',
+            'rgb(16, 185, 129)',
+            'rgb(245, 158, 11)',
+            'rgb(239, 68, 68)',
+            'rgb(139, 92, 246)'
+        ]
+        
+        return JsonResponse({
+            'labels': labels,
+            'datasets': [{
+                'data': data,
+                'backgroundColor': colors[:len(data)],
+                'borderWidth': 2,
+                'borderColor': '#fff'
+            }]
+        })
+    
+    elif chart_type == 'hourly':
+        # Hourly distribution (today)
+        hours = list(range(24))
+        labels = [f'{h:02d}:00' for h in hours]
+        data = []
+        
+        for hour in hours:
+            count = ScanEvent.objects.filter(
+                qr_code__company=company,
+                timestamp__date=today,
+                timestamp__hour=hour
+            ).count()
+            data.append(count)
+        
+        return JsonResponse({
+            'labels': labels,
+            'datasets': [{
+                'label': str(_('Scans')),
+                'data': data,
+                'backgroundColor': 'rgba(37, 99, 235, 0.5)',
+                'borderColor': 'rgb(37, 99, 235)',
+                'borderWidth': 2
+            }]
+        })
+    
+    return JsonResponse({'error': 'Invalid chart type'}, status=400)

@@ -1,0 +1,523 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Analytics" %} - {{ company.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+<link rel="stylesheet" href="{% static 'css/company_analytics.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="analytics-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-2"><i class="fas fa-chart-line me-2 text-primary"></i>{% trans "Analytics Dashboard" %}</h2>
+                <p class="text-muted mb-0"><i class="fas fa-building me-2"></i>{{ company.name }}</p>
+            </div>
+            <a href="{% url 'company_dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Dashboard" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Date Range Filter -->
+    <div class="date-filter-card">
+        <div>
+            <form method="get" action="{% url 'company_analytics' %}" id="filterForm-analytics">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-primary">
+                            <i class="fas fa-calendar-alt me-2"></i>{% trans "Date Range" %}
+                        </label>
+                        <input type="text" id="dateRangePicker-analytics" class="form-control date-range-display" readonly 
+                               placeholder="{% trans 'Select date range' %}" 
+                               value="{{ date_range_display }}">
+                        <input type="hidden" name="date_from" id="date_from-analytics" value="{{ date_from }}">
+                        <input type="hidden" name="date_to" id="date_to-analytics" value="{{ date_to }}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards Row -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="stat-card primary" style="min-height: 120px;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">{% trans "Today Arrivals" %}</div>
+                        <div class="stat-value text-primary">{{ today_arrivals }}</div>
+                    </div>
+                    <i class="fas fa-sign-in-alt stat-icon text-primary"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="stat-card danger" style="min-height: 120px;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">{% trans "Today Departures" %}</div>
+                        <div class="stat-value text-danger">{{ today_departures }}</div>
+                    </div>
+                    <i class="fas fa-sign-out-alt stat-icon text-danger"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="stat-card success" style="min-height: 120px;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">{% trans "Currently in Office" %}</div>
+                        <div class="stat-value text-success">{{ currently_in_office_count }}</div>
+                    </div>
+                    <i class="fas fa-users stat-icon text-success"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="stat-card warning" style="min-height: 120px;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">{% trans "Period Scans" %}</div>
+                        <div class="stat-value text-warning">{{ range_total_scans }}</div>
+                    </div>
+                    <i class="fas fa-qrcode stat-icon text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Selected Range Stats -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="period-stats">
+                <h6 class="mb-3">
+                    <i class="fas fa-calendar-check me-2"></i>{% trans "Selected Period Statistics" %}
+                    <span class="badge ms-2">{{ date_range_display }}</span>
+                </h6>
+                <div class="row">
+                    <div class="col-md-3 col-6 text-center mb-3 mb-md-0">
+                        <i class="fas fa-sign-in-alt fa-3x mb-2"></i>
+                        <h3 class="mb-1">{{ range_arrivals }}</h3>
+                        <p class="mb-0">{% trans "Arrivals" %}</p>
+                    </div>
+                    <div class="col-md-3 col-6 text-center mb-3 mb-md-0">
+                        <i class="fas fa-sign-out-alt fa-3x mb-2"></i>
+                        <h3 class="mb-1">{{ range_departures }}</h3>
+                        <p class="mb-0">{% trans "Departures" %}</p>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <i class="fas fa-business-time fa-3x mb-2"></i>
+                        <h3 class="mb-1">{{ selected_range_work_hours|length }}</h3>
+                        <p class="mb-0">{% trans "Active Employees" %}</p>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <i class="fas fa-umbrella-beach fa-3x mb-2"></i>
+                        <h3 class="mb-1">{{ active_vacations }}</h3>
+                        <p class="mb-0">{% trans "Vacations" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <!-- Attendance Chart -->
+        <div class="col-lg-8 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-area me-2"></i>{% trans "Attendance Trends" %}</h5>
+                    <div class="time-filter">
+                        <button class="time-filter-btn active" data-days="7">7 {% trans "days" %}</button>
+                        <button class="time-filter-btn" data-days="14">14 {% trans "days" %}</button>
+                        <button class="time-filter-btn" data-days="30">30 {% trans "days" %}</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper" id="attendanceChartWrapper">
+                    <div class="chart-loading" id="attendanceChartLoading">
+                        <div class="chart-spinner"></div>
+                        <p class="text-muted">{% trans "Loading" %}...</p>
+                    </div>
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- QR Usage Pie Chart -->
+        <div class="col-lg-4 mb-4">
+            <div class="chart-container">
+                <h5 class="mb-3"><i class="fas fa-chart-pie me-2"></i>{% trans "Top Locations" %}</h5>
+                <div class="chart-wrapper" id="qrUsageChartWrapper">
+                    <div class="chart-loading" id="qrUsageChartLoading">
+                        <div class="chart-spinner"></div>
+                        <p class="text-muted">{% trans "Loading" %}...</p>
+                    </div>
+                    <canvas id="qrUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hourly Distribution -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="chart-container">
+                <h5 class="mb-3"><i class="fas fa-clock me-2"></i>{% trans "Today's Hourly Distribution" %}</h5>
+                <div class="chart-wrapper" id="hourlyChartWrapper">
+                    <div class="chart-loading" id="hourlyChartLoading">
+                        <div class="chart-spinner"></div>
+                        <p class="text-muted">{% trans "Loading" %}...</p>
+                    </div>
+                    <canvas id="hourlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Row -->
+    <div class="row g-4">
+        <!-- Top QR Codes -->
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h5 class="mb-4">
+                    <i class="fas fa-trophy me-2" style="color: #f59e0b;"></i>
+                    {% trans "Most Used QR Codes" %}
+                </h5>
+                {% if top_qr_codes %}
+                    {% for qr in top_qr_codes %}
+                    <div class="top-qr-item">
+                        <div>
+                            <div class="fw-bold">{{ qr.qr_code__name }}</div>
+                            <small class="text-muted">{{ qr.qr_code__location }}</small>
+                        </div>
+                        <div class="top-qr-badge">{{ qr.scan_count }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center mt-4">{% trans "No data available" %}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Working Hours -->
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h5 class="mb-4">
+                    <i class="fas fa-business-time me-2" style="color: #06b6d4;"></i>
+                    {% trans "Working Hours" %}
+                </h5>
+                <p class="text-muted small mb-3"><i class="fas fa-calendar me-2"></i>{{ date_range_display }}</p>
+                <table class="work-hours-table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Employee" %}</th>
+                            <th class="text-end">{% trans "Hours" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in selected_range_work_hours|slice:":10" %}
+                        <tr>
+                            <td>
+                                <div>{{ item.user.name }}</div>
+                                <small class="text-muted">{{ item.days }} {% trans "days" %}</small>
+                            </td>
+                            <td class="text-end">
+                                <strong>{{ item.hours }}h</strong> 
+                                <small class="text-muted">/ 160h</small>
+                                <div class="work-hours-bar mt-1">
+                                    <div class="work-hours-fill {% if item.hours >= 160 %}over-goal{% endif %}" style="width: {% widthratio item.hours 160 100 %}%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted py-3">{% trans "No data available" %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Chart.js default config
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+Chart.defaults.plugins.legend.display = true;
+
+let attendanceChart, qrUsageChart, hourlyChart;
+
+// Theme-aware chart colors
+function getChartColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    return {
+        gridColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        textColor: isDark ? '#f9fafb' : '#1f2937',
+        tooltipBg: isDark ? '#374151' : '#ffffff',
+        tooltipText: isDark ? '#f9fafb' : '#1f2937',
+        tooltipBorder: isDark ? '#4b5563' : '#e5e7eb'
+    };
+}
+
+// Update all charts theme
+function updateChartsTheme(theme) {
+    const colors = getChartColors();
+    
+    // Update Chart.js defaults
+    Chart.defaults.color = colors.textColor;
+    Chart.defaults.borderColor = colors.gridColor;
+    
+    // Reload all charts with new theme
+    if (attendanceChart) {
+        const currentDays = document.querySelector('.time-filter-btn.active')?.dataset.days || 7;
+        loadAttendanceChart(parseInt(currentDays));
+    }
+    if (qrUsageChart) {
+        loadQRUsageChart();
+    }
+    if (hourlyChart) {
+        loadHourlyChart();
+    }
+}
+
+// Load attendance chart
+function loadAttendanceChart(days = 7) {
+    // Show loading
+    document.getElementById('attendanceChartLoading').classList.add('active');
+    document.getElementById('attendanceChartWrapper').classList.add('loading');
+    
+    fetch(`{% url 'analytics_chart_data' %}?type=daily&days=${days}`)
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading
+            document.getElementById('attendanceChartLoading').classList.remove('active');
+            document.getElementById('attendanceChartWrapper').classList.remove('loading');
+            
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            
+            if (attendanceChart) {
+                attendanceChart.destroy();
+            }
+            
+            const chartColors = getChartColors();
+            
+            attendanceChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: chartColors.textColor
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: chartColors.tooltipBg,
+                            titleColor: chartColors.tooltipText,
+                            bodyColor: chartColors.tooltipText,
+                            borderColor: chartColors.tooltipBorder,
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: chartColors.textColor
+                            },
+                            grid: {
+                                color: chartColors.gridColor
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: chartColors.textColor
+                            },
+                            grid: {
+                                color: chartColors.gridColor
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
+
+// Load QR usage chart
+function loadQRUsageChart() {
+    // Show loading
+    document.getElementById('qrUsageChartLoading').classList.add('active');
+    document.getElementById('qrUsageChartWrapper').classList.add('loading');
+    
+    fetch(`{% url 'analytics_chart_data' %}?type=qr_usage&days=30`)
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading
+            document.getElementById('qrUsageChartLoading').classList.remove('active');
+            document.getElementById('qrUsageChartWrapper').classList.remove('loading');
+            
+            const ctx = document.getElementById('qrUsageChart').getContext('2d');
+            
+            if (qrUsageChart) {
+                qrUsageChart.destroy();
+            }
+            
+            const chartColors = getChartColors();
+            
+            qrUsageChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: chartColors.textColor
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: chartColors.tooltipBg,
+                            titleColor: chartColors.tooltipText,
+                            bodyColor: chartColors.tooltipText,
+                            borderColor: chartColors.tooltipBorder,
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        });
+}
+
+// Load hourly chart
+function loadHourlyChart() {
+    // Show loading
+    document.getElementById('hourlyChartLoading').classList.add('active');
+    document.getElementById('hourlyChartWrapper').classList.add('loading');
+    
+    fetch(`{% url 'analytics_chart_data' %}?type=hourly`)
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading
+            document.getElementById('hourlyChartLoading').classList.remove('active');
+            document.getElementById('hourlyChartWrapper').classList.remove('loading');
+            
+            const ctx = document.getElementById('hourlyChart').getContext('2d');
+            
+            if (hourlyChart) {
+                hourlyChart.destroy();
+            }
+            
+            const chartColors = getChartColors();
+            
+            hourlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: chartColors.tooltipBg,
+                            titleColor: chartColors.tooltipText,
+                            bodyColor: chartColors.tooltipText,
+                            borderColor: chartColors.tooltipBorder,
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: chartColors.textColor
+                            },
+                            grid: {
+                                color: chartColors.gridColor
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: chartColors.textColor
+                            },
+                            grid: {
+                                color: chartColors.gridColor
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
+
+// Time filter buttons
+document.querySelectorAll('.time-filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.time-filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const days = this.dataset.days;
+        loadAttendanceChart(days);
+    });
+});
+
+// Get current date range from hidden inputs
+function getCurrentDateRange() {
+    const dateFrom = document.getElementById('date_from-analytics').value;
+    const dateTo = document.getElementById('date_to-analytics').value;
+    return { dateFrom, dateTo };
+}
+
+// Initialize all charts
+document.addEventListener('DOMContentLoaded', function() {
+    loadAttendanceChart(7);
+    loadQRUsageChart();
+    loadHourlyChart();
+    
+    // Initialize daterangepicker
+    if (typeof initDateRangePicker === 'function') {
+        initDateRangePicker('analytics');
+    }
+    
+    // Auto-refresh every 5 minutes
+    setInterval(() => {
+        const activeDays = document.querySelector('.time-filter-btn.active').dataset.days;
+        loadAttendanceChart(activeDays);
+        loadQRUsageChart();
+        loadHourlyChart();
+    }, 300000);
+});
+</script>
+
+<!-- Daterangepicker Scripts -->
+<script src="{% static 'scripts/libraries/moment.min.js' %}"></script>
+<script src="{% static 'scripts/libraries/daterangepicker.js' %}"></script>
+<script>
+    var currentLanguage = '{{ LANGUAGE_CODE }}';
+</script>
+<script src="{% static 'scripts/daterangepicker-locale/daterangepicker-locale-' %}{{ LANGUAGE_CODE }}.js"></script>
+<script src="{% static 'scripts/daterangepicker-init.js' %}"></script>
+{% endblock %}

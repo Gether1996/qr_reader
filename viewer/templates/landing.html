@@ -3,7 +3,10 @@
 
 {% block title %}{% trans "Welcome" %} - QR Reader System{% endblock %}
 
-{% block extra_css %}{% endblock %}
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="landing-container">

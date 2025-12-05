@@ -6,17 +6,18 @@
 
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/daterangepicker.css' %}" />
+<link rel="stylesheet" href="{% static 'css/user_dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
     <!-- User Info Card -->
-    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+    <div class="card mb-4 user-info-card">
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 user-icon-circle">
                             <i class="fas fa-user fa-2x text-white"></i>
                         </div>
                         <div>
@@ -32,7 +33,7 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="d-flex gap-2 justify-content-lg-end justify-content-start">
-                        <a href="{% url 'user_scan_qr' %}" class="btn btn-success flex-fill flex-lg-grow-0" style="min-width: 140px; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                        <a href="{% url 'user_scan_qr' %}" class="btn btn-success flex-fill flex-lg-grow-0 scan-qr-btn">
                             <i class="fas fa-camera me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-camera me-1"></i></span>{% trans "Scan QR Code" %}
                         </a>
                     </div>
@@ -51,13 +52,13 @@
     <!-- Data Table Card with Tabs as Header -->
     <div class="card data-table-card">
         <!-- Tabs Navigation replacing header -->
-        <div class="card-header p-0" style="background: transparent; border: none;">
+        <div class="card-header p-0 tab-header">
             <div class="d-flex">
-                <button class="flex-fill text-center" onclick="window.location.href='?tab=scans'" style="border: none; border-radius: 12px 0 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'scans' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                <button class="flex-fill text-center tab-btn tab-btn-left{% if active_tab == 'scans' %} active{% endif %}" onclick="window.location.href='?tab=scans'">
                     <i class="fas fa-qrcode me-2"></i>{% trans "Scans" %}
                     <span class="badge {% if active_tab == 'scans' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ scans_count }}</span>
                 </button>
-                <button class="flex-fill text-center" onclick="window.location.href='?tab=absences'" style="border: none; border-radius: 0 12px 0 0; padding: 1rem; font-weight: 600; transition: all 0.3s;{% if active_tab == 'absences' %} background: linear-gradient(135deg, #10b981, #059669); color: white;{% else %} background: #f3f4f6; color: #6b7280;{% endif %}">
+                <button class="flex-fill text-center tab-btn tab-btn-right{% if active_tab == 'absences' %} active{% endif %}" onclick="window.location.href='?tab=absences'">
                     <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absences" %}
                     <span class="badge {% if active_tab == 'absences' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ absences_count }}</span>
                 </button>
@@ -65,13 +66,14 @@
         </div>
 
     {% if active_tab == 'scans' %}
-        <div class="card-body p-0" style="border-radius: 0 0 12px 12px;">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="sortable-th">
-                                <a href="?sort={% if current_filters.sort == 'timestamp' %}-timestamp{% else %}timestamp{% endif %}{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+        <div class="card-body p-0 tab-content-body">
+            <div class="d-none d-lg-block">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="sortable-th">
+                                    <a href="?sort={% if current_filters.sort == 'timestamp' %}-timestamp{% else %}timestamp{% endif %}{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
                                     {% trans "Timestamp" %}
                                     {% if current_filters.sort == 'timestamp' %}
                                         <i class="fas fa-sort-up sort-icon"></i>
@@ -138,10 +140,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
             
             <!-- Mobile View -->
-            <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+            <div class="mobile-scan-list d-lg-none">
                 {% for scan in page_obj %}
                 <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
                     <div class="mobile-scan-header">
@@ -180,10 +183,7 @@
             </div>
         </div>
         
-        <!-- Pagination -->
-        <div class="card-footer bg-light">
             {% include 'paginator.html' %}
-        </div>
     {% else %}
         <div class="card-body p-0">
                     <!-- Desktop Table View -->
@@ -260,7 +260,7 @@
                     </div>
                     
                     <!-- Mobile View -->
-                    <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+                    <div class="mobile-scan-list">
                         {% for absence in absences_page %}
                         <div class="mobile-scan-card">
                             <div class="mobile-scan-header">
@@ -303,13 +303,9 @@
                         {% endfor %}
                     </div>
                 </div>
-                
-        <!-- Pagination -->
-        <div class="card-footer bg-light">
             {% with page_obj=absences_page %}
             {% include 'paginator.html' %}
             {% endwith %}
-        </div>
     {% endif %}
     </div>
 </div>

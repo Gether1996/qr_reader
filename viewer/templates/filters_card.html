@@ -28,7 +28,7 @@
                     <label class="form-label" style="font-weight: 700; color: #2563eb; font-size: 1rem;">
                         <i class="fas fa-calendar-alt me-1"></i>{% trans "Date Range" %}
                     </label>
-                    <input type="text" id="dateRangePicker-{{ active_tab|default:'main' }}" class="form-control date-range-display" readonly placeholder="{% trans 'Select' %}" style="border: 2px solid #2563eb; background-color: #eff6ff; font-weight: 600; cursor: pointer;">
+                    <input type="text" id="dateRangePicker-{{ active_tab|default:'main' }}" class="form-control date-range-display" readonly placeholder="{% trans 'Select' %}">
                     <input type="hidden" name="date_from" id="date_from-{{ active_tab|default:'main' }}" value="{{ current_filters.date_from }}">
                     <input type="hidden" name="date_to" id="date_to-{{ active_tab|default:'main' }}" value="{{ current_filters.date_to }}">
                 </div>

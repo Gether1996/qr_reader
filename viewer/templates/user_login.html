@@ -4,19 +4,23 @@
 
 {% block title %}{% trans "User Login" %}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login_register.css' %}" />
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="col-md-5">
             <div class="card">
                 <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-user fa-3x text-success mb-3"></i>
+                    <div class="auth-header">
+                        <i class="fas fa-user auth-icon text-success"></i>
                         <h3>{% trans "User Login" %}</h3>
                         <p class="text-muted">{% trans "Access your company's QR codes" %}</p>
                     </div>
 
-                    <form method="post">
+                    <form method="post" class="auth-form">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="email" class="form-label">
@@ -30,19 +34,17 @@
                             </label>
                             <div class="position-relative">
                                 <input type="password" class="form-control" id="password" name="password" required>
-                                <i class="fas fa-eye position-absolute" id="togglePassword" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+                                <i class="fas fa-eye password-toggle-icon" id="togglePassword"></i>
                             </div>
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg">
+                            <button type="submit" class="btn btn-success btn-lg auth-submit-btn">
                                 <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
                             </button>
                         </div>
                     </form>
 
-                    <hr class="my-4">
-                    
-                    <div class="text-center">
+                    <div class="auth-footer">
                         <p class="text-muted small">
                             <i class="fas fa-info-circle me-1"></i>
                             {% trans "Users are registered by their company administrator" %}

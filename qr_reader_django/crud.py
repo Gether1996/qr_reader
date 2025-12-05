@@ -201,6 +201,18 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
 # ============= VACATION CRUD =============
 
 def create_vacation(user, date_from, date_to, vacation_type='vacation'):
+    from datetime import datetime
+    
+    # Convert strings to date objects if needed
+    if isinstance(date_from, str):
+        date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
+    if isinstance(date_to, str):
+        date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
+    
+    # Validate dates
+    if date_to < date_from:
+        return None, str(_('End date cannot be before start date'))
+    
     vacation = Vacation.objects.create(
         user=user,
         date_from=date_from,

@@ -73,6 +73,16 @@ DATABASES = {
     }
 }
 
+# Use SQLite for tests
+import sys
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -120,10 +130,19 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 STATIC_ROOT = "/app/staticfiles"
-STORAGES = {
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-}
+
+# Storage configuration - use simple storage for tests
+import sys
+if 'test' in sys.argv:
+    STORAGES = {
+        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    }
+else:
+    STORAGES = {
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOCALE_PATHS = [

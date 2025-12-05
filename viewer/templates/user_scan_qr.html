@@ -5,21 +5,21 @@
 {% block title %}{% trans "Scan QR Code" %}{% endblock %}
 
 {% block extra_css %}
-
+<link rel="stylesheet" href="{% static 'css/user_scan_qr.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="mobile-scan-container">
     <!-- Header -->
     <div class="scan-header">
-        <a href="{% url 'user_dashboard' %}" style="text-decoration: none; color: #374151; font-weight: 600; font-size: 1.1rem;">
+        <a href="{% url 'user_dashboard' %}" class="back-link">
             <i class="fas fa-arrow-left me-2"></i>{% trans "Back" %}
         </a>
     </div>
 
     <!-- Scan Type Selection -->
     <div class="scan-type-selector">
-        <h5 class="mb-3 text-center" style="color: #1f2937; font-weight: 700;">
+        <h5 class="mb-3 text-center scan-type-title">
             <i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}
         </h5>
         <div class="d-flex gap-3">
@@ -32,13 +32,13 @@
                 <span>{% trans "Departure" %}</span>
             </button>
         </div>
-        <div id="scan-type-warning" class="alert alert-warning mt-3 mb-0" style="display: none;">
+        <div id="scan-type-warning" class="alert alert-warning mt-3 mb-0 d-none">
             <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select arrival or departure" %}
         </div>
     </div>
 
     <!-- Camera Container -->
-    <div class="camera-container" id="camera-container" style="display: none;">
+    <div class="camera-container d-none" id="camera-container">
         <div id="qr-reader"></div>
         <div class="qr-overlay">
             <div class="qr-frame">
@@ -55,38 +55,38 @@
     </div>
 
     <!-- Start Button -->
-    <button id="startScanBtn" class="btn btn-primary action-button-mobile" style="display: none;">
+    <button id="startScanBtn" class="btn btn-primary action-button-mobile d-none">
         <i class="fas fa-camera"></i>
         <span>{% trans "Start Scanner" %}</span>
     </button>
 
     <!-- Stop Button -->
-    <button id="stopScanBtn" class="btn btn-danger action-button-mobile" style="display: none;">
+    <button id="stopScanBtn" class="btn btn-danger action-button-mobile d-none">
         <i class="fas fa-stop"></i>
         <span>{% trans "Stop Scanner" %}</span>
     </button>
 </div>
 
 <!-- Permission Screen -->
-<div class="permission-screen" id="permission-screen">
+<div class="permission-screen d-none" id="permission-screen">
     <div class="permission-card">
         <div class="permission-icon">
             <i class="fas fa-camera"></i>
         </div>
-        <h4 class="mb-3" style="font-weight: 700; color: #1f2937;">{% trans "Camera & Location Required" %}</h4>
-        <p class="mb-4" style="color: #6b7280; line-height: 1.6;">
+        <h4 class="mb-3 permission-title">{% trans "Camera & Location Required" %}</h4>
+        <p class="mb-4 permission-text">
             {% trans "To scan QR codes and record your location, we need permission to access your camera and location." %}
         </p>
-        <button id="grant-permission-btn" class="btn btn-primary w-100" style="padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 12px;">
+        <button id="grant-permission-btn" class="btn btn-primary w-100 permission-button">
             <i class="fas fa-shield-alt me-2"></i>{% trans "Grant Permissions" %}
         </button>
     </div>
 </div>
 
 <!-- Loading Overlay -->
-<div class="loading-overlay-mobile" id="loading-overlay">
+<div class="loading-overlay-mobile d-none" id="loading-overlay">
     <div class="loading-spinner"></div>
-    <div class="mt-4 text-white" style="font-size: 1.2rem; font-weight: 600;">
+    <div class="mt-4 text-white loading-text">
         <i class="fas fa-sync fa-spin me-2"></i>{% trans "Processing scan..." %}
     </div>
 </div>

@@ -6,6 +6,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/daterangepicker.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/qr_scans.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -52,12 +53,13 @@
         </div>
         <div class="card-body p-0">
             <!-- Desktop Table View -->
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="sortable-th">
-                                <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'timestamp' %}-{% endif %}timestamp">
+            <div class="d-none d-lg-block">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="sortable-th">
+                                    <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'timestamp' %}-{% endif %}timestamp">
                                     {% trans "Timestamp" %}
                                     {% if current_filters.sort == 'timestamp' %}
                                         <i class="fas fa-sort-up sort-icon"></i>
@@ -130,10 +132,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
             
             <!-- Mobile View -->
-            <div class="mobile-scan-list" style="display: none; padding: 1rem;">
+            <div class="mobile-scan-list d-lg-none" style="padding: 1rem;">
                 {% for scan in page_obj %}
                 <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
                     <div class="mobile-scan-header">
@@ -178,10 +181,7 @@
             </div>
         </div>
         
-        <!-- Pagination -->
-        <div class="card-footer bg-light">
             {% include 'paginator.html' %}
-        </div>
     </div>
 </div>
 {% endblock %}

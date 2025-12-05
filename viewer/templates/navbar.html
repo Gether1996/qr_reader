@@ -25,12 +25,10 @@
                                 <i class="fas fa-users"></i>
                                 <span>{% trans "Dashboard" %}</span>
                             </a>
-                            {% comment %} Removed Vacation Management Link 
-                            <a href="{% url 'company_absences' %}" class="dropdown-link">
-                                <i class="fas fa-umbrella-beach icon"></i>
-                                <span>{% trans "Absences" %}</span>
+                            <a href="{% url 'company_analytics' %}" class="dropdown-link">
+                                <i class="fas fa-chart-line"></i>
+                                <span>{% trans "Analytics" %}</span>
                             </a>
-                            {% endcomment %}
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'company_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -81,6 +79,12 @@
                             </form>
                         </div>
                     </div>
+                    
+                    <!-- Theme Toggle Button -->
+                    <button type="button" class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIconDark"></i>
+                        <i class="fas fa-sun" id="themeIconLight" style="display: none;"></i>
+                    </button>
                     
                 {% elif request.session.user_type == 'user' %}
                     <a href="{% url 'user_scan_qr' %}" class="nav-item" style="background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 600;">
@@ -150,13 +154,14 @@
                         </div>
                     </div>
                     
-                {% else %}
-                    <!-- Public Navigation -->
-                    <a href="{% url 'landing_page' %}" class="nav-item">
-                        <i class="fas fa-home"></i>
-                        <span>{% trans "Home" %}</span>
-                    </a>
+                    <!-- Theme Toggle Button -->
+                    <button type="button" class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIconDark"></i>
+                        <i class="fas fa-sun" id="themeIconLight" style="display: none;"></i>
+                    </button>
                     
+                {% else %}
+                
                     <!-- Language Switcher -->
                     <div class="nav-item dropdown-wrapper language-switcher">
                         <button class="dropdown-trigger" type="button">
@@ -200,6 +205,12 @@
                         </div>
                     </div>
                     
+                    <!-- Theme Toggle Button -->
+                    <button type="button" class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIconDark"></i>
+                        <i class="fas fa-sun" id="themeIconLight" style="display: none;"></i>
+                    </button>
+                    
                     <div class="desktop-auth-buttons">
                         <a href="{% url 'company_login' %}" class="nav-item-btn primary">
                             <i class="fas fa-building"></i>
@@ -228,9 +239,17 @@
                     <span class="brand-text">QR</span>
                 </a>
                 
-                <button class="mobile-menu-btn" id="mobileMegaMenuBtn" type="button">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <!-- Theme Toggle Button Mobile -->
+                    <button type="button" class="theme-toggle-btn mobile" id="themeToggleMobile" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="themeIconDarkMobile"></i>
+                        <i class="fas fa-sun" id="themeIconLightMobile" style="display: none;"></i>
+                    </button>
+                    
+                    <button class="mobile-menu-btn" id="mobileMegaMenuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -257,7 +276,7 @@
                 <!-- Company Mobile Menu -->
                 <a href="{% url 'company_dashboard' %}" class="mobile-menu-item">
                     <div class="mobile-menu-item-icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Dashboard" %}</span>
@@ -266,18 +285,16 @@
                     <i class="fas fa-chevron-right"></i>
                 </a>
                 
-                {% comment %} Removed Vacation Management Link 
-                <a href="{% url 'company_absences' %}" class="mobile-menu-item">
+                <a href="{% url 'company_analytics' %}" class="mobile-menu-item">
                     <div class="mobile-menu-item-icon">
-                        <i class="fas fa-umbrella-beach"></i>
+                        <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="mobile-menu-item-text">
-                        <span class="title">{% trans "Vacations" %}</span>
-                        <span class="subtitle">{% trans "Manage employee vacations" %}</span>
+                        <span class="title">{% trans "Analytics" %}</span>
+                        <span class="subtitle">{% trans "Charts & Reports" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
-                {% endcomment %}
                 
                 <div class="mobile-menu-divider"></div>
                 
@@ -402,77 +419,3 @@
         </div>
     </div>
 </nav>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Desktop dropdown functionality
-        const desktopDropdowns = document.querySelectorAll('.desktop-navbar .dropdown-trigger');
-        desktopDropdowns.forEach(trigger => {
-            trigger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const parent = this.parentElement;
-                const wasActive = parent.classList.contains('active');
-                
-                // Close all dropdowns
-                document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(d => {
-                    d.classList.remove('active');
-                });
-                
-                // Toggle current
-                if (!wasActive) {
-                    parent.classList.add('active');
-                }
-            });
-        });
-        
-        // Close desktop dropdowns on outside click
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.desktop-navbar .dropdown-wrapper')) {
-                document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(d => {
-                    d.classList.remove('active');
-                });
-            }
-        });
-        
-        // Mobile mega menu functionality
-        const mobileMegaMenuBtn = document.getElementById('mobileMegaMenuBtn');
-        const mobileMegaMenu = document.getElementById('mobileMegaMenu');
-        const mobileMegaMenuClose = document.getElementById('mobileMegaMenuClose');
-        const body = document.body;
-        
-        function openMobileMenu() {
-            mobileMegaMenu.classList.add('active');
-            body.classList.add('mobile-menu-open');
-        }
-        
-        function closeMobileMenu() {
-            mobileMegaMenu.classList.remove('active');
-            body.classList.remove('mobile-menu-open');
-        }
-        
-        if (mobileMegaMenuBtn) {
-            mobileMegaMenuBtn.addEventListener('click', openMobileMenu);
-        }
-        
-        if (mobileMegaMenuClose) {
-            mobileMegaMenuClose.addEventListener('click', closeMobileMenu);
-        }
-        
-        // Close on menu item click
-        const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
-        mobileMenuItems.forEach(item => {
-            item.addEventListener('click', function() {
-                setTimeout(closeMobileMenu, 200);
-            });
-        });
-        
-        // Close on background click
-        if (mobileMegaMenu) {
-            mobileMegaMenu.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeMobileMenu();
-                }
-            });
-        }
-    });
-</script>

@@ -1,0 +1,189 @@
+/* ============================================
+   User Dashboard Styles
+   ============================================ */
+
+/* User Info Card */
+.user-info-card {
+    border: 2px solid #2563eb;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+}
+
+.user-icon-circle {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+.scan-qr-btn {
+    min-width: 140px;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Mobile Scan List */
+.mobile-scan-list {
+    display: none;
+    padding: 1rem;
+}
+
+.mobile-scan-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #e5e7eb;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+}
+
+.mobile-scan-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.mobile-scan-card.arrival {
+    border-left-color: #10b981;
+}
+
+.mobile-scan-card.departure {
+    border-left-color: #ef4444;
+}
+
+.mobile-scan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mobile-scan-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.mobile-scan-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.mobile-scan-type.arrival {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.mobile-scan-type.departure {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.mobile-scan-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-scan-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.mobile-scan-info-item i {
+    width: 20px;
+    text-align: center;
+    color: #9ca3af;
+}
+
+.mobile-scan-info-item strong {
+    color: #374151;
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+
+@media (max-width: 991px) {
+    .table-responsive {
+        display: none !important;
+    }
+    
+    .mobile-scan-list {
+        display: block !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .mobile-scan-card {
+        padding: 0.85rem;
+    }
+    
+    .mobile-scan-title {
+        font-size: 0.95rem;
+    }
+    
+    .mobile-scan-type {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .mobile-scan-info-item {
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+
+[data-bs-theme="dark"] .user-info-card {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
+}
+
+[data-bs-theme="dark"] .mobile-scan-card {
+    background: #1f2937;
+    border-left-color: #4b5563;
+}
+
+[data-bs-theme="dark"] .mobile-scan-card.arrival {
+    border-left-color: #10b981;
+}
+
+[data-bs-theme="dark"] .mobile-scan-card.departure {
+    border-left-color: #ef4444;
+}
+
+[data-bs-theme="dark"] .mobile-scan-header {
+    border-bottom-color: #374151;
+}
+
+[data-bs-theme="dark"] .mobile-scan-title {
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .mobile-scan-type.arrival {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+[data-bs-theme="dark"] .mobile-scan-type.departure {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+[data-bs-theme="dark"] .mobile-scan-info-item {
+    color: #9ca3af;
+}
+
+[data-bs-theme="dark"] .mobile-scan-info-item strong {
+    color: #d1d5db;
+}
