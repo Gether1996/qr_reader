@@ -1279,7 +1279,7 @@ msgstr ""
 #: .\viewer\templates\company_analytics.html:5
 #: .\viewer\templates\navbar.html:30 .\viewer\templates\navbar.html:287
 msgid "Analytics"
-msgstr "Echtzeit-Analytik"
+msgstr "Analytik"
 
 #: .\viewer\templates\company_analytics.html:19
 msgid "Analytics Dashboard"
@@ -1302,11 +1302,11 @@ msgstr "Ungültiger Datumsbereich"
 
 #: .\viewer\templates\company_analytics.html:54
 msgid "Today Arrivals"
-msgstr "Ankünfte"
+msgstr "Heutige Ankünfte"
 
 #: .\viewer\templates\company_analytics.html:66
 msgid "Today Departures"
-msgstr "Abgänge"
+msgstr "Heutige Abgänge"
 
 #: .\viewer\templates\company_analytics.html:78
 msgid "Currently in Office"
@@ -1314,7 +1314,7 @@ msgstr "Derzeit im Büro"
 
 #: .\viewer\templates\company_analytics.html:90
 msgid "Period Scans"
-msgstr "Zeitraum"
+msgstr "Scans im Zeitraum"
 
 #: .\viewer\templates\company_analytics.html:104
 msgid "Selected Period Statistics"
@@ -1361,7 +1361,7 @@ msgstr "Lädt"
 
 #: .\viewer\templates\company_analytics.html:159
 msgid "Top Locations"
-msgstr "Standort"
+msgstr "Häufigste Standorte"
 
 #: .\viewer\templates\company_analytics.html:175
 msgid "Today's Hourly Distribution"
@@ -1369,7 +1369,7 @@ msgstr "Heutige stündliche Verteilung"
 
 #: .\viewer\templates\company_analytics.html:194
 msgid "Most Used QR Codes"
-msgstr "Ihre QR-Codes"
+msgstr "Meistgenutzte QR-Codes"
 
 #: .\viewer\templates\company_analytics.html:207
 #: .\viewer\templates\company_analytics.html:244

@@ -1280,11 +1280,11 @@ msgstr ""
 #: .\viewer\templates\company_analytics.html:5
 #: .\viewer\templates\navbar.html:30 .\viewer\templates\navbar.html:287
 msgid "Analytics"
-msgstr "Analytika v reálnom čase"
+msgstr "Analytika"
 
 #: .\viewer\templates\company_analytics.html:19
 msgid "Analytics Dashboard"
-msgstr "Firemný dashboard"
+msgstr "Analytický prehľad"
 
 #: .\viewer\templates\company_analytics.html:23
 #: .\viewer\templates\company_user_details.html:18
@@ -1303,11 +1303,11 @@ msgstr "Neplatný rozsah dátumov"
 
 #: .\viewer\templates\company_analytics.html:54
 msgid "Today Arrivals"
-msgstr "Príchody"
+msgstr "Dnešné príchody"
 
 #: .\viewer\templates\company_analytics.html:66
 msgid "Today Departures"
-msgstr "Odchody"
+msgstr "Dnešné odchody"
 
 #: .\viewer\templates\company_analytics.html:78
 msgid "Currently in Office"
@@ -1315,7 +1315,7 @@ msgstr "Momentálne v kancelárii"
 
 #: .\viewer\templates\company_analytics.html:90
 msgid "Period Scans"
-msgstr "Obdobie"
+msgstr "Skenovania za obdobie"
 
 #: .\viewer\templates\company_analytics.html:104
 msgid "Selected Period Statistics"
@@ -1333,7 +1333,7 @@ msgstr "Odchody"
 
 #: .\viewer\templates\company_analytics.html:121
 msgid "Active Employees"
-msgstr "Deaktivovať zamestnanca"
+msgstr "Aktívni zamestnanci"
 
 #: .\viewer\templates\company_analytics.html:126
 msgid "Vacations"
@@ -1362,7 +1362,7 @@ msgstr "Načítavam"
 
 #: .\viewer\templates\company_analytics.html:159
 msgid "Top Locations"
-msgstr "Poloha"
+msgstr "Najčastejšie lokality"
 
 #: .\viewer\templates\company_analytics.html:175
 msgid "Today's Hourly Distribution"
@@ -1370,7 +1370,7 @@ msgstr "Dnešné hodinové rozdelenie"
 
 #: .\viewer\templates\company_analytics.html:194
 msgid "Most Used QR Codes"
-msgstr "Vaše QR kódy"
+msgstr "Najpoužívanejšie QR kódy"
 
 #: .\viewer\templates\company_analytics.html:207
 #: .\viewer\templates\company_analytics.html:244
