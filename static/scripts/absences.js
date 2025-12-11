@@ -177,13 +177,13 @@ function addVacation(users) {
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.employee}</label>
-                        <select id="swal-employee" class="form-select form-select-lg">
+                        <select id="swal-employee" class="form-select form-select-lg" style="cursor: pointer;">
                             ${employeeOptions}
                         </select>
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg">
+                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
                             <option value="">${t.selectType}</option>
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
@@ -317,13 +317,13 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.employee}</label>
-                        <select id="swal-employee" class="form-select form-select-lg">
+                        <select id="swal-employee" class="form-select form-select-lg" style="cursor: pointer;">
                             ${employeeOptions}
                         </select>
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg">
+                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
                             <option value="">${t.selectType}</option>
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
@@ -445,7 +445,7 @@ function addVacationForUser(userId, userName) {
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg">
+                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
                             <option value="">${t.selectType}</option>
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
@@ -574,7 +574,7 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg">
+                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
                             <option value="">${t.selectType}</option>
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>

@@ -1478,7 +1478,7 @@ msgstr "QR kódy"
 #: .\viewer\templates\company_dashboard.html:563
 #: .\viewer\templates\translations_js.html:16
 msgid "Name"
-msgstr "Názov"
+msgstr "Meno"
 
 #: .\viewer\templates\company_dashboard.html:86
 #: .\viewer\templates\company_dashboard.html:500

@@ -2,16 +2,81 @@
    Company Dashboard Styles
    ============================================ */
 
+/* Global Background */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+}
+
+[data-bs-theme="dark"] body {
+    background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+}
+
+.container-fluid {
+    background: transparent;
+}
+
 /* Company Info Card */
 .company-info-card {
-    border: 2px solid #2563eb;
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+    background: white;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.company-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+[data-bs-theme="dark"] .company-info-card {
+    background: #1f2937;
+    color: #f9fafb;
 }
 
 .company-icon-circle {
     width: 60px;
     height: 60px;
     background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+/* Data Table Card */
+.data-table-card {
+    background: white;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.data-table-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+[data-bs-theme="dark"] .data-table-card {
+    background: #1f2937;
+    color: #f9fafb;
+}
+
+/* Filters Card */
+.filters-card {
+    background: white;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filters-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+[data-bs-theme="dark"] .filters-card {
+    background: #1f2937;
+    color: #f9fafb;
 }
 
 /* Table Styles */
@@ -31,12 +96,38 @@
     padding: 1rem;
 }
 
+/* Mobile Cards */
+.mobile-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.mobile-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+[data-bs-theme="dark"] .mobile-card {
+    background: #374151;
+    border-color: #4b5563;
+}
+
 /* Action Buttons */
 .btn-view-blue {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
     border: none;
     font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-view-blue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 .btn-edit-blue {
@@ -44,6 +135,12 @@
     color: white;
     border: none;
     font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-edit-blue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 .btn-delete-red {
@@ -51,6 +148,12 @@
     color: white;
     border: none;
     font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-delete-red:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
 /* QR Code Images */
