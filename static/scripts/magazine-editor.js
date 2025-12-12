@@ -426,8 +426,16 @@ function saveArticle() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Article saved successfully!');
-            window.location.reload();
+            // Update sidebar article title if changed
+            const articleItem = document.querySelector(`[data-article-id="${currentArticleId}"]`);
+            if (articleItem) {
+                const titleElement = articleItem.querySelector('.article-item-title');
+                if (titleElement) {
+                    titleElement.textContent = data.article.title;
+                }
+            }
+            // Update live preview
+            updateLivePreview();
         } else {
             alert('Error saving article: ' + (data.error || 'Unknown error'));
         }
