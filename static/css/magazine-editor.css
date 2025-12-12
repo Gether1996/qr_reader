@@ -96,9 +96,6 @@
 
 /* =============== LEFT SIDEBAR (Articles List) =============== */
 .magazine-editor .sidebar-articles {
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
     background: #ffffff;
     border-right: 1px solid #e5e7eb;
     overflow-y: auto;
