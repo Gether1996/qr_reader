@@ -2152,15 +2152,13 @@ def api_article_create(request, magazine_id):
             magazine=magazine,
             author=user,
             title=data.get('title', 'New Article'),
-            category=data.get('category', magazine.get_categories_list()[0]),
-            status='draft'
+            category=data.get('category', magazine.get_categories_list()[0])
         )
         
         return JsonResponse({'success': True, 'article': {
             'id': article.id,
             'title': article.title,
             'category': article.category,
-            'status': article.status,
         }})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
@@ -2195,8 +2193,6 @@ def api_article_update(request, article_id):
             article.teaser = data['teaser']
         if 'category' in data:
             article.category = data['category']
-        if 'status' in data:
-            article.status = data['status']
         if 'is_main_story' in data:
             article.is_main_story = data['is_main_story']
         if 'is_secondary_story' in data:
@@ -2209,7 +2205,6 @@ def api_article_update(request, article_id):
         return JsonResponse({'success': True, 'article': {
             'id': article.id,
             'title': article.title,
-            'status': article.status,
         }})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
