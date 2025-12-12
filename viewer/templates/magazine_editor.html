@@ -147,11 +147,11 @@
                         <div class="row g-3">
                             <div class="col-md-8">
                                 <label class="form-label fw-bold">{% trans "Article Title" %}</label>
-                                <input type="text" class="form-control form-control-lg" id="articleTitle" placeholder="{% trans 'Enter article title' %}">
+                                <input type="text" class="form-control form-control-lg" id="articleTitle" placeholder="{% trans 'Enter article title' %}" oninput="saveArticle()">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">{% trans "Category" %}</label>
-                                <select class="form-select" id="articleCategory" style="cursor: pointer;">
+                                <select class="form-select" id="articleCategory" style="cursor: pointer;" onchange="saveArticle()">
                                     {% for cat in categories %}
                                         <option value="{{ cat }}">{{ cat }}</option>
                                     {% endfor %}
@@ -162,10 +162,10 @@
                         <div class="row g-3 mt-2">
                             <div class="col-md-12">
                                 <label class="form-label fw-bold">{% trans "Teaser" %}</label>
-                                <textarea class="form-control" id="articleTeaser" rows="2" placeholder="{% trans 'Short teaser for cover/TOC' %}"></textarea>
+                                <textarea class="form-control" id="articleTeaser" rows="2" placeholder="{% trans 'Short teaser for cover/TOC' %}" oninput="saveArticle()"></textarea>
                                 
                                 <div class="form-check mt-3">
-                                    <input class="form-check-input" type="checkbox" id="isMainStory">
+                                    <input class="form-check-input" type="checkbox" id="isMainStory" onchange="saveArticle()">
                                     <label class="form-check-label" for="isMainStory">
                                         <i class="fas fa-star text-warning me-1"></i>{% trans "Main Cover Story" %}
                                     </label>
@@ -191,13 +191,6 @@
                         <div id="contentBlocks">
                             <!-- Content blocks will be loaded here -->
                         </div>
-                    </div>
-                    
-                    <!-- Save Button -->
-                    <div class="mt-4 text-end">
-                        <button class="btn btn-success btn-lg" onclick="saveArticle()">
-                            <i class="fas fa-save me-2"></i>{% trans "Save Article" %}
-                        </button>
                     </div>
                 </div>
                 
