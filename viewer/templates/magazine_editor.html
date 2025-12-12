@@ -266,6 +266,15 @@
                         <input type="text" class="form-control" id="configCategories" value="{{ magazine.categories }}">
                     </div>
                     <div class="col-md-12">
+                        <label class="form-label fw-bold">{% trans "Cover Header Position" %}</label>
+                        <select class="form-select" id="configHeaderPosition">
+                            <option value="top" {% if magazine.cover_header_position == 'top' %}selected{% endif %}>{% trans "Top" %} - {% trans "Header at the top" %}</option>
+                            <option value="center" {% if magazine.cover_header_position == 'center' %}selected{% endif %}>{% trans "Center" %} - {% trans "Header in the middle" %} ({% trans "default" %})</option>
+                            <option value="bottom" {% if magazine.cover_header_position == 'bottom' %}selected{% endif %}>{% trans "Bottom" %} - {% trans "Header at the bottom" %}</option>
+                        </select>
+                        <small class="text-muted">{% trans "Choose where the magazine title appears on the cover page" %}</small>
+                    </div>
+                    <div class="col-md-12">
                         <label class="form-label fw-bold">{% trans "Cover Background" %}</label>
                         <div class="mb-3">
                             <label class="form-label small">{% trans "Choose from gallery" %}:</label>
@@ -286,10 +295,6 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div>
-                            <label class="form-label small">{% trans "Or use custom URL" %}:</label>
-                            <input type="url" class="form-control" id="configCoverBackground" value="{{ magazine.cover_background_image }}" placeholder="https://example.com/image.jpg" onchange="selectBackground(this.value)">
-                        </div>
                     </div>
                     
                     <!-- Gradient Colors - Only shown when gradient is selected -->
@@ -304,16 +309,6 @@
                     <div class="col-md-6" id="secondaryColorSection" style="display: none;">
                         <label class="form-label fw-bold">{% trans "Secondary Color" %}</label>
                         <input type="color" class="form-control form-control-color" id="configSecondaryColor" value="{{ magazine.secondary_color }}">
-                    </div>
-                    
-                    <div class="col-md-12">
-                        <label class="form-label fw-bold">{% trans "Cover Header Position" %}</label>
-                        <select class="form-select" id="configHeaderPosition">
-                            <option value="top" {% if magazine.cover_header_position == 'top' %}selected{% endif %}>{% trans "Top" %} - {% trans "Header at the top" %}</option>
-                            <option value="center" {% if magazine.cover_header_position == 'center' %}selected{% endif %}>{% trans "Center" %} - {% trans "Header in the middle" %} ({% trans "default" %})</option>
-                            <option value="bottom" {% if magazine.cover_header_position == 'bottom' %}selected{% endif %}>{% trans "Bottom" %} - {% trans "Header at the bottom" %}</option>
-                        </select>
-                        <small class="text-muted">{% trans "Choose where the magazine title appears on the cover page" %}</small>
                     </div>
                 </div>
             </div>
