@@ -2447,7 +2447,6 @@ def api_article_data(request, article_id):
             'title': article.title,
             'teaser': article.teaser,
             'category': article.category,
-            'status': article.status,
             'is_main_story': article.is_main_story,
             'is_secondary_story': article.is_secondary_story,
             'content_blocks': blocks
