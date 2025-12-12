@@ -33,15 +33,15 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-outline-secondary btn-sm" onclick="openConfigModal()" title="{% trans 'Magazine Settings' %}">
-                            <i class="fas fa-cog"></i>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="openConfigModal()">
+                            <i class="fas fa-cog me-1"></i>{% trans "Settings" %}
                         </button>
-                        <button class="btn btn-outline-info btn-sm" onclick="togglePreview()" id="togglePreviewBtn" title="{% trans 'Toggle Side Preview' %}">
-                            <i class="fas fa-columns"></i>
+                        <button class="btn btn-outline-info btn-sm" onclick="togglePreview()" id="togglePreviewBtn">
+                            <i class="fas fa-columns me-1"></i>{% trans "Preview" %}
                         </button>
-                        <a href="{% url 'magazine_preview' magazine.id %}" class="btn btn-success btn-sm" target="_blank" title="{% trans 'Full Preview & Print' %}">
-                            <i class="fas fa-print"></i>
+                        <a href="{% url 'magazine_preview' magazine.id %}" class="btn btn-success btn-sm" target="_blank">
+                            <i class="fas fa-print me-1"></i>{% trans "Print" %}
                         </a>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
         </div>
 
         <!-- Main Editor Area -->
-        <div class="col-md-4 editor-column">
+        <div class="col-md-3 editor-column">
             <div class="p-4">
                 <div id="articleEditor" style="display: {% if articles %}block{% else %}none{% endif %};">
                     <!-- Article Header -->
@@ -212,24 +212,22 @@
         </div>
 
         <!-- Live Preview Area -->
-        <div class="col-md-6 preview-column" id="livePreviewColumn">
-            <div class="p-4 bg-light h-100">
-                <div class="preview-container">
-                    <div class="d-flex justify-content-between align-items-center mb-3 bg-light py-2">
-                        <h6 class="mb-0 fw-bold">
-                            <i class="fas fa-eye me-2 text-info"></i>{% trans "Live Preview" %}
-                        </h6>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="togglePreview()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <div id="livePreview" class="preview-page bg-white shadow-sm p-4 rounded">
-                        <!-- Live preview content -->
-                        <div class="text-center text-muted py-5">
-                            <i class="fas fa-file-alt fa-3x mb-3"></i>
-                            <p>{% trans "Select or create an article to see preview" %}</p>
-                        </div>
+        <div class="col-md-7 preview-column" id="livePreviewColumn">
+            <div class="preview-container">
+                <div class="d-flex justify-content-between align-items-center mb-3 py-2 px-3">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-eye me-2"></i>{% trans "Live Preview" %}
+                    </h6>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="togglePreview()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="livePreview">
+                    <!-- Live preview content -->
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>{% trans "Select or create an article to see preview" %}</p>
                     </div>
                 </div>
             </div>

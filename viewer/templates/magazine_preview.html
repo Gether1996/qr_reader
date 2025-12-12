@@ -14,12 +14,36 @@
     /* Magazine typography customization - must stay inline for Django template variables */
     .magazine-heading {
         font-family: '{{ magazine.primary_font|default:"Playfair Display" }}', serif;
-        color: {{ magazine.text_color|default:"#2d2d2d" }};
+        color: {{ magazine.text_color|default:"#2d2d2d" }} !important;
     }
     
     .magazine-body-text {
         font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif;
-        color: {{ magazine.background_color|default:"#333333" }};
+        color: {{ magazine.background_color|default:"#333333" }} !important;
+    }
+    
+    /* Print styles - show only magazine content */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        
+        .magazine-preview,
+        .magazine-preview * {
+            visibility: visible;
+        }
+        
+        .magazine-preview {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        
+        .magazine-page {
+            box-shadow: none !important;
+            margin-bottom: 0 !important;
+        }
     }
 </style>
 {% endblock %}
@@ -63,13 +87,13 @@
                     {% endif %}
                 {% endfor %}
                 
-                <div class="cover-footer mt-auto" style="margin-top: 30px; padding-top: 10px; padding-bottom: 10px; border-top: 1px solid {{ magazine.background_color|default:'rgba(255, 255, 255, 0.3)' }}; border-bottom: 1px solid {{ magazine.background_color|default:'rgba(255, 255, 255, 0.3)' }};">
+                <div class="cover-footer mt-auto" style="margin-top: 30px; padding-top: 10px; padding-bottom: 10px; border-top: 1px solid {{ magazine.background_color|default:'rgba(255, 255, 255, 0.3)' }} !important; border-bottom: 1px solid {{ magazine.background_color|default:'rgba(255, 255, 255, 0.3)' }} !important;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }}; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: left;">{% trans "Issue" %} {{ magazine.issue_number }}</p>
+                        <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }} !important; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: left;">{% trans "Issue" %} {{ magazine.issue_number }}</p>
                         {% if magazine.tagline %}
-                            <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }}; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: center;">{{ magazine.tagline }}</p>
+                            <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }} !important; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: center;">{{ magazine.tagline }}</p>
                         {% endif %}
-                        <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }}; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: right;">{{ magazine.publish_date|date:"F Y" }}</p>
+                        <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }} !important; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: right;">{{ magazine.publish_date|date:"F Y" }}</p>
                     </div>
                 </div>
             </div>
@@ -171,23 +195,7 @@
 
 <script>
 function printMagazine() {
-    // Get magazine content
-    const magazineContent = document.querySelector('.magazine-preview').innerHTML;
-    
-    // Store original body content
-    const originalBody = document.body.innerHTML;
-    
-    // Replace body with only magazine content
-    document.body.innerHTML = magazineContent;
-    
-    // Print
     window.print();
-    
-    // Restore original content
-    document.body.innerHTML = originalBody;
-    
-    // Reinitialize page (reload to restore all event listeners)
-    location.reload();
 }
 </script>
 

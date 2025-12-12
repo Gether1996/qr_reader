@@ -291,8 +291,8 @@ function updateBlock(blockId) {
     
     const data = {};
     if (textContent !== undefined) data.text_content = textContent;
-    if (alignment) data.alignment = alignment;
-    if (fontSize) data.font_size = fontSize;
+    if (alignment !== undefined) data.alignment = alignment;
+    if (fontSize !== undefined) data.font_size = fontSize;
     if (imageUrl !== undefined) data.image_url = imageUrl;
     if (caption !== undefined) data.image_caption = caption;
     
@@ -829,8 +829,8 @@ async function updateLivePreview() {
                     const textAlign = block.alignment || 'justify';
                     
                     html += `
-                        <div style="margin-bottom: 20px; text-align: ${textAlign};">
-                            <p style="font-family: '${secondaryFont}', sans-serif; font-size: ${fontSize}; font-weight: ${fontWeight}; color: ${bodyTextColor}; line-height: 1.8; text-align: justify; margin-bottom: 15px;">
+                        <div style="margin-bottom: 20px;">
+                            <p style="font-family: '${secondaryFont}', sans-serif; font-size: ${fontSize}; font-weight: ${fontWeight}; color: ${bodyTextColor}; line-height: 1.8; text-align: ${textAlign}; margin-bottom: 15px;">
                                 ${(block.text_content || '').replace(/\n/g, '<br>')}
                             </p>
                         </div>
