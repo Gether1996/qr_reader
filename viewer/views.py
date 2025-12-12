@@ -1998,6 +1998,14 @@ def magazine_editor(request, magazine_id=None):
             issue_number="1",
             publish_date=datetime.date.today()
         )
+        
+        MagazineArticle.objects.create(
+            magazine=magazine,
+            author=user,
+            title="Article 1",
+            category="News"
+        )
+        
         return redirect('magazine_editor', magazine_id=magazine.id)
     
     # Get articles

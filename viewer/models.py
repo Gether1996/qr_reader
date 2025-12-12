@@ -212,7 +212,7 @@ class Magazine(models.Model):
     # Magazine Configuration
     title = models.CharField(max_length=255, default="My Magazine")
     issue_number = models.CharField(max_length=50, default="1")
-    tagline = models.CharField(max_length=255, blank=True, null=True)
+    tagline = models.CharField(max_length=255, blank=True, null=True, default="An awesome magazine")
     publish_date = models.DateField()
     
     # Theme & Design
@@ -223,8 +223,8 @@ class Magazine(models.Model):
     secondary_color = models.CharField(max_length=20, default="#666666")
     background_color = models.CharField(max_length=20, default="#ffffff")
     text_color = models.CharField(max_length=20, default="#2d2d2d")
-    cover_background_image = models.URLField(max_length=500, blank=True, null=True)  # URL to cover background image
-    cover_header_position = models.CharField(max_length=20, default="center", choices=[
+    cover_background_image = models.URLField(max_length=500, blank=True, null=True, default="/static/images/pozadie_1.jpg")  # URL to cover background image
+    cover_header_position = models.CharField(max_length=20, default="top", choices=[
         ('top', 'Top'),
         ('center', 'Center'),
         ('bottom', 'Bottom')
@@ -252,21 +252,14 @@ class Magazine(models.Model):
 
 
 class MagazineArticle(models.Model):
-    """Article model - represents an article within a magazine"""
-    STATUS_CHOICES = [
-        ('draft', 'Draft'),
-        ('pending', 'Pending Review'),
-        ('published', 'Published'),
-    ]
-    
+
     magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE, related_name='articles')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='articles')
     
     # Article Content
     title = models.CharField(max_length=500)
-    teaser = models.TextField(blank=True, null=True, help_text="Short teaser for cover/TOC")
+    teaser = models.TextField(blank=True, null=True, help_text="Short teaser for cover/TOC", default="Teaser text")
     category = models.CharField(max_length=100)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     
     # Cover Story
     is_main_story = models.BooleanField(default=False)
