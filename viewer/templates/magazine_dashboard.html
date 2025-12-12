@@ -45,7 +45,7 @@
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="card magazine-card h-100 shadow-sm" style="cursor: pointer;" onclick="window.open('{% url 'magazine_editor' magazine.id %}', '_blank')">
                         <!-- Magazine Cover Preview -->
-                        <div class="magazine-cover" style="{% if magazine.cover_background_image %}background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{{ magazine.cover_background_image }}') center/cover no-repeat;{% else %}background: linear-gradient(135deg, {{ magazine.primary_color }} 0%, {{ magazine.secondary_color }} 100%);{% endif %}">
+                        <div class="magazine-cover" style="{% if magazine.cover_background_image %}background: url('{{ magazine.cover_background_image }}') center/cover no-repeat;{% else %}background: linear-gradient(135deg, {{ magazine.primary_color }} 0%, {{ magazine.secondary_color }} 100%);{% endif %}">
                             <div class="magazine-cover-content">
                                 <h3 class="magazine-cover-title text-white">{{ magazine.title }}</h3>
                                 <p class="magazine-cover-issue text-white opacity-75">{% trans "Issue" %} {{ magazine.issue_number }}</p>

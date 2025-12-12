@@ -729,9 +729,8 @@ async function updateLivePreview() {
     
     // Build professional magazine-style preview HTML with all pages
     // Cover page background - use image if set, otherwise gradient
-    // Add dark overlay for better text readability
     const coverStyle = coverBackground 
-        ? `background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${coverBackground}') center/cover no-repeat;`
+        ? `background: url('${coverBackground}') center/cover no-repeat;`
         : `background: linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%);`;
     
     // Cover page alignment based on header position

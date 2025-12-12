@@ -69,7 +69,7 @@
     <!-- Magazine Pages -->
     <div class="magazine-preview">
         <!-- Cover Page -->
-        <div class="magazine-page cover-page position-{{ magazine.cover_header_position|default:'center' }} shadow mb-4" style="{% if magazine.cover_background_image %}background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{{ magazine.cover_background_image }}') center/cover no-repeat;{% else %}background: linear-gradient(135deg, {{ magazine.primary_color }} 0%, {{ magazine.secondary_color }} 100%);{% endif %}">
+        <div class="magazine-page cover-page position-{{ magazine.cover_header_position|default:'center' }} shadow mb-4" style="{% if magazine.cover_background_image %}background: url('{{ magazine.cover_background_image }}') center/cover no-repeat;{% else %}background: linear-gradient(135deg, {{ magazine.primary_color }} 0%, {{ magazine.secondary_color }} 100%);{% endif %}">
             <div class="cover-content text-white">
                 <div class="cover-header">
                     <h1 class="display-1 fw-bold mb-3 magazine-heading">{{ magazine.title }}</h1>
