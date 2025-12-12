@@ -86,6 +86,9 @@ function populateArticleForm(article) {
     document.getElementById('articleTeaser').value = article.teaser || '';
     document.getElementById('isMainStory').checked = article.is_main_story || false;
     document.getElementById('currentArticleId').value = article.id;
+    
+    console.log('Loaded article category:', article.category);
+    console.log('Select element value after set:', document.getElementById('articleCategory').value);
 }
 
 // Load content blocks
@@ -694,6 +697,8 @@ async function updateLivePreview() {
     const currentCategory = document.getElementById('articleCategory')?.value || '';
     const currentTeaser = document.getElementById('articleTeaser')?.value || '';
     const currentIsMainStory = document.getElementById('isMainStory')?.checked || false;
+    
+    console.log('Current category:', currentCategory);
     
     // Get all articles from sidebar
     const articleItems = document.querySelectorAll('.article-item');

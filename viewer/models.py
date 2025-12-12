@@ -221,8 +221,8 @@ class Magazine(models.Model):
     secondary_font = models.CharField(max_length=100, default="Lato")
     primary_color = models.CharField(max_length=20, default="#1a1a1a")
     secondary_color = models.CharField(max_length=20, default="#666666")
-    background_color = models.CharField(max_length=20, default="#ffffff")
-    text_color = models.CharField(max_length=20, default="#2d2d2d")
+    background_color = models.CharField(max_length=20, default="#1a1a1a")
+    text_color = models.CharField(max_length=20, default="#1a1a1a")
     cover_background_image = models.URLField(max_length=500, blank=True, null=True, default="/static/images/pozadie_1.jpg")  # URL to cover background image
     cover_header_position = models.CharField(max_length=20, default="top", choices=[
         ('top', 'Top'),
