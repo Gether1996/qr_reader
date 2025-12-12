@@ -40,9 +40,9 @@
                         <button class="btn btn-outline-info btn-sm" onclick="togglePreview()" id="togglePreviewBtn">
                             <i class="fas fa-columns me-1"></i>{% trans "Preview" %}
                         </button>
-                        <a href="{% url 'magazine_preview' magazine.id %}" class="btn btn-success btn-sm" target="_blank">
+                        <button class="btn btn-success btn-sm" onclick="printMagazine()">
                             <i class="fas fa-print me-1"></i>{% trans "Print" %}
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

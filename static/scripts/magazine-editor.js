@@ -944,6 +944,13 @@ function toggleDarkMode() {
     }
 }
 
+// Print magazine - open preview with auto-print
+function printMagazine() {
+    const magazineId = document.getElementById('magazineId').value;
+    const previewUrl = `${languagePrefix}/magazine/${magazineId}/preview/?print=1`;
+    window.open(previewUrl, '_blank');
+}
+
 // Load dark mode preference on page load
 document.addEventListener('DOMContentLoaded', function() {
     const darkMode = localStorage.getItem('darkMode');

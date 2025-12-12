@@ -283,6 +283,13 @@
     .magazine-page {
         padding: 30px 20px;
         min-height: auto;
+        aspect-ratio: 210 / 297;
+        width: 100%;
+    }
+    
+    .cover-page {
+        aspect-ratio: 210 / 297;
+        width: 100%;
     }
     
     .cover-header h1 {

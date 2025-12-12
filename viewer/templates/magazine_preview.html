@@ -197,6 +197,14 @@
 function printMagazine() {
     window.print();
 }
+
+// Auto-print when accessed with ?print=1 parameter
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('print') === '1') {
+        setTimeout(() => window.print(), 500);
+    }
+});
 </script>
 
 {% endblock %}
