@@ -53,6 +53,24 @@ urlpatterns += i18n_patterns(
     path('api/analytics/chart-data/', views.analytics_chart_data, name='analytics_chart_data'),
     path('absence/<int:vacation_id>/delete/', views.delete_vacation, name='delete_vacation'),
     
+    # Magazine routes
+    path('magazine/', views.magazine_dashboard, name='magazine_dashboard'),
+    path('magazine/editor/', views.magazine_editor, name='magazine_editor'),
+    path('magazine/editor/<int:magazine_id>/', views.magazine_editor, name='magazine_editor'),
+    path('magazine/<int:magazine_id>/preview/', views.magazine_preview, name='magazine_preview'),
+    
+    # Magazine API endpoints
+    path('magazine/<int:magazine_id>/update/', views.api_magazine_update, name='api_magazine_update'),
+    path('magazine/<int:magazine_id>/delete/', views.api_magazine_delete, name='api_magazine_delete'),
+    path('magazine/<int:magazine_id>/article/create/', views.api_article_create, name='api_article_create'),
+    path('magazine/article/<int:article_id>/data/', views.api_article_data, name='api_article_data'),
+    path('magazine/article/<int:article_id>/update/', views.api_article_update, name='api_article_update'),
+    path('magazine/article/<int:article_id>/delete/', views.api_article_delete, name='api_article_delete'),
+    path('magazine/article/<int:article_id>/block/create/', views.api_content_block_create, name='api_content_block_create'),
+    path('magazine/article/<int:article_id>/reorder-blocks/', views.api_article_reorder_blocks, name='api_article_reorder_blocks'),
+    path('magazine/block/<int:block_id>/update/', views.api_content_block_update, name='api_content_block_update'),
+    path('magazine/block/<int:block_id>/delete/', views.api_content_block_delete, name='api_content_block_delete'),
+    
     path('admin/', admin.site.urls),
 )
 

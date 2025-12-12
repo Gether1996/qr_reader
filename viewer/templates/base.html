@@ -55,6 +55,8 @@
             return window.location.pathname.split('/')[1] || 'sk';
         }
         const langCode = getLanguageCode();
+        // Language prefix for API calls (e.g., /sk/, /en/, or empty)
+        const languagePrefix = ['sk', 'en', 'es', 'de'].includes(langCode) ? '/' + langCode : '';
     </script>
     <script>
         {% include 'translations_js.html' %}

@@ -1,0 +1,600 @@
+/* Magazine Editor - Professional Layout */
+
+/* =============== MAIN CONTAINER =============== */
+.magazine-editor {
+    width: 100%;
+    background: #f8f9fa;
+    color: #24292e;
+}
+
+/* =============== TOP HEADER =============== */
+.magazine-editor .editor-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e1e4e8;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 10;
+    width: 100%;
+}
+
+.magazine-editor .editor-header .container-fluid {
+    max-width: 100%;
+    padding: 0.75rem 1.5rem;
+}
+
+.magazine-editor .editor-header .row {
+    margin: 0;
+}
+
+.magazine-editor .editor-header h5 {
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.magazine-editor .editor-header small {
+    font-size: 0.85rem;
+}
+
+.magazine-editor .typography-section {
+    background: #f8f9fa;
+}
+
+/* =============== MAIN LAYOUT =============== */
+.magazine-editor .row.g-0 {
+    display: flex;
+    margin: 0;
+    width: 100%;
+}
+
+/* =============== LEFT SIDEBAR (Articles List) =============== */
+.magazine-editor .sidebar-articles {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    background: #ffffff;
+    border-right: 1px solid #e1e4e8;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+}
+
+.magazine-editor .sidebar-articles .p-3 {
+    padding: 1rem !important;
+}
+
+.magazine-editor .articles-list {
+    margin-top: 1rem;
+}
+
+.magazine-editor .article-item {
+    background: #f8f9fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 0.875rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.magazine-editor .article-item:hover {
+    background: #e9ecef;
+    border-color: #0d6efd;
+    transform: translateX(3px);
+}
+
+.magazine-editor .article-item.active {
+    background: #e7f1ff;
+    border-color: #0d6efd;
+    border-width: 2px;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+}
+
+.magazine-editor .article-item-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #24292e;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+
+.magazine-editor .article-item .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+    font-weight: 500;
+}
+
+/* =============== MAIN EDITOR AREA =============== */
+.magazine-editor .editor-column {
+    background: #ffffff;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+    padding: 0;
+    transition: width 0.3s ease;
+}
+
+.magazine-editor .editor-column > .p-4 {
+    padding: 1.5rem 2rem !important;
+}
+
+/* =============== LIVE PREVIEW AREA =============== */
+.magazine-editor .preview-column {
+    background: #f5f5f5;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+    border-left: 1px solid #e1e4e8;
+    transition: all 0.3s ease;
+}
+
+.magazine-editor .preview-column.hidden {
+    display: none;
+}
+
+.magazine-editor .preview-container {
+    height: 100%;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.magazine-editor .preview-page {
+    background: #f5f5f5;
+    padding: 20px;
+    min-height: 100%;
+}
+
+.magazine-editor .preview-page h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #2d2d2d;
+}
+
+.magazine-editor .preview-page .preview-category {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.magazine-editor .preview-page .preview-content {
+    margin-top: 2rem;
+}
+
+.magazine-editor .preview-page .preview-text-block {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.magazine-editor .preview-page .preview-image-block {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.magazine-editor .preview-page .preview-image-block img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.magazine-editor .preview-page .preview-image-caption {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* Professional magazine-style preview - matches final preview exactly */
+.magazine-editor .preview-magazine-page {
+    width: 100%;
+    max-width: 850px;
+    min-height: 1100px;
+    background: white;
+    margin: 0 auto 30px;
+    padding: 60px 50px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.magazine-editor .preview-article-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #2d2d2d;
+}
+
+.magazine-editor .preview-article-category {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.magazine-editor .preview-article-title {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    color: #2d2d2d;
+}
+
+.magazine-editor .preview-article-teaser {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.magazine-editor .preview-article-content {
+    margin-top: 25px;
+}
+
+.magazine-editor .preview-text-block {
+    margin-bottom: 20px;
+}
+
+.magazine-editor .preview-text-block p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 12px;
+    text-align: justify;
+}
+
+.magazine-editor .preview-image-block {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.magazine-editor .preview-image-block img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.magazine-editor .preview-image-block .caption {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #666;
+    margin-top: 8px;
+    display: block;
+}
+
+/* Full width editor when preview is hidden */
+.magazine-editor.preview-hidden .editor-column {
+    flex: 1;
+    max-width: 100%;
+}
+
+/* =============== BACKGROUND GALLERY =============== */
+.background-gallery {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.background-option {
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.background-option:hover {
+    border-color: #0d6efd;
+    transform: scale(1.05);
+}
+
+.background-option.selected {
+    border-color: #0d6efd;
+    background: #e7f1ff;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+}
+
+.background-option .bg-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.background-option small {
+    display: block;
+    font-size: 0.7rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* =============== ARTICLE EDITOR =============== */
+#articleEditor {
+    width: 100%;
+    max-width: 100%;
+}
+
+.magazine-editor .article-header {
+    background: #f8f9fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.magazine-editor .article-header .form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #24292e;
+    margin-bottom: 0.5rem;
+}
+
+.magazine-editor .article-header .form-control,
+.magazine-editor .article-header .form-select {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+}
+
+.magazine-editor .article-header .form-control:focus,
+.magazine-editor .article-header .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+/* =============== CONTENT BLOCKS SECTION =============== */
+.magazine-editor .content-blocks-section {
+    margin-bottom: 2rem;
+}
+
+.magazine-editor .content-blocks-section h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #24292e;
+}
+
+#contentBlocks {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.magazine-editor .content-block {
+    margin-bottom: 1.25rem;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.magazine-editor .content-block .card {
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.magazine-editor .content-block .card:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.magazine-editor .content-block .card-body {
+    padding: 1.25rem;
+}
+
+.magazine-editor .content-block textarea.form-control {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+.magazine-editor .content-block .form-select {
+    font-size: 0.875rem;
+}
+
+/* =============== EMPTY STATE =============== */
+#emptyState {
+    text-align: center;
+    padding: 5rem 2rem;
+}
+
+#emptyState i {
+    color: #cbd5e0;
+}
+
+#emptyState h4 {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+#emptyState p {
+    color: #9ca3af;
+}
+
+/* =============== BUTTONS =============== */
+.magazine-editor .btn {
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.magazine-editor .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.magazine-editor .btn-primary {
+    background: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.magazine-editor .btn-primary:hover {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.magazine-editor .btn-success {
+    background: #198754;
+    border-color: #198754;
+}
+
+.magazine-editor .btn-success:hover {
+    background: #157347;
+    border-color: #157347;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+
+.magazine-editor .btn-outline-primary {
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.magazine-editor .btn-outline-primary:hover {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+}
+
+.magazine-editor .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.magazine-editor .btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: #ffffff;
+}
+
+.magazine-editor .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.magazine-editor .btn-outline-danger:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #ffffff;
+}
+
+/* =============== SCROLLBARS =============== */
+.magazine-editor .col-md-3::-webkit-scrollbar,
+.magazine-editor .col-md-9::-webkit-scrollbar {
+    width: 8px;
+}
+
+.magazine-editor .col-md-3::-webkit-scrollbar-track,
+.magazine-editor .col-md-9::-webkit-scrollbar-track {
+    background: #f1f3f5;
+}
+
+.magazine-editor .col-md-3::-webkit-scrollbar-thumb,
+.magazine-editor .col-md-9::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 10px;
+}
+
+.magazine-editor .col-md-3::-webkit-scrollbar-thumb:hover,
+.magazine-editor .col-md-9::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* =============== RESPONSIVE =============== */
+@media (max-width: 1200px) {
+    .magazine-editor .preview-column {
+        display: none !important;
+    }
+    
+    .magazine-editor .editor-column {
+        flex: 1;
+        max-width: 100%;
+    }
+    
+    .magazine-editor .sidebar-articles {
+        width: 250px;
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .magazine-editor .sidebar-articles {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #e1e4e8;
+    }
+    
+    .magazine-editor .editor-column {
+        height: auto;
+        max-height: none;
+    }
+    
+    .magazine-editor .row.g-0 {
+        flex-direction: column;
+    }
+    
+    .magazine-editor .editor-column > .p-4 {
+        padding: 1.5rem !important;
+    }
+    
+    .magazine-editor .editor-header h5 {
+        font-size: 1rem;
+    }
+    
+    .magazine-editor .editor-header small {
+        font-size: 0.75rem;
+    }
+}
+
+/* =============== UTILITIES =============== */
+.magazine-editor .text-muted {
+    color: #6b7280 !important;
+}
+
+.magazine-editor .border-bottom {
+    border-bottom: 1px solid #e1e4e8 !important;
+}
+
+.magazine-editor .shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Fix for form controls */
+.magazine-editor input.form-control,
+.magazine-editor textarea.form-control,
+.magazine-editor select.form-select {
+    background-color: #ffffff;
+}
+
+.magazine-editor input.form-control:disabled,
+.magazine-editor textarea.form-control:disabled,
+.magazine-editor select.form-select:disabled {
+    background-color: #e9ecef;
+}

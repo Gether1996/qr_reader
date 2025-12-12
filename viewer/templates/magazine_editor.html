@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ magazine.title }} - {% trans "Editor" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/magazine-editor.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Lora:wght@400;700&family=Roboto+Slab:wght@400;700&family=Montserrat:wght@400;700;900&family=Raleway:wght@400;700;900&family=Bebas+Neue&family=Oswald:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=PT+Serif:wght@400;700&family=Crimson+Text:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid magazine-editor">
+    <!-- Top Navigation -->
+    <div class="editor-header sticky-top bg-white shadow-sm">
+        <div class="container-fluid">
+            <!-- Main Header Row -->
+            <div class="row align-items-center py-3 border-bottom">
+                <div class="col-auto">
+                    <a href="{% url 'magazine_dashboard' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-book-open text-primary me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <h5 class="mb-0 fw-bold" id="magazineTitle">{{ magazine.title }}</h5>
+                            <small class="text-muted">{% trans "Issue" %} <span id="magazineIssue">{{ magazine.issue_number }}</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="openConfigModal()" title="{% trans 'Magazine Settings' %}">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="togglePreview()" id="togglePreviewBtn" title="{% trans 'Toggle Side Preview' %}">
+                            <i class="fas fa-columns"></i>
+                        </button>
+                        <a href="{% url 'magazine_preview' magazine.id %}" class="btn btn-success btn-sm" target="_blank" title="{% trans 'Full Preview & Print' %}">
+                            <i class="fas fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Typography & Colors Toolbar -->
+            <div class="py-2 px-3" style="background: #f8f9fa;">
+                <div class="d-flex align-items-center gap-4 flex-wrap">
+                    <!-- Typography Group -->
+                    <div class="d-flex align-items-center gap-3 border-end pe-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-heading text-muted" style="font-size: 0.875rem;"></i>
+                            <select class="form-select form-select-sm" id="sidebarPrimaryFont" style="width: 140px; font-size: 0.875rem;">
+                                <option value="Playfair Display" {% if magazine.primary_font == 'Playfair Display' %}selected{% endif %}>Playfair Display</option>
+                                <option value="Merriweather" {% if magazine.primary_font == 'Merriweather' %}selected{% endif %}>Merriweather</option>
+                                <option value="Lora" {% if magazine.primary_font == 'Lora' %}selected{% endif %}>Lora</option>
+                                <option value="Roboto Slab" {% if magazine.primary_font == 'Roboto Slab' %}selected{% endif %}>Roboto Slab</option>
+                                <option value="Montserrat" {% if magazine.primary_font == 'Montserrat' %}selected{% endif %}>Montserrat</option>
+                                <option value="Raleway" {% if magazine.primary_font == 'Raleway' %}selected{% endif %}>Raleway</option>
+                                <option value="Bebas Neue" {% if magazine.primary_font == 'Bebas Neue' %}selected{% endif %}>Bebas Neue</option>
+                                <option value="Oswald" {% if magazine.primary_font == 'Oswald' %}selected{% endif %}>Oswald</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-paragraph text-muted" style="font-size: 0.875rem;"></i>
+                            <select class="form-select form-select-sm" id="sidebarSecondaryFont" style="width: 140px; font-size: 0.875rem;">
+                                <option value="Lato" {% if magazine.secondary_font == 'Lato' %}selected{% endif %}>Lato</option>
+                                <option value="Open Sans" {% if magazine.secondary_font == 'Open Sans' %}selected{% endif %}>Open Sans</option>
+                                <option value="Roboto" {% if magazine.secondary_font == 'Roboto' %}selected{% endif %}>Roboto</option>
+                                <option value="Source Sans Pro" {% if magazine.secondary_font == 'Source Sans Pro' %}selected{% endif %}>Source Sans Pro</option>
+                                <option value="PT Serif" {% if magazine.secondary_font == 'PT Serif' %}selected{% endif %}>PT Serif</option>
+                                <option value="Crimson Text" {% if magazine.secondary_font == 'Crimson Text' %}selected{% endif %}>Crimson Text</option>
+                                <option value="Georgia" {% if magazine.secondary_font == 'Georgia' %}selected{% endif %}>Georgia</option>
+                                <option value="Arial" {% if magazine.secondary_font == 'Arial' %}selected{% endif %}>Arial</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Colors Group -->
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-secondary" style="font-size: 0.7rem;">{% trans "COLORS" %}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-muted small">{% trans "Heading" %}</span>
+                            <input type="color" class="form-control form-control-color" id="sidebarTextColor" value="{{ magazine.text_color|default:'#2d2d2d' }}" title="{% trans 'Heading Color' %}" style="width: 40px; height: 32px; cursor: pointer;">
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-muted small">{% trans "Body" %}</span>
+                            <input type="color" class="form-control form-control-color" id="sidebarBodyTextColor" value="{{ magazine.background_color|default:'#333333' }}" title="{% trans 'Body Text Color' %}" style="width: 40px; height: 32px; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-0">
+        <!-- Sidebar - Articles List -->
+        <div class="col-md-2 border-end sidebar-articles" style="max-width: 200px; min-width: 200px;">
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold">{% trans "Articles" %}</h6>
+                    <button class="btn btn-sm btn-primary" onclick="createArticle()">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div id="articlesList" class="articles-list">
+                    {% for article in articles %}
+                        <div class="article-item {% if forloop.first %}active{% endif %}" data-article-id="{{ article.id }}" onclick="loadArticle({{ article.id }})">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 article-item-title">{{ article.title }}</h6>
+                                    <small class="text-muted">
+                                        <span class="badge bg-secondary">{{ article.category }}</span>
+                                    </small>
+                                </div>
+                                <button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="deleteArticle({{ article.id }}, event)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            {% if article.is_main_story %}
+                                <small class="text-primary"><i class="fas fa-star me-1"></i>{% trans "Main Story" %}</small>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-file-alt fa-2x mb-2"></i>
+                            <p class="small mb-0">{% trans "No articles yet" %}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Editor Area -->
+        <div class="col-md-4 editor-column">
+            <div class="p-4">
+                <div id="articleEditor" style="display: {% if articles %}block{% else %}none{% endif %};">
+                    <!-- Article Header -->
+                    <div class="article-header mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-bold">{% trans "Article Title" %}</label>
+                                <input type="text" class="form-control form-control-lg" id="articleTitle" placeholder="{% trans 'Enter article title' %}">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">{% trans "Category" %}</label>
+                                <select class="form-select" id="articleCategory" style="cursor: pointer;">
+                                    {% for cat in categories %}
+                                        <option value="{{ cat }}">{{ cat }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">{% trans "Teaser" %}</label>
+                                <textarea class="form-control" id="articleTeaser" rows="2" placeholder="{% trans 'Short teaser for cover/TOC' %}"></textarea>
+                                
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" id="isMainStory">
+                                    <label class="form-check-label" for="isMainStory">
+                                        <i class="fas fa-star text-warning me-1"></i>{% trans "Main Cover Story" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Blocks -->
+                    <div class="content-blocks-section">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 fw-bold">{% trans "Content" %}</h6>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="addTextBlock()">
+                                    <i class="fas fa-paragraph me-1"></i>{% trans "Add Text" %}
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="addImageBlock()">
+                                    <i class="fas fa-image me-1"></i>{% trans "Add Image" %}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="contentBlocks">
+                            <!-- Content blocks will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Save Button -->
+                    <div class="mt-4 text-end">
+                        <button class="btn btn-success btn-lg" onclick="saveArticle()">
+                            <i class="fas fa-save me-2"></i>{% trans "Save Article" %}
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="emptyState" style="display: {% if not articles %}block{% else %}none{% endif %};" class="text-center py-5">
+                    <i class="fas fa-pen-fancy fa-4x text-muted mb-4"></i>
+                    <h4 class="text-muted mb-3">{% trans "No article selected" %}</h4>
+                    <p class="text-muted mb-4">{% trans "Create a new article or select one from the sidebar" %}</p>
+                    <button class="btn btn-primary btn-lg" onclick="createArticle()">
+                        <i class="fas fa-plus me-2"></i>{% trans "Create Article" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Preview Area -->
+        <div class="col-md-6 preview-column" id="livePreviewColumn">
+            <div class="p-4 bg-light h-100">
+                <div class="preview-container">
+                    <div class="d-flex justify-content-between align-items-center mb-3 bg-light py-2">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="fas fa-eye me-2 text-info"></i>{% trans "Live Preview" %}
+                        </h6>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="togglePreview()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="livePreview" class="preview-page bg-white shadow-sm p-4 rounded">
+                        <!-- Live preview content -->
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-file-alt fa-3x mb-3"></i>
+                            <p>{% trans "Select or create an article to see preview" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Magazine Configuration Modal -->
+<div class="modal fade" id="configModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-cog me-2"></i>{% trans "Magazine Settings" %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">{% trans "Magazine Title" %}</label>
+                        <input type="text" class="form-control" id="configTitle" value="{{ magazine.title }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">{% trans "Issue Number" %}</label>
+                        <input type="text" class="form-control" id="configIssue" value="{{ magazine.issue_number }}">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">{% trans "Tagline" %}</label>
+                        <input type="text" class="form-control" id="configTagline" value="{{ magazine.tagline }}">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">{% trans "Categories" %} <small class="text-muted">({% trans "comma-separated" %})</small></label>
+                        <input type="text" class="form-control" id="configCategories" value="{{ magazine.categories }}">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">{% trans "Cover Background" %}</label>
+                        <div class="mb-3">
+                            <label class="form-label small">{% trans "Choose from gallery" %}:</label>
+                            <div class="background-gallery row g-2">
+                                <div class="col-3 col-md-2">
+                                    <div class="background-option" data-bg="gradient" onclick="selectBackground('gradient')">
+                                        <div class="bg-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                                        <small>Gradient</small>
+                                    </div>
+                                </div>
+                                {% for i in "0123456789"|make_list %}
+                                <div class="col-3 col-md-2">
+                                    <div class="background-option" data-bg="{% static 'images/pozadie_' %}{{ i }}.jpg" onclick="selectBackground('{% static 'images/pozadie_' %}{{ i }}.jpg')">
+                                        <div class="bg-preview" style="background: url('{% static 'images/pozadie_' %}{{ i }}.jpg') center/cover;"></div>
+                                        <small>{{ i }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label small">{% trans "Or use custom URL" %}:</label>
+                            <input type="url" class="form-control" id="configCoverBackground" value="{{ magazine.cover_background_image }}" placeholder="https://example.com/image.jpg" onchange="selectBackground(this.value)">
+                        </div>
+                    </div>
+                    
+                    <!-- Gradient Colors - Only shown when gradient is selected -->
+                    <div class="col-md-12" id="gradientColorsSection" style="display: none;">
+                        <hr>
+                        <h6 class="fw-bold mb-3">{% trans "Gradient Colors" %}</h6>
+                    </div>
+                    <div class="col-md-6" id="primaryColorSection" style="display: none;">
+                        <label class="form-label fw-bold">{% trans "Primary Color" %}</label>
+                        <input type="color" class="form-control form-control-color" id="configPrimaryColor" value="{{ magazine.primary_color }}">
+                    </div>
+                    <div class="col-md-6" id="secondaryColorSection" style="display: none;">
+                        <label class="form-label fw-bold">{% trans "Secondary Color" %}</label>
+                        <input type="color" class="form-control form-control-color" id="configSecondaryColor" value="{{ magazine.secondary_color }}">
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">{% trans "Cover Header Position" %}</label>
+                        <select class="form-select" id="configHeaderPosition">
+                            <option value="top" {% if magazine.cover_header_position == 'top' %}selected{% endif %}>{% trans "Top" %} - {% trans "Header at the top" %}</option>
+                            <option value="center" {% if magazine.cover_header_position == 'center' %}selected{% endif %}>{% trans "Center" %} - {% trans "Header in the middle" %} ({% trans "default" %})</option>
+                            <option value="bottom" {% if magazine.cover_header_position == 'bottom' %}selected{% endif %}>{% trans "Bottom" %} - {% trans "Header at the bottom" %}</option>
+                        </select>
+                        <small class="text-muted">{% trans "Choose where the magazine title appears on the cover page" %}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-primary" onclick="saveMagazineConfig()">
+                    <i class="fas fa-save me-2"></i>{% trans "Save Settings" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data -->
+<input type="hidden" id="magazineId" value="{{ magazine.id }}">
+<input type="hidden" id="currentArticleId" value="">
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/magazine-editor.js' %}"></script>
+{% endblock %}

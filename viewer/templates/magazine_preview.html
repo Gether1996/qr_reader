@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ magazine.title }} - {% trans "Preview" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/magazine.css' %}">
+<link rel="stylesheet" href="{% static 'css/magazine-preview.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Lora:wght@400;700&family=Roboto+Slab:wght@400;700&family=Montserrat:wght@400;700;900&family=Raleway:wght@400;700&family=Bebas+Neue&family=Oswald:wght@400;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Roboto:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;700&family=PT+Serif:wght@400;700&family=Crimson+Text:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    /* Magazine typography customization - must stay inline for Django template variables */
+    .magazine-heading {
+        font-family: '{{ magazine.primary_font|default:"Playfair Display" }}', serif;
+        color: {{ magazine.text_color|default:"#2d2d2d" }};
+    }
+    
+    .magazine-body-text {
+        font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif;
+        color: {{ magazine.background_color|default:"#333333" }};
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Controls (no-print) -->
+    <div class="no-print mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <a href="{% url 'magazine_editor' magazine.id %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Editor" %}
+                </a>
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn btn-primary" onclick="printMagazine()">
+                    <i class="fas fa-print me-2"></i>{% trans "Print / Export PDF" %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Magazine Pages -->
+    <div class="magazine-preview">
+        <!-- Cover Page -->
+        <div class="magazine-page cover-page position-{{ magazine.cover_header_position|default:'center' }} shadow mb-4" style="{% if magazine.cover_background_image %}background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{{ magazine.cover_background_image }}') center/cover no-repeat;{% else %}background: linear-gradient(135deg, {{ magazine.primary_color }} 0%, {{ magazine.secondary_color }} 100%);{% endif %}">
+            <div class="cover-content text-white">
+                <div class="cover-header">
+                    <h1 class="display-1 fw-bold mb-3 magazine-heading">{{ magazine.title }}</h1>
+                </div>
+                
+                <!-- Main Story -->
+                {% for article in articles %}
+                    {% if article.is_main_story %}
+                        <div class="cover-main-story mt-5 pt-5 border-top border-white">
+                            {% if article.cover_image %}
+                                <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" class="img-fluid mb-3 rounded shadow">
+                            {% endif %}
+                            <h2 class="display-4 fw-bold mb-2 magazine-heading">{{ article.title }}</h2>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
+                <div class="cover-footer mt-auto" style="margin-top: 30px; padding-top: 10px; padding-bottom: 10px; border-top: 1px solid {{ magazine.background_color|default:'rgba(255, 255, 255, 0.3)' }}; border-bottom: 1px solid {{ magazine.background_color|default:'rgba(255, 255, 255, 0.3)' }};">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }}; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: left;">{% trans "Issue" %} {{ magazine.issue_number }}</p>
+                        {% if magazine.tagline %}
+                            <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }}; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: center;">{{ magazine.tagline }}</p>
+                        {% endif %}
+                        <p style="font-family: '{{ magazine.secondary_font|default:"Lato" }}', sans-serif; color: {{ magazine.background_color|default:'rgba(255, 255, 255, 0.75)' }}; opacity: 0.75; font-size: 1rem; margin: 0; flex: 1; text-align: right;">{{ magazine.publish_date|date:"F Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="magazine-page content-page shadow mb-4">
+            <div class="page-content">
+                <h1 class="display-4 fw-bold mb-4 text-center magazine-heading">
+                    {% trans "Contents" %}
+                </h1>
+                
+                <div class="toc-list">
+                    {% for article in articles %}
+                        <div class="toc-item border-bottom py-3">
+                            <div class="row align-items-center">
+                                <div class="col-10">
+                                    <h5 class="mb-1 fw-bold magazine-heading">{{ article.title }}</h5>
+                                    <p class="mb-0 small magazine-body-text">{{ article.category }}</p>
+                                    {% if article.teaser %}
+                                        <p class="mb-0 mt-1 small magazine-body-text">{{ article.teaser }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="col-2 text-end">
+                                    <span class="badge bg-secondary">{% trans "Page" %} {{ forloop.counter|add:2 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Article Pages -->
+        {% for article in articles %}
+            <div class="magazine-page content-page shadow mb-4">
+                <div class="page-content">
+                    <!-- Article Header -->
+                    <div class="article-header-section mb-4 pb-4 border-bottom" style="border-color: {{ magazine.primary_color }} !important;">
+                        <p class="text-uppercase small mb-2 fw-bold magazine-body-text" style="letter-spacing: 2px;">
+                            {{ article.category }}
+                        </p>
+                        <h1 class="display-5 fw-bold mb-3 magazine-heading">
+                            {{ article.title }}
+                        </h1>
+
+                    </div>
+
+                    <!-- Cover Image -->
+                    {% if article.cover_image %}
+                        <div class="article-image mb-4">
+                            <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" class="img-fluid rounded shadow">
+                        </div>
+                    {% endif %}
+
+                    <!-- Article Content -->
+                    <div class="article-content">
+                        {% for block in article.content_blocks.all %}
+                            {% if block.block_type == 'text' %}
+                                <div class="content-block text-block mb-3" style="text-align: {{ block.alignment }};">
+                                    <p class="article-text magazine-body-text" style="
+                                        {% if block.font_size == 'sm' %}font-size: 0.875rem;{% endif %}
+                                        {% if block.font_size == 'lg' %}font-size: 1.125rem;{% endif %}
+                                        {% if block.font_size == 'xl' %}font-size: 1.5rem; font-weight: bold;{% endif %}
+                                        {% if block.text_color %}color: {{ block.text_color }};{% endif %}
+                                    ">{{ block.text_content|linebreaks }}</p>
+                                </div>
+                            {% elif block.block_type == 'image' %}
+                                <div class="content-block image-block mb-4 text-center">
+                                    {% if block.image %}
+                                        <img src="{{ block.image.url }}" alt="{{ block.image_caption }}" class="img-fluid rounded shadow">
+                                    {% elif block.image_url %}
+                                        <img src="{{ block.image_url }}" alt="{{ block.image_caption }}" class="img-fluid rounded shadow">
+                                    {% endif %}
+                                    {% if block.image_caption %}
+                                        <p class="small mt-2 fst-italic magazine-body-text">{{ block.image_caption }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Page Number -->
+                    <div class="page-number text-center mt-5 pt-4 border-top">
+                        <small class="text-muted">{{ forloop.counter|add:2 }}</small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Floating Print Button -->
+<div class="preview-controls no-print">
+    <button class="btn btn-primary btn-lg rounded-circle shadow-lg" onclick="printMagazine()" style="width: 60px; height: 60px;">
+        <i class="fas fa-print fa-lg"></i>
+    </button>
+</div>
+
+<script>
+function printMagazine() {
+    // Get magazine content
+    const magazineContent = document.querySelector('.magazine-preview').innerHTML;
+    
+    // Store original body content
+    const originalBody = document.body.innerHTML;
+    
+    // Replace body with only magazine content
+    document.body.innerHTML = magazineContent;
+    
+    // Print
+    window.print();
+    
+    // Restore original content
+    document.body.innerHTML = originalBody;
+    
+    // Reinitialize page (reload to restore all event listeners)
+    location.reload();
+}
+</script>
+
+{% endblock %}

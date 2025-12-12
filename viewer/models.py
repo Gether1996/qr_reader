@@ -200,3 +200,138 @@ class Vacation(models.Model):
         if self.date_from and self.date_to:
             return (self.date_to - self.date_from).days + 1
         return 0
+
+
+# ============= MAGAZINE MODELS =============
+
+class Magazine(models.Model):
+    """Magazine model - represents a magazine issue"""
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='magazines')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_magazines')
+    
+    # Magazine Configuration
+    title = models.CharField(max_length=255, default="My Magazine")
+    issue_number = models.CharField(max_length=50, default="1")
+    tagline = models.CharField(max_length=255, blank=True, null=True)
+    publish_date = models.DateField()
+    
+    # Theme & Design
+    template_id = models.CharField(max_length=50, default="classic")
+    primary_font = models.CharField(max_length=100, default="Playfair Display")
+    secondary_font = models.CharField(max_length=100, default="Lato")
+    primary_color = models.CharField(max_length=20, default="#1a1a1a")
+    secondary_color = models.CharField(max_length=20, default="#666666")
+    background_color = models.CharField(max_length=20, default="#ffffff")
+    text_color = models.CharField(max_length=20, default="#2d2d2d")
+    cover_background_image = models.URLField(max_length=500, blank=True, null=True)  # URL to cover background image
+    cover_header_position = models.CharField(max_length=20, default="center", choices=[
+        ('top', 'Top'),
+        ('center', 'Center'),
+        ('bottom', 'Bottom')
+    ])  # Position of header on cover page
+    
+    # Settings
+    language = models.CharField(max_length=5, default="en")
+    print_bleed = models.BooleanField(default=False)
+    categories = models.TextField(default="News,Features,Opinion,Culture,Sports")  # Comma-separated
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-modified_at']
+    
+    def __str__(self):
+        return f"{self.title} - Issue {self.issue_number}"
+    
+    def get_categories_list(self):
+        """Return categories as a list"""
+        return [cat.strip() for cat in self.categories.split(',') if cat.strip()]
+
+
+class MagazineArticle(models.Model):
+    """Article model - represents an article within a magazine"""
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('pending', 'Pending Review'),
+        ('published', 'Published'),
+    ]
+    
+    magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE, related_name='articles')
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='articles')
+    
+    # Article Content
+    title = models.CharField(max_length=500)
+    teaser = models.TextField(blank=True, null=True, help_text="Short teaser for cover/TOC")
+    category = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    
+    # Cover Story
+    is_main_story = models.BooleanField(default=False)
+    is_secondary_story = models.BooleanField(default=False)
+    cover_image = models.ImageField(upload_to='magazine_images/', blank=True, null=True)
+    
+    # Layout
+    page_number = models.IntegerField(blank=True, null=True)
+    order = models.IntegerField(default=0, help_text="Order in magazine")
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['magazine', 'order', 'page_number']
+    
+    def __str__(self):
+        return f"{self.title} - {self.magazine.title}"
+
+
+class ContentBlock(models.Model):
+    """Content blocks for articles - can be text or images"""
+    BLOCK_TYPE_CHOICES = [
+        ('text', 'Text'),
+        ('image', 'Image'),
+    ]
+    
+    ALIGNMENT_CHOICES = [
+        ('left', 'Left'),
+        ('center', 'Center'),
+        ('right', 'Right'),
+        ('justify', 'Justify'),
+    ]
+    
+    FONT_SIZE_CHOICES = [
+        ('sm', 'Small'),
+        ('base', 'Base'),
+        ('lg', 'Large'),
+        ('xl', 'Extra Large'),
+    ]
+    
+    article = models.ForeignKey(MagazineArticle, on_delete=models.CASCADE, related_name='content_blocks')
+    block_type = models.CharField(max_length=10, choices=BLOCK_TYPE_CHOICES)
+    order = models.IntegerField(default=0)
+    
+    # Text content
+    text_content = models.TextField(blank=True, null=True)
+    
+    # Image content
+    image = models.ImageField(upload_to='magazine_content/', blank=True, null=True)
+    image_url = models.URLField(blank=True, null=True)
+    image_caption = models.CharField(max_length=500, blank=True, null=True)
+    
+    # Styling
+    font_family = models.CharField(max_length=100, blank=True, null=True)
+    font_size = models.CharField(max_length=10, choices=FONT_SIZE_CHOICES, blank=True, null=True)
+    text_color = models.CharField(max_length=20, blank=True, null=True)
+    background_color = models.CharField(max_length=20, blank=True, null=True)
+    alignment = models.CharField(max_length=10, choices=ALIGNMENT_CHOICES, default='left')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['article', 'order']
+    
+    def __str__(self):
+        return f"{self.block_type} block for {self.article.title}"

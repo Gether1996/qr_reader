@@ -131,16 +131,16 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = "/app/staticfiles"
 
-# Storage configuration - use simple storage for tests
+# Storage configuration - use simple storage for tests and debug mode
 import sys
-if 'test' in sys.argv:
+if 'test' in sys.argv or DEBUG:
     STORAGES = {
         "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
         "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     }
 else:
     STORAGES = {
-        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
         "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     }
 
