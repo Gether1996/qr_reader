@@ -295,6 +295,9 @@
                                 {% endfor %}
                             </div>
                         </div>
+                        <div>
+                            <input type="url" class="form-control" id="configCoverBackground" value="{{ magazine.cover_background_image }}" placeholder="https://example.com/image.jpg" onchange="selectBackground(this.value)" disabled>
+                        </div>
                     </div>
                     
                     <!-- Gradient Colors - Only shown when gradient is selected -->
