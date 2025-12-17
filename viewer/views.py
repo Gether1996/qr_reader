@@ -2199,12 +2199,15 @@ def api_article_update(request, article_id):
             article.is_secondary_story = data['is_secondary_story']
         if 'order' in data:
             article.order = data['order']
+        if 'status' in data:
+            article.status = data['status']
         
         article.save()
         
         return JsonResponse({'success': True, 'article': {
             'id': article.id,
             'title': article.title,
+            'status': article.status,
         }})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
@@ -2232,6 +2235,69 @@ def api_article_delete(request, article_id):
     
     article.delete()
     return JsonResponse({'success': True})
+
+
+@csrf_exempt
+def api_article_upload_header_image(request, article_id):
+    """API: Upload header image for article"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=400)
+    
+    if 'company_id' not in request.session:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    
+    from viewer.models import MagazineArticle
+    company_id = request.session['company_id']
+    
+    article = MagazineArticle.objects.filter(
+        id=article_id,
+        magazine__company_id=company_id
+    ).first()
+    
+    if not article:
+        return JsonResponse({'error': 'Article not found'}, status=404)
+    
+    try:
+        if not request.FILES.get('header_image'):
+            return JsonResponse({'error': 'No image provided'}, status=400)
+        
+        article.header_image = request.FILES['header_image']
+        article.save()
+        
+        return JsonResponse({'success': True, 'header_image': article.header_image.url})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+@csrf_exempt
+def api_article_remove_header_image(request, article_id):
+    """API: Remove header image from article"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=400)
+    
+    if 'company_id' not in request.session:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    
+    from viewer.models import MagazineArticle
+    company_id = request.session['company_id']
+    
+    article = MagazineArticle.objects.filter(
+        id=article_id,
+        magazine__company_id=company_id
+    ).first()
+    
+    if not article:
+        return JsonResponse({'error': 'Article not found'}, status=404)
+    
+    try:
+        if article.header_image:
+            article.header_image.delete()
+        article.header_image = None
+        article.save()
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 
 @csrf_exempt
@@ -2444,6 +2510,8 @@ def api_article_data(request, article_id):
             'category': article.category,
             'is_main_story': article.is_main_story,
             'is_secondary_story': article.is_secondary_story,
+            'status': article.status,
+            'header_image': article.header_image.url if article.header_image else None,
             'content_blocks': blocks
         }
     })

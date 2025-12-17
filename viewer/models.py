@@ -252,6 +252,10 @@ class Magazine(models.Model):
 
 
 class MagazineArticle(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Koncept'),
+        ('published', 'Publikovaný'),
+    ]
 
     magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE, related_name='articles')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='articles')
@@ -265,10 +269,14 @@ class MagazineArticle(models.Model):
     is_main_story = models.BooleanField(default=False)
     is_secondary_story = models.BooleanField(default=False)
     cover_image = models.ImageField(upload_to='magazine_images/', blank=True, null=True)
+    header_image = models.ImageField(upload_to='magazine_headers/', blank=True, null=True, help_text="Image displayed in article header")
     
     # Layout
     page_number = models.IntegerField(blank=True, null=True)
     order = models.IntegerField(default=0, help_text="Order in magazine")
+    
+    # Status
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)

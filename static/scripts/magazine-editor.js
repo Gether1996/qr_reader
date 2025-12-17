@@ -6,6 +6,19 @@ let currentMagazineId = null;
 let currentArticleData = null;
 let contentBlocks = [];
 
+// Stub functions to prevent "not defined" errors when inline handlers fire before script loads
+if (typeof saveArticle === 'undefined') {
+    window.saveArticle = function() {
+        console.log('saveArticle called before fully loaded');
+    };
+}
+
+if (typeof uploadHeaderImage === 'undefined') {
+    window.uploadHeaderImage = function() {
+        console.log('uploadHeaderImage called before fully loaded');
+    };
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     currentMagazineId = document.getElementById('magazineId').value;
@@ -86,6 +99,25 @@ function populateArticleForm(article) {
     document.getElementById('articleTeaser').value = article.teaser || '';
     document.getElementById('isMainStory').checked = article.is_main_story || false;
     document.getElementById('currentArticleId').value = article.id;
+    
+    // Set status radio buttons
+    const status = article.status || 'draft';
+    document.getElementById('status' + (status === 'published' ? 'Published' : 'Draft')).checked = true;
+    
+    // Display header image preview if exists
+    const previewDiv = document.getElementById('headerImagePreview');
+    if (article.header_image) {
+        previewDiv.innerHTML = `
+            <div class="position-relative d-inline-block w-100">
+                <img src="${article.header_image}" class="img-fluid rounded" alt="Header Image" style="max-height: 200px; object-fit: cover;">
+                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="removeHeaderImage()">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+    } else {
+        previewDiv.innerHTML = '';
+    }
     
     console.log('Loaded article category:', article.category);
     console.log('Select element value after set:', document.getElementById('articleCategory').value);
@@ -408,14 +440,17 @@ function updateBlockOrders() {
 }
 
 // Save article
-function saveArticle() {
+window.saveArticle = function saveArticle() {
     if (!currentArticleId) return;
+    
+    const statusElement = document.querySelector('input[name="status"]:checked');
     
     const data = {
         title: document.getElementById('articleTitle').value,
         category: document.getElementById('articleCategory').value,
         teaser: document.getElementById('articleTeaser').value,
-        is_main_story: document.getElementById('isMainStory').checked
+        is_main_story: document.getElementById('isMainStory').checked,
+        status: statusElement ? statusElement.value : 'draft'
     };
     
     fetch(`${languagePrefix}/magazine/article/${currentArticleId}/update/`, {
@@ -447,7 +482,7 @@ function saveArticle() {
         console.error('Error:', error);
         alert('Error saving article');
     });
-}
+};
 
 // Delete article
 function deleteArticle(articleId, event) {
@@ -697,6 +732,7 @@ async function updateLivePreview() {
     const currentCategory = document.getElementById('articleCategory')?.value || '';
     const currentTeaser = document.getElementById('articleTeaser')?.value || '';
     const currentIsMainStory = document.getElementById('isMainStory')?.checked || false;
+    const currentHeaderImage = currentArticleData?.header_image || null;
     
     console.log('Current category:', currentCategory);
     
@@ -710,22 +746,27 @@ async function updateLivePreview() {
         const isActive = item.classList.contains('active');
         
         if (isActive && currentArticleData) {
-            // Use live data for currently edited article
-            allArticlesData.push({
-                id: articleId,
-                title: currentTitle || 'Untitled',
-                category: currentCategory || 'Uncategorized',
-                teaser: currentTeaser,
-                is_main_story: currentIsMainStory,
-                content_blocks: contentBlocks,
-                isActive: true
-            });
+            // Use live data for currently edited article - only if published
+            const currentStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+            if (currentStatus === 'published') {
+                allArticlesData.push({
+                    id: articleId,
+                    title: currentTitle || 'Untitled',
+                    category: currentCategory || 'Uncategorized',
+                    teaser: currentTeaser,
+                    is_main_story: currentIsMainStory,
+                    header_image: currentHeaderImage,
+                    content_blocks: contentBlocks,
+                    isActive: true,
+                    status: 'published'
+                });
+            }
         } else {
-            // Fetch data for other articles
+            // Fetch data for other articles - only published ones
             try {
                 const response = await fetch(`${languagePrefix}/magazine/article/${articleId}/data/`);
                 const data = await response.json();
-                if (data.success) {
+                if (data.success && data.article.status === 'published') {
                     allArticlesData.push({
                         ...data.article,
                         isActive: false
@@ -762,6 +803,7 @@ async function updateLivePreview() {
                 </h1>
                 ${mainStory ? `
                     <div style="margin-top: 60px; padding-top: 40px; border-top: 2px solid rgba(128, 128, 128, 0.3);">
+                        ${mainStory.header_image ? `<img src="${mainStory.header_image}" alt="${mainStory.title}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">` : ''}
                         <h2 style="font-family: '${primaryFont}', serif; color: ${textColor}; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">${mainStory.title}</h2>
                         ${mainStory.teaser ? `<p style="font-family: '${secondaryFont}', sans-serif; color: ${bodyTextColor}; font-size: 1.125rem; opacity: 0.9;">${mainStory.teaser}</p>` : ''}
                     </div>
@@ -816,14 +858,17 @@ async function updateLivePreview() {
         html += `
             <!-- ARTICLE PAGE ${index + 1} -->
             <div class="preview-magazine-page" style="position: relative; min-height: 700px; padding: 60px 50px; padding-bottom: 80px; background: white; ${article.isActive ? 'border: 3px solid ' + primaryColor + ';' : ''}">
-                <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid ${primaryColor};">
-                    <p style="font-family: '${secondaryFont}', sans-serif; color: ${bodyTextColor}; text-transform: uppercase; font-size: 0.875rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.5rem;">
-                        ${article.category || 'Uncategorized'}
-                    </p>
-                    <h1 style="font-family: '${primaryFont}', serif; color: ${textColor}; font-size: 2.8rem; line-height: 1.2; margin-bottom: 15px; font-weight: 700;">
-                        ${article.title || 'Untitled Article'}
-                    </h1>
-                    ${article.teaser ? `<p style="font-family: '${secondaryFont}', sans-serif; color: #666; font-size: 1rem;">${article.teaser}</p>` : ''}
+                <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid ${primaryColor}; display: flex; gap: 30px; align-items: center;">
+                    <div style="flex: 1;">
+                        <p style="font-family: '${secondaryFont}', sans-serif; color: ${bodyTextColor}; text-transform: uppercase; font-size: 0.875rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.5rem;">
+                            ${article.category || 'Uncategorized'}
+                        </p>
+                        <h1 style="font-family: '${primaryFont}', serif; color: ${textColor}; font-size: 2.8rem; line-height: 1.2; margin-bottom: 15px; font-weight: 700;">
+                            ${article.title || 'Untitled Article'}
+                        </h1>
+                        ${article.teaser ? `<p style="font-family: '${secondaryFont}', sans-serif; color: #666; font-size: 1rem;">${article.teaser}</p>` : ''}
+                    </div>
+                    ${article.header_image ? `<div style="flex-shrink: 0; width: 250px; height: 200px;"><img src="${article.header_image}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);"></div>` : ''}
                 </div>
                 
                 <div class="preview-article-content">
@@ -956,6 +1001,84 @@ function toggleDarkMode() {
         localStorage.setItem('darkMode', 'disabled');
     }
 }
+
+// Upload header image
+window.uploadHeaderImage = function uploadHeaderImage() {
+    if (!currentArticleId) return;
+    
+    const fileInput = document.getElementById('headerImageInput');
+    const file = fileInput.files[0];
+    
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('header_image', file);
+    
+    // Show loading state
+    const previewDiv = document.getElementById('headerImagePreview');
+    previewDiv.innerHTML = '<div class="alert alert-info">Uploading image...</div>';
+    
+    fetch(`${languagePrefix}/magazine/article/${currentArticleId}/upload-header-image/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update preview
+            if (data.header_image) {
+                previewDiv.innerHTML = `
+                    <div class="position-relative d-inline-block w-100">
+                        <img src="${data.header_image}" class="img-fluid rounded" alt="Header Image" style="max-height: 200px; object-fit: cover;">
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="removeHeaderImage()">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            // Clear file input
+            fileInput.value = '';
+            updateLivePreview();
+        } else {
+            alert('Error uploading image: ' + (data.error || 'Unknown error'));
+            previewDiv.innerHTML = '';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error uploading image');
+        previewDiv.innerHTML = '';
+    });
+};
+
+// Remove header image
+window.removeHeaderImage = function removeHeaderImage() {
+    if (!currentArticleId) return;
+    
+    fetch(`${languagePrefix}/magazine/article/${currentArticleId}/remove-header-image/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('headerImagePreview').innerHTML = '';
+            updateLivePreview();
+        } else {
+            alert('Error removing image');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error removing image');
+    });
+};
 
 // Print magazine - open preview with auto-print
 function printMagazine() {

@@ -1098,3 +1098,79 @@
 .magazine-editor select.form-select:disabled {
     background-color: #e9ecef;
 }
+
+/* =============== STATUS AND HEADER IMAGE STYLES =============== */
+
+/* Status Toggle Buttons */
+.magazine-editor .btn-group {
+    display: flex;
+    gap: 0;
+}
+
+.magazine-editor .btn-group .btn {
+    flex: 1;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.magazine-editor .btn-group .btn-check:checked + .btn {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.magazine-editor .btn-outline-warning:not(.btn-check:checked + .btn) {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.magazine-editor .btn-outline-success:not(.btn-check:checked + .btn) {
+    color: #10b981;
+    border-color: #10b981;
+}
+
+/* Header Image Upload Styles */
+#headerImagePreview {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#headerImagePreview .position-relative {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+#headerImagePreview img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+#headerImagePreview .btn-danger {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#headerImagePreview .position-relative:hover .btn-danger {
+    opacity: 1;
+}
+
+.magazine-editor .form-control[type="file"] {
+    padding: 0.75rem 1rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.magazine-editor .form-control[type="file"]:hover {
+    border-color: #667eea;
+    background-color: #f8f9ff;
+}
+
+.magazine-editor .form-control[type="file"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}

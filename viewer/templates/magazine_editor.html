@@ -170,6 +170,32 @@
                                         <i class="fas fa-star text-warning me-1"></i>{% trans "Main Cover Story" %}
                                     </label>
                                 </div>
+
+                                <!-- Status -->
+                                <div class="mt-3">
+                                    <label class="form-label fw-bold">{% trans "Status" %}</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="status" id="statusDraft" value="draft" onchange="saveArticle()">
+                                        <label class="btn btn-outline-warning" for="statusDraft">
+                                            <i class="fas fa-pencil-alt me-1"></i>{% trans "Draft" %}
+                                        </label>
+                                        
+                                        <input type="radio" class="btn-check" name="status" id="statusPublished" value="published" onchange="saveArticle()">
+                                        <label class="btn btn-outline-success" for="statusPublished">
+                                            <i class="fas fa-check-circle me-1"></i>{% trans "Published" %}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Header Image -->
+                                <div class="mt-3">
+                                    <label class="form-label fw-bold">{% trans "Header Image" %}</label>
+                                    <div id="headerImagePreview" class="mb-2">
+                                        <!-- Preview will be shown here -->
+                                    </div>
+                                    <input type="file" class="form-control" id="headerImageInput" accept="image/*" onchange="uploadHeaderImage()">
+                                    <small class="text-muted">{% trans "Image to display in article header" %}</small>
+                                </div>
                             </div>
                         </div>
                     </div>

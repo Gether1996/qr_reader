@@ -135,7 +135,7 @@
             fetch(`${languagePrefix}/magazine/${magazineToDelete}/delete/`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-CSRFToken': csrfToken,
                     'Content-Type': 'application/json'
                 }
             })

@@ -48,7 +48,7 @@
             document.documentElement.setAttribute('data-bs-theme', savedTheme);
         })();
         
-        var csrfToken = "{{ csrf_token }}";
+        const csrfToken = "{{ csrf_token }}";
         var currentLanguage = "{{ LANGUAGE_CODE }}";
         // Get current language code from URL
         function getLanguageCode() {
