@@ -354,6 +354,15 @@ class TelegramBotHandler:
         logger.info(f"Callback data: {callback_data}")
         logger.info(f"Context user_data: {context.user_data}")
         
+        # Handle custom time
+        if callback_data == 'time_custom':
+            await query.edit_message_text(
+                "Napíš čas v tvare: YYYY-MM-DD HH:MM\n"
+                "Príklad: 2025-12-18 14:30"
+            )
+            context.user_data['schedule_step'] = 'custom_time'
+            return
+        
         # Parse time from callback_data (format: "time_tomorrow_10")
         if callback_data.startswith('time_'):
             parts = callback_data.split('_')
@@ -374,11 +383,8 @@ class TelegramBotHandler:
                 logger.info(f"Waiting for caption...")
             else:
                 await query.edit_message_text("❌ Neplatný čas")
-        elif callback_data == 'time_custom':
-            await query.edit_message_text(
-                "Napíš čas v tvare: YYYY-MM-DD HH:MM"
-            )
-            context.user_data['schedule_step'] = 'custom_time'
+        else:
+            await query.edit_message_text("❌ Neznámy príkaz")
     
     def parse_callback_time(self, day: str, hour: int) -> datetime:
         """Parse time from callback"""
@@ -498,12 +504,15 @@ class TelegramBotHandler:
             await update.message.reply_text(
                 "✏️ Napíš popis (caption) pre post:"
             )
+            return
         except ValueError:
+            logger.error(f"Invalid time format: {time_text}")
             await update.message.reply_text(
                 "❌ Neplatný formát!\n"
                 "Použi: YYYY-MM-DD HH:MM\n"
                 "Príklad: 2025-12-18 14:30"
             )
+            return
     
     @sync_to_async
     def _transcribe_voice_sync(self, audio_path: str) -> str:
