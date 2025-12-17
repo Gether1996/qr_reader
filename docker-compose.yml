@@ -3,7 +3,7 @@ services:
     container_name: qr_reader_redis
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6380:6379"
     restart: unless-stopped
 
   web:
