@@ -43,15 +43,20 @@ urlpatterns += i18n_patterns(
     path('company/user/<int:user_id>/delete/', views.delete_user, name='delete_user'),
     path('company/user/<int:user_id>/details/', views.view_user_details, name='view_user_details'),
     path('company/user/<int:user_id>/attendance-pdf/', views.generate_attendance_pdf, name='generate_attendance_pdf'),
+    path('company/user/<int:user_id>/attendance-excel/', views.generate_attendance_excel, name='generate_attendance_excel'),
     
     # Vacation management (company actions)
     path('absence/create/', views.create_vacation, name='create_vacation'),
     path('absence/<int:vacation_id>/edit/', views.edit_vacation, name='edit_vacation'),
+    path('absence/<int:vacation_id>/delete/', views.delete_vacation, name='delete_vacation'),
+    path('absence/<int:vacation_id>/approve/', views.approve_vacation, name='approve_vacation'),
     
     # Analytics
     path('company/analytics/', views.company_analytics, name='company_analytics'),
     path('api/analytics/chart-data/', views.analytics_chart_data, name='analytics_chart_data'),
-    path('absence/<int:vacation_id>/delete/', views.delete_vacation, name='delete_vacation'),
+    
+    # Audit logging
+    path('audit-logs/', views.audit_logs, name='audit_logs'),
     
     # Magazine routes
     path('magazine/', views.magazine_dashboard, name='magazine_dashboard'),

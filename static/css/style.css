@@ -249,6 +249,7 @@ body {
 
 .clickable-row:hover {
     background-color: #f8fafc !important;
+    cursor: pointer;
 }
 
 /* Sortable table headers */
@@ -924,6 +925,16 @@ body {
 
 .action-icon-btn.action-btn-delete:hover {
     background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+}
+
+.action-icon-btn.action-btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.action-icon-btn.action-btn-success:hover {
+    background: linear-gradient(135deg, #059669, #047857);
     color: white;
 }
 

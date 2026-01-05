@@ -1616,7 +1616,7 @@ msgstr "Zuletzt geändert:"
 
 #: .\viewer\templates\company_dashboard.html:415
 msgid "Edited"
-msgstr "Bearbeiten"
+msgstr "Bearbeitet"
 
 #: .\viewer\templates\company_dashboard.html:434
 #: .\viewer\templates\company_dashboard.html:477

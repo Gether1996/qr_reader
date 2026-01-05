@@ -39,11 +39,16 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="d-flex gap-2 justify-content-lg-end justify-content-start">
+                        {% if can_edit_absences %}
                         <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="addVacationForUser({{ user.id }}, '{{ user.name }}')">
                             <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus me-1"></i></span>{% trans "Add Absence" %}
                         </button>
+                        {% endif %}
                         <button type="button" class="btn header-action-btn btn-red flex-fill flex-lg-grow-0" onclick="generateAttendancePDF({{ user.id }}, this)" title="{% trans 'Generate PDF' %}">
                             <i class="fas fa-file-pdf me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-file-pdf me-1"></i></span>{% trans "Generate attendance PDF" %}
+                        </button>
+                        <button type="button" class="btn header-action-btn btn-success flex-fill flex-lg-grow-0" onclick="generateAttendanceExcel({{ user.id }}, this)" title="{% trans 'Generate Excel' %}">
+                            <i class="fas fa-file-excel me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-file-excel me-1"></i></span>{% trans "Generate Excel" %}
                         </button>
                     </div>
                 </div>
@@ -223,6 +228,7 @@
                                     </th>
                                     <th>{% trans "Days" %}</th>
                                     <th>{% trans "Type" %}</th>
+                                    <th style="width: 80px; text-align: center;">{% trans "Status" %}</th>
                                     <th class="sortable-th">
                                         <a href="?tab=vacations&{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'page' and key != 'tab' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={% if current_filters.sort == 'created_at' %}-{% endif %}created_at">
                                             {% trans "Created" %}
@@ -251,10 +257,19 @@
                                     <td>
                                         {% if vacation.type == 'sick_leave' %}
                                             <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                        {% elif vacation.type == 'doctor' %}
+                                            <span class="badge" style="background-color: #9333ea;"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
                                         {% elif vacation.type == 'vacation' %}
                                             <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
                                         {% else %}
                                             <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: center;">
+                                        {% if vacation.approved %}
+                                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;" title="{% trans 'Approved' %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-clock" style="color: #f59e0b; font-size: 1.2rem;" title="{% trans 'Pending' %}"></i>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -262,6 +277,13 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="action-buttons">
+                                            {% if not vacation.approved and can_edit_absences %}
+                                            <button type="button" class="action-icon-btn action-btn-success" 
+                                                    onclick="approveVacation({{ vacation.id }}, '{{ user.name }}')" title="{% trans 'Approve' %}">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            {% endif %}
+                                            {% if can_edit_absences %}
                                             <button type="button" class="action-icon-btn action-btn-edit" 
                                                     onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}')" title="{% trans 'Edit' %}">
                                                 <i class="fas fa-edit"></i>
@@ -270,12 +292,13 @@
                                                     onclick="deleteVacation({{ vacation.id }}, '{{ user.name }}')" title="{% trans 'Delete' %}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                            {% endif %}
                                         </div>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">{% trans "No vacations found" %}</td>
+                                    <td colspan="8" class="text-center text-muted py-4">{% trans "No vacations found" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -309,6 +332,8 @@
                                     <span><strong>{% trans "Type:" %}</strong> 
                                         {% if vacation.type == 'sick_leave' %}
                                             <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                        {% elif vacation.type == 'doctor' %}
+                                            <span class="badge" style="background-color: #9333ea;"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
                                         {% elif vacation.type == 'vacation' %}
                                             <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
                                         {% else %}
@@ -316,8 +341,23 @@
                                         {% endif %}
                                     </span>
                                 </div>
+                                <div class="mobile-scan-info-item">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span><strong>{% trans "Status:" %}</strong> 
+                                        {% if vacation.approved %}
+                                            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>{% trans "Approved" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning"><i class="fas fa-clock me-1"></i>{% trans "Pending" %}</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
                             </div>
                             <div class="d-flex gap-2 mt-3">
+                                {% if not vacation.approved and can_edit_absences %}
+                                <button type="button" class="btn btn-sm btn-success flex-fill" onclick="approveVacation({{ vacation.id }}, '{{ user.name }}')">
+                                    <i class="fas fa-check me-1"></i>{% trans "Approve" %}
+                                </button>
+                                {% endif %}
                                 <button type="button" class="btn btn-sm flex-fill btn-edit-vacation" onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}')">
                                     <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                                 </button>

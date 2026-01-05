@@ -1,9 +1,9 @@
 // Translations
 const vacationTranslations = {
     sk: {
-        addAbsence: 'Pridať neprítomnosť',
-        editAbsence: 'Upraviť neprítomnosť',
-        deleteAbsence: 'Vymazať neprítomnosť',
+        addAbsence: 'Pridať absenciu',
+        editAbsence: 'Upraviť absenciu',
+        deleteAbsence: 'Vymazať absenciu',
         selectEmployee: 'Vyberte zamestnanca',
         employee: 'Zamestnanec',
         dateRange: 'Obdobie',
@@ -12,26 +12,32 @@ const vacationTranslations = {
         cancel: 'Zrušiť',
         save: 'Uložiť',
         delete: 'Vymazať',
-        confirmDelete: 'Naozaj chcete vymazať túto neprítomnosť?',
-        confirmDeleteText: 'Neprítomnosť pre zamestnanca',
+        confirmDelete: 'Naozaj chcete vymazať túto absenciu?',
+        confirmDeleteText: 'Absencia pre zamestnanca',
         willBeDeleted: 'bude vymazaná',
         yes: 'Áno, vymazať',
         no: 'Nie',
         success: 'Úspech',
         error: 'Chyba',
-        absenceAdded: 'Neprítomnosť bola úspešne pridaná',
-        absenceUpdated: 'Neprítomnosť bola úspešne aktualizovaná',
-        absenceDeleted: 'Neprítomnosť bola úspešne vymazaná',
-        absenceAddFailed: 'Nepodarilo sa pridať neprítomnosť',
-        absenceUpdateFailed: 'Nepodarilo sa aktualizovať neprítomnosť',
-        absenceDeleteFailed: 'Nepodarilo sa vymazať neprítomnosť',
+        absenceAdded: 'Absencia bola úspešne pridaná',
+        absenceUpdated: 'Absencia bola úspešne aktualizovaná',
+        absenceDeleted: 'Absencia bola úspešne vymazaná',
+        absenceAddFailed: 'Nepodarilo sa pridať absenciu',
+        absenceUpdateFailed: 'Nepodarilo sa aktualizovať absenciu',
+        absenceDeleteFailed: 'Nepodarilo sa vymazať absenciu',
         fillAllFields: 'Vyplňte všetky polia vrátane typu',
         invalidDateRange: 'Neplatné obdobie - dátum ukončenia musí byť po dátume začiatku',
         selectDates: 'Vyberte dátumy',
         type: 'Typ',
         vacation: 'Dovolenka',
         sickLeave: 'PN (Pracovná neschopnosť)',
-        selectType: 'Vyberte typ'
+        doctor: 'Lekár',
+        selectType: 'Vyberte typ',
+        approveAbsence: 'Schváliť absenciu',
+        confirmApproveText: 'Naozaj chcete schváliť absenciu pre',
+        yesApprove: 'Áno, schváliť',
+        absenceApproved: 'Absencia bola úspešne schválená',
+        absenceApproveFailed: 'Nepodarilo sa schváliť absenciu'
     },
     en: {
         addAbsence: 'Add Absence',
@@ -64,7 +70,13 @@ const vacationTranslations = {
         type: 'Type',
         vacation: 'Vacation',
         sickLeave: 'Sick Leave',
-        selectType: 'Select type'
+        doctor: 'Doctor',
+        selectType: 'Select type',
+        approveAbsence: 'Approve Absence',
+        confirmApproveText: 'Are you sure you want to approve absence for',
+        yesApprove: 'Yes, approve',
+        absenceApproved: 'Absence successfully approved',
+        absenceApproveFailed: 'Failed to approve absence'
     },
     es: {
         addAbsence: 'Agregar Ausencia',
@@ -97,7 +109,13 @@ const vacationTranslations = {
         type: 'Tipo',
         vacation: 'Vacaciones',
         sickLeave: 'Baja por enfermedad',
-        selectType: 'Seleccionar tipo'
+        doctor: 'Médico',
+        selectType: 'Seleccionar tipo',
+        approveAbsence: 'Aprobar Ausencia',
+        confirmApproveText: '¿Está seguro de que desea aprobar la ausencia para',
+        yesApprove: 'Sí, aprobar',
+        absenceApproved: 'Ausencia aprobada exitosamente',
+        absenceApproveFailed: 'No se pudo aprobar la ausencia'
     },
     de: {
         addAbsence: 'Abwesenheit hinzufügen',
@@ -130,7 +148,13 @@ const vacationTranslations = {
         type: 'Typ',
         vacation: 'Urlaub',
         sickLeave: 'Krankschreibung',
-        selectType: 'Typ auswählen'
+        doctor: 'Arzt',
+        selectType: 'Typ auswählen',
+        approveAbsence: 'Abwesenheit genehmigen',
+        confirmApproveText: 'Möchten Sie die Abwesenheit für',
+        yesApprove: 'Ja, genehmigen',
+        absenceApproved: 'Abwesenheit erfolgreich genehmigt',
+        absenceApproveFailed: 'Abwesenheit konnte nicht genehmigt werden'
     }
 };
 
@@ -187,6 +211,7 @@ function addVacation(users) {
                             <option value="">${t.selectType}</option>
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
+                            <option value="doctor">${t.doctor}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -327,6 +352,7 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                             <option value="">${t.selectType}</option>
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
+                            <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -449,6 +475,7 @@ function addVacationForUser(userId, userName) {
                             <option value="">${t.selectType}</option>
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
+                            <option value="doctor">${t.doctor}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -578,6 +605,7 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                             <option value="">${t.selectType}</option>
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
+                            <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -737,6 +765,73 @@ function deleteVacation(vacationId, userName) {
                     icon: 'error',
                     title: t.error,
                     text: t.absenceDeleteFailed,
+                    customClass: {
+                        confirmButton: 'swal-btn-gradient-red',
+                        popup: 'swal-popup-rounded'
+                    },
+                    buttonsStyling: false
+                });
+            });
+        }
+    });
+}
+function approveVacation(vacationId, userName) {
+    Swal.fire({
+        title: t.approveAbsence,
+        html: `<p>${t.confirmApproveText} <strong>${userName}</strong>?</p>`,
+        icon: 'question',
+        showCancelButton: true,
+        customClass: {
+            confirmButton: 'swal-btn-gradient-green',
+            cancelButton: 'swal-btn-gradient-gray',
+            popup: 'swal-popup-rounded'
+        },
+        buttonsStyling: false,
+        confirmButtonText: t.yesApprove,
+        cancelButtonText: t.no,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/${langCode}/absence/${vacationId}/approve/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: t.success,
+                        text: t.absenceApproved,
+                        customClass: {
+                            confirmButton: 'swal-btn-gradient-green',
+                            popup: 'swal-popup-rounded'
+                        },
+                        buttonsStyling: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: t.error,
+                        text: data.message || t.absenceApproveFailed,
+                        customClass: {
+                            confirmButton: 'swal-btn-gradient-red',
+                            popup: 'swal-popup-rounded'
+                        },
+                        buttonsStyling: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: t.error,
+                    text: t.absenceApproveFailed,
                     customClass: {
                         confirmButton: 'swal-btn-gradient-red',
                         popup: 'swal-popup-rounded'

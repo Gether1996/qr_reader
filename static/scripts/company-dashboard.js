@@ -47,7 +47,7 @@ function createQRCode() {
         if (result.isConfirmed) {
             const data = result.value;
             const langCode = window.location.pathname.split('/')[1];
-            const createUrl = `/${langCode}/company/qr/create/`;
+            const createUrl = `/${langCode}/qr/create/`;
 
             fetch(createUrl, {
                 method: 'POST',
@@ -106,23 +106,57 @@ function createUser() {
         title: translations.registerEmployee,
         html: `
             <div class="container-fluid px-0">
-                <div class="row g-3">
+                <div class="row g-2">
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.name}</label>
-                        <input type="text" id="swal-user-name" class="form-control form-control-lg" required autocomplete="off">
+                        <label class="form-label fw-semibold mb-1 small">${translations.name}</label>
+                        <input type="text" id="swal-user-name" class="form-control" required autocomplete="off">
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.email}</label>
-                        <input type="email" id="swal-user-email" class="form-control form-control-lg" required autocomplete="off">
+                        <label class="form-label fw-semibold mb-1 small">${translations.email}</label>
+                        <input type="email" id="swal-user-email" class="form-control" required autocomplete="off">
                     </div>
-                    <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.password}</label>
-                        <input type="password" id="swal-user-password" class="form-control form-control-lg" required autocomplete="new-password">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.password}</label>
+                        <input type="password" id="swal-user-password" class="form-control" required autocomplete="new-password">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.confirmPassword || 'Potvrdiť heslo'}</label>
+                        <input type="password" id="swal-user-password-confirm" class="form-control" required autocomplete="new-password">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours || 'Základný pracovný čas (hodiny)'}</label>
+                        <input type="number" id="swal-user-work-hours" class="form-control" value="160" required min="0" step="1">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.role || 'Rola'}</label>
+                        <select id="swal-user-role" class="form-select" style="cursor: pointer;">
+                            <option value="employee"><i class="fas fa-user"></i> ${translations.employee || 'Zamestnanec'}</option>
+                            <option value="manager"><i class="fas fa-user-tie"></i> ${translations.manager || 'Manažér'}</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mt-3" id="manager-permissions" style="display: none;">
+                        <div class="alert alert-info py-2 px-3 mb-2" style="font-size: 0.875rem;">
+                            <i class="fas fa-shield-alt me-1"></i> ${translations.permissions || 'Oprávnenia'}
+                        </div>
+                        <div class="d-flex flex-column gap-2">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="perm-edit-employees" checked>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-users text-primary me-2"></i>${translations.canEditEmployees || 'Môže upravovať zamestnancov'}</span>
+                            </label>
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="perm-edit-qr" checked>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-qrcode text-success me-2"></i>${translations.canEditQR || 'Môže upravovať QR kódy'}</span>
+                            </label>
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="perm-edit-absences" checked>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-calendar-times text-warning me-2"></i>${translations.canEditAbsences || 'Môže upravovať absencie'}</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '600px',
+        width: '550px',
         showCancelButton: true,
         confirmButtonText: translations.register,
         cancelButtonText: translations.cancel,
@@ -132,23 +166,56 @@ function createUser() {
             popup: 'swal-popup-rounded'
         },
         buttonsStyling: false,
+        didOpen: () => {
+            const roleSelect = document.getElementById('swal-user-role');
+            const permissionsDiv = document.getElementById('manager-permissions');
+            
+            roleSelect.addEventListener('change', function() {
+                if (this.value === 'manager') {
+                    permissionsDiv.style.display = 'block';
+                } else {
+                    permissionsDiv.style.display = 'none';
+                }
+            });
+        },
         preConfirm: () => {
             const name = document.getElementById('swal-user-name').value;
             const email = document.getElementById('swal-user-email').value;
             const password = document.getElementById('swal-user-password').value;
+            const passwordConfirm = document.getElementById('swal-user-password-confirm').value;
+            const role = document.getElementById('swal-user-role').value;
+            const workHours = document.getElementById('swal-user-work-hours').value;
             
-            if (!name || !email || !password) {
+            if (!name || !email || !password || !passwordConfirm || !workHours) {
                 Swal.showValidationMessage(translations.fillAllFields);
                 return false;
             }
+            
+            if (password.length < 8) {
+                Swal.showValidationMessage(translations.passwordMinLength || 'Heslo musí mať aspoň 8 znakov');
+                return false;
+            }
+            
+            if (password !== passwordConfirm) {
+                Swal.showValidationMessage(translations.passwordsDontMatch || 'Heslá sa nezhodujú');
+                return false;
+            }
 
-            return { name, email, password };
+            const data = { name, email, password, basic_work_hours: parseInt(workHours), is_manager: role === 'manager' };
+            
+            if (role === 'manager') {
+                data.can_edit_employees = document.getElementById('perm-edit-employees').checked;
+                data.can_edit_qr_codes = document.getElementById('perm-edit-qr').checked;
+                data.can_edit_absences = document.getElementById('perm-edit-absences').checked;
+            }
+
+            return data;
         }
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
             const langCode = window.location.pathname.split('/')[1];
-            const createUrl = `/${langCode}/company/user/create/`;
+            const createUrl = `/${langCode}/user/create/`;
 
             fetch(createUrl, {
                 method: 'POST',
@@ -202,50 +269,177 @@ function createUser() {
     });
 }
 
-function editUser(userId, name, email) {
-    document.getElementById('edit_user_id').value = userId;
-    document.getElementById('edit_user_name').value = name;
-    document.getElementById('edit_user_email').value = email;
-    document.getElementById('edit_user_password').value = '';
-    
-    const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
-    modal.show();
-}
-
-function updateUser() {
-    const userId = document.getElementById('edit_user_id').value;
-    const data = {
-        name: document.getElementById('edit_user_name').value,
-        email: document.getElementById('edit_user_email').value
-    };
-    
-    const password = document.getElementById('edit_user_password').value;
-    if (password) {
-        data.password = password;
-    }
-
-    const langCode = window.location.pathname.split('/')[1];
-    const editUrl = `/${langCode}/company/user/${userId}/edit/`;
-    
-    fetch(editUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
+function editUser(userId, name, email, basicWorkHours, isManager, canEditEmployees, canEditQR, canEditAbsences) {
+    Swal.fire({
+        title: translations.editEmployee || 'Upraviť zamestnanca',
+        html: `
+            <div class="container-fluid px-0">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold mb-1 small">${translations.name}</label>
+                        <input type="text" id="swal-edit-user-name" class="form-control" value="${name}" required autocomplete="off">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold mb-1 small">${translations.email}</label>
+                        <input type="email" id="swal-edit-user-email" class="form-control" value="${email}" required autocomplete="off">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.newPassword || 'Nové heslo (nechaj prázdne)'}</label>
+                        <input type="password" id="swal-edit-user-password" class="form-control" autocomplete="new-password">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.confirmPassword || 'Potvrdiť heslo'}</label>
+                        <input type="password" id="swal-edit-user-password-confirm" class="form-control" autocomplete="new-password">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours || 'Základný pracovný čas (hodiny)'}</label>
+                        <input type="number" id="swal-edit-user-work-hours" class="form-control" value="${basicWorkHours || 160}" required min="0" step="1">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.role || 'Rola'}</label>
+                        <select id="swal-edit-user-role" class="form-select" style="cursor: pointer;">
+                            <option value="employee" ${!isManager ? 'selected' : ''}><i class="fas fa-user"></i> ${translations.employee || 'Zamestnanec'}</option>
+                            <option value="manager" ${isManager ? 'selected' : ''}><i class="fas fa-user-tie"></i> ${translations.manager || 'Manažér'}</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mt-3" id="edit-manager-permissions" style="display: ${isManager ? 'block' : 'none'};">
+                        <div class="alert alert-info py-2 px-3 mb-2" style="font-size: 0.875rem;">
+                            <i class="fas fa-shield-alt me-1"></i> ${translations.permissions || 'Oprávnenia'}
+                        </div>
+                        <div class="d-flex flex-column gap-2">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="edit-perm-edit-employees" ${canEditEmployees ? 'checked' : ''}>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-users text-primary me-2"></i>${translations.canEditEmployees || 'Môže upravovať zamestnancov'}</span>
+                            </label>
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="edit-perm-edit-qr" ${canEditQR ? 'checked' : ''}>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-qrcode text-success me-2"></i>${translations.canEditQR || 'Môže upravovať QR kódy'}</span>
+                            </label>
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="edit-perm-edit-absences" ${canEditAbsences ? 'checked' : ''}>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-calendar-times text-warning me-2"></i>${translations.canEditAbsences || 'Môže upravovať absencie'}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `,
+        width: '550px',
+        showCancelButton: true,
+        confirmButtonText: translations.save || 'Uložiť',
+        cancelButtonText: translations.cancel,
+        customClass: {
+            confirmButton: 'swal-btn-gradient-green',
+            cancelButton: 'swal-btn-gradient-gray',
+            popup: 'swal-popup-rounded'
         },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccess(translations.success, translations.userUpdated);
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showError(translations.error, data.message);
+        buttonsStyling: false,
+        didOpen: () => {
+            const roleSelect = document.getElementById('swal-edit-user-role');
+            const permissionsDiv = document.getElementById('edit-manager-permissions');
+            
+            roleSelect.addEventListener('change', function() {
+                if (this.value === 'manager') {
+                    permissionsDiv.style.display = 'block';
+                } else {
+                    permissionsDiv.style.display = 'none';
+                }
+            });
+        },
+        preConfirm: () => {
+            const name = document.getElementById('swal-edit-user-name').value;
+            const email = document.getElementById('swal-edit-user-email').value;
+            const password = document.getElementById('swal-edit-user-password').value;
+            const passwordConfirm = document.getElementById('swal-edit-user-password-confirm').value;
+            const workHours = document.getElementById('swal-edit-user-work-hours').value;
+            const role = document.getElementById('swal-edit-user-role').value;
+            
+            if (!name || !email || !workHours) {
+                Swal.showValidationMessage(translations.fillAllFields);
+                return false;
+            }
+            
+            // Validate password only if provided
+            if (password || passwordConfirm) {
+                if (password.length < 8) {
+                    Swal.showValidationMessage(translations.passwordMinLength || 'Heslo musí mať aspoň 8 znakov');
+                    return false;
+                }
+                
+                if (password !== passwordConfirm) {
+                    Swal.showValidationMessage(translations.passwordsDontMatch || 'Heslá sa nezhodujú');
+                    return false;
+                }
+            }
+
+            const data = { name, email, basic_work_hours: parseInt(workHours), is_manager: role === 'manager' };
+            if (password) {
+                data.password = password;
+            }
+            
+            if (role === 'manager') {
+                data.can_edit_employees = document.getElementById('edit-perm-edit-employees').checked;
+                data.can_edit_qr_codes = document.getElementById('edit-perm-edit-qr').checked;
+                data.can_edit_absences = document.getElementById('edit-perm-edit-absences').checked;
+            }
+
+            return data;
         }
-    })
-    .catch(error => {
-        showError(translations.error, translations.userUpdateFailed);
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const data = result.value;
+            const langCode = window.location.pathname.split('/')[1];
+            const editUrl = `/${langCode}/company/user/${userId}/edit/`;
+            
+            fetch(editUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: translations.success,
+                        text: translations.userUpdated,
+                        customClass: {
+                            confirmButton: 'swal-btn-gradient-green',
+                            popup: 'swal-popup-rounded'
+                        },
+                        buttonsStyling: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: translations.error,
+                        text: data.message || translations.userUpdateFailed,
+                        customClass: {
+                            confirmButton: 'swal-btn-gradient-red',
+                            popup: 'swal-popup-rounded'
+                        },
+                        buttonsStyling: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: translations.error,
+                    text: translations.userUpdateFailed,
+                    customClass: {
+                        confirmButton: 'swal-btn-gradient-red',
+                        popup: 'swal-popup-rounded'
+                    },
+                    buttonsStyling: false
+                });
+            });
+        }
     });
 }
 
@@ -287,7 +481,7 @@ function deleteQRCode(qrId, qrName) {
         console.log('Swal result:', result);
         if (result.isConfirmed) {
             const langCode = window.location.pathname.split('/')[1];
-            const deleteUrl = `/${langCode}/company/qr/${qrId}/delete/`;
+            const deleteUrl = `/${langCode}/qr/delete/${qrId}/`;
             console.log('Delete URL:', deleteUrl);
             fetch(deleteUrl, {
                 method: 'POST',

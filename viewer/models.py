@@ -30,13 +30,17 @@ class Company(models.Model):
 
 
 class User(models.Model):
-    """User model for users belonging to companies"""
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='users')
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    working_hours = models.IntegerField(default=160)
+    is_manager = models.BooleanField(default=False)
+    can_edit_employees = models.BooleanField(default=False)
+    can_edit_qr_codes = models.BooleanField(default=False)
+    can_edit_absences = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} ({self.company.name})"
@@ -187,6 +191,7 @@ class Vacation(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     type = models.CharField(max_length=100, default=None, blank=True, null=True)
+    approved = models.BooleanField(default=False)
     
     class Meta:
         ordering = ['-date_from']
@@ -336,3 +341,46 @@ class ContentBlock(models.Model):
     
     def __str__(self):
         return f"{self.block_type} block for {self.article.title}"
+
+# ============= AUDIT LOG MODEL =============
+
+class AuditLog(models.Model):
+    """Audit log for tracking all CRUD operations"""
+    ACTION_CHOICES = [
+        ('create', 'Create'),
+        ('update', 'Update'),
+        ('delete', 'Delete'),
+        ('approve', 'Approve'),
+        ('login', 'Login'),
+        ('logout', 'Logout'),
+    ]
+    
+    ACTOR_TYPE_CHOICES = [
+        ('company', 'Company'),
+        ('user', 'User'),
+    ]
+    
+    # Who performed the action
+    actor_type = models.CharField(max_length=10, choices=ACTOR_TYPE_CHOICES)
+    actor_email = models.EmailField()
+    actor_name = models.CharField(max_length=255)
+    
+    # What was done
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    message = models.TextField()
+    
+    # When
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    # Additional context
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['-timestamp']),
+            models.Index(fields=['actor_email']),
+        ]
+    
+    def __str__(self):
+        return f"{self.actor_name} ({self.actor_type}) - {self.action} at {self.timestamp}"

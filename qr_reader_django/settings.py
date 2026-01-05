@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'viewer',
-    'ai_agent',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +58,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'qr_reader_django.wsgi.application'
 
+import sys
+
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
@@ -75,7 +76,6 @@ DATABASES = {
 }
 
 # Use SQLite for tests
-import sys
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
@@ -117,7 +117,7 @@ LANGUAGES = [
 
 TIME_ZONE = 'Europe/Bratislava'
 USE_I18N = True
-USE_TZ = False
+USE_TZ = False  # Bez timezone awareness
 
 # Base URL for QR code generation
 BASE_URL = 'https://dqr.314.sk'
@@ -133,7 +133,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = "/app/staticfiles"
 
 # Storage configuration - use simple storage for tests and debug mode
-import sys
 if 'test' in sys.argv or DEBUG:
     STORAGES = {
         "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
@@ -188,17 +187,3 @@ LOGGING = {
         },
     },
 }
-
-# Celery Configuration
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minút
-
-# Telegram Bot Token
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')

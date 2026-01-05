@@ -42,7 +42,7 @@ msgstr "Dátum ukončenia nemôže byť pred dátumom začiatku"
 
 #: .\qr_reader_django\crud.py:245 .\qr_reader_django\crud.py:257
 msgid "Vacation not found"
-msgstr "Neprítomnosť nebola nájdená"
+msgstr "Absencia nebola nájdená"
 
 #: .\venv\Lib\site-packages\django\contrib\messages\apps.py:16
 msgid "Messages"
@@ -1408,7 +1408,7 @@ msgstr "Registrovať zamestnanca"
 #: .\viewer\templates\company_dashboard.html:40
 #: .\viewer\templates\company_user_details.html:43
 msgid "Add Absence"
-msgstr "Pridať neprítomnosť"
+msgstr "Pridať absenciu"
 
 #: .\viewer\templates\company_dashboard.html:50
 #: .\viewer\templates\translations_js.html:14
@@ -1432,7 +1432,7 @@ msgstr "Zamestnanci"
 #: .\viewer\templates\company_user_details.html:71
 #: .\viewer\templates\user_dashboard.html:62
 msgid "Absences"
-msgstr "Neprítomnosti"
+msgstr "Absencie"
 
 #: .\viewer\templates\company_dashboard.html:85
 #: .\viewer\templates\company_user_details.html:56
@@ -1609,7 +1609,7 @@ msgstr "Dovolenka"
 #: .\viewer\templates\user_dashboard.html:268
 #: .\viewer\templates\user_dashboard.html:292
 msgid "Absence"
-msgstr "Neprítomnosť"
+msgstr "Absencia"
 
 #: .\viewer\templates\company_dashboard.html:414
 msgid "Last modified:"
@@ -1617,14 +1617,14 @@ msgstr "Naposledy upravené:"
 
 #: .\viewer\templates\company_dashboard.html:415
 msgid "Edited"
-msgstr "Upraviť"
+msgstr "Upravené"
 
 #: .\viewer\templates\company_dashboard.html:434
 #: .\viewer\templates\company_dashboard.html:477
 #: .\viewer\templates\user_dashboard.html:255
 #: .\viewer\templates\user_dashboard.html:301
 msgid "No absences found"
-msgstr "Žiadne neprítomnosti nenájdené"
+msgstr "Žiadne absencie nenájdené"
 
 #: .\viewer\templates\company_dashboard.html:460
 #: .\viewer\templates\company_user_details.html:297
@@ -1782,7 +1782,7 @@ msgstr "Zatiaľ žiadne skenovania"
 #: .\viewer\templates\company_user_details.html:278
 #: .\viewer\templates\company_user_details.html:332
 msgid "No vacations found"
-msgstr "Žiadne neprítomnosti nenájdené"
+msgstr "Žiadne absencie nenájdené"
 
 #: .\viewer\templates\company_user_details.html:305
 #: .\viewer\templates\user_dashboard.html:282
@@ -2386,7 +2386,7 @@ msgstr "QR kód nebol nájdený alebo je neaktívny"
 
 #: .\viewer\views.py:982
 msgid "Vacation created successfully"
-msgstr "Neprítomnosť úspešne vytvorená"
+msgstr "Absencia úspešne vytvorená"
 
 #: .\viewer\views.py:1018
 msgid "Vacation updated successfully"

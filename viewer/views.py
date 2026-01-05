@@ -6,6 +6,7 @@ from django.conf import settings
 from qr_reader_django import crud
 import json
 from viewer.models import ScanEvent, Vacation
+from qr_reader_django.audit import log_action, get_client_ip
 from django.core.paginator import Paginator
 from django.db.models import Q, Max
 from django.views.decorators.csrf import csrf_exempt
@@ -43,7 +44,7 @@ def company_register(request):
             messages.error(request, _('Passwords do not match'))
             return render(request, 'company_register.html')
 
-        company, error = crud.create_company(name, email, password)
+        company, error = crud.create_company(name, email, password, ip_address=get_client_ip(request))
         if error:
             messages.error(request, error)
             return render(request, 'company_register.html')
@@ -64,7 +65,17 @@ def company_login(request):
         if company and company.check_password(password):
             request.session['company_id'] = company.id
             request.session['user_type'] = 'company'
-            messages.success(request, f'Welcome back, {company.name}!')
+            
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='login',
+                message=f'Company "{company.name}" logged in',
+                ip_address=get_client_ip(request)
+            )
+            
+            messages.success(request, _('Welcome back, {}!').format(company.name))
             return redirect('company_dashboard')
         else:
             messages.error(request, _('Invalid credentials'))
@@ -74,6 +85,18 @@ def company_login(request):
 
 def company_logout(request):
     """Company logout"""
+    if 'company_id' in request.session:
+        company = crud.get_company_by_id(request.session['company_id'])
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='logout',
+                message=f'Company "{company.name}" logged out',
+                ip_address=get_client_ip(request)
+            )
+    
     request.session.flush()
     messages.success(request, _('Logged out successfully'))
     return redirect('landing_page')
@@ -81,17 +104,59 @@ def company_logout(request):
 
 def company_dashboard(request):
     """Company dashboard - manage QR codes, users, and absences"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        messages.error(request, _('Please login as a company'))
-        return redirect('company_login')
-
-    company = crud.get_company_by_id(request.session['company_id'])
-    if not company:
-        messages.error(request, _('Company not found'))
+    # Allow both company owners and managers
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
+        messages.error(request, _('Please login as a company or manager'))
         return redirect('company_login')
     
+    # Get company and current user
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+        current_user = None
+    else:  # is_manager
+        current_user = crud.get_user_by_id(request.session['user_id'])
+        if not current_user or not current_user.is_manager:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = current_user.company
+    
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('company_login' if is_company else 'user_login')
+    
+    # Determine permissions first
+    can_edit_qr_codes = is_company or (current_user and current_user.can_edit_qr_codes)
+    can_edit_employees = is_company or (current_user and current_user.can_edit_employees)
+    can_edit_absences = is_company or (current_user and current_user.can_edit_absences)
+    
     # Get active tab from query params
-    active_tab = request.GET.get('tab', 'qr-codes')
+    requested_tab = request.GET.get('tab', '')
+    
+    # Validate tab permissions and set default if needed
+    if requested_tab:
+        # Check if user has permission for requested tab
+        if requested_tab == 'qr-codes' and not can_edit_qr_codes:
+            requested_tab = ''
+        elif requested_tab == 'users' and not can_edit_employees:
+            requested_tab = ''
+        elif requested_tab == 'absences' and not can_edit_absences:
+            requested_tab = ''
+    
+    # Set default tab if not specified or not permitted
+    if not requested_tab:
+        if can_edit_qr_codes:
+            active_tab = 'qr-codes'
+        elif can_edit_employees:
+            active_tab = 'users'
+        elif can_edit_absences:
+            active_tab = 'absences'
+        else:
+            active_tab = 'qr-codes'  # fallback
+    else:
+        active_tab = requested_tab
     
     # Get filter parameters
     date_from = request.GET.get('date_from', '')
@@ -289,10 +354,16 @@ def company_dashboard(request):
     else:
         absences_page = None
 
-    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in all_users])     
+    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in all_users])
 
     context = {
         'company': company,
+        'current_user': current_user,
+        'is_company': is_company,
+        'is_manager': is_manager,
+        'can_edit_qr_codes': can_edit_qr_codes,
+        'can_edit_employees': can_edit_employees,
+        'can_edit_absences': can_edit_absences,
         'all_qr_codes': all_qr_codes,  # All QR codes for datalist
         'qr_codes': qr_codes_list if active_tab == 'qr-codes' else [],
         'users': all_users,  # All users for datalist
@@ -338,7 +409,17 @@ def user_login(request):
             print(f"Password check passed for user: {user.name}")
             request.session['user_id'] = user.id
             request.session['user_type'] = 'user'
-            messages.success(request, f'Welcome back, {user.name}!')
+            
+            log_action(
+                actor_type='user',
+                actor_email=user.email,
+                actor_name=user.name,
+                action='login',
+                message=f'User "{user.name}" logged in',
+                ip_address=get_client_ip(request)
+            )
+            
+            messages.success(request, _('Welcome back, {}!').format(user.name))
             return redirect('user_dashboard')
         else:
             print(f"Login failed - User: {user}, Password check: {user.check_password(password) if user else 'N/A'}")
@@ -349,6 +430,18 @@ def user_login(request):
 
 def user_logout(request):
     """User logout"""
+    if 'user_id' in request.session:
+        user = crud.get_user_by_id(request.session['user_id'])
+        if user:
+            log_action(
+                actor_type='user',
+                actor_email=user.email,
+                actor_name=user.name,
+                action='logout',
+                message=f'User "{user.name}" logged out',
+                ip_address=get_client_ip(request)
+            )
+    
     request.session.flush()
     messages.success(request, _('Logged out successfully'))
     return redirect('landing_page')
@@ -515,14 +608,18 @@ def user_scan_qr(request):
                     'message': str(_('This QR code does not belong to your company'))
                 }, status=403)
             
-            # Record the scan
+            # Record the scan with audit logging
             scan, address = crud.create_scan_event(
                 qr_code=qr_code,
                 scanned_by=user,
                 latitude=latitude,
                 longitude=longitude,
                 scan_type=scan_type,
-                device_info=request.META.get('HTTP_USER_AGENT', '')
+                device_info=request.META.get('HTTP_USER_AGENT', ''),
+                actor_type='user',
+                actor_email=user.email,
+                actor_name=user.name,
+                ip_address=get_client_ip(request)
             )
             
             return JsonResponse({
@@ -553,22 +650,48 @@ def user_scan_qr(request):
 # ============= COMPANY ACTIONS =============
 
 def create_qr_code(request):
-    """Create a new QR code (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Create a new QR code (company or manager with permission)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            company = crud.get_company_by_id(request.session['company_id'])
+            
+            # Get company
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+            else:
+                user = crud.get_user_by_id(request.session['user_id'])
+                if not user or not user.is_manager or not user.can_edit_qr_codes:
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+                company = user.company
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+            
+            # Extract actor info for audit logging
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                actor_type = 'user'
+                actor_email = user.email
+                actor_name = user.name
             
             qr_code, error = crud.create_qr_code(
                 company=company,
                 name=data.get('name'),
                 location=data.get('location'),
-                additional_info=data.get('additional_info', '')
+                additional_info=data.get('additional_info', ''),
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
             )
             
             if error:
@@ -587,17 +710,46 @@ def create_qr_code(request):
 
 
 def delete_qr_code(request, qr_id):
-    """Delete/deactivate a QR code (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Delete/deactivate a QR code (company or manager with permission)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
-
-    company = crud.get_company_by_id(request.session['company_id'])
+    
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        user = crud.get_user_by_id(request.session['user_id'])
+        if not user or not user.is_manager or not user.can_edit_qr_codes:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = user.company
+    
     if not company:
         messages.error(request, _('Company not found'))
-        return redirect('company_login')
+        return redirect('company_login' if is_company else 'user_login')
     
-    success, error = crud.deactivate_qr_code(qr_id, company)
+    # Extract actor info for audit logging
+    if is_company:
+        actor_type = 'company'
+        actor_email = company.email
+        actor_name = company.name
+    else:
+        actor_type = 'user'
+        actor_email = user.email
+        actor_name = user.name
+    
+    success, error = crud.deactivate_qr_code(
+        qr_id, 
+        company,
+        actor_type=actor_type,
+        actor_email=actor_email,
+        actor_name=actor_name,
+        ip_address=get_client_ip(request)
+    )
     if success:
         messages.success(request, _('QR code deactivated successfully'))
     else:
@@ -607,22 +759,49 @@ def delete_qr_code(request, qr_id):
 
 
 def create_user(request):
-    """Register a new user under the company (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Register a new user under the company (company or manager with permission)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            company = crud.get_company_by_id(request.session['company_id'])
+            
+            # Get company
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+            else:
+                user = crud.get_user_by_id(request.session['user_id'])
+                if not user or not user.is_manager or not user.can_edit_employees:
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+                company = user.company
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+            
+            # Get actor info
+            if is_company:
+                actor_type, actor_email, actor_name = 'company', company.email, company.name
+            else:
+                actor_type, actor_email, actor_name = 'user', user.email, user.name
             
             user, error = crud.create_user(
                 company=company,
                 name=data.get('name'),
                 email=data.get('email'),
-                password=data.get('password')
+                password=data.get('password'),
+                basic_work_hours=data.get('basic_work_hours', 160),
+                is_manager=data.get('is_manager', False),
+                can_edit_employees=data.get('can_edit_employees', False),
+                can_edit_qr_codes=data.get('can_edit_qr_codes', False),
+                can_edit_absences=data.get('can_edit_absences', False),
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
             )
             
             if error:
@@ -640,17 +819,45 @@ def create_user(request):
 
 
 def edit_user(request, user_id):
-    """Edit user details (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Edit user details (company or manager with permission)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
-            company = crud.get_company_by_id(request.session['company_id'])
+            data = json.loads(request.body)
+            
+            # Get company
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+            else:
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+                company = current_user.company
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
+            user = crud.get_user_by_id(user_id)
+            if not user or user.company != company:
+                return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+            
             data = json.loads(request.body)
+            
+            # Extract actor info for audit logging
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                manager = crud.get_user_by_id(request.session['user_id'])
+                actor_type = 'user'
+                actor_email = manager.email
+                actor_name = manager.name
             
             user, error = crud.update_user(
                 user_id=user_id,
@@ -658,7 +865,16 @@ def edit_user(request, user_id):
                 name=data.get('name'),
                 email=data.get('email'),
                 password=data.get('password'),
-                is_active=data.get('is_active')
+                basic_work_hours=data.get('basic_work_hours'),
+                is_active=data.get('is_active'),
+                is_manager=data.get('is_manager'),
+                can_edit_employees=data.get('can_edit_employees'),
+                can_edit_qr_codes=data.get('can_edit_qr_codes'),
+                can_edit_absences=data.get('can_edit_absences'),
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
             )
             
             if error:
@@ -675,17 +891,50 @@ def edit_user(request, user_id):
 
 
 def delete_user(request, user_id):
-    """Delete user (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Delete user (company or manager with permission)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
-            company = crud.get_company_by_id(request.session['company_id'])
+            # Get company
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+            else:
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+                company = current_user.company
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
-            success, error = crud.delete_user(user_id, company)
+            user = crud.get_user_by_id(user_id)
+            if not user or user.company != company:
+                return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+            
+            # Extract actor info for audit logging
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                manager = crud.get_user_by_id(request.session['user_id'])
+                actor_type = 'user'
+                actor_email = manager.email
+                actor_name = manager.name
+            
+            success, error = crud.delete_user(
+                user_id, 
+                company,
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
+            )
             
             if success:
                 return JsonResponse({
@@ -702,14 +951,26 @@ def delete_user(request, user_id):
 
 def view_qr_scans(request, qr_id):
     """View all scans for a specific QR code with filtering and pagination"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
-
-    company = crud.get_company_by_id(request.session['company_id'])
+    
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        user = crud.get_user_by_id(request.session['user_id'])
+        if not user or not user.is_manager or not user.can_edit_qr_codes:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = user.company
+    
     if not company:
         messages.error(request, _('Company not found'))
-        return redirect('company_login')
+        return redirect('company_login' if is_company else 'user_login')
     
     qr_code = crud.get_qr_code_by_id(qr_id, company)
     if not qr_code:
@@ -789,14 +1050,26 @@ def view_qr_scans(request, qr_id):
 
 def view_user_details(request, user_id):
     """View detailed information about a specific user with filtering and pagination"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
-
-    company = crud.get_company_by_id(request.session['company_id'])
+    
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        current_user = crud.get_user_by_id(request.session['user_id'])
+        if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = current_user.company
+    
     if not company:
         messages.error(request, _('Company not found'))
-        return redirect('company_login')
+        return redirect('company_login' if is_company else 'user_login')
     
     user = crud.get_user_by_id(user_id)
     if not user or user.company != company:
@@ -953,26 +1226,77 @@ def view_user_details(request, user_id):
     return render(request, 'company_user_details.html', context)
 
 def create_vacation(request):
-    """Create a new vacation (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Create a new vacation (company, manager, or user for themselves)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_user = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_user):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            company = crud.get_company_by_id(request.session['company_id'])
+            
+            # Get company and current user
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+                current_user = None
+            else:  # is_user (regular user or manager)
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user:
+                    return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+                company = current_user.company
+                
+                # Check if manager has permission to edit absences
+                if current_user.is_manager and not current_user.can_edit_absences:
+                    # Manager without permission can only create for themselves
+                    if data.get('user_id') != current_user.id:
+                        return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
-            user = crud.get_user_by_id(data.get('user_id'))
+            # Determine target user
+            target_user_id = data.get('user_id')
+            
+            # Regular users can only create vacations for themselves
+            if is_user and not is_company:
+                if current_user.is_manager and current_user.can_edit_absences:
+                    # Manager with permission can create for anyone in company
+                    user = crud.get_user_by_id(target_user_id)
+                else:
+                    # Regular user or manager without permission can only create for themselves
+                    user = current_user
+            else:
+                # Company can create for anyone
+                user = crud.get_user_by_id(target_user_id)
+            
             if not user or user.company != company:
                 return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+            
+            # Set approved=True if created by company or manager with permission, False otherwise
+            approved = is_company or (current_user and current_user.is_manager and current_user.can_edit_absences)
+            
+            # Extract actor info for audit logging
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                actor_type = 'user'
+                actor_email = current_user.email
+                actor_name = current_user.name
             
             vacation, error = crud.create_vacation(
                 user=user,
                 date_from=data.get('date_from'),
                 date_to=data.get('date_to'),
-                vacation_type=data.get('type', 'vacation')
+                vacation_type=data.get('type', 'vacation'),
+                approved=approved,
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
             )
             
             if error:
@@ -990,17 +1314,55 @@ def create_vacation(request):
 
 
 def edit_vacation(request, vacation_id):
-    """Edit vacation details (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Edit vacation details (company, manager with permission, or user editing their own)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_user = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_user):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
-            company = crud.get_company_by_id(request.session['company_id'])
+            data = json.loads(request.body)
+            
+            # Get company and current user
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+                current_user = None
+            else:  # is_user
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user:
+                    return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+                company = current_user.company
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
-            data = json.loads(request.body)
+            # Get the vacation to check ownership
+            try:
+                vacation = Vacation.objects.get(id=vacation_id, user__company=company)
+            except Vacation.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': str(_('Vacation not found'))}, status=404)
+            
+            # Check permissions
+            if is_user and not is_company:
+                # Regular user can only edit their own vacations
+                if current_user.is_manager and current_user.can_edit_absences:
+                    # Manager with permission can edit anyone's vacation
+                    pass
+                elif vacation.user != current_user:
+                    # Regular user or manager without permission can only edit their own
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+            
+            # Extract actor info for audit logging
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                actor_type = 'user'
+                actor_email = current_user.email
+                actor_name = current_user.name
             
             vacation, error = crud.update_vacation(
                 vacation_id=vacation_id,
@@ -1008,7 +1370,11 @@ def edit_vacation(request, vacation_id):
                 user_id=data.get('user_id'),
                 date_from=data.get('date_from'),
                 date_to=data.get('date_to'),
-                vacation_type=data.get('type')
+                vacation_type=data.get('type'),
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
             )
             
             if error:
@@ -1025,17 +1391,62 @@ def edit_vacation(request, vacation_id):
 
 
 def delete_vacation(request, vacation_id):
-    """Delete vacation (company only)"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    """Delete vacation (company, manager with permission, or user deleting their own)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_user = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_user):
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
     if request.method == 'POST':
         try:
-            company = crud.get_company_by_id(request.session['company_id'])
+            # Get company and current user
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+                current_user = None
+            else:  # is_user
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user:
+                    return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+                company = current_user.company
+            
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
-            success, error = crud.delete_vacation(vacation_id, company)
+            # Get the vacation to check ownership
+            try:
+                vacation = Vacation.objects.get(id=vacation_id, user__company=company)
+            except Vacation.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': str(_('Vacation not found'))}, status=404)
+            
+            # Check permissions
+            if is_user and not is_company:
+                # Regular user can only delete their own vacations
+                if current_user.is_manager and current_user.can_edit_absences:
+                    # Manager with permission can delete anyone's vacation
+                    pass
+                elif vacation.user != current_user:
+                    # Regular user or manager without permission can only delete their own
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+            
+            # Extract actor info for audit logging
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                actor_type = 'user'
+                actor_email = current_user.email
+                actor_name = current_user.name
+            
+            success, error = crud.delete_vacation(
+                vacation_id, 
+                company,
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
+            )
             
             if success:
                 return JsonResponse({
@@ -1044,6 +1455,71 @@ def delete_vacation(request, vacation_id):
                 })
             else:
                 return JsonResponse({'status': 'error', 'message': error}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+def approve_vacation(request, vacation_id):
+    """Approve vacation (company or manager with can_edit_absences permission)"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_user = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_user):
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
+
+    if request.method == 'POST':
+        try:
+            # Get company and current user
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+                can_approve = True
+            else:  # is_user
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user:
+                    return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+                company = current_user.company
+                # Check if user is manager with can_edit_absences permission
+                can_approve = current_user.is_manager and current_user.can_edit_absences
+            
+            if not company:
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+            
+            if not can_approve:
+                return JsonResponse({'status': 'error', 'message': str(_('Access denied. Only company or managers with edit absences permission can approve.'))}, status=403)
+            
+            # Get the vacation
+            try:
+                vacation = Vacation.objects.get(id=vacation_id, user__company=company)
+            except Vacation.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': str(_('Vacation not found'))}, status=404)
+            
+            # Set approved to True
+            vacation.approved = True
+            vacation.save()
+            
+            # Log approval action
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                actor_type = 'user'
+                actor_email = current_user.email
+                actor_name = current_user.name
+            
+            log_action(
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                action='approve',
+                message=f'Approved vacation for {vacation.user.name} ({vacation.date_from} to {vacation.date_to})',
+                ip_address=get_client_ip(request)
+            )
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': str(_('Vacation approved successfully'))
+            })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
@@ -1062,16 +1538,30 @@ def generate_attendance_pdf(request, user_id):
     from reportlab.pdfbase.ttfonts import TTFont
     from datetime import datetime, timedelta
     from collections import defaultdict
+    from calendar import monthrange
+    import holidays
     import os
     
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
     
-    company = crud.get_company_by_id(request.session['company_id'])
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        current_user = crud.get_user_by_id(request.session['user_id'])
+        if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = current_user.company
+    
     if not company:
         messages.error(request, _('Company not found'))
-        return redirect('company_login')
+        return redirect('company_login' if is_company else 'user_login')
     
     user = crud.get_user_by_id(user_id)
     if not user or user.company != company:
@@ -1242,11 +1732,30 @@ def generate_attendance_pdf(request, user_id):
         alignment=TA_CENTER
     )
     
+    # Get holidays based on language
+    lang_code = request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'sk'
+    if lang_code == 'sk':
+        country_holidays = holidays.Slovakia(years=[date_from.year, date_to.year])
+    elif lang_code == 'en':
+        country_holidays = holidays.UnitedStates(years=[date_from.year, date_to.year])
+    elif lang_code == 'de':
+        country_holidays = holidays.Germany(years=[date_from.year, date_to.year])
+    elif lang_code == 'es':
+        country_holidays = holidays.Spain(years=[date_from.year, date_to.year])
+    else:
+        country_holidays = holidays.Slovakia(years=[date_from.year, date_to.year])
+    
+    total_holiday_hours = 0
+    
     current_date = date_from.date()
     while current_date <= date_to.date():
         day_scans = daily_data.get(current_date, [])
         # Use Django's date_format with 'l' format (day of the week)
         day_name = date_format(current_date, format='l')
+        
+        # Check if this day is a holiday
+        is_holiday = current_date in country_holidays
+        holiday_name = country_holidays.get(current_date, '') if is_holiday else ''
         
         # Check if this day is a vacation day
         vacation_type = vacation_days.get(current_date)
@@ -1264,6 +1773,14 @@ def generate_attendance_pdf(request, user_id):
                     fontName=font_name_bold
                 )
                 leave_label = f"🏥 {_('Sick Leave')}"
+            elif vacation_type == 'doctor':
+                vacation_style = ParagraphStyle(
+                    'DoctorStyle',
+                    parent=cell_style,
+                    textColor=colors.HexColor('#8b5cf6'),
+                    fontName=font_name_bold
+                )
+                leave_label = f"👨‍⚕️ {_('Doctor')}"
             else:
                 vacation_style = ParagraphStyle(
                     'VacationStyle',
@@ -1306,9 +1823,15 @@ def generate_attendance_pdf(request, user_id):
             if is_vacation:
                 if vacation_type == 'sick_leave':
                     notes.append(f"⚠ {_('Scans on sick leave day')}")
+                elif vacation_type == 'doctor':
+                    notes.append(f"⚠ {_('Scans on doctor day')}")
                 else:
                     notes.append(f"⚠ {_('Scans on vacation day')}")
                 days_with_issues.append(current_date)
+            
+            # Add holiday note
+            if is_holiday:
+                notes.append(f"🎉 {holiday_name}")
             
             if not arrivals:
                 notes.append(f"⚠ {_('Missing arrival')}")
@@ -1325,6 +1848,10 @@ def generate_attendance_pdf(request, user_id):
                 work_duration = last_departure - first_arrival
                 hours_worked = work_duration.total_seconds() / 3600
                 total_work_hours += hours_worked
+                
+                # Track holiday hours
+                if is_holiday:
+                    total_holiday_hours += hours_worked
             
             # Get QR code info with location
             if arrivals:
@@ -1426,6 +1953,29 @@ def generate_attendance_pdf(request, user_id):
         leading=13
     )
     
+    # Calculate overtime (based on monthly work_hours)
+    # Calculate expected hours based on the date range
+    months_in_range = set()
+    temp_date = date_from.date()
+    while temp_date <= date_to.date():
+        months_in_range.add((temp_date.year, temp_date.month))
+        temp_date += timedelta(days=1)
+    
+    # Calculate expected hours proportionally
+    expected_hours = 0
+    for year, month in months_in_range:
+        days_in_month = monthrange(year, month)[1]
+        # Days in this month that are in our range
+        month_start = max(date_from.date(), datetime(year, month, 1).date())
+        month_end = min(date_to.date(), datetime(year, month, days_in_month).date())
+        days_in_range = (month_end - month_start).days + 1
+        
+        # Calculate proportional expected hours
+        month_expected = (user.working_hours / days_in_month) * days_in_range
+        expected_hours += month_expected
+    
+    overtime_hours = max(0, total_work_hours - expected_hours)
+    
     # Create styled summary data
     summary_data = [
         [
@@ -1433,8 +1983,20 @@ def generate_attendance_pdf(request, user_id):
             Paragraph(str(total_days), summary_value_style)
         ],
         [
+            Paragraph(str(_('Expected Hours')), summary_label_style),
+            Paragraph(f"{int(expected_hours)}:{int((expected_hours % 1) * 60):02d}", summary_value_style)
+        ],
+        [
             Paragraph(str(_('Total Hours Worked')), summary_label_style),
             Paragraph(f"{int(total_work_hours)}:{int((total_work_hours % 1) * 60):02d}", summary_value_style)
+        ],
+        [
+            Paragraph(str(_('Overtime Hours')), summary_label_style),
+            Paragraph(f"{int(overtime_hours)}:{int((overtime_hours % 1) * 60):02d}", summary_value_style)
+        ],
+        [
+            Paragraph(str(_('Holiday Hours')), summary_label_style),
+            Paragraph(f"{int(total_holiday_hours)}:{int((total_holiday_hours % 1) * 60):02d}", summary_value_style)
         ],
         [
             Paragraph(str(_('Average Hours per Day')), summary_label_style),
@@ -1494,6 +2056,395 @@ def generate_attendance_pdf(request, user_id):
     return response
 
 
+def generate_attendance_excel(request, user_id):
+    """Generate Excel attendance report for a user"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from openpyxl.utils import get_column_letter
+    from datetime import datetime, timedelta
+    from collections import defaultdict
+    from calendar import monthrange
+    import holidays
+    import os
+    
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
+        messages.error(request, _('Unauthorized'))
+        return redirect('company_login')
+    
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        current_user = crud.get_user_by_id(request.session['user_id'])
+        if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = current_user.company
+    
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('company_login' if is_company else 'user_login')
+    
+    user = crud.get_user_by_id(user_id)
+    if not user or user.company != company:
+        messages.error(request, _('User not found'))
+        return redirect('company_dashboard')
+    
+    # Parse date range - accept both date_range and date_from/date_to parameters
+    date_range = request.GET.get('date_range', '')
+    date_from_param = request.GET.get('date_from', '')
+    date_to_param = request.GET.get('date_to', '')
+    
+    try:
+        if date_from_param and date_to_param:
+            # Use date_from and date_to parameters (format: YYYY-MM-DD)
+            date_from = datetime.strptime(date_from_param, '%Y-%m-%d')
+            date_to = datetime.strptime(date_to_param, '%Y-%m-%d')
+        elif date_range and ' - ' in date_range:
+            # Use date_range parameter (format: DD.MM.YYYY - DD.MM.YYYY)
+            date_from_str, date_to_str = date_range.split(' - ')
+            date_from = datetime.strptime(date_from_str.strip(), '%d.%m.%Y')
+            date_to = datetime.strptime(date_to_str.strip(), '%d.%m.%Y')
+        else:
+            messages.error(request, _('Invalid date range'))
+            return redirect('view_user_details', user_id=user_id)
+    except:
+        messages.error(request, _('Invalid date format'))
+        return redirect('view_user_details', user_id=user_id)
+    
+    # Get scans in date range
+    scans = ScanEvent.objects.filter(
+        scanned_by=user,
+        timestamp__date__gte=date_from.date(),
+        timestamp__date__lte=date_to.date()
+    ).select_related('qr_code').order_by('timestamp')
+    
+    vacations = Vacation.objects.filter(
+        user=user,
+        is_active=True,
+        date_from__lte=date_to.date(),
+        date_to__gte=date_from.date()
+    ).order_by('date_from')
+    
+    # Create directory structure for Excel storage
+    now = datetime.now()
+    excel_dir = os.path.join(settings.MEDIA_ROOT, 'PDF', str(now.year), f"{now.month:02d}")
+    os.makedirs(excel_dir, exist_ok=True)
+    
+    # Generate filename
+    filename = f"attendance_{user.name.replace(' ', '_')}_{date_from.strftime('%Y%m%d')}-{date_to.strftime('%Y%m%d')}.xlsx"
+    filepath = os.path.join(excel_dir, filename)
+    
+    # Create workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = str(_('Attendance Report'))
+    
+    # Define styles
+    header_fill = PatternFill(start_color='2563eb', end_color='2563eb', fill_type='solid')
+    header_font = Font(color='FFFFFF', bold=True, size=11)
+    title_font = Font(color='2563eb', bold=True, size=16)
+    bold_font = Font(bold=True)
+    center_align = Alignment(horizontal='center', vertical='center', wrap_text=True)
+    left_align = Alignment(horizontal='left', vertical='center', wrap_text=True)
+    thin_border = Border(
+        left=Side(style='thin', color='d1d5db'),
+        right=Side(style='thin', color='d1d5db'),
+        top=Side(style='thin', color='d1d5db'),
+        bottom=Side(style='thin', color='d1d5db')
+    )
+    
+    # Title and header information
+    ws.merge_cells('A1:G1')
+    ws['A1'] = f"{_('Attendance Report')} - {user.name}"
+    ws['A1'].font = title_font
+    ws['A1'].alignment = center_align
+    
+    ws.merge_cells('A2:G2')
+    ws['A2'] = f"{_('Period')}: {date_from.strftime('%d.%m.%Y')} - {date_to.strftime('%d.%m.%Y')}"
+    ws['A2'].alignment = center_align
+    
+    ws.merge_cells('A3:G3')
+    ws['A3'] = f"{_('Company')}: {company.name}"
+    ws['A3'].alignment = center_align
+    
+    # Table headers (row 5)
+    headers = [
+        str(_('Date')),
+        str(_('Day')),
+        str(_('Arrival')),
+        str(_('Departure')),
+        str(_('Hours')),
+        str(_('Scanned QR')),
+        str(_('Notes'))
+    ]
+    
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(row=5, column=col)
+        cell.value = header
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center_align
+        cell.border = thin_border
+    
+    # Group scans by day
+    daily_data = defaultdict(list)
+    for scan in scans:
+        day = scan.timestamp.date()
+        daily_data[day].append(scan)
+    
+    # Create dictionary of vacation days with type
+    vacation_days = {}
+    for vacation in vacations:
+        current = vacation.date_from
+        while current <= vacation.date_to:
+            vacation_days[current] = vacation.type if vacation.type else 'vacation'
+            current += timedelta(days=1)
+    
+    # Calculate statistics
+    total_days = len(daily_data)
+    total_work_hours = 0
+    days_with_issues = []
+    total_vacation_days = 0
+    total_holiday_hours = 0
+    
+    # Get holidays based on language
+    lang_code = request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'sk'
+    if lang_code == 'sk':
+        country_holidays = holidays.Slovakia(years=[date_from.year, date_to.year])
+    elif lang_code == 'en':
+        country_holidays = holidays.UnitedStates(years=[date_from.year, date_to.year])
+    elif lang_code == 'de':
+        country_holidays = holidays.Germany(years=[date_from.year, date_to.year])
+    elif lang_code == 'es':
+        country_holidays = holidays.Spain(years=[date_from.year, date_to.year])
+    else:
+        country_holidays = holidays.Slovakia(years=[date_from.year, date_to.year])
+    
+    # Populate daily attendance data
+    row = 6
+    current_date = date_from.date()
+    alt_fill = PatternFill(start_color='f9fafb', end_color='f9fafb', fill_type='solid')
+    vacation_fill = PatternFill(start_color='d1fae5', end_color='d1fae5', fill_type='solid')
+    sick_fill = PatternFill(start_color='fef3c7', end_color='fef3c7', fill_type='solid')
+    doctor_fill = PatternFill(start_color='ede9fe', end_color='ede9fe', fill_type='solid')
+    warning_font = Font(color='f59e0b')
+    
+    while current_date <= date_to.date():
+        day_scans = daily_data.get(current_date, [])
+        day_name = date_format(current_date, format='l')
+        
+        # Check if this day is a holiday
+        is_holiday = current_date in country_holidays
+        holiday_name = country_holidays.get(current_date, '') if is_holiday else ''
+        
+        # Check if this day is a vacation day
+        vacation_type = vacation_days.get(current_date)
+        is_vacation = vacation_type is not None
+        if is_vacation:
+            total_vacation_days += 1
+        
+        # Date
+        ws.cell(row=row, column=1, value=current_date.strftime('%d.%m.%Y'))
+        ws.cell(row=row, column=1).alignment = center_align
+        ws.cell(row=row, column=1).border = thin_border
+        
+        # Day
+        ws.cell(row=row, column=2, value=day_name)
+        ws.cell(row=row, column=2).alignment = left_align
+        ws.cell(row=row, column=2).border = thin_border
+        
+        if is_vacation and not day_scans:
+            # Vacation day with no scans
+            ws.cell(row=row, column=3, value='-')
+            ws.cell(row=row, column=4, value='-')
+            ws.cell(row=row, column=5, value='-')
+            ws.cell(row=row, column=6, value='-')
+            
+            if vacation_type == 'sick_leave':
+                ws.cell(row=row, column=7, value=f"🏥 {_('Sick Leave')}")
+                for col in range(1, 8):
+                    ws.cell(row=row, column=col).fill = sick_fill
+            elif vacation_type == 'doctor':
+                ws.cell(row=row, column=7, value=f"👨‍⚕️ {_('Doctor')}")
+                for col in range(1, 8):
+                    ws.cell(row=row, column=col).fill = doctor_fill
+            else:
+                ws.cell(row=row, column=7, value=f"🏖 {_('Vacation')}")
+                for col in range(1, 8):
+                    ws.cell(row=row, column=col).fill = vacation_fill
+        
+        elif not day_scans and not is_vacation:
+            # No scans for this day
+            ws.cell(row=row, column=3, value='-')
+            ws.cell(row=row, column=4, value='-')
+            ws.cell(row=row, column=5, value='0:00')
+            ws.cell(row=row, column=6, value='-')
+            ws.cell(row=row, column=7, value=str(_('No scans')))
+        
+        else:
+            # Day with scans
+            arrivals = [s for s in day_scans if s.scan_type == 'arrival']
+            departures = [s for s in day_scans if s.scan_type == 'departure']
+            
+            # Check for issues
+            notes = []
+            
+            if is_vacation:
+                if vacation_type == 'sick_leave':
+                    notes.append(f"⚠ {_('Scans on sick leave day')}")
+                elif vacation_type == 'doctor':
+                    notes.append(f"⚠ {_('Scans on doctor day')}")
+                else:
+                    notes.append(f"⚠ {_('Scans on vacation day')}")
+                days_with_issues.append(current_date)
+            
+            # Add holiday note
+            if is_holiday:
+                notes.append(f"🎉 {holiday_name}")
+            
+            if not arrivals:
+                notes.append(f"⚠ {_('Missing arrival')}")
+                days_with_issues.append(current_date)
+            if not departures:
+                notes.append(f"⚠ {_('Missing departure')}")
+                days_with_issues.append(current_date)
+            
+            # Calculate hours worked
+            hours_worked = 0
+            if arrivals and departures:
+                first_arrival = arrivals[0].timestamp
+                last_departure = departures[-1].timestamp
+                work_duration = last_departure - first_arrival
+                hours_worked = work_duration.total_seconds() / 3600
+                total_work_hours += hours_worked
+                
+                # Track holiday hours
+                if is_holiday:
+                    total_holiday_hours += hours_worked
+            
+            # Format times
+            arrival_time = arrivals[0].timestamp.strftime('%H:%M') if arrivals else '-'
+            departure_time = departures[-1].timestamp.strftime('%H:%M') if departures else '-'
+            hours_str = f"{int(hours_worked)}:{int((hours_worked % 1) * 60):02d}" if hours_worked > 0 else '0:00'
+            
+            # Get QR code info
+            if arrivals:
+                qr_info = f"{arrivals[0].qr_code.name} - {arrivals[0].qr_code.location}"
+            elif departures:
+                qr_info = f"{departures[0].qr_code.name} - {departures[0].qr_code.location}"
+            else:
+                qr_info = '-'
+            
+            ws.cell(row=row, column=3, value=arrival_time)
+            ws.cell(row=row, column=4, value=departure_time)
+            ws.cell(row=row, column=5, value=hours_str)
+            ws.cell(row=row, column=6, value=qr_info)
+            ws.cell(row=row, column=7, value=' '.join(notes) if notes else '✓')
+            
+            if notes:
+                ws.cell(row=row, column=7).font = warning_font
+        
+        # Apply alignment and borders
+        for col in range(3, 8):
+            if col in [3, 4, 5]:  # Center align time columns
+                ws.cell(row=row, column=col).alignment = center_align
+            else:
+                ws.cell(row=row, column=col).alignment = left_align
+            ws.cell(row=row, column=col).border = thin_border
+        
+        # Alternate row colors
+        if row % 2 == 0 and not is_vacation:
+            for col in range(1, 8):
+                if ws.cell(row=row, column=col).fill.start_color.rgb != 'd1fae5' and \
+                   ws.cell(row=row, column=col).fill.start_color.rgb != 'fef3c7':
+                    ws.cell(row=row, column=col).fill = alt_fill
+        
+        current_date += timedelta(days=1)
+        row += 1
+    
+    # Add summary section
+    row += 2
+    ws.merge_cells(f'A{row}:G{row}')
+    ws.cell(row=row, column=1, value=str(_('Summary Statistics')))
+    ws.cell(row=row, column=1).font = Font(color='1e40af', bold=True, size=14)
+    ws.cell(row=row, column=1).alignment = left_align
+    
+    row += 1
+    summary_fill = PatternFill(start_color='e0e7ff', end_color='e0e7ff', fill_type='solid')
+    
+    avg_hours = total_work_hours / total_days if total_days > 0 else 0
+    
+    # Calculate overtime (based on monthly work_hours)
+    months_in_range = set()
+    temp_date = date_from.date()
+    while temp_date <= date_to.date():
+        months_in_range.add((temp_date.year, temp_date.month))
+        temp_date += timedelta(days=1)
+    
+    # Calculate expected hours proportionally
+    expected_hours = 0
+    for year, month in months_in_range:
+        days_in_month = monthrange(year, month)[1]
+        month_start = max(date_from.date(), datetime(year, month, 1).date())
+        month_end = min(date_to.date(), datetime(year, month, days_in_month).date())
+        days_in_range = (month_end - month_start).days + 1
+        month_expected = (user.working_hours / days_in_month) * days_in_range
+        expected_hours += month_expected
+    
+    overtime_hours = max(0, total_work_hours - expected_hours)
+    
+    summary_data = [
+        (str(_('Total Working Days')), str(total_days)),
+        (str(_('Expected Hours')), f"{int(expected_hours)}:{int((expected_hours % 1) * 60):02d}"),
+        (str(_('Total Hours Worked')), f"{int(total_work_hours)}:{int((total_work_hours % 1) * 60):02d}"),
+        (str(_('Overtime Hours')), f"{int(overtime_hours)}:{int((overtime_hours % 1) * 60):02d}"),
+        (str(_('Holiday Hours')), f"{int(total_holiday_hours)}:{int((total_holiday_hours % 1) * 60):02d}"),
+        (str(_('Average Hours per Day')), f"{int(avg_hours)}:{int((avg_hours % 1) * 60):02d}"),
+        (str(_('Vacation Days')), str(total_vacation_days)),
+        (str(_('Days with Issues')), str(len(set(days_with_issues)))),
+    ]
+    
+    for label, value in summary_data:
+        ws.cell(row=row, column=1, value=label)
+        ws.cell(row=row, column=1).font = bold_font
+        ws.cell(row=row, column=1).fill = summary_fill
+        ws.cell(row=row, column=1).border = thin_border
+        ws.cell(row=row, column=1).alignment = left_align
+        
+        ws.merge_cells(f'B{row}:G{row}')
+        ws.cell(row=row, column=2, value=value)
+        ws.cell(row=row, column=2).border = thin_border
+        ws.cell(row=row, column=2).alignment = center_align
+        
+        row += 1
+    
+    # Adjust column widths
+    ws.column_dimensions['A'].width = 12
+    ws.column_dimensions['B'].width = 15
+    ws.column_dimensions['C'].width = 10
+    ws.column_dimensions['D'].width = 10
+    ws.column_dimensions['E'].width = 8
+    ws.column_dimensions['F'].width = 35
+    ws.column_dimensions['G'].width = 30
+    
+    # Save workbook
+    wb.save(filepath)
+    
+    # Return Excel response
+    with open(filepath, 'rb') as excel_file:
+        response = HttpResponse(
+            excel_file.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    return response
+
+
 def generate_qr_code_pdf(request, qr_id):
     """Generate PDF with QR code for printing on A4"""
     from reportlab.lib.pagesizes import A4
@@ -1506,14 +2457,26 @@ def generate_qr_code_pdf(request, qr_id):
     from datetime import datetime
     import os
     
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
         messages.error(request, _('Unauthorized'))
         return redirect('company_login')
     
-    company = crud.get_company_by_id(request.session['company_id'])
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        user = crud.get_user_by_id(request.session['user_id'])
+        if not user or not user.is_manager or not user.can_edit_qr_codes:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = user.company
+    
     if not company:
         messages.error(request, _('Company not found'))
-        return redirect('company_login')
+        return redirect('company_login' if is_company else 'user_login')
     
     qr_code = crud.get_qr_code_by_id(qr_id)
     if not qr_code or qr_code.company != company:
@@ -1592,14 +2555,26 @@ def generate_qr_code_pdf(request, qr_id):
 
 def company_analytics(request):
     """Analytics dashboard with statistics and charts"""
-    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        messages.error(request, _('Please login as a company'))
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_manager):
+        messages.error(request, _('Please login as a company or manager'))
         return redirect('company_login')
-
-    company = crud.get_company_by_id(request.session['company_id'])
+    
+    # Get company
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+    else:
+        user = crud.get_user_by_id(request.session['user_id'])
+        if not user or not user.is_manager:
+            messages.error(request, _('Access denied'))
+            return redirect('user_dashboard')
+        company = user.company
+    
     if not company:
         messages.error(request, _('Company not found'))
-        return redirect('company_login')
+        return redirect('company_login' if is_company else 'user_login')
     
     from django.db.models import Count, Q, Max
     from django.utils import timezone
@@ -1954,6 +2929,123 @@ def analytics_chart_data(request):
     return JsonResponse({'error': 'Invalid chart type'}, status=400)
 
 
+# ============= AUDIT LOGGING VIEWS =============
+
+def audit_logs(request):
+    """View audit logs - company and managers see all, regular users see only their own"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_user = request.session.get('user_type') == 'user' and 'user_id' in request.session
+    
+    if not (is_company or is_user):
+        messages.error(request, _('Please login to access this page'))
+        return redirect('landing_page')
+    
+    from viewer.models import AuditLog
+    
+    # Get company and current user
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+        current_user = None
+        is_manager = False
+    else:
+        current_user = crud.get_user_by_id(request.session['user_id'])
+        if not current_user:
+            messages.error(request, _('User not found'))
+            return redirect('user_login')
+        company = current_user.company
+        is_manager = current_user.is_manager
+    
+    if not company:
+        messages.error(request, _('Company not found'))
+        return redirect('landing_page')
+    
+    # Get all logs - filter based on user type
+    if is_company or is_manager:
+        # Company and managers see all logs for their company
+        # Get all user emails from company
+        users = company.users.filter(is_active=True).values_list('email', flat=True)
+        logs = AuditLog.objects.filter(
+            Q(actor_email=company.email) | Q(actor_email__in=users)
+        )
+    else:
+        # Regular users see only their own logs
+        logs = AuditLog.objects.filter(actor_email=current_user.email)
+    
+    # Filtering
+    actor_filter = request.GET.get('actor', '')
+    action_filter = request.GET.get('action', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    if actor_filter:
+        logs = logs.filter(Q(actor_name__icontains=actor_filter) | Q(actor_email__icontains=actor_filter))
+    
+    if action_filter:
+        logs = logs.filter(action=action_filter)
+    
+    if date_from and date_to:
+        from datetime import datetime
+        try:
+            date_from_obj = datetime.strptime(date_from, '%Y-%m-%d')
+            date_to_obj = datetime.strptime(date_to, '%Y-%m-%d')
+            logs = logs.filter(timestamp__date__gte=date_from_obj.date(), timestamp__date__lte=date_to_obj.date())
+        except:
+            messages.error(request, _('Invalid date range'))
+    
+    # Sorting
+    sort = request.GET.get('sort', '-timestamp')
+    valid_sort_fields = ['timestamp', '-timestamp', 'actor_name', '-actor_name', 'action', '-action']
+    
+    if sort in valid_sort_fields:
+        logs = logs.order_by(sort)
+    else:
+        logs = logs.order_by('-timestamp')
+    
+    # Pagination
+    items_per_page = request.GET.get('items_per_page', '25')
+    try:
+        items_per_page = int(items_per_page)
+        if items_per_page not in [10, 25, 50, 100]:
+            items_per_page = 25
+    except (ValueError, TypeError):
+        items_per_page = 25
+    
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(logs, items_per_page)
+    page_obj = paginator.get_page(page_number)
+    
+    # Get unique values for filters
+    if is_company or is_manager:
+        all_logs = AuditLog.objects.filter(
+            Q(actor_email=company.email) | Q(actor_email__in=users)
+        )
+    else:
+        all_logs = AuditLog.objects.filter(actor_email=current_user.email)
+    
+    unique_actors = all_logs.values_list('actor_name', flat=True).distinct()
+    unique_actions = all_logs.values_list('action', flat=True).distinct()
+    
+    context = {
+        'company': company,
+        'current_user': current_user,
+        'is_company': is_company,
+        'is_manager': is_manager,
+        'page_obj': page_obj,
+        'logs_count': logs.count(),
+        'unique_actors': list(unique_actors),
+        'unique_actions': list(unique_actions),
+        'current_filters': {
+            'actor': actor_filter,
+            'action': action_filter,
+            'date_from': date_from,
+            'date_to': date_to,
+            'sort': sort,
+            'items_per_page': str(items_per_page),
+        }
+    }
+    return render(request, 'audit_logs.html', context)
+
+
 # ============= MAGAZINE VIEWS =============
 
 def magazine_dashboard(request):
@@ -2097,6 +3189,18 @@ def api_magazine_update(request, magazine_id):
         
         magazine.save()
         
+        # Log the update
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='update',
+                message=f'Magazine "{magazine.title}" updated',
+                ip_address=get_client_ip(request)
+            )
+        
         return JsonResponse({'success': True, 'magazine': {
             'id': magazine.id,
             'title': magazine.title,
@@ -2122,7 +3226,21 @@ def api_magazine_delete(request, magazine_id):
     if not magazine:
         return JsonResponse({'error': 'Magazine not found'}, status=404)
     
+    magazine_title = magazine.title
     magazine.delete()
+    
+    # Log the deletion
+    company = crud.get_company_by_id(company_id)
+    if company:
+        log_action(
+            actor_type='company',
+            actor_email=company.email,
+            actor_name=company.name,
+            action='delete',
+            message=f'Magazine "{magazine_title}" deleted',
+            ip_address=get_client_ip(request)
+        )
+    
     return JsonResponse({'success': True})
 
 
@@ -2154,6 +3272,18 @@ def api_article_create(request, magazine_id):
             title=data.get('title', 'New Article'),
             category=data.get('category', magazine.get_categories_list()[0])
         )
+        
+        # Log the creation
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='create',
+                message=f'Article "{article.title}" created in magazine "{magazine.title}"',
+                ip_address=get_client_ip(request)
+            )
         
         return JsonResponse({'success': True, 'article': {
             'id': article.id,
@@ -2204,6 +3334,18 @@ def api_article_update(request, article_id):
         
         article.save()
         
+        # Log the update
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='update',
+                message=f'Article "{article.title}" updated',
+                ip_address=get_client_ip(request)
+            )
+        
         return JsonResponse({'success': True, 'article': {
             'id': article.id,
             'title': article.title,
@@ -2233,7 +3375,21 @@ def api_article_delete(request, article_id):
     if not article:
         return JsonResponse({'error': 'Article not found'}, status=404)
     
+    article_title = article.title
     article.delete()
+    
+    # Log the deletion
+    company = crud.get_company_by_id(company_id)
+    if company:
+        log_action(
+            actor_type='company',
+            actor_email=company.email,
+            actor_name=company.name,
+            action='delete',
+            message=f'Article "{article_title}" deleted',
+            ip_address=get_client_ip(request)
+        )
+    
     return JsonResponse({'success': True})
 
 
@@ -2263,6 +3419,18 @@ def api_article_upload_header_image(request, article_id):
         
         article.header_image = request.FILES['header_image']
         article.save()
+        
+        # Log the upload
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='update',
+                message=f'Header image uploaded for article "{article.title}"',
+                ip_address=get_client_ip(request)
+            )
         
         return JsonResponse({'success': True, 'header_image': article.header_image.url})
     except Exception as e:
@@ -2294,6 +3462,18 @@ def api_article_remove_header_image(request, article_id):
             article.header_image.delete()
         article.header_image = None
         article.save()
+        
+        # Log the removal
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='update',
+                message=f'Header image removed from article "{article.title}"',
+                ip_address=get_client_ip(request)
+            )
         
         return JsonResponse({'success': True})
     except Exception as e:
@@ -2346,6 +3526,18 @@ def api_content_block_create(request, article_id):
                 alignment=data.get('alignment', 'left')
             )
         
+        # Log the creation
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='create',
+                message=f'Content block ({block.block_type}) created in article "{article.title}"',
+                ip_address=get_client_ip(request)
+            )
+        
         return JsonResponse({'success': True, 'block': {
             'id': block.id,
             'block_type': block.block_type,
@@ -2396,6 +3588,18 @@ def api_content_block_update(request, block_id):
         
         block.save()
         
+        # Log the update
+        company = crud.get_company_by_id(company_id)
+        if company:
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='update',
+                message=f'Content block updated in article "{block.article.title}"',
+                ip_address=get_client_ip(request)
+            )
+        
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
@@ -2421,7 +3625,21 @@ def api_content_block_delete(request, block_id):
     if not block:
         return JsonResponse({'error': 'Block not found'}, status=404)
     
+    article_title = block.article.title
     block.delete()
+    
+    # Log the deletion
+    company = crud.get_company_by_id(company_id)
+    if company:
+        log_action(
+            actor_type='company',
+            actor_email=company.email,
+            actor_name=company.name,
+            action='delete',
+            message=f'Content block deleted from article "{article_title}"',
+            ip_address=get_client_ip(request)
+        )
+    
     return JsonResponse({'success': True})
 
 

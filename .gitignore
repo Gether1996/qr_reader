@@ -9,10 +9,6 @@ db.sqlite3.backup*
 media/
 staticfiles/
 
-# Environment
-.env
-.env.local
-
 # Backup files #
 *.bak
 

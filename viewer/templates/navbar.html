@@ -33,6 +33,10 @@
                                 <i class="fas fa-book"></i>
                                 <span>{% trans "Magazine Creator" %}</span>
                             </a>
+                            <a href="{% url 'audit_logs' %}" class="dropdown-link">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>{% trans "Logging" %}</span>
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'company_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -106,6 +110,16 @@
                             <a href="{% url 'user_dashboard' %}" class="dropdown-link">
                                 <i class="fas fa-qrcode"></i>
                                 <span>{% trans "Dashboard" %}</span>
+                            </a>
+                            {% if current_user.is_manager %}
+                            <a href="{% url 'company_dashboard' %}" class="dropdown-link">
+                                <i class="fas fa-users"></i>
+                                <span>{% trans "Company Dashboard" %}</span>
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'audit_logs' %}" class="dropdown-link">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>{% trans "Logging" %}</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'user_logout' %}" class="dropdown-link logout">
@@ -305,6 +319,17 @@
                     <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                <a href="{% url 'audit_logs' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Logging" %}</span>
+                        <span class="subtitle">{% trans "Activity Logs" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
                 <div class="mobile-menu-divider"></div>
                 
                 <a href="{% url 'company_logout' %}" class="mobile-menu-item danger">
@@ -338,6 +363,30 @@
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Scan QR Code" %}</span>
                         <span class="subtitle">{% trans "Scan to record location" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                {% if current_user.is_manager %}
+                <a href="{% url 'company_dashboard' %}" class="mobile-menu-item primary">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Company Dashboard" %}</span>
+                        <span class="subtitle">{% trans "Manage employees & QR codes" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+                
+                <a href="{% url 'audit_logs' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Logging" %}</span>
+                        <span class="subtitle">{% trans "Activity Logs" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>

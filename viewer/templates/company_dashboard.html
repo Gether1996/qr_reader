@@ -30,15 +30,21 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="d-flex gap-2 justify-content-lg-end justify-content-start flex-wrap">
+                        {% if can_edit_qr_codes %}
                         <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="createQRCode()">
                             <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus"></i></span>{% trans "Create QR Code" %}
                         </button>
+                        {% endif %}
+                        {% if can_edit_employees %}
                         <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="createUser()">
                             <i class="fas fa-user-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-user-plus"></i></span>{% trans "Register Employee" %}
                         </button>
+                        {% endif %}
+                        {% if can_edit_absences %}
                         <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="addVacation(usersData)">
                             <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus"></i></span>{% trans "Add Absence" %}
                         </button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -59,18 +65,24 @@
         <!-- Tabs Navigation replacing header -->
         <div class="card-header p-0 tab-header">
             <div class="d-flex">
+                {% if can_edit_qr_codes %}
                 <button class="flex-fill text-center tab-btn tab-btn-left{% if active_tab == 'qr-codes' %} active{% endif %}" onclick="window.location.href='?tab=qr-codes&sort=name'">
                     <i class="fas fa-qrcode me-2"></i>{% trans "QR Codes" %}
                     <span class="badge {% if active_tab == 'qr-codes' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ qr_codes_count }}</span>
                 </button>
-                <button class="flex-fill text-center tab-btn tab-btn-middle{% if active_tab == 'users' %} active{% endif %}" onclick="window.location.href='?tab=users&sort=name'">
+                {% endif %}
+                {% if can_edit_employees %}
+                <button class="flex-fill text-center tab-btn {% if not can_edit_qr_codes %}tab-btn-left{% elif not can_edit_absences %}tab-btn-right{% else %}tab-btn-middle{% endif %}{% if active_tab == 'users' %} active{% endif %}" onclick="window.location.href='?tab=users&sort=name'">
                     <i class="fas fa-users me-2"></i>{% trans "Employees" %}
                     <span class="badge {% if active_tab == 'users' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ users_count }}</span>
                 </button>
-                <button class="flex-fill text-center tab-btn tab-btn-right{% if active_tab == 'absences' %} active{% endif %}" onclick="window.location.href='?tab=absences&sort=-date_from'">
+                {% endif %}
+                {% if can_edit_absences %}
+                <button class="flex-fill text-center tab-btn {% if not can_edit_qr_codes and not can_edit_employees %}tab-btn-left{% else %}tab-btn-right{% endif %}{% if active_tab == 'absences' %} active{% endif %}" onclick="window.location.href='?tab=absences&sort=-date_from'">
                     <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absences" %}
                     <span class="badge {% if active_tab == 'absences' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ absences_count }}</span>
                 </button>
+                {% endif %}
             </div>
         </div>
 
@@ -241,6 +253,7 @@
                                     {% endif %}
                                 </a>
                             </th>
+                            <th>{% trans "Role" %}</th>
                             <th class="text-center table-actions-column-wide">{% trans "Actions" %}</th>
                         </tr>
                     </thead>
@@ -257,6 +270,13 @@
                                             {% endif %}
                                         {% else %}
                                             <span class="badge bg-secondary">{% trans "No" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.is_manager %}
+                                            <span class="badge bg-primary"><i class="fas fa-user-tie me-1"></i>{% trans "Manager" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary"><i class="fas fa-user me-1"></i>{% trans "Employee" %}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-center" onclick="event.stopPropagation();">
@@ -279,7 +299,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">{% trans "No employees yet. Register employees to give them access!" %}</td>
+                                    <td colspan="5" class="text-center text-muted">{% trans "No employees yet. Register employees to give them access!" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -296,6 +316,11 @@
                         <p class="text-muted small mb-2"><i class="fas fa-envelope me-1"></i>{{ user.email }}</p>
                     </div>
                     <div class="d-flex gap-2 flex-wrap mb-2">
+                        {% if user.is_manager %}
+                            <span class="badge bg-primary"><i class="fas fa-user-tie me-1"></i>{% trans "Manager" %}</span>
+                        {% else %}
+                            <span class="badge bg-secondary"><i class="fas fa-user me-1"></i>{% trans "Employee" %}</span>
+                        {% endif %}
                         {% if user.is_at_work %}
                             <span class="badge bg-success"><i class="fas fa-briefcase me-1"></i>{% trans "At Work" %}</span>
                         {% else %}
@@ -380,6 +405,7 @@
                                     {% endif %}
                                 </a>
                             </th>
+                            <th style="width: 80px; text-align: center;">{% trans "Status" %}</th>
                             <th>{% trans "Created" %}</th>
                             <th class="text-center">{% trans "Actions" %}</th>
                         </tr>
@@ -402,10 +428,19 @@
                             <td>
                                 {% if absence.type == 'sick_leave' %}
                                     <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                                {% elif absence.type == 'doctor' %}
+                                    <span class="badge" style="background-color: #9333ea;"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
                                 {% elif absence.type == 'vacation' %}
                                     <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
                                 {% else %}
                                     <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                {% if absence.approved %}
+                                    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;" title="{% trans 'Approved' %}"></i>
+                                {% else %}
+                                    <i class="fas fa-clock" style="color: #f59e0b; font-size: 1.2rem;" title="{% trans 'Pending' %}"></i>
                                 {% endif %}
                             </td>
                             <td>
@@ -418,6 +453,12 @@
                             </td>
                             <td class="text-center">
                                 <div class="action-buttons">
+                                    {% if not absence.approved and can_edit_absences %}
+                                    <button type="button" class="action-icon-btn action-btn-success" 
+                                            onclick="approveVacation({{ absence.id }}, '{{ absence.user.name }}')" title="{% trans 'Approve' %}">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    {% endif %}
                                     <button type="button" class="action-icon-btn action-btn-edit" 
                                             onclick="editVacation({{ absence.id }}, {{ absence.user.id }}, '{{ absence.user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type|default:'vacation' }}', usersData)" title="{% trans 'Edit' %}">
                                         <i class="fas fa-edit"></i>
@@ -431,7 +472,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">{% trans "No absences found" %}</td>
+                            <td colspan="8" class="text-center text-muted py-4">{% trans "No absences found" %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -449,12 +490,19 @@
                     <div class="d-flex gap-2 flex-wrap mb-2">
                         {% if absence.type == 'sick_leave' %}
                             <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
+                        {% elif absence.type == 'doctor' %}
+                            <span class="badge" style="background-color: #9333ea;"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
                         {% elif absence.type == 'vacation' %}
                             <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
                         {% else %}
                             <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Absence" %}</span>
                         {% endif %}
                         <span class="badge bg-info">{{ absence.days_count }} {% trans "days" %}</span>
+                        {% if absence.approved %}
+                            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>{% trans "Approved" %}</span>
+                        {% else %}
+                            <span class="badge bg-warning"><i class="fas fa-clock me-1"></i>{% trans "Pending" %}</span>
+                        {% endif %}
                     </div>
                     <p class="text-muted small mb-1">
                         <i class="fas fa-calendar-day me-1"></i><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}
@@ -463,6 +511,11 @@
                         <i class="fas fa-calendar-check me-1"></i><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}
                     </p>
                     <div class="mt-2 d-flex gap-2">
+                        {% if not absence.approved and can_edit_absences %}
+                        <button type="button" class="btn btn-sm btn-success flex-fill" onclick="approveVacation({{ absence.id }}, '{{ absence.user.name }}')">
+                            <i class="fas fa-check me-1"></i>{% trans "Approve" %}
+                        </button>
+                        {% endif %}
                         <button type="button" class="btn btn-sm flex-fill btn-edit-blue" onclick="editVacation({{ absence.id }}, {{ absence.user.id }}, '{{ absence.user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type|default:'vacation' }}', usersData)">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
