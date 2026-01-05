@@ -1,0 +1,213 @@
+/* ============================================
+   Audit Logs Styles
+   ============================================ */
+
+/* Info Header Card */
+.audit-info-card {
+    border: 2px solid #2563eb;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+}
+
+.audit-icon-circle {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+/* Data Table Card */
+.data-table-card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.data-table-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+}
+
+.tab-content-body {
+    background: white;
+}
+
+/* Sortable Table Headers */
+.sortable-th a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sortable-th a:hover {
+    color: #2563eb;
+}
+
+.sort-icon {
+    font-size: 0.85rem;
+}
+
+/* Mobile Log List */
+.mobile-log-list {
+    display: none;
+    padding: 1rem;
+}
+
+.mobile-log-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #667eea;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+}
+
+.mobile-log-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.mobile-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mobile-log-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1f2937;
+    flex: 1;
+}
+
+.mobile-log-action {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}
+
+.mobile-log-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-log-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.mobile-log-info-item i {
+    width: 20px;
+    text-align: center;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.mobile-log-info-item strong {
+    color: #374151;
+}
+
+.mobile-log-message {
+    background: #f9fafb;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-left: 26px;
+}
+
+/* Filters Card */
+.filters-card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+
+@media (max-width: 991px) {
+    .d-none.d-lg-block {
+        display: none !important;
+    }
+    
+    .mobile-log-list {
+        display: block !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .mobile-log-card {
+        padding: 0.85rem;
+    }
+    
+    .mobile-log-title {
+        font-size: 0.95rem;
+    }
+    
+    .mobile-log-info-item {
+        font-size: 0.85rem;
+    }
+    
+    .mobile-log-message {
+        font-size: 0.8rem;
+    }
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+
+[data-bs-theme="dark"] .audit-info-card {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
+}
+
+[data-bs-theme="dark"] .data-table-card {
+    background: var(--bg-primary);
+}
+
+[data-bs-theme="dark"] .data-table-card .card-header {
+    background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+}
+
+[data-bs-theme="dark"] .tab-content-body {
+    background: var(--bg-primary);
+}
+
+[data-bs-theme="dark"] .mobile-log-card {
+    background: #1f2937;
+    border-left-color: #667eea;
+}
+
+[data-bs-theme="dark"] .mobile-log-header {
+    border-bottom-color: #374151;
+}
+
+[data-bs-theme="dark"] .mobile-log-title {
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .mobile-log-info-item {
+    color: #9ca3af;
+}
+
+[data-bs-theme="dark"] .mobile-log-info-item strong {
+    color: #d1d5db;
+}
+
+[data-bs-theme="dark"] .mobile-log-message {
+    background: #374151;
+    color: #d1d5db;
+}
+
+[data-bs-theme="dark"] .filters-card {
+    background: var(--bg-primary);
+}

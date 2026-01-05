@@ -35,6 +35,7 @@ def company_register(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
+        auto_lunch_breaks = request.POST.get('auto_lunch_breaks') == 'on'
 
         if not all([name, email, password, confirm_password]):
             messages.error(request, _('All fields are required'))
@@ -44,7 +45,7 @@ def company_register(request):
             messages.error(request, _('Passwords do not match'))
             return render(request, 'company_register.html')
 
-        company, error = crud.create_company(name, email, password, ip_address=get_client_ip(request))
+        company, error = crud.create_company(name, email, password, auto_lunch_breaks=auto_lunch_breaks, ip_address=get_client_ip(request))
         if error:
             messages.error(request, error)
             return render(request, 'company_register.html')
@@ -641,8 +642,38 @@ def user_scan_qr(request):
                 'message': str(e)
             }, status=400)
     
+    # Determine which buttons should be enabled based on today's scans
+    from datetime import date
+    from django.utils import timezone
+    
+    today = timezone.now().date()
+    today_scans = ScanEvent.objects.filter(
+        scanned_by=user,
+        timestamp__date=today
+    ).order_by('timestamp')
+    
+    # Default: only arrival enabled
+    enabled_buttons = ['arrival']
+    
+    if today_scans.exists():
+        last_scan = today_scans.last()
+        
+        if last_scan.scan_type == 'arrival':
+            # After arrival: can depart or start lunch break
+            enabled_buttons = ['departure', 'lunch_break_start']
+        elif last_scan.scan_type == 'lunch_break_start':
+            # During lunch break: can only end lunch break
+            enabled_buttons = ['lunch_break_end']
+        elif last_scan.scan_type == 'lunch_break_end':
+            # After lunch break: can depart or start another lunch break
+            enabled_buttons = ['departure', 'lunch_break_start']
+        elif last_scan.scan_type == 'departure':
+            # After departure: can arrive again (new shift)
+            enabled_buttons = ['arrival']
+    
     context = {
         'user': user,
+        'enabled_buttons': enabled_buttons,
     }
     return render(request, 'user_scan_qr.html', context)
 
@@ -794,6 +825,7 @@ def create_user(request):
                 email=data.get('email'),
                 password=data.get('password'),
                 basic_work_hours=data.get('basic_work_hours', 160),
+                holidays_per_year=data.get('holidays_per_year', 20),
                 is_manager=data.get('is_manager', False),
                 can_edit_employees=data.get('can_edit_employees', False),
                 can_edit_qr_codes=data.get('can_edit_qr_codes', False),
@@ -866,6 +898,7 @@ def edit_user(request, user_id):
                 email=data.get('email'),
                 password=data.get('password'),
                 basic_work_hours=data.get('basic_work_hours'),
+                holidays_per_year=data.get('holidays_per_year'),
                 is_active=data.get('is_active'),
                 is_manager=data.get('is_manager'),
                 can_edit_employees=data.get('can_edit_employees'),
@@ -1687,9 +1720,33 @@ def generate_attendance_pdf(request, user_id):
             vacation_days[current] = vacation.type if vacation.type else 'vacation'
             current += timedelta(days=1)
     
+    # Helper function to calculate night hours (22:00-06:00)
+    def calculate_night_hours(start_time, end_time):
+        """Calculate hours worked between 22:00 and 06:00"""
+        night_hours = 0
+        current = start_time
+        
+        while current < end_time:
+            # Check if current hour is night time (22:00-23:59 or 00:00-05:59)
+            hour = current.hour
+            if hour >= 22 or hour < 6:
+                # Calculate minutes in this hour that count as night work
+                next_hour = current.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+                segment_end = min(next_hour, end_time)
+                segment_duration = (segment_end - current).total_seconds() / 3600
+                night_hours += segment_duration
+            
+            # Move to next hour
+            current = current.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+            if current >= end_time:
+                break
+        
+        return night_hours
+    
     # Calculate statistics
     total_days = len(daily_data)
     total_work_hours = 0
+    total_night_hours = 0
     days_with_issues = []
     total_vacation_days = 0
     
@@ -1713,6 +1770,7 @@ def generate_attendance_pdf(request, user_id):
         Paragraph(str(_('Arrival')), header_style),
         Paragraph(str(_('Departure')), header_style),
         Paragraph(str(_('Hours')), header_style),
+        Paragraph(str(_('Break')), header_style),
         Paragraph(str(_('Scanned QR')), header_style),
         Paragraph(str(_('Notes')), header_style)
     ]]
@@ -1796,6 +1854,7 @@ def generate_attendance_pdf(request, user_id):
                 Paragraph('-', cell_style_centered),
                 Paragraph('-', cell_style_centered),
                 Paragraph('-', cell_style_centered),
+                Paragraph('-', cell_style_centered),
                 Paragraph('-', cell_style),
                 Paragraph(leave_label, vacation_style)
             ])
@@ -1807,6 +1866,7 @@ def generate_attendance_pdf(request, user_id):
                 Paragraph('-', cell_style_centered),
                 Paragraph('-', cell_style_centered),
                 Paragraph('0:00', cell_style_centered),
+                Paragraph('-', cell_style_centered),
                 Paragraph('-', cell_style),
                 Paragraph(str(_('No scans')), cell_style)
             ])
@@ -1840,14 +1900,32 @@ def generate_attendance_pdf(request, user_id):
                 notes.append(f"⚠ {_('Missing departure')}")
                 days_with_issues.append(current_date)
             
-            # Calculate hours worked
+            # Calculate hours worked and lunch breaks
             hours_worked = 0
+            night_hours = 0
+            lunch_break_minutes = 0
+            
             if arrivals and departures:
                 first_arrival = arrivals[0].timestamp
                 last_departure = departures[-1].timestamp
                 work_duration = last_departure - first_arrival
                 hours_worked = work_duration.total_seconds() / 3600
+                night_hours = calculate_night_hours(first_arrival, last_departure)
+                
+                # Calculate lunch break
+                if company.auto_lunch_breaks:
+                    lunch_break_minutes = 30
+                else:
+                    # Calculate actual lunch break from scans
+                    lunch_starts = [s for s in day_scans if s.scan_type == 'lunch_break_start']
+                    lunch_ends = [s for s in day_scans if s.scan_type == 'lunch_break_end']
+                    if lunch_starts and lunch_ends:
+                        for i in range(min(len(lunch_starts), len(lunch_ends))):
+                            break_duration = lunch_ends[i].timestamp - lunch_starts[i].timestamp
+                            lunch_break_minutes += break_duration.total_seconds() / 60
+                
                 total_work_hours += hours_worked
+                total_night_hours += night_hours
                 
                 # Track holiday hours
                 if is_holiday:
@@ -1865,6 +1943,7 @@ def generate_attendance_pdf(request, user_id):
             arrival_time = arrivals[0].timestamp.strftime('%H:%M') if arrivals else '-'
             departure_time = departures[-1].timestamp.strftime('%H:%M') if departures else '-'
             hours_str = f"{int(hours_worked)}:{int((hours_worked % 1) * 60):02d}" if hours_worked > 0 else '0:00'
+            lunch_break_str = f"{int(lunch_break_minutes)}" if lunch_break_minutes > 0 else '-'
             
             # Use conflict style for notes if vacation conflict exists
             notes_style = cell_style
@@ -1881,6 +1960,7 @@ def generate_attendance_pdf(request, user_id):
                 Paragraph(arrival_time, cell_style_centered),
                 Paragraph(departure_time, cell_style_centered),
                 Paragraph(hours_str, cell_style_centered),
+                Paragraph(lunch_break_str, cell_style_centered),
                 Paragraph(qr_info, cell_style),
                 Paragraph(' '.join(notes) if notes else '✓', notes_style)
             ])
@@ -1888,7 +1968,7 @@ def generate_attendance_pdf(request, user_id):
         current_date += timedelta(days=1)
     
     # Create table - optimized column widths (A4 landscape is 29.7cm, minus 2cm margins = 27.7cm)
-    table = Table(table_data, colWidths=[2.8*cm, 2.5*cm, 2*cm, 2*cm, 1.8*cm, 8.5*cm, 8.1*cm])
+    table = Table(table_data, colWidths=[2.5*cm, 2.2*cm, 1.8*cm, 1.8*cm, 1.6*cm, 1.5*cm, 7.5*cm, 7.8*cm])
     table.setStyle(TableStyle([
         # Header styling
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2563eb')),
@@ -1993,6 +2073,10 @@ def generate_attendance_pdf(request, user_id):
         [
             Paragraph(str(_('Overtime Hours')), summary_label_style),
             Paragraph(f"{int(overtime_hours)}:{int((overtime_hours % 1) * 60):02d}", summary_value_style)
+        ],
+        [
+            Paragraph(str(_('Night Hours (22:00-06:00)')), summary_label_style),
+            Paragraph(f"{int(total_night_hours)}:{int((total_night_hours % 1) * 60):02d}", summary_value_style)
         ],
         [
             Paragraph(str(_('Holiday Hours')), summary_label_style),
@@ -2158,16 +2242,16 @@ def generate_attendance_excel(request, user_id):
     )
     
     # Title and header information
-    ws.merge_cells('A1:G1')
+    ws.merge_cells('A1:H1')
     ws['A1'] = f"{_('Attendance Report')} - {user.name}"
     ws['A1'].font = title_font
     ws['A1'].alignment = center_align
     
-    ws.merge_cells('A2:G2')
+    ws.merge_cells('A2:H2')
     ws['A2'] = f"{_('Period')}: {date_from.strftime('%d.%m.%Y')} - {date_to.strftime('%d.%m.%Y')}"
     ws['A2'].alignment = center_align
     
-    ws.merge_cells('A3:G3')
+    ws.merge_cells('A3:H3')
     ws['A3'] = f"{_('Company')}: {company.name}"
     ws['A3'].alignment = center_align
     
@@ -2178,6 +2262,7 @@ def generate_attendance_excel(request, user_id):
         str(_('Arrival')),
         str(_('Departure')),
         str(_('Hours')),
+        str(_('Break (min)')),
         str(_('Scanned QR')),
         str(_('Notes'))
     ]
@@ -2204,9 +2289,33 @@ def generate_attendance_excel(request, user_id):
             vacation_days[current] = vacation.type if vacation.type else 'vacation'
             current += timedelta(days=1)
     
+    # Helper function to calculate night hours (22:00-06:00)
+    def calculate_night_hours(start_time, end_time):
+        """Calculate hours worked between 22:00 and 06:00"""
+        night_hours = 0
+        current = start_time
+        
+        while current < end_time:
+            # Check if current hour is night time (22:00-23:59 or 00:00-05:59)
+            hour = current.hour
+            if hour >= 22 or hour < 6:
+                # Calculate minutes in this hour that count as night work
+                next_hour = current.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+                segment_end = min(next_hour, end_time)
+                segment_duration = (segment_end - current).total_seconds() / 3600
+                night_hours += segment_duration
+            
+            # Move to next hour
+            current = current.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+            if current >= end_time:
+                break
+        
+        return night_hours
+    
     # Calculate statistics
     total_days = len(daily_data)
     total_work_hours = 0
+    total_night_hours = 0
     days_with_issues = []
     total_vacation_days = 0
     total_holiday_hours = 0
@@ -2263,18 +2372,19 @@ def generate_attendance_excel(request, user_id):
             ws.cell(row=row, column=4, value='-')
             ws.cell(row=row, column=5, value='-')
             ws.cell(row=row, column=6, value='-')
+            ws.cell(row=row, column=7, value='-')
             
             if vacation_type == 'sick_leave':
-                ws.cell(row=row, column=7, value=f"🏥 {_('Sick Leave')}")
-                for col in range(1, 8):
+                ws.cell(row=row, column=8, value=f"🏥 {_('Sick Leave')}")
+                for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = sick_fill
             elif vacation_type == 'doctor':
-                ws.cell(row=row, column=7, value=f"👨‍⚕️ {_('Doctor')}")
-                for col in range(1, 8):
+                ws.cell(row=row, column=8, value=f"👨‍⚕️ {_('Doctor')}")
+                for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = doctor_fill
             else:
-                ws.cell(row=row, column=7, value=f"🏖 {_('Vacation')}")
-                for col in range(1, 8):
+                ws.cell(row=row, column=8, value=f"🏖 {_('Vacation')}")
+                for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = vacation_fill
         
         elif not day_scans and not is_vacation:
@@ -2283,7 +2393,8 @@ def generate_attendance_excel(request, user_id):
             ws.cell(row=row, column=4, value='-')
             ws.cell(row=row, column=5, value='0:00')
             ws.cell(row=row, column=6, value='-')
-            ws.cell(row=row, column=7, value=str(_('No scans')))
+            ws.cell(row=row, column=7, value='-')
+            ws.cell(row=row, column=8, value=str(_('No scans')))
         
         else:
             # Day with scans
@@ -2313,14 +2424,32 @@ def generate_attendance_excel(request, user_id):
                 notes.append(f"⚠ {_('Missing departure')}")
                 days_with_issues.append(current_date)
             
-            # Calculate hours worked
+            # Calculate hours worked and lunch breaks
             hours_worked = 0
+            night_hours = 0
+            lunch_break_minutes = 0
+            
             if arrivals and departures:
                 first_arrival = arrivals[0].timestamp
                 last_departure = departures[-1].timestamp
                 work_duration = last_departure - first_arrival
                 hours_worked = work_duration.total_seconds() / 3600
+                night_hours = calculate_night_hours(first_arrival, last_departure)
+                
+                # Calculate lunch break
+                if company.auto_lunch_breaks:
+                    lunch_break_minutes = 30
+                else:
+                    # Calculate actual lunch break from scans
+                    lunch_starts = [s for s in day_scans if s.scan_type == 'lunch_break_start']
+                    lunch_ends = [s for s in day_scans if s.scan_type == 'lunch_break_end']
+                    if lunch_starts and lunch_ends:
+                        for i in range(min(len(lunch_starts), len(lunch_ends))):
+                            break_duration = lunch_ends[i].timestamp - lunch_starts[i].timestamp
+                            lunch_break_minutes += break_duration.total_seconds() / 60
+                
                 total_work_hours += hours_worked
+                total_night_hours += night_hours
                 
                 # Track holiday hours
                 if is_holiday:
@@ -2330,6 +2459,7 @@ def generate_attendance_excel(request, user_id):
             arrival_time = arrivals[0].timestamp.strftime('%H:%M') if arrivals else '-'
             departure_time = departures[-1].timestamp.strftime('%H:%M') if departures else '-'
             hours_str = f"{int(hours_worked)}:{int((hours_worked % 1) * 60):02d}" if hours_worked > 0 else '0:00'
+            lunch_break_str = str(int(lunch_break_minutes)) if lunch_break_minutes > 0 else '-'
             
             # Get QR code info
             if arrivals:
@@ -2342,15 +2472,16 @@ def generate_attendance_excel(request, user_id):
             ws.cell(row=row, column=3, value=arrival_time)
             ws.cell(row=row, column=4, value=departure_time)
             ws.cell(row=row, column=5, value=hours_str)
-            ws.cell(row=row, column=6, value=qr_info)
-            ws.cell(row=row, column=7, value=' '.join(notes) if notes else '✓')
+            ws.cell(row=row, column=6, value=lunch_break_str)
+            ws.cell(row=row, column=7, value=qr_info)
+            ws.cell(row=row, column=8, value=' '.join(notes) if notes else '✓')
             
             if notes:
-                ws.cell(row=row, column=7).font = warning_font
+                ws.cell(row=row, column=8).font = warning_font
         
         # Apply alignment and borders
-        for col in range(3, 8):
-            if col in [3, 4, 5]:  # Center align time columns
+        for col in range(3, 9):
+            if col in [3, 4, 5, 6]:  # Center align time and break columns
                 ws.cell(row=row, column=col).alignment = center_align
             else:
                 ws.cell(row=row, column=col).alignment = left_align
@@ -2358,7 +2489,7 @@ def generate_attendance_excel(request, user_id):
         
         # Alternate row colors
         if row % 2 == 0 and not is_vacation:
-            for col in range(1, 8):
+            for col in range(1, 9):
                 if ws.cell(row=row, column=col).fill.start_color.rgb != 'd1fae5' and \
                    ws.cell(row=row, column=col).fill.start_color.rgb != 'fef3c7':
                     ws.cell(row=row, column=col).fill = alt_fill
@@ -2368,7 +2499,7 @@ def generate_attendance_excel(request, user_id):
     
     # Add summary section
     row += 2
-    ws.merge_cells(f'A{row}:G{row}')
+    ws.merge_cells(f'A{row}:H{row}')
     ws.cell(row=row, column=1, value=str(_('Summary Statistics')))
     ws.cell(row=row, column=1).font = Font(color='1e40af', bold=True, size=14)
     ws.cell(row=row, column=1).alignment = left_align
@@ -2402,6 +2533,7 @@ def generate_attendance_excel(request, user_id):
         (str(_('Expected Hours')), f"{int(expected_hours)}:{int((expected_hours % 1) * 60):02d}"),
         (str(_('Total Hours Worked')), f"{int(total_work_hours)}:{int((total_work_hours % 1) * 60):02d}"),
         (str(_('Overtime Hours')), f"{int(overtime_hours)}:{int((overtime_hours % 1) * 60):02d}"),
+        (str(_('Night Hours (22:00-06:00)')), f"{int(total_night_hours)}:{int((total_night_hours % 1) * 60):02d}"),
         (str(_('Holiday Hours')), f"{int(total_holiday_hours)}:{int((total_holiday_hours % 1) * 60):02d}"),
         (str(_('Average Hours per Day')), f"{int(avg_hours)}:{int((avg_hours % 1) * 60):02d}"),
         (str(_('Vacation Days')), str(total_vacation_days)),
@@ -2415,7 +2547,7 @@ def generate_attendance_excel(request, user_id):
         ws.cell(row=row, column=1).border = thin_border
         ws.cell(row=row, column=1).alignment = left_align
         
-        ws.merge_cells(f'B{row}:G{row}')
+        ws.merge_cells(f'B{row}:H{row}')
         ws.cell(row=row, column=2, value=value)
         ws.cell(row=row, column=2).border = thin_border
         ws.cell(row=row, column=2).alignment = center_align
@@ -2428,8 +2560,9 @@ def generate_attendance_excel(request, user_id):
     ws.column_dimensions['C'].width = 10
     ws.column_dimensions['D'].width = 10
     ws.column_dimensions['E'].width = 8
-    ws.column_dimensions['F'].width = 35
+    ws.column_dimensions['F'].width = 12
     ws.column_dimensions['G'].width = 30
+    ws.column_dimensions['H'].width = 25
     
     # Save workbook
     wb.save(filepath)

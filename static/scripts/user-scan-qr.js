@@ -158,6 +158,11 @@ function initScanTypeButtons() {
     var scanTypeButtons = document.querySelectorAll('.scan-type-btn-mobile');
     scanTypeButtons.forEach(function(button) {
         button.addEventListener('click', function() {
+            // Ignore clicks on disabled buttons
+            if (this.disabled) {
+                return;
+            }
+            
             if (!permissionsGranted) {
                 showPermissionScreen();
                 return;

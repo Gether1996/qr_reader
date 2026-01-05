@@ -22,18 +22,34 @@
         <h5 class="mb-3 text-center scan-type-title">
             <i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}
         </h5>
-        <div class="d-flex gap-3">
-            <button type="button" class="scan-type-btn-mobile arrival" data-type="arrival">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>{% trans "Arrival" %}</span>
-            </button>
-            <button type="button" class="scan-type-btn-mobile departure" data-type="departure">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>{% trans "Departure" %}</span>
-            </button>
+        <div class="row g-3">
+            <div class="col-6">
+                <button type="button" class="scan-type-btn-mobile arrival w-100" data-type="arrival" {% if 'arrival' not in enabled_buttons %}disabled{% endif %}>
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>{% trans "Arrival" %}</span>
+                </button>
+            </div>
+            <div class="col-6">
+                <button type="button" class="scan-type-btn-mobile departure w-100" data-type="departure" {% if 'departure' not in enabled_buttons %}disabled{% endif %}>
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>{% trans "Departure" %}</span>
+                </button>
+            </div>
+            <div class="col-6">
+                <button type="button" class="scan-type-btn-mobile lunch-start w-100" data-type="lunch_break_start" {% if 'lunch_break_start' not in enabled_buttons %}disabled{% endif %}>
+                    <i class="fas fa-utensils"></i>
+                    <span>{% trans "Break Start" %}</span>
+                </button>
+            </div>
+            <div class="col-6">
+                <button type="button" class="scan-type-btn-mobile lunch-end w-100" data-type="lunch_break_end" {% if 'lunch_break_end' not in enabled_buttons %}disabled{% endif %}>
+                    <i class="fas fa-coffee"></i>
+                    <span>{% trans "Break End" %}</span>
+                </button>
+            </div>
         </div>
         <div id="scan-type-warning" class="alert alert-warning mt-3 mb-0 d-none">
-            <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select arrival or departure" %}
+            <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select scan type" %}
         </div>
     </div>
 

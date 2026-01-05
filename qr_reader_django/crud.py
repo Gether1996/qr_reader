@@ -5,12 +5,12 @@ from qr_reader_django.audit import log_action
 
 # ============= COMPANY CRUD =============
 
-def create_company(name, email, password, ip_address=None):
+def create_company(name, email, password, auto_lunch_breaks=False, ip_address=None):
     """Create a new company"""
     if Company.objects.filter(email=email).exists():
         return None, str(_('Email already registered'))
     
-    company = Company.objects.create(name=name, email=email)
+    company = Company.objects.create(name=name, email=email, auto_lunch_breaks=auto_lunch_breaks)
     company.set_password(password)
     company.save()
     
@@ -44,7 +44,7 @@ def get_company_by_id(company_id):
 
 # ============= USER CRUD =============
 
-def create_user(company, name, email, password, basic_work_hours=160, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Create a new user under a company"""
     if User.objects.filter(email=email).exists():
         return None, str(_('Email already exists'))
@@ -54,6 +54,7 @@ def create_user(company, name, email, password, basic_work_hours=160, is_manager
         name=name,
         email=email,
         working_hours=basic_work_hours,
+        holidays_per_year=holidays_per_year,
         is_manager=is_manager,
         can_edit_employees=can_edit_employees if is_manager else False,
         can_edit_qr_codes=can_edit_qr_codes if is_manager else False,
@@ -91,7 +92,7 @@ def get_user_by_id(user_id):
         return None
 
 
-def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Update user details"""
     try:
         user = User.objects.get(id=user_id, company=company)
@@ -109,6 +110,10 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
         # Update basic work hours if provided
         if basic_work_hours is not None:
             user.working_hours = basic_work_hours
+        
+        # Update holidays per year if provided
+        if holidays_per_year is not None:
+            user.holidays_per_year = holidays_per_year
         
         # Update manager status if provided
         if is_manager is not None:

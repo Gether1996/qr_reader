@@ -13,6 +13,7 @@ class Company(models.Model):
     password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    auto_lunch_breaks = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Companies"
@@ -37,6 +38,7 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     working_hours = models.IntegerField(default=160)
+    holidays_per_year = models.IntegerField(default=20)
     is_manager = models.BooleanField(default=False)
     can_edit_employees = models.BooleanField(default=False)
     can_edit_qr_codes = models.BooleanField(default=False)
@@ -107,11 +109,13 @@ class ScanEvent(models.Model):
     SCAN_TYPE_CHOICES = [
         ('arrival', 'Príchod'),
         ('departure', 'Odchod'),
+        ('lunch_break_start', 'Prestávka začiatok'),
+        ('lunch_break_end', 'Prestávka koniec'),
     ]
     
     qr_code = models.ForeignKey(QRCodeProfile, on_delete=models.CASCADE, related_name='scans')
     scanned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='scans')
-    scan_type = models.CharField(max_length=10, choices=SCAN_TYPE_CHOICES, default='arrival')
+    scan_type = models.CharField(max_length=20, choices=SCAN_TYPE_CHOICES, default='arrival')
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.CharField(max_length=500, blank=True, null=True, help_text="Human-readable address")

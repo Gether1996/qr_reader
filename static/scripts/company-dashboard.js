@@ -128,6 +128,10 @@ function createUser() {
                         <input type="number" id="swal-user-work-hours" class="form-control" value="160" required min="0" step="1">
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.holidaysPerYear || 'Dovolenka na rok (dni)'}</label>
+                        <input type="number" id="swal-user-holidays" class="form-control" value="20" required min="0" step="1">
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label fw-semibold mb-1 small">${translations.role || 'Rola'}</label>
                         <select id="swal-user-role" class="form-select" style="cursor: pointer;">
                             <option value="employee"><i class="fas fa-user"></i> ${translations.employee || 'Zamestnanec'}</option>
@@ -185,8 +189,9 @@ function createUser() {
             const passwordConfirm = document.getElementById('swal-user-password-confirm').value;
             const role = document.getElementById('swal-user-role').value;
             const workHours = document.getElementById('swal-user-work-hours').value;
+            const holidays = document.getElementById('swal-user-holidays').value;
             
-            if (!name || !email || !password || !passwordConfirm || !workHours) {
+            if (!name || !email || !password || !passwordConfirm || !workHours || !holidays) {
                 Swal.showValidationMessage(translations.fillAllFields);
                 return false;
             }
@@ -201,7 +206,7 @@ function createUser() {
                 return false;
             }
 
-            const data = { name, email, password, basic_work_hours: parseInt(workHours), is_manager: role === 'manager' };
+            const data = { name, email, password, basic_work_hours: parseInt(workHours), holidays_per_year: parseInt(holidays), is_manager: role === 'manager' };
             
             if (role === 'manager') {
                 data.can_edit_employees = document.getElementById('perm-edit-employees').checked;
@@ -269,7 +274,7 @@ function createUser() {
     });
 }
 
-function editUser(userId, name, email, basicWorkHours, isManager, canEditEmployees, canEditQR, canEditAbsences) {
+function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManager, canEditEmployees, canEditQR, canEditAbsences) {
     Swal.fire({
         title: translations.editEmployee || 'Upraviť zamestnanca',
         html: `
@@ -294,6 +299,10 @@ function editUser(userId, name, email, basicWorkHours, isManager, canEditEmploye
                     <div class="col-md-6">
                         <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours || 'Základný pracovný čas (hodiny)'}</label>
                         <input type="number" id="swal-edit-user-work-hours" class="form-control" value="${basicWorkHours || 160}" required min="0" step="1">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1 small">${translations.holidaysPerYear || 'Dovolenka na rok (dni)'}</label>
+                        <input type="number" id="swal-edit-user-holidays" class="form-control" value="${holidaysPerYear || 20}" required min="0" step="1">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold mb-1 small">${translations.role || 'Rola'}</label>
@@ -352,9 +361,10 @@ function editUser(userId, name, email, basicWorkHours, isManager, canEditEmploye
             const password = document.getElementById('swal-edit-user-password').value;
             const passwordConfirm = document.getElementById('swal-edit-user-password-confirm').value;
             const workHours = document.getElementById('swal-edit-user-work-hours').value;
+            const holidays = document.getElementById('swal-edit-user-holidays').value;
             const role = document.getElementById('swal-edit-user-role').value;
             
-            if (!name || !email || !workHours) {
+            if (!name || !email || !workHours || !holidays) {
                 Swal.showValidationMessage(translations.fillAllFields);
                 return false;
             }
@@ -372,7 +382,7 @@ function editUser(userId, name, email, basicWorkHours, isManager, canEditEmploye
                 }
             }
 
-            const data = { name, email, basic_work_hours: parseInt(workHours), is_manager: role === 'manager' };
+            const data = { name, email, basic_work_hours: parseInt(workHours), holidays_per_year: parseInt(holidays), is_manager: role === 'manager' };
             if (password) {
                 data.password = password;
             }
