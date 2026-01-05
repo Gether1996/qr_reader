@@ -36,6 +36,13 @@ def company_register(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
         auto_lunch_breaks = request.POST.get('auto_lunch_breaks') == 'on'
+        
+        # Notification preferences
+        enable_notifications = request.POST.get('enable_notifications') == 'on'
+        notify_arrival = enable_notifications and request.POST.get('notify_arrival') == 'on'
+        notify_departure = enable_notifications and request.POST.get('notify_departure') == 'on'
+        notify_lunch_break_start = enable_notifications and request.POST.get('notify_lunch_break_start') == 'on'
+        notify_lunch_break_end = enable_notifications and request.POST.get('notify_lunch_break_end') == 'on'
 
         if not all([name, email, password, confirm_password]):
             messages.error(request, _('All fields are required'))
@@ -45,7 +52,17 @@ def company_register(request):
             messages.error(request, _('Passwords do not match'))
             return render(request, 'company_register.html')
 
-        company, error = crud.create_company(name, email, password, auto_lunch_breaks=auto_lunch_breaks, ip_address=get_client_ip(request))
+        company, error = crud.create_company(
+            name, 
+            email, 
+            password, 
+            auto_lunch_breaks=auto_lunch_breaks,
+            notify_arrival=notify_arrival,
+            notify_departure=notify_departure,
+            notify_lunch_break_start=notify_lunch_break_start,
+            notify_lunch_break_end=notify_lunch_break_end,
+            ip_address=get_client_ip(request)
+        )
         if error:
             messages.error(request, error)
             return render(request, 'company_register.html')
@@ -408,17 +425,23 @@ def user_login(request):
         
         if user and user.check_password(password):
             print(f"Password check passed for user: {user.name}")
+            
+            # Check if already logged in (prevent duplicate login logs)
+            already_logged_in = request.session.get('user_id') == user.id
+            
             request.session['user_id'] = user.id
             request.session['user_type'] = 'user'
             
-            log_action(
-                actor_type='user',
-                actor_email=user.email,
-                actor_name=user.name,
-                action='login',
-                message=f'User "{user.name}" logged in',
-                ip_address=get_client_ip(request)
-            )
+            # Only log if not already logged in
+            if not already_logged_in:
+                log_action(
+                    actor_type='user',
+                    actor_email=user.email,
+                    actor_name=user.name,
+                    action='login',
+                    message=f'User "{user.name}" logged in',
+                    ip_address=get_client_ip(request)
+                )
             
             messages.success(request, _('Welcome back, {}!').format(user.name))
             return redirect('user_dashboard')
@@ -620,7 +643,8 @@ def user_scan_qr(request):
                 actor_type='user',
                 actor_email=user.email,
                 actor_name=user.name,
-                ip_address=get_client_ip(request)
+                ip_address=get_client_ip(request),
+                request=request
             )
             
             return JsonResponse({
@@ -642,21 +666,25 @@ def user_scan_qr(request):
                 'message': str(e)
             }, status=400)
     
-    # Determine which buttons should be enabled based on today's scans
-    from datetime import date
+    # Determine which buttons should be enabled based on recent scans (last 2 days for night shifts)
+    from datetime import date, timedelta
     from django.utils import timezone
     
-    today = timezone.now().date()
-    today_scans = ScanEvent.objects.filter(
+    now = timezone.now()
+    today = now.date()
+    yesterday = today - timedelta(days=1)
+    
+    # Get scans from last 2 days to handle night shifts (e.g., 22:00-06:00)
+    recent_scans = ScanEvent.objects.filter(
         scanned_by=user,
-        timestamp__date=today
+        timestamp__date__gte=yesterday
     ).order_by('timestamp')
     
     # Default: only arrival enabled
     enabled_buttons = ['arrival']
     
-    if today_scans.exists():
-        last_scan = today_scans.last()
+    if recent_scans.exists():
+        last_scan = recent_scans.last()
         
         if last_scan.scan_type == 'arrival':
             # After arrival: can depart or start lunch break
@@ -830,6 +858,10 @@ def create_user(request):
                 can_edit_employees=data.get('can_edit_employees', False),
                 can_edit_qr_codes=data.get('can_edit_qr_codes', False),
                 can_edit_absences=data.get('can_edit_absences', False),
+                notify_arrival=data.get('notify_arrival', False),
+                notify_departure=data.get('notify_departure', False),
+                notify_lunch_break_start=data.get('notify_lunch_break_start', False),
+                notify_lunch_break_end=data.get('notify_lunch_break_end', False),
                 actor_type=actor_type,
                 actor_email=actor_email,
                 actor_name=actor_name,
@@ -904,6 +936,10 @@ def edit_user(request, user_id):
                 can_edit_employees=data.get('can_edit_employees'),
                 can_edit_qr_codes=data.get('can_edit_qr_codes'),
                 can_edit_absences=data.get('can_edit_absences'),
+                notify_arrival=data.get('notify_arrival'),
+                notify_departure=data.get('notify_departure'),
+                notify_lunch_break_start=data.get('notify_lunch_break_start'),
+                notify_lunch_break_end=data.get('notify_lunch_break_end'),
                 actor_type=actor_type,
                 actor_email=actor_email,
                 actor_name=actor_name,
@@ -1182,6 +1218,8 @@ def view_user_details(request, user_id):
             'active_tab': active_tab,
             'scans_count': scans_count,
             'vacations_count': vacations_count,
+            'is_company': is_company,
+            'can_edit_absences': is_company or (current_user.can_edit_absences if is_manager else False),
             'current_filters': {
                 'date_from': date_from,
                 'date_to': date_to,
@@ -1247,6 +1285,8 @@ def view_user_details(request, user_id):
             'active_tab': active_tab,
             'scans_count': scans_count,
             'vacations_count': vacations_count,
+            'is_company': is_company,
+            'can_edit_absences': is_company or (current_user.can_edit_absences if is_manager else False),
             'current_filters': {
                 'qr_code': qr_code_filter,
                 'scan_type': scan_type_filter,
@@ -2814,6 +2854,12 @@ def company_analytics(request):
     ).order_by('-scan_count')[:5]
     
     # Calculate working hours for selected date range
+    # Calculate number of days in selected period
+    days_in_period = (date_to - date_from).days + 1
+    # Calculate expected working hours based on days (assuming 30 days per month)
+    avg_days_per_month = 30
+    months_fraction = days_in_period / avg_days_per_month
+    
     selected_range_work_hours = []
     for user in users:
         scans = ScanEvent.objects.filter(
@@ -2835,10 +2881,12 @@ def company_analytics(request):
                 arrival_time = None
         
         if total_hours > 0:  # Only include users with hours
+            expected_hours = round(user.working_hours * months_fraction, 1)
             selected_range_work_hours.append({
                 'user': user,
                 'hours': round(total_hours, 1),
-                'days': scans.values('timestamp__date').distinct().count()
+                'days': scans.values('timestamp__date').distinct().count(),
+                'expected_hours': expected_hours
             })
     
     # Calculate working hours for current month (calendar)
@@ -3866,3 +3914,217 @@ def api_article_data(request, article_id):
             'content_blocks': blocks
         }
     })
+
+
+# ============= COMPANY SETTINGS VIEWS =============
+
+def company_settings(request):
+    """Company settings page - view and edit company profile"""
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        return redirect('company_login')
+    
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        return redirect('company_login')
+    
+    if request.method == 'POST':
+        # Handle Ajax request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            try:
+                company_name = request.POST.get('company_name', '').strip()
+                auto_lunch_breaks = request.POST.get('auto_lunch_breaks') == 'True'
+                
+                # Notification preferences
+                notify_arrival = request.POST.get('notify_arrival') == 'on'
+                notify_departure = request.POST.get('notify_departure') == 'on'
+                notify_lunch_break_start = request.POST.get('notify_lunch_break_start') == 'on'
+                notify_lunch_break_end = request.POST.get('notify_lunch_break_end') == 'on'
+                
+                # Validation
+                if not company_name:
+                    return JsonResponse({
+                        'success': False,
+                        'message': str(_('Company name is required'))
+                    })
+                
+                # Update company
+                company.name = company_name
+                company.auto_lunch_breaks = auto_lunch_breaks
+                company.notify_arrival = notify_arrival
+                company.notify_departure = notify_departure
+                company.notify_lunch_break_start = notify_lunch_break_start
+                company.notify_lunch_break_end = notify_lunch_break_end
+                company.save()
+                
+                # Log the action
+                log_action(
+                    actor_type='company',
+                    actor_email=company.email,
+                    actor_name=company.name,
+                    action='update_profile',
+                    message=f'Company "{company.name}" updated profile settings',
+                    ip_address=get_client_ip(request)
+                )
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': str(_('Settings saved successfully'))
+                })
+            except Exception as e:
+                return JsonResponse({
+                    'success': False,
+                    'message': str(_('An error occurred while saving settings'))
+                })
+        
+    return render(request, 'company_settings.html', {
+        'company': company
+    })
+
+
+def company_request_password_reset(request):
+    """Handle password reset request - generate token and send email"""
+    # Accept both regular POST and Ajax POST
+    if 'company_id' not in request.session or request.session.get('user_type') != 'company':
+        return JsonResponse({'success': False, 'message': 'Unauthorized'})
+    
+    company = crud.get_company_by_id(request.session['company_id'])
+    if not company:
+        return JsonResponse({'success': False, 'message': 'Company not found'})
+    
+    try:
+        import secrets
+        from datetime import timedelta
+        from django.utils import timezone
+        from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from viewer.models import PasswordResetToken
+        
+        # Invalidate any existing tokens
+        PasswordResetToken.objects.filter(company=company, is_used=False).update(is_used=True)
+        
+        # Generate new token
+        token = secrets.token_urlsafe(48)
+        expires_at = timezone.now() + timedelta(hours=24)
+        
+        # Create token record
+        reset_token = PasswordResetToken.objects.create(
+            company=company,
+            token=token,
+            expires_at=expires_at
+        )
+        
+        # Generate reset URL based on current request
+        scheme = request.scheme  # http or https
+        host = request.get_host()  # localhost:9005 or dqr.314.sk
+        reset_url = f"{scheme}://{host}/{request.LANGUAGE_CODE}/company/reset-password/{token}/"
+        
+        # Render email template
+        email_html = render_to_string('password_reset_email.html', {
+            'company_name': company.name,
+            'company_email': company.email,
+            'reset_url': reset_url,
+            'request_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'LANGUAGE_CODE': request.LANGUAGE_CODE
+        }, request=request)
+        
+        # Send email
+        send_mail(
+            subject=str(_('Password Reset Request')),
+            message=f'Reset your password: {reset_url}',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[company.email],
+            html_message=email_html,
+            fail_silently=False
+        )
+        
+        # Log the action
+        log_action(
+            actor_type='company',
+            actor_email=company.email,
+            actor_name=company.name,
+            action='request_password_reset',
+            message=f'Company "{company.name}" requested password reset',
+            ip_address=get_client_ip(request)
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': str(_('Password reset link has been sent to your email'))
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(_('Failed to send password reset email'))
+        })
+
+
+def company_reset_password(request, token):
+    """Handle password reset with token"""
+    from viewer.models import PasswordResetToken
+    
+    try:
+        reset_token = PasswordResetToken.objects.get(token=token)
+        
+        # Validate token
+        if not reset_token.is_valid():
+            messages.error(request, _('This password reset link has expired or is invalid'))
+            return redirect('company_login')
+        
+        company = reset_token.company
+        
+        if request.method == 'POST':
+            new_password = request.POST.get('new_password', '').strip()
+            confirm_password = request.POST.get('confirm_password', '').strip()
+            
+            # Validation
+            if not new_password or not confirm_password:
+                messages.error(request, _('Both password fields are required'))
+                return render(request, 'company_reset_password.html', {
+                    'token': token,
+                    'company': company
+                })
+            
+            if new_password != confirm_password:
+                messages.error(request, _('Passwords do not match'))
+                return render(request, 'company_reset_password.html', {
+                    'token': token,
+                    'company': company
+                })
+            
+            if len(new_password) < 6:
+                messages.error(request, _('Password must be at least 6 characters long'))
+                return render(request, 'company_reset_password.html', {
+                    'token': token,
+                    'company': company
+                })
+            
+            # Update password
+            company.set_password(new_password)
+            company.save()
+            
+            # Mark token as used
+            reset_token.is_used = True
+            reset_token.save()
+            
+            # Log the action
+            log_action(
+                actor_type='company',
+                actor_email=company.email,
+                actor_name=company.name,
+                action='reset_password',
+                message=f'Company "{company.name}" reset password',
+                ip_address=get_client_ip(request)
+            )
+            
+            messages.success(request, _('Password has been reset successfully. Please login with your new password.'))
+            return redirect('company_login')
+        
+        return render(request, 'company_reset_password.html', {
+            'token': token,
+            'company': company
+        })
+        
+    except PasswordResetToken.DoesNotExist:
+        messages.error(request, _('Invalid password reset link'))
+        return redirect('company_login')

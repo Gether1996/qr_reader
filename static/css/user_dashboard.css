@@ -144,46 +144,46 @@
    Dark Mode Support
    ============================================ */
 
-[data-bs-theme="dark"] .user-info-card {
+:root[data-theme="dark"] .user-info-card {
     border-color: #3b82f6;
     box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
 }
 
-[data-bs-theme="dark"] .mobile-scan-card {
+:root[data-theme="dark"] .mobile-scan-card {
     background: #1f2937;
     border-left-color: #4b5563;
 }
 
-[data-bs-theme="dark"] .mobile-scan-card.arrival {
+:root[data-theme="dark"] .mobile-scan-card.arrival {
     border-left-color: #10b981;
 }
 
-[data-bs-theme="dark"] .mobile-scan-card.departure {
+:root[data-theme="dark"] .mobile-scan-card.departure {
     border-left-color: #ef4444;
 }
 
-[data-bs-theme="dark"] .mobile-scan-header {
+:root[data-theme="dark"] .mobile-scan-header {
     border-bottom-color: #374151;
 }
 
-[data-bs-theme="dark"] .mobile-scan-title {
+:root[data-theme="dark"] .mobile-scan-title {
     color: #f9fafb;
 }
 
-[data-bs-theme="dark"] .mobile-scan-type.arrival {
+:root[data-theme="dark"] .mobile-scan-type.arrival {
     background: rgba(16, 185, 129, 0.2);
     color: #6ee7b7;
 }
 
-[data-bs-theme="dark"] .mobile-scan-type.departure {
+:root[data-theme="dark"] .mobile-scan-type.departure {
     background: rgba(239, 68, 68, 0.2);
     color: #fca5a5;
 }
 
-[data-bs-theme="dark"] .mobile-scan-info-item {
+:root[data-theme="dark"] .mobile-scan-info-item {
     color: #9ca3af;
 }
 
-[data-bs-theme="dark"] .mobile-scan-info-item strong {
+:root[data-theme="dark"] .mobile-scan-info-item strong {
     color: #d1d5db;
 }

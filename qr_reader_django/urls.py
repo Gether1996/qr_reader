@@ -24,6 +24,9 @@ urlpatterns += i18n_patterns(
     path('company/login/', views.company_login, name='company_login'),
     path('company/logout/', views.company_logout, name='company_logout'),
     path('company/dashboard/', views.company_dashboard, name='company_dashboard'),
+    path('company/settings/', views.company_settings, name='company_settings'),
+    path('company/request-password-reset/', views.company_request_password_reset, name='company_request_password_reset'),
+    path('company/reset-password/<str:token>/', views.company_reset_password, name='company_reset_password'),
     
     # User routes
     path('user/login/', views.user_login, name='user_login'),

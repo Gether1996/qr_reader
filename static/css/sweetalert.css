@@ -81,66 +81,82 @@
    Dark Mode Support
    ============================================ */
 
-[data-bs-theme="dark"] .swal2-popup {
+:root[data-theme="dark"] .swal2-popup {
     background: #1f2937 !important;
     color: #f9fafb !important;
 }
 
-[data-bs-theme="dark"] .swal2-title {
+:root[data-theme="dark"] .swal2-title {
     color: #f9fafb !important;
 }
 
-[data-bs-theme="dark"] .swal2-html-container {
+:root[data-theme="dark"] .swal2-html-container {
     color: #d1d5db !important;
 }
 
-[data-bs-theme="dark"] .swal2-input,
-[data-bs-theme="dark"] .swal2-textarea,
-[data-bs-theme="dark"] .swal2-select {
+:root[data-theme="dark"] .swal2-input,
+:root[data-theme="dark"] .swal2-textarea,
+:root[data-theme="dark"] .swal2-select {
     background: #374151 !important;
     color: #f9fafb !important;
     border: 1px solid #4b5563 !important;
 }
 
-[data-bs-theme="dark"] .swal2-input:focus,
-[data-bs-theme="dark"] .swal2-textarea:focus,
-[data-bs-theme="dark"] .swal2-select:focus {
+:root[data-theme="dark"] .swal2-input:focus,
+:root[data-theme="dark"] .swal2-textarea:focus,
+:root[data-theme="dark"] .swal2-select:focus {
     border-color: #6b7280 !important;
     box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1) !important;
 }
 
-[data-bs-theme="dark"] .swal2-validation-message {
+:root[data-theme="dark"] .swal2-validation-message {
     background: #374151 !important;
     color: #fca5a5 !important;
 }
 
-[data-bs-theme="dark"] .swal2-close {
+:root[data-theme="dark"] .swal2-close {
     color: #9ca3af !important;
 }
 
-[data-bs-theme="dark"] .swal2-close:hover {
+:root[data-theme="dark"] .swal2-close:hover {
     color: #f9fafb !important;
 }
 
-[data-bs-theme="dark"] .swal2-html-container .form-control,
-[data-bs-theme="dark"] .swal2-html-container .form-select {
+:root[data-theme="dark"] .swal2-html-container .form-control,
+:root[data-theme="dark"] .swal2-html-container .form-select {
     background: #374151 !important;
     color: #f9fafb !important;
     border: 1px solid #4b5563 !important;
 }
 
-[data-bs-theme="dark"] .swal2-html-container .form-control:focus,
-[data-bs-theme="dark"] .swal2-html-container .form-select:focus {
+:root[data-theme="dark"] .swal2-html-container .form-control:focus,
+:root[data-theme="dark"] .swal2-html-container .form-select:focus {
     border-color: #6b7280 !important;
     box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1) !important;
 }
 
-[data-bs-theme="dark"] .swal2-html-container .form-label {
+:root[data-theme="dark"] .swal2-html-container .form-label {
     color: #d1d5db !important;
 }
 
+/* Labels with borders (used in permission checkboxes) */
+:root[data-theme="dark"] .swal2-html-container label.border {
+    border-color: #4b5563 !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container label.border:hover {
+    background-color: #374151 !important;
+}
+
+/* Alert info boxes */
+:root[data-theme="dark"] .swal2-html-container .alert-info {
+    background: rgba(59, 130, 246, 0.2) !important;
+    border-color: #3b82f6 !important;
+    color: #bfdbfe !important;
+}
+
 /* Toast in dark mode */
-[data-bs-theme="dark"] .swal2-toast {
+:root[data-theme="dark"] .swal2-toast {
     background: #1f2937 !important;
     color: #f9fafb !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;

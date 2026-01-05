@@ -208,7 +208,7 @@ function addVacation(users) {
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
                         <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="">${t.selectType}</option>
+                            <option value="" disabled selected>${t.selectType}</option>
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
                             <option value="doctor">${t.doctor}</option>
@@ -216,7 +216,7 @@ function addVacation(users) {
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" style="cursor: pointer; background-color: white;">
+                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" style="cursor: pointer; ">
                     </div>
                 </div>
             </div>
@@ -349,7 +349,7 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
                         <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="">${t.selectType}</option>
+                            <option value="" disabled>${t.selectType}</option>
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
                             <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
@@ -357,7 +357,7 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; background-color: white;">
+                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; ">
                     </div>
                 </div>
             </div>
@@ -472,7 +472,7 @@ function addVacationForUser(userId, userName) {
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
                         <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="">${t.selectType}</option>
+                            <option value="" disabled selected>${t.selectType}</option>
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
                             <option value="doctor">${t.doctor}</option>
@@ -480,7 +480,7 @@ function addVacationForUser(userId, userName) {
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" style="cursor: pointer; background-color: white;">
+                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" style="cursor: pointer; ">
                     </div>
                 </div>
             </div>
@@ -602,7 +602,7 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.type}</label>
                         <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="">${t.selectType}</option>
+                            <option value="" disabled>${t.selectType}</option>
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
                             <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
@@ -610,7 +610,7 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; background-color: white;">
+                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; ">
                     </div>
                 </div>
             </div>

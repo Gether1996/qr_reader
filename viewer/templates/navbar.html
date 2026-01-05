@@ -29,6 +29,10 @@
                                 <i class="fas fa-chart-line"></i>
                                 <span>{% trans "Analytics" %}</span>
                             </a>
+                            <a href="{% url 'company_settings' %}" class="dropdown-link">
+                                <i class="fas fa-cog"></i>
+                                <span>{% trans "Settings" %}</span>
+                            </a>
                             <a href="{% url 'magazine_dashboard' %}" class="dropdown-link">
                                 <i class="fas fa-book"></i>
                                 <span>{% trans "Magazine Creator" %}</span>
@@ -304,6 +308,17 @@
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Analytics" %}</span>
                         <span class="subtitle">{% trans "Charts & Reports" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'company_settings' %}" class="mobile-menu-item">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Settings" %}</span>
+                        <span class="subtitle">{% trans "Company Profile & Preferences" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>

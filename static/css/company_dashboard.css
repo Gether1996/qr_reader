@@ -8,7 +8,7 @@ body {
     background-attachment: fixed;
 }
 
-[data-bs-theme="dark"] body {
+:root[data-theme="dark"] body {
     background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
 }
 
@@ -30,7 +30,7 @@ body {
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
-[data-bs-theme="dark"] .company-info-card {
+:root[data-theme="dark"] .company-info-card {
     background: #1f2937;
     color: #f9fafb;
 }
@@ -55,7 +55,7 @@ body {
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
-[data-bs-theme="dark"] .data-table-card {
+:root[data-theme="dark"] .data-table-card {
     background: #1f2937;
     color: #f9fafb;
 }
@@ -74,7 +74,7 @@ body {
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
-[data-bs-theme="dark"] .filters-card {
+:root[data-theme="dark"] .filters-card {
     background: #1f2937;
     color: #f9fafb;
 }
@@ -111,7 +111,7 @@ body {
     box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-[data-bs-theme="dark"] .mobile-card {
+:root[data-theme="dark"] .mobile-card {
     background: #374151;
     border-color: #4b5563;
 }
@@ -198,13 +198,13 @@ body {
    Dark Mode Support
    ============================================ */
 
-[data-bs-theme="dark"] .company-info-card {
+:root[data-theme="dark"] .company-info-card {
     border-color: #3b82f6;
     box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
 }
 
-[data-bs-theme="dark"] .qr-code-img-small,
-[data-bs-theme="dark"] .qr-code-img-mobile {
+:root[data-theme="dark"] .qr-code-img-small,
+:root[data-theme="dark"] .qr-code-img-mobile {
     border-color: #4b5563;
     background: #374151;
 }

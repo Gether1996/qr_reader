@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Company Settings" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/company_settings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <!-- Header -->
+    <div class="settings-header">
+        <h1><i class="fas fa-cog"></i> {% trans "Company Settings" %}</h1>
+        <p>{% trans "Manage your company profile and preferences" %}</p>
+    </div>
+
+    <!-- Company Profile Card -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h2><i class="fas fa-building"></i> {% trans "Company Profile" %}</h2>
+        </div>
+        <div class="settings-card-body">
+            <form id="company-settings-form" method="post">
+                {% csrf_token %}
+                
+                <!-- Email Display (Read-only) -->
+                <div class="email-display">
+                    <i class="fas fa-envelope"></i>
+                    <div class="email-display-content">
+                        <div class="email-display-label">{% trans "Company Email" %}</div>
+                        <div class="email-display-value">{{ company.email }}</div>
+                    </div>
+                </div>
+
+                <div class="alert-info-custom">
+                    <i class="fas fa-info-circle"></i>
+                    {% trans "Email address cannot be changed. Contact support if you need to update it." %}
+                </div>
+
+                <!-- Basic Information -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">{% trans "Basic Information" %}</h3>
+                    
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="company_name">
+                                {% trans "Company Name" %} <span class="text-danger">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="company_name" 
+                                name="company_name" 
+                                value="{{ company.name }}" 
+                                required
+                                maxlength="255"
+                            >
+                            <span class="settings-field-help">{% trans "The official name of your company" %}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Settings -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">{% trans "Work Settings" %}</h3>
+                    
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="auto_lunch_breaks">
+                                {% trans "Automatic Lunch Breaks" %}
+                            </label>
+                            <select id="auto_lunch_breaks" name="auto_lunch_breaks" class="form-select">
+                                <option value="True" {% if company.auto_lunch_breaks %}selected{% endif %}>
+                                    {% trans "Enabled" %}
+                                </option>
+                                <option value="False" {% if not company.auto_lunch_breaks %}selected{% endif %}>
+                                    {% trans "Disabled" %}
+                                </option>
+                            </select>
+                            <span class="settings-field-help">
+                                {% trans "Automatically track lunch breaks between arrival and departure" %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">{% trans "Email Notifications" %}</h3>
+                    
+                    <p class="text-muted mb-3">
+                        {% trans "Choose which scan events should trigger email notifications" %}
+                    </p>
+
+                    <div class="notification-checkboxes">
+                        <div class="notification-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="notify_arrival" 
+                                name="notify_arrival" 
+                                {% if company.notify_arrival %}checked{% endif %}
+                            >
+                            <label for="notify_arrival">
+                                <i class="fas fa-sign-in-alt text-success"></i>
+                                {% trans "Arrival" %}
+                            </label>
+                        </div>
+
+                        <div class="notification-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="notify_departure" 
+                                name="notify_departure" 
+                                {% if company.notify_departure %}checked{% endif %}
+                            >
+                            <label for="notify_departure">
+                                <i class="fas fa-sign-out-alt text-danger"></i>
+                                {% trans "Departure" %}
+                            </label>
+                        </div>
+
+                        <div class="notification-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="notify_lunch_break_start" 
+                                name="notify_lunch_break_start" 
+                                {% if company.notify_lunch_break_start %}checked{% endif %}
+                            >
+                            <label for="notify_lunch_break_start">
+                                <i class="fas fa-utensils text-warning"></i>
+                                {% trans "Lunch Break Start" %}
+                            </label>
+                        </div>
+
+                        <div class="notification-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="notify_lunch_break_end" 
+                                name="notify_lunch_break_end" 
+                                {% if company.notify_lunch_break_end %}checked{% endif %}
+                            >
+                            <label for="notify_lunch_break_end">
+                                <i class="fas fa-coffee text-info"></i>
+                                {% trans "Lunch Break End" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="settings-actions">
+                    <button type="submit" class="btn-save-settings">
+                        <i class="fas fa-save"></i>
+                        {% trans "Save Changes" %}
+                    </button>
+                    <button type="button" id="cancel-settings" class="btn-cancel-settings">
+                        <i class="fas fa-times"></i>
+                        {% trans "Cancel" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Security Card -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h2><i class="fas fa-shield-alt"></i> {% trans "Security" %}</h2>
+        </div>
+        <div class="settings-card-body">
+            <div class="settings-section">
+                <h3 class="settings-section-title">{% trans "Password" %}</h3>
+                
+                <p class="text-muted mb-3">
+                    {% trans "Reset your password by receiving a secure link via email" %}
+                </p>
+
+                <button type="button" id="reset-password-btn" class="btn-reset-password">
+                    <i class="fas fa-key"></i>
+                    {% trans "Request Password Reset" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/company-settings.js' %}"></script>
+{% endblock %}

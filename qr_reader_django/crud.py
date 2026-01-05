@@ -1,16 +1,28 @@
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, get_language
 from viewer.models import Company, User, QRCodeProfile, ScanEvent, Vacation
 from datetime import datetime
 from qr_reader_django.audit import log_action
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 
 # ============= COMPANY CRUD =============
 
-def create_company(name, email, password, auto_lunch_breaks=False, ip_address=None):
+def create_company(name, email, password, auto_lunch_breaks=False, notify_arrival=False, notify_departure=False, notify_lunch_break_start=False, notify_lunch_break_end=False, ip_address=None):
     """Create a new company"""
     if Company.objects.filter(email=email).exists():
         return None, str(_('Email already registered'))
     
-    company = Company.objects.create(name=name, email=email, auto_lunch_breaks=auto_lunch_breaks)
+    company = Company.objects.create(
+        name=name, 
+        email=email, 
+        auto_lunch_breaks=auto_lunch_breaks,
+        notify_arrival=notify_arrival,
+        notify_departure=notify_departure,
+        notify_lunch_break_start=notify_lunch_break_start,
+        notify_lunch_break_end=notify_lunch_break_end
+    )
     company.set_password(password)
     company.save()
     
@@ -44,7 +56,7 @@ def get_company_by_id(company_id):
 
 # ============= USER CRUD =============
 
-def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, notify_arrival=False, notify_departure=False, notify_lunch_break_start=False, notify_lunch_break_end=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Create a new user under a company"""
     if User.objects.filter(email=email).exists():
         return None, str(_('Email already exists'))
@@ -58,7 +70,11 @@ def create_user(company, name, email, password, basic_work_hours=160, holidays_p
         is_manager=is_manager,
         can_edit_employees=can_edit_employees if is_manager else False,
         can_edit_qr_codes=can_edit_qr_codes if is_manager else False,
-        can_edit_absences=can_edit_absences if is_manager else False
+        can_edit_absences=can_edit_absences if is_manager else False,
+        notify_arrival=notify_arrival if is_manager else False,
+        notify_departure=notify_departure if is_manager else False,
+        notify_lunch_break_start=notify_lunch_break_start if is_manager else False,
+        notify_lunch_break_end=notify_lunch_break_end if is_manager else False
     )
     user.set_password(password)
     user.save()
@@ -92,7 +108,7 @@ def get_user_by_id(user_id):
         return None
 
 
-def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, notify_arrival=None, notify_departure=None, notify_lunch_break_start=None, notify_lunch_break_end=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Update user details"""
     try:
         user = User.objects.get(id=user_id, company=company)
@@ -118,11 +134,15 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
         # Update manager status if provided
         if is_manager is not None:
             user.is_manager = is_manager
-            # If changing from manager to employee, remove all permissions
+            # If changing from manager to employee, remove all permissions and notifications
             if not is_manager:
                 user.can_edit_employees = False
                 user.can_edit_qr_codes = False
                 user.can_edit_absences = False
+                user.notify_arrival = False
+                user.notify_departure = False
+                user.notify_lunch_break_start = False
+                user.notify_lunch_break_end = False
         
         # Update permissions if provided (only if user is manager)
         if user.is_manager:
@@ -132,6 +152,14 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
                 user.can_edit_qr_codes = can_edit_qr_codes
             if can_edit_absences is not None:
                 user.can_edit_absences = can_edit_absences
+            if notify_arrival is not None:
+                user.notify_arrival = notify_arrival
+            if notify_departure is not None:
+                user.notify_departure = notify_departure
+            if notify_lunch_break_start is not None:
+                user.notify_lunch_break_start = notify_lunch_break_start
+            if notify_lunch_break_end is not None:
+                user.notify_lunch_break_end = notify_lunch_break_end
         
         # Update status if provided
         if is_active is not None:
@@ -286,7 +314,7 @@ def get_user_scans(user):
 
 # ============= SCAN EVENT CRUD =============
 
-def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info='', actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info='', actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
     """Create a new scan event"""
     scan = ScanEvent.objects.create(
         qr_code=qr_code,
@@ -312,6 +340,96 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
             message=f'{scan_type.capitalize()} scan at QR Code "{qr_code.name}"',
             ip_address=ip_address
         )
+    
+    # Send notifications based on company and manager settings
+    company = qr_code.company
+    
+    # Check which notification field to check based on scan type
+    notification_field_map = {
+        'arrival': 'notify_arrival',
+        'departure': 'notify_departure',
+        'lunch_break_start': 'notify_lunch_break_start',
+        'lunch_break_end': 'notify_lunch_break_end'
+    }
+    
+    notification_field = notification_field_map.get(scan_type)
+    
+    if notification_field and scanned_by:
+        recipients = []
+        
+        # Check if company has notifications enabled for this scan type
+        if getattr(company, notification_field, False):
+            recipients.append(company.email)
+        
+        # Get all managers with notifications enabled for this scan type
+        managers = User.objects.filter(
+            company=company,
+            is_active=True,
+            is_manager=True,
+            **{notification_field: True}
+        )
+        
+        for manager in managers:
+            if manager.email and manager.email not in recipients:
+                recipients.append(manager.email)
+        
+        # Send email notifications if there are recipients
+        if recipients:
+            try:
+                # Build dashboard URL
+                dashboard_url = f"{settings.SITE_URL}/company/dashboard/" if hasattr(settings, 'SITE_URL') else '#'
+                
+                # Get language code from request or current active language
+                language_code = 'sk'  # default fallback
+                if request and hasattr(request, 'LANGUAGE_CODE'):
+                    language_code = request.LANGUAGE_CODE
+                else:
+                    try:
+                        language_code = get_language()
+                    except:
+                        pass
+                
+                # Prepare email context
+                email_context = {
+                    'scan_type': scan_type,
+                    'user_name': scanned_by.name,
+                    'timestamp': scan.timestamp,
+                    'qr_name': qr_code.name,
+                    'address': address or '',
+                    'company_name': company.name,
+                    'dashboard_url': dashboard_url,
+                    'LANGUAGE_CODE': language_code
+                }
+                
+                # Activate language for translations
+                from django.utils.translation import activate, gettext as _
+                activate(language_code)
+                
+                # Render email HTML (pass request context for proper translation loading)
+                html_message = render_to_string('scan_notification.html', email_context, request=request)
+                
+                # Email subject based on scan type (translated)
+                subject_map = {
+                    'arrival': f'✅ {scanned_by.name} - {_("Arrival")}',
+                    'departure': f'🚪 {scanned_by.name} - {_("Departure")}',
+                    'lunch_break_start': f'🍽️ {scanned_by.name} - {_("Lunch Break Started")}',
+                    'lunch_break_end': f'✅ {scanned_by.name} - {_("Lunch Break Ended")}'
+                }
+                
+                subject = subject_map.get(scan_type, f'{scanned_by.name} - Scan')
+                
+                # Send email
+                send_mail(
+                    subject=subject,
+                    message='',  # Plain text fallback (empty because we use HTML)
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=recipients,
+                    html_message=html_message,
+                    fail_silently=True  # Don't raise exception if email fails
+                )
+            except Exception as e:
+                # Log error but don't fail the scan creation
+                print(f"Failed to send notification email: {str(e)}")
     
     return scan, address
 

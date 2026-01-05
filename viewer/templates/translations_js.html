@@ -44,6 +44,20 @@ const translations = {
     canEditEmployees: '{% trans "Can edit employees" %}',
     canEditQR: '{% trans "Can edit QR codes" %}',
     canEditAbsences: '{% trans "Can edit absences" %}',
+    enableNotifications: '{% trans "Enable notifications" %}',
+    arrival: '{% trans "Arrival" %}',
+    departure: '{% trans "Departure" %}',
+    lunchBreakStart: '{% trans "Lunch break start" %}',
+    lunchBreakEnd: '{% trans "Lunch break end" %}',
+    
+    // Validation
+    passwordMinLength: '{% trans "Password must be at least 8 characters" %}',
+    passwordsDontMatch: '{% trans "Passwords do not match" %}',
+    
+    // Edit user
+    editEmployee: '{% trans "Edit Employee" %}',
+    newPassword: '{% trans "New Password (leave empty to keep current)" %}',
+    save: '{% trans "Save" %}',
     
     // QR Code deactivate related
     deleteQRTitle: '{% trans "Deactivate QR Code?" %}',
@@ -97,5 +111,25 @@ const translations = {
     
     // Print related
     print: '{% trans "Print" %}',
-    close: '{% trans "Close" %}'
+    close: '{% trans "Close" %}',
+    
+    // Settings page
+    saving: '{% trans "Saving..." %}',
+    settingsSaved: '{% trans "Settings have been saved successfully." %}',
+    saveFailed: '{% trans "Failed to save settings. Please try again." %}',
+    networkError: '{% trans "Network error. Please check your connection and try again." %}',
+    confirmCancel: '{% trans "Cancel Changes?" %}',
+    confirmCancelText: '{% trans "All unsaved changes will be lost." %}',
+    yes: '{% trans "Yes, cancel" %}',
+    no: '{% trans "No, continue editing" %}',
+    resetPassword: '{% trans "Reset Password" %}',
+    resetPasswordText: '{% trans "A password reset link will be sent to your email address.<br><br>Do you want to continue?" %}',
+    sendResetLink: '{% trans "Send Reset Link" %}',
+    sending: '{% trans "Sending..." %}',
+    pleaseWait: '{% trans "Please wait while we send the reset link." %}',
+    emailSent: '{% trans "Email Sent!" %}',
+    emailSentText: '{% trans "A password reset link has been sent to your email address.<br><br>Please check your inbox and follow the instructions." %}',
+    sendFailed: '{% trans "Failed to send reset email. Please try again." %}',
+    validationError: '{% trans "Validation Error" %}',
+    companyNameRequired: '{% trans "Company name is required." %}'
 };

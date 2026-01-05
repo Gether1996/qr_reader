@@ -120,41 +120,67 @@ function createUser() {
                         <input type="password" id="swal-user-password" class="form-control" required autocomplete="new-password">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.confirmPassword || 'Potvrdiť heslo'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.confirmPassword}</label>
                         <input type="password" id="swal-user-password-confirm" class="form-control" required autocomplete="new-password">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours || 'Základný pracovný čas (hodiny)'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours}</label>
                         <input type="number" id="swal-user-work-hours" class="form-control" value="160" required min="0" step="1">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.holidaysPerYear || 'Dovolenka na rok (dni)'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.holidaysPerYear}</label>
                         <input type="number" id="swal-user-holidays" class="form-control" value="20" required min="0" step="1">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.role || 'Rola'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.role}</label>
                         <select id="swal-user-role" class="form-select" style="cursor: pointer;">
-                            <option value="employee"><i class="fas fa-user"></i> ${translations.employee || 'Zamestnanec'}</option>
-                            <option value="manager"><i class="fas fa-user-tie"></i> ${translations.manager || 'Manažér'}</option>
+                            <option value="employee"><i class="fas fa-user"></i> ${translations.employee}</option>
+                            <option value="manager"><i class="fas fa-user-tie"></i> ${translations.manager}</option>
                         </select>
                     </div>
                     <div class="col-12 mt-3" id="manager-permissions" style="display: none;">
                         <div class="alert alert-info py-2 px-3 mb-2" style="font-size: 0.875rem;">
-                            <i class="fas fa-shield-alt me-1"></i> ${translations.permissions || 'Oprávnenia'}
+                            <i class="fas fa-shield-alt me-1"></i> ${translations.permissions}
                         </div>
                         <div class="d-flex flex-column gap-2">
-                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
                                 <input class="form-check-input m-0 me-2" type="checkbox" id="perm-edit-employees" checked>
-                                <span style="font-size: 0.9rem;"><i class="fas fa-users text-primary me-2"></i>${translations.canEditEmployees || 'Môže upravovať zamestnancov'}</span>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-users text-primary me-2"></i>${translations.canEditEmployees}</span>
                             </label>
-                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
                                 <input class="form-check-input m-0 me-2" type="checkbox" id="perm-edit-qr" checked>
-                                <span style="font-size: 0.9rem;"><i class="fas fa-qrcode text-success me-2"></i>${translations.canEditQR || 'Môže upravovať QR kódy'}</span>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-qrcode text-success me-2"></i>${translations.canEditQR}</span>
                             </label>
-                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
                                 <input class="form-check-input m-0 me-2" type="checkbox" id="perm-edit-absences" checked>
-                                <span style="font-size: 0.9rem;"><i class="fas fa-calendar-times text-warning me-2"></i>${translations.canEditAbsences || 'Môže upravovať absencie'}</span>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-calendar-times text-warning me-2"></i>${translations.canEditAbsences}</span>
                             </label>
+                        </div>
+                        <div class="mt-3">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="manager-enable-notifications" checked>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-bell text-info me-2"></i>${translations.enableNotifications}</span>
+                            </label>
+                            <div id="manager-notification-options" class="ms-4 mt-2">
+                                <div class="d-flex flex-column gap-1">
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-arrival" checked style="transform: scale(0.9);">
+                                        <span><i class="fas fa-sign-in-alt me-1"></i>${translations.arrival}</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-departure" checked style="transform: scale(0.9);">
+                                        <span><i class="fas fa-sign-out-alt me-1"></i>${translations.departure}</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-lunch-start" checked style="transform: scale(0.9);">
+                                        <span><i class="fas fa-utensils me-1"></i>${translations.lunchBreakStart}</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-lunch-end" checked style="transform: scale(0.9);">
+                                        <span><i class="fas fa-utensils me-1"></i>${translations.lunchBreakEnd}</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -181,6 +207,16 @@ function createUser() {
                     permissionsDiv.style.display = 'none';
                 }
             });
+            
+            // Toggle notification options visibility
+            const enableNotificationsCheckbox = document.getElementById('manager-enable-notifications');
+            const notificationOptions = document.getElementById('manager-notification-options');
+            
+            if (enableNotificationsCheckbox) {
+                enableNotificationsCheckbox.addEventListener('change', function() {
+                    notificationOptions.style.display = this.checked ? 'block' : 'none';
+                });
+            }
         },
         preConfirm: () => {
             const name = document.getElementById('swal-user-name').value;
@@ -197,12 +233,12 @@ function createUser() {
             }
             
             if (password.length < 8) {
-                Swal.showValidationMessage(translations.passwordMinLength || 'Heslo musí mať aspoň 8 znakov');
+                Swal.showValidationMessage(translations.passwordMinLength);
                 return false;
             }
             
             if (password !== passwordConfirm) {
-                Swal.showValidationMessage(translations.passwordsDontMatch || 'Heslá sa nezhodujú');
+                Swal.showValidationMessage(translations.passwordsDontMatch);
                 return false;
             }
 
@@ -212,6 +248,13 @@ function createUser() {
                 data.can_edit_employees = document.getElementById('perm-edit-employees').checked;
                 data.can_edit_qr_codes = document.getElementById('perm-edit-qr').checked;
                 data.can_edit_absences = document.getElementById('perm-edit-absences').checked;
+                
+                // Notification preferences
+                const enableNotifications = document.getElementById('manager-enable-notifications')?.checked || false;
+                data.notify_arrival = enableNotifications && (document.getElementById('manager-notify-arrival')?.checked || false);
+                data.notify_departure = enableNotifications && (document.getElementById('manager-notify-departure')?.checked || false);
+                data.notify_lunch_break_start = enableNotifications && (document.getElementById('manager-notify-lunch-start')?.checked || false);
+                data.notify_lunch_break_end = enableNotifications && (document.getElementById('manager-notify-lunch-end')?.checked || false);
             }
 
             return data;
@@ -274,9 +317,12 @@ function createUser() {
     });
 }
 
-function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManager, canEditEmployees, canEditQR, canEditAbsences) {
+function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManager, canEditEmployees, canEditQR, canEditAbsences, notifyArrival, notifyDeparture, notifyLunchStart, notifyLunchEnd) {
+    // Determine if notifications are enabled (any notification is checked)
+    const notificationsEnabled = notifyArrival || notifyDeparture || notifyLunchStart || notifyLunchEnd;
+    
     Swal.fire({
-        title: translations.editEmployee || 'Upraviť zamestnanca',
+        title: translations.editEmployee,
         html: `
             <div class="container-fluid px-0">
                 <div class="row g-2">
@@ -289,45 +335,71 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManage
                         <input type="email" id="swal-edit-user-email" class="form-control" value="${email}" required autocomplete="off">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.newPassword || 'Nové heslo (nechaj prázdne)'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.newPassword}</label>
                         <input type="password" id="swal-edit-user-password" class="form-control" autocomplete="new-password">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.confirmPassword || 'Potvrdiť heslo'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.confirmPassword}</label>
                         <input type="password" id="swal-edit-user-password-confirm" class="form-control" autocomplete="new-password">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours || 'Základný pracovný čas (hodiny)'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.basicWorkHours}</label>
                         <input type="number" id="swal-edit-user-work-hours" class="form-control" value="${basicWorkHours || 160}" required min="0" step="1">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.holidaysPerYear || 'Dovolenka na rok (dni)'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.holidaysPerYear}</label>
                         <input type="number" id="swal-edit-user-holidays" class="form-control" value="${holidaysPerYear || 20}" required min="0" step="1">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold mb-1 small">${translations.role || 'Rola'}</label>
+                        <label class="form-label fw-semibold mb-1 small">${translations.role}</label>
                         <select id="swal-edit-user-role" class="form-select" style="cursor: pointer;">
-                            <option value="employee" ${!isManager ? 'selected' : ''}><i class="fas fa-user"></i> ${translations.employee || 'Zamestnanec'}</option>
-                            <option value="manager" ${isManager ? 'selected' : ''}><i class="fas fa-user-tie"></i> ${translations.manager || 'Manažér'}</option>
+                            <option value="employee" ${!isManager ? 'selected' : ''}><i class="fas fa-user"></i> ${translations.employee}</option>
+                            <option value="manager" ${isManager ? 'selected' : ''}><i class="fas fa-user-tie"></i> ${translations.manager}</option>
                         </select>
                     </div>
                     <div class="col-12 mt-3" id="edit-manager-permissions" style="display: ${isManager ? 'block' : 'none'};">
                         <div class="alert alert-info py-2 px-3 mb-2" style="font-size: 0.875rem;">
-                            <i class="fas fa-shield-alt me-1"></i> ${translations.permissions || 'Oprávnenia'}
+                            <i class="fas fa-shield-alt me-1"></i> ${translations.permissions}
                         </div>
                         <div class="d-flex flex-column gap-2">
-                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
                                 <input class="form-check-input m-0 me-2" type="checkbox" id="edit-perm-edit-employees" ${canEditEmployees ? 'checked' : ''}>
-                                <span style="font-size: 0.9rem;"><i class="fas fa-users text-primary me-2"></i>${translations.canEditEmployees || 'Môže upravovať zamestnancov'}</span>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-users text-primary me-2"></i>${translations.canEditEmployees}</span>
                             </label>
-                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
                                 <input class="form-check-input m-0 me-2" type="checkbox" id="edit-perm-edit-qr" ${canEditQR ? 'checked' : ''}>
-                                <span style="font-size: 0.9rem;"><i class="fas fa-qrcode text-success me-2"></i>${translations.canEditQR || 'Môže upravovať QR kódy'}</span>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-qrcode text-success me-2"></i>${translations.canEditQR}</span>
                             </label>
-                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
                                 <input class="form-check-input m-0 me-2" type="checkbox" id="edit-perm-edit-absences" ${canEditAbsences ? 'checked' : ''}>
-                                <span style="font-size: 0.9rem;"><i class="fas fa-calendar-times text-warning me-2"></i>${translations.canEditAbsences || 'Môže upravovať absencie'}</span>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-calendar-times text-warning me-2"></i>${translations.canEditAbsences}</span>
                             </label>
+                        </div>
+                        <div class="mt-3">
+                            <label class="d-flex align-items-center p-2 border rounded" style="cursor: pointer; transition: all 0.2s;">
+                                <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-enable-notifications" ${notificationsEnabled ? 'checked' : ''}>
+                                <span style="font-size: 0.9rem;"><i class="fas fa-bell text-info me-2"></i>${translations.enableNotifications}</span>
+                            </label>
+                            <div id="edit-manager-notification-options" class="ms-4 mt-2" style="display: ${notificationsEnabled ? 'block' : 'none'};">
+                                <div class="d-flex flex-column gap-1">
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-arrival" ${notifyArrival ? 'checked' : ''} style="transform: scale(0.9);">
+                                        <span><i class="fas fa-sign-in-alt me-1"></i>${translations.arrival}</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-departure" ${notifyDeparture ? 'checked' : ''} style="transform: scale(0.9);">
+                                        <span><i class="fas fa-sign-out-alt me-1"></i>${translations.departure}</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-lunch-start" ${notifyLunchStart ? 'checked' : ''} style="transform: scale(0.9);">
+                                        <span><i class="fas fa-utensils me-1"></i>${translations.lunchBreakStart}</span>
+                                    </label>
+                                    <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.85rem;">
+                                        <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-lunch-end" ${notifyLunchEnd ? 'checked' : ''} style="transform: scale(0.9);">
+                                        <span><i class="fas fa-utensils me-1"></i>${translations.lunchBreakEnd}</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -335,7 +407,7 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManage
         `,
         width: '550px',
         showCancelButton: true,
-        confirmButtonText: translations.save || 'Uložiť',
+        confirmButtonText: translations.save,
         cancelButtonText: translations.cancel,
         customClass: {
             confirmButton: 'swal-btn-gradient-green',
@@ -354,6 +426,16 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManage
                     permissionsDiv.style.display = 'none';
                 }
             });
+            
+            // Toggle notification options visibility
+            const enableNotificationsCheckbox = document.getElementById('edit-manager-enable-notifications');
+            const notificationOptions = document.getElementById('edit-manager-notification-options');
+            
+            if (enableNotificationsCheckbox) {
+                enableNotificationsCheckbox.addEventListener('change', function() {
+                    notificationOptions.style.display = this.checked ? 'block' : 'none';
+                });
+            }
         },
         preConfirm: () => {
             const name = document.getElementById('swal-edit-user-name').value;
@@ -372,12 +454,12 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManage
             // Validate password only if provided
             if (password || passwordConfirm) {
                 if (password.length < 8) {
-                    Swal.showValidationMessage(translations.passwordMinLength || 'Heslo musí mať aspoň 8 znakov');
+                    Swal.showValidationMessage(translations.passwordMinLength);
                     return false;
                 }
                 
                 if (password !== passwordConfirm) {
-                    Swal.showValidationMessage(translations.passwordsDontMatch || 'Heslá sa nezhodujú');
+                    Swal.showValidationMessage(translations.passwordsDontMatch);
                     return false;
                 }
             }
@@ -391,6 +473,13 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, isManage
                 data.can_edit_employees = document.getElementById('edit-perm-edit-employees').checked;
                 data.can_edit_qr_codes = document.getElementById('edit-perm-edit-qr').checked;
                 data.can_edit_absences = document.getElementById('edit-perm-edit-absences').checked;
+                
+                // Notification preferences
+                const enableNotifications = document.getElementById('edit-manager-enable-notifications')?.checked || false;
+                data.notify_arrival = enableNotifications && (document.getElementById('edit-manager-notify-arrival')?.checked || false);
+                data.notify_departure = enableNotifications && (document.getElementById('edit-manager-notify-departure')?.checked || false);
+                data.notify_lunch_break_start = enableNotifications && (document.getElementById('edit-manager-notify-lunch-start')?.checked || false);
+                data.notify_lunch_break_end = enableNotifications && (document.getElementById('edit-manager-notify-lunch-end')?.checked || false);
             }
 
             return data;
@@ -529,8 +618,8 @@ function showQRPrintModal(qrCodeUrl, qrCodeName, qrCodeId) {
         `,
         width: '500px',
         showCancelButton: true,
-        confirmButtonText: '<i class="fas fa-print me-2"></i>' + (translations.print || 'Tlačiť'),
-        cancelButtonText: translations.close || translations.cancel,
+        confirmButtonText: '<i class="fas fa-print me-2"></i>' + translations.print,
+        cancelButtonText: translations.close,
         customClass: {
             confirmButton: 'swal-btn-gradient-blue',
             cancelButton: 'swal-btn-gradient-gray',

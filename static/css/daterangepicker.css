@@ -10,7 +10,7 @@
   transition: all 0.15s;
 }
 
-[data-bs-theme="dark"] .date-range-display {
+:root[data-theme="dark"] .date-range-display {
   background: #374151;
   border-color: #60a5fa;
   color: #e5e7eb;
@@ -21,7 +21,7 @@
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
-[data-bs-theme="dark"] .date-range-display:hover {
+:root[data-theme="dark"] .date-range-display:hover {
   border-color: #3b82f6;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
@@ -32,7 +32,7 @@
   box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
 }
 
-[data-bs-theme="dark"] .date-range-display:focus {
+:root[data-theme="dark"] .date-range-display:focus {
   border-color: #60a5fa;
   box-shadow: 0 0 0 0.25rem rgba(96, 165, 250, 0.25);
 }
@@ -52,7 +52,7 @@
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
   /* Calendars */ }
   
-  [data-bs-theme="dark"] .daterangepicker {
+  :root[data-theme="dark"] .daterangepicker {
     background-color: #1f2937;
     box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.5);
     color: #e5e7eb;
@@ -69,7 +69,7 @@
     border-left: 7px solid transparent;
     border-bottom: 7px solid #ccc; }
     
-  [data-bs-theme="dark"] .daterangepicker:before {
+  :root[data-theme="dark"] .daterangepicker:before {
     border-bottom-color: #374151;
   }
   
@@ -79,7 +79,7 @@
     border-bottom: 6px solid #fff;
     border-left: 6px solid transparent; }
     
-  [data-bs-theme="dark"] .daterangepicker:after {
+  :root[data-theme="dark"] .daterangepicker:after {
     border-bottom-color: #1f2937;
   }
   .daterangepicker.opensleft:before {
@@ -110,7 +110,7 @@
       border-bottom: initial;
       border-top: 7px solid #ccc; }
       
-    [data-bs-theme="dark"] .daterangepicker.dropup:before {
+    :root[data-theme="dark"] .daterangepicker.dropup:before {
       border-top-color: #374151;
     }
     
@@ -120,7 +120,7 @@
       border-bottom: initial;
       border-top: 6px solid #fff; }
       
-    [data-bs-theme="dark"] .daterangepicker.dropup:after {
+    :root[data-theme="dark"] .daterangepicker.dropup:after {
       border-top-color: #1f2937;
     }
   .daterangepicker.dropdown-menu {
@@ -147,7 +147,7 @@
     background-color: #fff;
     margin: 0 auto; }
     
-  [data-bs-theme="dark"] .daterangepicker .calendar-table {
+  :root[data-theme="dark"] .daterangepicker .calendar-table {
     border-color: #374151;
     background-color: #111827;
   }
@@ -168,8 +168,8 @@
       border-color: transparent;
       color: #1e40af; }
       
-    [data-bs-theme="dark"] .daterangepicker td.available:hover,
-    [data-bs-theme="dark"] .daterangepicker th.available:hover {
+    :root[data-theme="dark"] .daterangepicker td.available:hover,
+    :root[data-theme="dark"] .daterangepicker th.available:hover {
       background-color: #1e3a5f;
       color: #60a5fa;
     }
@@ -178,8 +178,8 @@
       font-size: 80%;
       color: #ccc; }
       
-    [data-bs-theme="dark"] .daterangepicker td.week,
-    [data-bs-theme="dark"] .daterangepicker th.week {
+    :root[data-theme="dark"] .daterangepicker td.week,
+    :root[data-theme="dark"] .daterangepicker th.week {
       color: #6b7280;
     }
   .daterangepicker td.off, .daterangepicker td.off.in-range, .daterangepicker td.off.start-date, .daterangepicker td.off.end-date {
@@ -187,10 +187,10 @@
     border-color: transparent;
     color: #999; }
     
-  [data-bs-theme="dark"] .daterangepicker td.off,
-  [data-bs-theme="dark"] .daterangepicker td.off.in-range,
-  [data-bs-theme="dark"] .daterangepicker td.off.start-date,
-  [data-bs-theme="dark"] .daterangepicker td.off.end-date {
+  :root[data-theme="dark"] .daterangepicker td.off,
+  :root[data-theme="dark"] .daterangepicker td.off.in-range,
+  :root[data-theme="dark"] .daterangepicker td.off.start-date,
+  :root[data-theme="dark"] .daterangepicker td.off.end-date {
     background-color: #111827;
     color: #4b5563;
   }
@@ -200,7 +200,7 @@
     color: #1e40af;
     border-radius: 0; }
     
-  [data-bs-theme="dark"] .daterangepicker td.in-range {
+  :root[data-theme="dark"] .daterangepicker td.in-range {
     background-color: #1e3a5f;
     color: #60a5fa;
   }
@@ -221,7 +221,7 @@
     color: #1e40af;
     font-size: 15px; }
     
-  [data-bs-theme="dark"] .daterangepicker th.month {
+  :root[data-theme="dark"] .daterangepicker th.month {
     color: #60a5fa;
   }
   .daterangepicker td.disabled, .daterangepicker option.disabled {
@@ -229,8 +229,8 @@
     cursor: not-allowed;
     text-decoration: line-through; }
     
-  [data-bs-theme="dark"] .daterangepicker td.disabled,
-  [data-bs-theme="dark"] .daterangepicker option.disabled {
+  :root[data-theme="dark"] .daterangepicker td.disabled,
+  :root[data-theme="dark"] .daterangepicker option.disabled {
     color: #4b5563;
   }
   .daterangepicker select.monthselect, .daterangepicker select.yearselect {
@@ -247,8 +247,8 @@
     font-weight: 500;
     box-sizing: border-box; }
     
-  [data-bs-theme="dark"] .daterangepicker select.monthselect,
-  [data-bs-theme="dark"] .daterangepicker select.yearselect {
+  :root[data-theme="dark"] .daterangepicker select.monthselect,
+  :root[data-theme="dark"] .daterangepicker select.yearselect {
     background-color: #374151;
     border-color: #4b5563;
     color: #60a5fa;
@@ -276,7 +276,7 @@
     font-weight: 500;
     box-sizing: border-box; }
     
-  [data-bs-theme="dark"] .daterangepicker .input-mini {
+  :root[data-theme="dark"] .daterangepicker .input-mini {
     background-color: #374151;
     border-color: #4b5563;
     color: #60a5fa;
@@ -287,7 +287,7 @@
       border-radius: 6px;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
       
-  [data-bs-theme="dark"] .daterangepicker .input-mini.active {
+  :root[data-theme="dark"] .daterangepicker .input-mini.active {
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
@@ -300,7 +300,7 @@
       top: 10px;
       color: #2563eb; }
       
-  [data-bs-theme="dark"] .daterangepicker .daterangepicker_input i {
+  :root[data-theme="dark"] .daterangepicker .daterangepicker_input i {
     color: #60a5fa;
   }
   .daterangepicker.rtl .input-mini {
@@ -319,7 +319,7 @@
       color: #ccc;
       cursor: not-allowed; }
       
-  [data-bs-theme="dark"] .daterangepicker .calendar-time select.disabled {
+  :root[data-theme="dark"] .daterangepicker .calendar-time select.disabled {
     color: #4b5563;
   }
 
@@ -345,7 +345,7 @@
     transition: all 0.2s ease;
     font-weight: 500; }
     
-  [data-bs-theme="dark"] .ranges li {
+  :root[data-theme="dark"] .ranges li {
     color: #60a5fa;
     background-color: #374151;
     border-color: #4b5563;

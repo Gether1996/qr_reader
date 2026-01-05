@@ -233,9 +233,9 @@
                             </td>
                             <td class="text-end">
                                 <strong>{{ item.hours }}h</strong> 
-                                <small class="text-muted">/ 160h</small>
+                                <small class="text-muted">/ {{ item.expected_hours }}h</small>
                                 <div class="work-hours-bar mt-1">
-                                    <div class="work-hours-fill {% if item.hours >= 160 %}over-goal{% endif %}" style="width: {% widthratio item.hours 160 100 %}%"></div>
+                                    <div class="work-hours-fill {% if item.hours >= item.expected_hours %}over-goal{% endif %}" style="width: {% widthratio item.hours item.expected_hours 100 %}%"></div>
                                 </div>
                             </td>
                         </tr>

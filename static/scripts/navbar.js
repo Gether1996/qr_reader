@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Apply saved theme on page load
     function applyTheme(theme) {
-        // Set both attributes for compatibility
         htmlElement.setAttribute('data-theme', theme);
         htmlElement.setAttribute('data-bs-theme', theme);
         
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Toggle theme function
     function toggleTheme() {
-        const currentTheme = htmlElement.getAttribute('data-bs-theme');
+        const currentTheme = htmlElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         applyTheme(newTheme);
         localStorage.setItem('theme', newTheme);

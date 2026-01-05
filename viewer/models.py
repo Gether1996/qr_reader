@@ -14,6 +14,11 @@ class Company(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     auto_lunch_breaks = models.BooleanField(default=False)
+    notification_company = models.BooleanField(default=False)
+    notify_arrival = models.BooleanField(default=False)
+    notify_departure = models.BooleanField(default=False)
+    notify_lunch_break_start = models.BooleanField(default=False)
+    notify_lunch_break_end = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Companies"
@@ -43,6 +48,11 @@ class User(models.Model):
     can_edit_employees = models.BooleanField(default=False)
     can_edit_qr_codes = models.BooleanField(default=False)
     can_edit_absences = models.BooleanField(default=False)
+    notifications = models.BooleanField(default=False)
+    notify_arrival = models.BooleanField(default=False)
+    notify_departure = models.BooleanField(default=False)
+    notify_lunch_break_start = models.BooleanField(default=False)
+    notify_lunch_break_end = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} ({self.company.name})"
@@ -345,6 +355,25 @@ class ContentBlock(models.Model):
     
     def __str__(self):
         return f"{self.block_type} block for {self.article.title}"
+
+# ============= PASSWORD RESET MODEL =============
+
+class PasswordResetToken(models.Model):
+    """Password reset tokens for companies"""
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='reset_tokens')
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Reset token for {self.company.name}"
+    
+    def is_valid(self):
+        """Check if token is still valid"""
+        from django.utils import timezone
+        return not self.is_used and timezone.now() < self.expires_at
+
 
 # ============= AUDIT LOG MODEL =============
 

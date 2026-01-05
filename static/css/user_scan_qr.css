@@ -368,65 +368,65 @@
    Dark Mode Support
    ============================================ */
 
-[data-bs-theme="dark"] .mobile-scan-container {
+:root[data-theme="dark"] .mobile-scan-container {
     background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
 }
 
-[data-bs-theme="dark"] .scan-header {
+:root[data-theme="dark"] .scan-header {
     background: rgba(31, 41, 55, 0.95);
 }
 
-[data-bs-theme="dark"] .back-link {
+:root[data-theme="dark"] .back-link {
     color: #d1d5db;
 }
 
-[data-bs-theme="dark"] .scan-type-selector {
+:root[data-theme="dark"] .scan-type-selector {
     background: #1f2937;
 }
 
-[data-bs-theme="dark"] .scan-type-title {
+:root[data-theme="dark"] .scan-type-title {
     color: #f9fafb;
 }
 
-[data-bs-theme="dark"] .scan-type-btn-mobile {
+:root[data-theme="dark"] .scan-type-btn-mobile {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
 }
 
-[data-bs-theme="dark"] .scan-type-btn-mobile.active.arrival {
+:root[data-theme="dark"] .scan-type-btn-mobile.active.arrival {
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border-color: #10b981;
 }
 
-[data-bs-theme="dark"] .scan-type-btn-mobile.active.departure {
+:root[data-theme="dark"] .scan-type-btn-mobile.active.departure {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
     border-color: #ef4444;
 }
 
-[data-bs-theme="dark"] .permission-screen {
+:root[data-theme="dark"] .permission-screen {
     background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
 }
 
-[data-bs-theme="dark"] .permission-card {
+:root[data-theme="dark"] .permission-card {
     background: #1f2937;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-[data-bs-theme="dark"] .permission-title {
+:root[data-theme="dark"] .permission-title {
     color: #f9fafb;
 }
 
-[data-bs-theme="dark"] .permission-text {
+:root[data-theme="dark"] .permission-text {
     color: #9ca3af;
 }
 
-[data-bs-theme="dark"] .permission-icon {
+:root[data-theme="dark"] .permission-icon {
     background: linear-gradient(135deg, #7c3aed, #6d28d9);
 }
 
-[data-bs-theme="dark"] .loading-overlay-mobile {
+:root[data-theme="dark"] .loading-overlay-mobile {
     background: rgba(0, 0, 0, 0.95);
 }

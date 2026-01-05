@@ -32,14 +32,14 @@
                             <label for="email" class="form-label">
                                 <i class="fas fa-envelope me-1"></i>{% trans "Email" %}
                             </label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">
                                 <i class="fas fa-lock me-1"></i>{% trans "Password" %}
                             </label>
                             <div class="position-relative">
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
                                 <i class="fas fa-eye password-toggle-icon" id="togglePassword"></i>
                             </div>
                         </div>
@@ -48,16 +48,50 @@
                                 <i class="fas fa-lock me-1"></i>{% trans "Confirm Password" %}
                             </label>
                             <div class="position-relative">
-                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
                                 <i class="fas fa-eye password-toggle-icon" id="toggleConfirmPassword"></i>
                             </div>
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="auto_lunch_breaks" name="auto_lunch_breaks">
                                 <label class="form-check-label" for="auto_lunch_breaks">
                                     <i class="fas fa-utensils me-1"></i>{% trans "Automatic lunch breaks" %}
                                 </label>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_notifications" name="enable_notifications" checked>
+                                <label class="form-check-label" for="enable_notifications">
+                                    <i class="fas fa-bell me-1"></i>{% trans "Enable notifications" %}
+                                </label>
+                            </div>
+                            <div id="notification_options" class="ms-4 mt-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notify_arrival" name="notify_arrival" checked>
+                                    <label class="form-check-label" for="notify_arrival">
+                                        <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notify_departure" name="notify_departure" checked>
+                                    <label class="form-check-label" for="notify_departure">
+                                        <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notify_lunch_break_start" name="notify_lunch_break_start" checked>
+                                    <label class="form-check-label" for="notify_lunch_break_start">
+                                        <i class="fas fa-utensils me-1"></i>{% trans "Lunch break start" %}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notify_lunch_break_end" name="notify_lunch_break_end" checked>
+                                    <label class="form-check-label" for="notify_lunch_break_end">
+                                        <i class="fas fa-utensils me-1"></i>{% trans "Lunch break end" %}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div class="d-grid">
@@ -82,4 +116,15 @@
 
 {% block extra_js %}
 <script src="{% static 'scripts/company-register.js' %}"></script>
+<script>
+    // Toggle notification options visibility
+    document.getElementById('enable_notifications').addEventListener('change', function() {
+        const notificationOptions = document.getElementById('notification_options');
+        if (this.checked) {
+            notificationOptions.style.display = 'block';
+        } else {
+            notificationOptions.style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}

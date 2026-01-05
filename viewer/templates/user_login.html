@@ -20,7 +20,7 @@
                         <p class="text-muted">{% trans "Access your company's QR codes" %}</p>
                     </div>
 
-                    <form method="post" class="auth-form">
+                    <form method="post" class="auth-form" id="loginForm">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="email" class="form-label">
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg auth-submit-btn">
+                            <button type="submit" class="btn btn-success btn-lg auth-submit-btn" id="loginBtn">
                                 <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
                             </button>
                         </div>
@@ -59,4 +59,23 @@
 
 {% block extra_js %}
 <script src="{% static 'scripts/password-toggle.js' %}"></script>
+<script>
+// Prevent double form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    let isSubmitting = false;
+    
+    loginForm.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return false;
+        }
+        
+        isSubmitting = true;
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{% trans "Logging in..." %}';
+    });
+});
+</script>
 {% endblock %}

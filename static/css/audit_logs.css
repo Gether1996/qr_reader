@@ -165,49 +165,49 @@
    Dark Mode Support
    ============================================ */
 
-[data-bs-theme="dark"] .audit-info-card {
+:root[data-theme="dark"] .audit-info-card {
     border-color: #3b82f6;
     box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15);
 }
 
-[data-bs-theme="dark"] .data-table-card {
+:root[data-theme="dark"] .data-table-card {
     background: var(--bg-primary);
 }
 
-[data-bs-theme="dark"] .data-table-card .card-header {
+:root[data-theme="dark"] .data-table-card .card-header {
     background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
 }
 
-[data-bs-theme="dark"] .tab-content-body {
+:root[data-theme="dark"] .tab-content-body {
     background: var(--bg-primary);
 }
 
-[data-bs-theme="dark"] .mobile-log-card {
+:root[data-theme="dark"] .mobile-log-card {
     background: #1f2937;
     border-left-color: #667eea;
 }
 
-[data-bs-theme="dark"] .mobile-log-header {
+:root[data-theme="dark"] .mobile-log-header {
     border-bottom-color: #374151;
 }
 
-[data-bs-theme="dark"] .mobile-log-title {
+:root[data-theme="dark"] .mobile-log-title {
     color: #f9fafb;
 }
 
-[data-bs-theme="dark"] .mobile-log-info-item {
+:root[data-theme="dark"] .mobile-log-info-item {
     color: #9ca3af;
 }
 
-[data-bs-theme="dark"] .mobile-log-info-item strong {
+:root[data-theme="dark"] .mobile-log-info-item strong {
     color: #d1d5db;
 }
 
-[data-bs-theme="dark"] .mobile-log-message {
+:root[data-theme="dark"] .mobile-log-message {
     background: #374151;
     color: #d1d5db;
 }
 
-[data-bs-theme="dark"] .filters-card {
+:root[data-theme="dark"] .filters-card {
     background: var(--bg-primary);
 }
