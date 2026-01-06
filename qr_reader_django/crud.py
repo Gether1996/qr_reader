@@ -9,7 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 # ============= COMPANY CRUD =============
 
-def create_company(name, email, password, auto_lunch_breaks=False, notify_arrival=False, notify_departure=False, notify_lunch_break_start=False, notify_lunch_break_end=False, ip_address=None):
+def create_company(name, email, password, auto_lunch_breaks=False, notify_arrival=False, notify_departure=False, notify_vacation=False, ip_address=None):
     """Create a new company"""
     if Company.objects.filter(email=email).exists():
         return None, str(_('Email already registered'))
@@ -20,8 +20,7 @@ def create_company(name, email, password, auto_lunch_breaks=False, notify_arriva
         auto_lunch_breaks=auto_lunch_breaks,
         notify_arrival=notify_arrival,
         notify_departure=notify_departure,
-        notify_lunch_break_start=notify_lunch_break_start,
-        notify_lunch_break_end=notify_lunch_break_end
+        notify_vacation=notify_vacation
     )
     company.set_password(password)
     company.save()
@@ -56,7 +55,7 @@ def get_company_by_id(company_id):
 
 # ============= USER CRUD =============
 
-def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, notify_arrival=False, notify_departure=False, notify_lunch_break_start=False, notify_lunch_break_end=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, has_lunch_break=True, lunch_break_duration=30, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, notify_arrival=False, notify_departure=False, notify_vacation=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Create a new user under a company"""
     if User.objects.filter(email=email).exists():
         return None, str(_('Email already exists'))
@@ -67,14 +66,15 @@ def create_user(company, name, email, password, basic_work_hours=160, holidays_p
         email=email,
         working_hours=basic_work_hours,
         holidays_per_year=holidays_per_year,
+        has_lunch_break=has_lunch_break,
+        lunch_break_duration=lunch_break_duration,
         is_manager=is_manager,
         can_edit_employees=can_edit_employees if is_manager else False,
         can_edit_qr_codes=can_edit_qr_codes if is_manager else False,
         can_edit_absences=can_edit_absences if is_manager else False,
         notify_arrival=notify_arrival if is_manager else False,
         notify_departure=notify_departure if is_manager else False,
-        notify_lunch_break_start=notify_lunch_break_start if is_manager else False,
-        notify_lunch_break_end=notify_lunch_break_end if is_manager else False
+        notify_vacation=notify_vacation if is_manager else False
     )
     user.set_password(password)
     user.save()
@@ -108,7 +108,7 @@ def get_user_by_id(user_id):
         return None
 
 
-def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, notify_arrival=None, notify_departure=None, notify_lunch_break_start=None, notify_lunch_break_end=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, has_lunch_break=None, lunch_break_duration=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, notify_arrival=None, notify_departure=None, notify_vacation=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Update user details"""
     try:
         user = User.objects.get(id=user_id, company=company)
@@ -131,6 +131,14 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
         if holidays_per_year is not None:
             user.holidays_per_year = holidays_per_year
         
+        # Update has lunch break if provided
+        if has_lunch_break is not None:
+            user.has_lunch_break = has_lunch_break
+        
+        # Update lunch break duration if provided
+        if lunch_break_duration is not None:
+            user.lunch_break_duration = lunch_break_duration
+        
         # Update manager status if provided
         if is_manager is not None:
             user.is_manager = is_manager
@@ -141,8 +149,7 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
                 user.can_edit_absences = False
                 user.notify_arrival = False
                 user.notify_departure = False
-                user.notify_lunch_break_start = False
-                user.notify_lunch_break_end = False
+                user.notify_vacation = False
         
         # Update permissions if provided (only if user is manager)
         if user.is_manager:
@@ -156,10 +163,8 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
                 user.notify_arrival = notify_arrival
             if notify_departure is not None:
                 user.notify_departure = notify_departure
-            if notify_lunch_break_start is not None:
-                user.notify_lunch_break_start = notify_lunch_break_start
-            if notify_lunch_break_end is not None:
-                user.notify_lunch_break_end = notify_lunch_break_end
+            if notify_vacation is not None:
+                user.notify_vacation = notify_vacation
         
         # Update status if provided
         if is_active is not None:
@@ -436,7 +441,7 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
 
 # ============= VACATION CRUD =============
 
-def create_vacation(user, date_from, date_to, vacation_type='vacation', approved=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def create_vacation(user, date_from, date_to, vacation_type='vacation', approved=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
     from datetime import datetime
     
     # Convert strings to date objects if needed
@@ -467,6 +472,100 @@ def create_vacation(user, date_from, date_to, vacation_type='vacation', approved
             message=f'Vacation ({vacation_type}) for "{user.name}" created: {date_from} to {date_to} ({days} days)',
             ip_address=ip_address
         )
+    
+    # Send notifications to company and managers with vacation notifications enabled
+    company = user.company
+    recipients = []
+    
+    # Check if company has vacation notifications enabled
+    if company.notify_vacation:
+        recipients.append(company.email)
+    
+    # Get all managers with vacation notifications AND can_edit_absences permission enabled
+    managers = User.objects.filter(
+        company=company,
+        is_active=True,
+        is_manager=True,
+        notify_vacation=True,
+        can_edit_absences=True  # Only managers who can edit absences
+    )
+    
+    for manager in managers:
+        if manager.email and manager.email not in recipients:
+            recipients.append(manager.email)
+    
+    # Send email notifications if there are recipients
+    if recipients:
+        try:
+            # Build dashboard URL from request with filters
+            if request:
+                from urllib.parse import quote
+                # Get language code
+                lang_code = getattr(request, 'LANGUAGE_CODE', 'sk')
+                dashboard_url = request.build_absolute_uri(f'/{lang_code}/company/dashboard/?tab=absences&absence_employee_name={quote(user.name)}')
+                # Build approval URL
+                approval_url = request.build_absolute_uri(f'/{lang_code}/absence/{vacation.id}/approve/')
+            else:
+                dashboard_url = '#'
+                approval_url = '#'
+            
+            # Get language code from request or current active language
+            language_code = 'sk'  # default fallback
+            if request and hasattr(request, 'LANGUAGE_CODE'):
+                language_code = request.LANGUAGE_CODE
+            else:
+                try:
+                    language_code = get_language()
+                except:
+                    pass
+            
+            # Calculate days count
+            days_count = (date_to - date_from).days + 1
+            
+            # Prepare email context
+            email_context = {
+                'vacation_type': vacation_type,
+                'user_name': user.name,
+                'date_from': date_from,
+                'date_to': date_to,
+                'days_count': days_count,
+                'approved': approved,
+                'company_name': company.name,
+                'dashboard_url': dashboard_url,
+                'approval_url': approval_url,
+                'vacation_id': vacation.id,
+                'LANGUAGE_CODE': language_code
+            }
+            
+            # Activate language for translations
+            from django.utils.translation import activate, gettext as _
+            activate(language_code)
+            
+            # Render email HTML
+            html_message = render_to_string('vacation_notification.html', email_context, request=request)
+            
+            # Email subject based on vacation type (translated)
+            subject_map = {
+                'vacation': f'🏖️ {user.name} - {_("Vacation Request")}',
+                'sick_leave': f'🤒 {user.name} - {_("Sick Leave")}',
+                'doctor': f'🏥 {user.name} - {_("Doctor Visit")}',
+                'home_office': f'🏠 {user.name} - {_("Home Office")}'
+            }
+            
+            subject = subject_map.get(vacation_type, f'📅 {user.name} - {_("Absence Request")}')
+            
+            # Send email
+            send_mail(
+                subject=subject,
+                message='',  # Plain text fallback (empty because we use HTML)
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=recipients,
+                html_message=html_message,
+                fail_silently=True  # Don't raise exception if email fails
+            )
+        except Exception as e:
+            # Log error but don't fail the vacation creation
+            print(f"Failed to send vacation notification email: {str(e)}")
     
     return vacation, None
 
@@ -513,14 +612,81 @@ def update_vacation(vacation_id, company, user_id=None, date_from=None, date_to=
         return None, str(_('User not found'))
 
 
-def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
+    from datetime import date
     try:
         vacation = Vacation.objects.get(id=vacation_id, user__company=company)
         user_name = vacation.user.name
+        user_email = vacation.user.email
         date_from = vacation.date_from
         date_to = vacation.date_to
+        vacation_type = vacation.type
+        
+        # Check if vacation is being cancelled before start date
+        current_date = date.today()
+        send_cancellation_email = current_date < date_from
+        
         vacation.is_active = False
         vacation.save()
+        
+        # Send cancellation email to employee if cancelled before start date
+        if send_cancellation_email and user_email:
+            try:
+                # Build dashboard URL from request
+                if request:
+                    dashboard_url = request.build_absolute_uri('/user/dashboard/')
+                else:
+                    dashboard_url = '#'
+                
+                # Get language code from request
+                language_code = 'sk'  # default fallback
+                if request and hasattr(request, 'LANGUAGE_CODE'):
+                    language_code = request.LANGUAGE_CODE
+                else:
+                    try:
+                        language_code = get_language()
+                    except:
+                        pass
+                
+                # Calculate days count
+                days_count = (date_to - date_from).days + 1
+                
+                # Prepare email context with cancelled status
+                email_context = {
+                    'vacation_type': vacation_type,
+                    'user_name': user_name,
+                    'date_from': date_from,
+                    'date_to': date_to,
+                    'days_count': days_count,
+                    'approved': False,
+                    'cancelled': True,
+                    'company_name': company.name,
+                    'dashboard_url': dashboard_url,
+                    'LANGUAGE_CODE': language_code
+                }
+                
+                # Activate language for translations
+                from django.utils.translation import activate, gettext as _
+                activate(language_code)
+                
+                # Render email HTML
+                html_message = render_to_string('vacation_notification.html', email_context, request=request)
+                
+                # Email subject
+                subject = f'❌ {_("Vacation Request Cancelled")} - {date_from.strftime("%d.%m.%Y")} - {date_to.strftime("%d.%m.%Y")}'
+                
+                # Send email to employee
+                send_mail(
+                    subject=subject,
+                    message='',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user_email],
+                    html_message=html_message,
+                    fail_silently=True
+                )
+            except Exception as e:
+                # Log error but don't fail the deletion
+                print(f"Failed to send cancellation notification email: {str(e)}")
         
         if actor_type and actor_email and actor_name:
             log_action(

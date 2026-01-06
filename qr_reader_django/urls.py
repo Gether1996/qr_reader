@@ -41,6 +41,7 @@ urlpatterns += i18n_patterns(
     path('qr/<int:qr_id>/pdf/', views.generate_qr_code_pdf, name='generate_qr_code_pdf'),
     
     # User management (company actions)
+    path('user/check-email/', views.check_email, name='check_email'),
     path('user/create/', views.create_user, name='create_user'),
     path('company/user/<int:user_id>/edit/', views.edit_user, name='edit_user'),
     path('company/user/<int:user_id>/delete/', views.delete_user, name='delete_user'),

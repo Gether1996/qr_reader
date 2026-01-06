@@ -21,12 +21,6 @@
                                 {% elif scan_type == 'departure' %}
                                     <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔴</span>
                                     {% trans "Employee Departure" %}
-                                {% elif scan_type == 'lunch_break_start' %}
-                                    <span style="font-size: 40px; display: block; margin-bottom: 10px;">🍽️</span>
-                                    {% trans "Lunch Break Started" %}
-                                {% elif scan_type == 'lunch_break_end' %}
-                                    <span style="font-size: 40px; display: block; margin-bottom: 10px;">✅</span>
-                                    {% trans "Lunch Break Ended" %}
                                 {% endif %}
                             </h1>
                         </td>
@@ -44,10 +38,6 @@
                                     {% blocktrans with name=user_name %}{{ name }} has arrived at work.{% endblocktrans %}
                                 {% elif scan_type == 'departure' %}
                                     {% blocktrans with name=user_name %}{{ name }} has left work.{% endblocktrans %}
-                                {% elif scan_type == 'lunch_break_start' %}
-                                    {% blocktrans with name=user_name %}{{ name }} has started their lunch break.{% endblocktrans %}
-                                {% elif scan_type == 'lunch_break_end' %}
-                                    {% blocktrans with name=user_name %}{{ name }} has returned from lunch break.{% endblocktrans %}
                                 {% endif %}
                             </p>
 

@@ -123,26 +123,13 @@
                         <div class="notification-checkbox">
                             <input 
                                 type="checkbox" 
-                                id="notify_lunch_break_start" 
-                                name="notify_lunch_break_start" 
-                                {% if company.notify_lunch_break_start %}checked{% endif %}
+                                id="notify_vacation" 
+                                name="notify_vacation" 
+                                {% if company.notify_vacation %}checked{% endif %}
                             >
-                            <label for="notify_lunch_break_start">
-                                <i class="fas fa-utensils text-warning"></i>
-                                {% trans "Lunch Break Start" %}
-                            </label>
-                        </div>
-
-                        <div class="notification-checkbox">
-                            <input 
-                                type="checkbox" 
-                                id="notify_lunch_break_end" 
-                                name="notify_lunch_break_end" 
-                                {% if company.notify_lunch_break_end %}checked{% endif %}
-                            >
-                            <label for="notify_lunch_break_end">
-                                <i class="fas fa-coffee text-info"></i>
-                                {% trans "Lunch Break End" %}
+                            <label for="notify_vacation">
+                                <i class="fas fa-calendar-times text-warning"></i>
+                                {% trans "Vacation/Absence" %}
                             </label>
                         </div>
                     </div>

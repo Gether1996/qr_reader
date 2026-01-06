@@ -85,6 +85,7 @@
                         <option value="vacation" {% if current_filters.vacation_type == 'vacation' %}selected{% endif %}>{% trans "Vacation" %}</option>
                         <option value="sick_leave" {% if current_filters.vacation_type == 'sick_leave' %}selected{% endif %}>{% trans "Sick Leave" %}</option>
                         <option value="doctor" {% if current_filters.vacation_type == 'doctor' %}selected{% endif %}>{% trans "Doctor" %}</option>
+                        <option value="home_office" {% if current_filters.vacation_type == 'home_office' %}selected{% endif %}>{% trans "Home Office" %}</option>
                     </select>
                 </div>
                 {% endif %}

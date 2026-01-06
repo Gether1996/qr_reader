@@ -32,6 +32,7 @@ const vacationTranslations = {
         vacation: 'Dovolenka',
         sickLeave: 'PN (Pracovná neschopnosť)',
         doctor: 'Lekár',
+        homeOffice: 'Home Office',
         selectType: 'Vyberte typ',
         approveAbsence: 'Schváliť absenciu',
         confirmApproveText: 'Naozaj chcete schváliť absenciu pre',
@@ -71,6 +72,7 @@ const vacationTranslations = {
         vacation: 'Vacation',
         sickLeave: 'Sick Leave',
         doctor: 'Doctor',
+        homeOffice: 'Home Office',
         selectType: 'Select type',
         approveAbsence: 'Approve Absence',
         confirmApproveText: 'Are you sure you want to approve absence for',
@@ -110,6 +112,7 @@ const vacationTranslations = {
         vacation: 'Vacaciones',
         sickLeave: 'Baja por enfermedad',
         doctor: 'Médico',
+        homeOffice: 'Oficina en Casa',
         selectType: 'Seleccionar tipo',
         approveAbsence: 'Aprobar Ausencia',
         confirmApproveText: '¿Está seguro de que desea aprobar la ausencia para',
@@ -149,6 +152,7 @@ const vacationTranslations = {
         vacation: 'Urlaub',
         sickLeave: 'Krankschreibung',
         doctor: 'Arzt',
+        homeOffice: 'Homeoffice',
         selectType: 'Typ auswählen',
         approveAbsence: 'Abwesenheit genehmigen',
         confirmApproveText: 'Möchten Sie die Abwesenheit für',
@@ -212,6 +216,7 @@ function addVacation(users) {
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
                             <option value="doctor">${t.doctor}</option>
+                            <option value="home_office">${t.homeOffice || 'Home Office'}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -256,6 +261,15 @@ function addVacation(users) {
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
+            
+            Swal.fire({
+                title: translations.addingAbsence,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             
             fetch(`/${langCode}/absence/create/`, {
                 method: 'POST',
@@ -353,6 +367,7 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
                             <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
+                            <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>${t.homeOffice || 'Home Office'}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -397,6 +412,15 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
+            
+            Swal.fire({
+                title: translations.updatingAbsence,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             
             fetch(`/${langCode}/absence/${vacationId}/edit/`, {
                 method: 'POST',
@@ -476,6 +500,7 @@ function addVacationForUser(userId, userName) {
                             <option value="vacation">${t.vacation}</option>
                             <option value="sick_leave">${t.sickLeave}</option>
                             <option value="doctor">${t.doctor}</option>
+                            <option value="home_office">${t.homeOffice || 'Home Office'}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -519,6 +544,15 @@ function addVacationForUser(userId, userName) {
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
+            
+            Swal.fire({
+                title: translations.addingAbsence,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             
             fetch(`/${langCode}/absence/create/`, {
                 method: 'POST',
@@ -606,6 +640,7 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                             <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
                             <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
                             <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
+                            <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>${t.homeOffice || 'Home Office'}</option>
                         </select>
                     </div>
                     <div class="col-12">
@@ -649,6 +684,15 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
+            
+            Swal.fire({
+                title: translations.updatingAbsence,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             
             fetch(`/${langCode}/absence/${vacationId}/edit/`, {
                 method: 'POST',
@@ -725,6 +769,15 @@ function deleteVacation(vacationId, userName) {
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
+            Swal.fire({
+                title: translations.deletingAbsence,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
             fetch(`/${langCode}/absence/${vacationId}/delete/`, {
                 method: 'POST',
                 headers: {
@@ -792,6 +845,15 @@ function approveVacation(vacationId, userName) {
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
+            Swal.fire({
+                title: translations.approvingAbsence,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
             fetch(`/${langCode}/absence/${vacationId}/approve/`, {
                 method: 'POST',
                 headers: {

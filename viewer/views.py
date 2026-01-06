@@ -12,6 +12,8 @@ from django.db.models import Q, Max
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 from django.utils.formats import date_format
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 # ============= PUBLIC VIEWS =============
 
@@ -41,8 +43,7 @@ def company_register(request):
         enable_notifications = request.POST.get('enable_notifications') == 'on'
         notify_arrival = enable_notifications and request.POST.get('notify_arrival') == 'on'
         notify_departure = enable_notifications and request.POST.get('notify_departure') == 'on'
-        notify_lunch_break_start = enable_notifications and request.POST.get('notify_lunch_break_start') == 'on'
-        notify_lunch_break_end = enable_notifications and request.POST.get('notify_lunch_break_end') == 'on'
+        notify_vacation = enable_notifications and request.POST.get('notify_vacation') == 'on'
 
         if not all([name, email, password, confirm_password]):
             messages.error(request, _('All fields are required'))
@@ -59,8 +60,7 @@ def company_register(request):
             auto_lunch_breaks=auto_lunch_breaks,
             notify_arrival=notify_arrival,
             notify_departure=notify_departure,
-            notify_lunch_break_start=notify_lunch_break_start,
-            notify_lunch_break_end=notify_lunch_break_end,
+            notify_vacation=notify_vacation,
             ip_address=get_client_ip(request)
         )
         if error:
@@ -316,7 +316,8 @@ def company_dashboard(request):
     # Get absences for the company
     absences = Vacation.objects.filter(
         user__company=company,
-        user__is_active=True
+        user__is_active=True,
+        is_active=True
     ).select_related('user')
     
     # Apply filters to absences
@@ -542,7 +543,7 @@ def user_dashboard(request):
     scans_count = scans.count()
     
     # ===== ABSENCES TAB =====
-    absences = Vacation.objects.filter(user=user).order_by('-date_from')
+    absences = Vacation.objects.filter(user=user, is_active=True).order_by('-date_from')
     
     # Absences-specific filters
     vacation_type_filter = request.GET.get('vacation_type', '')
@@ -817,6 +818,34 @@ def delete_qr_code(request, qr_id):
     return redirect('company_dashboard')
 
 
+def check_email(request):
+    """Check if email already exists in the system"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email', '').strip().lower()
+            
+            if not email:
+                return JsonResponse({'exists': False})
+            
+            # Check if email exists in User or Company model
+            user_exists = crud.get_user_by_email(email) is not None
+            company_exists = crud.get_company_by_email(email) is not None
+            
+            if user_exists or company_exists:
+                return JsonResponse({
+                    'exists': True,
+                    'message': str(_('This email is already registered in the system'))
+                })
+            
+            return JsonResponse({'exists': False})
+            
+        except Exception as e:
+            return JsonResponse({'exists': False, 'error': str(e)})
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
 def create_user(request):
     """Register a new user under the company (company or manager with permission)"""
     is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
@@ -854,14 +883,15 @@ def create_user(request):
                 password=data.get('password'),
                 basic_work_hours=data.get('basic_work_hours', 160),
                 holidays_per_year=data.get('holidays_per_year', 20),
+                has_lunch_break=data.get('has_lunch_break', True),
+                lunch_break_duration=data.get('lunch_break_duration', 30),
                 is_manager=data.get('is_manager', False),
                 can_edit_employees=data.get('can_edit_employees', False),
                 can_edit_qr_codes=data.get('can_edit_qr_codes', False),
                 can_edit_absences=data.get('can_edit_absences', False),
                 notify_arrival=data.get('notify_arrival', False),
                 notify_departure=data.get('notify_departure', False),
-                notify_lunch_break_start=data.get('notify_lunch_break_start', False),
-                notify_lunch_break_end=data.get('notify_lunch_break_end', False),
+                notify_vacation=data.get('notify_vacation', False),
                 actor_type=actor_type,
                 actor_email=actor_email,
                 actor_name=actor_name,
@@ -931,6 +961,8 @@ def edit_user(request, user_id):
                 password=data.get('password'),
                 basic_work_hours=data.get('basic_work_hours'),
                 holidays_per_year=data.get('holidays_per_year'),
+                has_lunch_break=data.get('has_lunch_break'),
+                lunch_break_duration=data.get('lunch_break_duration'),
                 is_active=data.get('is_active'),
                 is_manager=data.get('is_manager'),
                 can_edit_employees=data.get('can_edit_employees'),
@@ -938,8 +970,7 @@ def edit_user(request, user_id):
                 can_edit_absences=data.get('can_edit_absences'),
                 notify_arrival=data.get('notify_arrival'),
                 notify_departure=data.get('notify_departure'),
-                notify_lunch_break_start=data.get('notify_lunch_break_start'),
-                notify_lunch_break_end=data.get('notify_lunch_break_end'),
+                notify_vacation=data.get('notify_vacation'),
                 actor_type=actor_type,
                 actor_email=actor_email,
                 actor_name=actor_name,
@@ -1207,7 +1238,7 @@ def view_user_details(request, user_id):
         
         # Get counts
         scans_count = ScanEvent.objects.filter(scanned_by=user).count()
-        vacations_count = Vacation.objects.filter(user=user).count()
+        vacations_count = Vacation.objects.filter(user=user, is_active=True).count()
         
         context = {
             'company': company,
@@ -1273,7 +1304,7 @@ def view_user_details(request, user_id):
         
         # Get counts
         scans_count = ScanEvent.objects.filter(scanned_by=user).count()
-        vacations_count = Vacation.objects.filter(user=user).count()
+        vacations_count = Vacation.objects.filter(user=user, is_active=True).count()
 
         context = {
             'company': company,
@@ -1369,7 +1400,8 @@ def create_vacation(request):
                 actor_type=actor_type,
                 actor_email=actor_email,
                 actor_name=actor_name,
-                ip_address=get_client_ip(request)
+                ip_address=get_client_ip(request),
+                request=request
             )
             
             if error:
@@ -1518,7 +1550,8 @@ def delete_vacation(request, vacation_id):
                 actor_type=actor_type,
                 actor_email=actor_email,
                 actor_name=actor_name,
-                ip_address=get_client_ip(request)
+                ip_address=get_client_ip(request),
+                request=request
             )
             
             if success:
@@ -1538,65 +1571,144 @@ def approve_vacation(request, vacation_id):
     is_user = request.session.get('user_type') == 'user' and 'user_id' in request.session
     
     if not (is_company or is_user):
+        # If not logged in, redirect to login
+        if request.method == 'GET':
+            from django.shortcuts import redirect
+            return redirect('company_login')
         return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
 
-    if request.method == 'POST':
-        try:
-            # Get company and current user
-            if is_company:
-                company = crud.get_company_by_id(request.session['company_id'])
-                can_approve = True
-            else:  # is_user
-                current_user = crud.get_user_by_id(request.session['user_id'])
-                if not current_user:
-                    return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
-                company = current_user.company
-                # Check if user is manager with can_edit_absences permission
-                can_approve = current_user.is_manager and current_user.can_edit_absences
-            
-            if not company:
-                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
-            
-            if not can_approve:
-                return JsonResponse({'status': 'error', 'message': str(_('Access denied. Only company or managers with edit absences permission can approve.'))}, status=403)
-            
-            # Get the vacation
-            try:
-                vacation = Vacation.objects.get(id=vacation_id, user__company=company)
-            except Vacation.DoesNotExist:
-                return JsonResponse({'status': 'error', 'message': str(_('Vacation not found'))}, status=404)
-            
-            # Set approved to True
-            vacation.approved = True
-            vacation.save()
-            
-            # Log approval action
-            if is_company:
-                actor_type = 'company'
-                actor_email = company.email
-                actor_name = company.name
-            else:
-                actor_type = 'user'
-                actor_email = current_user.email
-                actor_name = current_user.name
-            
-            log_action(
-                actor_type=actor_type,
-                actor_email=actor_email,
-                actor_name=actor_name,
-                action='approve',
-                message=f'Approved vacation for {vacation.user.name} ({vacation.date_from} to {vacation.date_to})',
-                ip_address=get_client_ip(request)
-            )
-            
-            return JsonResponse({
-                'status': 'success',
-                'message': str(_('Vacation approved successfully'))
-            })
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    # Get company and current user
+    if is_company:
+        company = crud.get_company_by_id(request.session['company_id'])
+        can_approve = True
+        actor_type = 'company'
+        actor_email = company.email
+        actor_name = company.name
+    else:  # is_user
+        current_user = crud.get_user_by_id(request.session['user_id'])
+        if not current_user:
+            if request.method == 'GET':
+                from django.shortcuts import redirect
+                return redirect('company_login')
+            return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+        company = current_user.company
+        # Check if user is manager with can_edit_absences permission
+        can_approve = current_user.is_manager and current_user.can_edit_absences
+        actor_type = 'user'
+        actor_email = current_user.email
+        actor_name = current_user.name
+    
+    if not company:
+        if request.method == 'GET':
+            from django.shortcuts import redirect
+            return redirect('company_login')
+        return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+    
+    if not can_approve:
+        if request.method == 'GET':
+            from django.shortcuts import redirect
+            from django.contrib import messages
+            messages.error(request, str(_('Access denied. Only company or managers with edit absences permission can approve.')))
+            return redirect('company_dashboard')
+        return JsonResponse({'status': 'error', 'message': str(_('Access denied. Only company or managers with edit absences permission can approve.'))}, status=403)
+    
+    # Get the vacation
+    try:
+        vacation = Vacation.objects.get(id=vacation_id, user__company=company)
+    except Vacation.DoesNotExist:
+        if request.method == 'GET':
+            from django.shortcuts import redirect
+            from django.contrib import messages
+            messages.error(request, str(_('Vacation not found')))
+            return redirect('company_dashboard')
+        return JsonResponse({'status': 'error', 'message': str(_('Vacation not found'))}, status=404)
+    
+    # Check if already approved
+    if vacation.approved:
+        if request.method == 'GET':
+            from django.shortcuts import redirect
+            from django.contrib import messages
+            from urllib.parse import quote
+            messages.info(request, str(_('This vacation request has already been approved.')))
+            return redirect(f'/company/dashboard/?tab=absences&name={quote(vacation.user.name)}')
+        return JsonResponse({'status': 'success', 'message': str(_('Vacation already approved'))})
 
-    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
+    # Set approved to True
+    vacation.approved = True
+    vacation.save()
+            
+    # Send email notification to the employee
+    try:
+        # Build dashboard URL from request
+        if hasattr(request, 'build_absolute_uri'):
+            dashboard_url = request.build_absolute_uri('/user/dashboard/')
+        else:
+            dashboard_url = '#'
+        
+        # Get language code from request
+        language_code = request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'sk'
+        
+        # Calculate days count
+        days_count = (vacation.date_to - vacation.date_from).days + 1
+        
+        # Prepare email context
+        email_context = {
+            'vacation_type': vacation.type,
+            'user_name': vacation.user.name,
+            'date_from': vacation.date_from,
+            'date_to': vacation.date_to,
+            'days_count': days_count,
+            'approved': True,
+            'company_name': company.name,
+            'dashboard_url': dashboard_url,
+            'LANGUAGE_CODE': language_code
+        }
+        
+        # Activate language for translations
+        from django.utils.translation import activate, gettext as _
+        activate(language_code)
+        
+        # Render email HTML
+        html_message = render_to_string('vacation_notification.html', email_context, request=request)
+        
+        # Email subject
+        subject = f'✅ {_("Vacation Request Approved")} - {vacation.date_from.strftime("%d.%m.%Y")} - {vacation.date_to.strftime("%d.%m.%Y")}'
+        
+        # Send email to employee
+        send_mail(
+            subject=subject,
+            message='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[vacation.user.email],
+            html_message=html_message,
+            fail_silently=True
+        )
+    except Exception as e:
+        # Log error but don't fail the approval
+        print(f"Failed to send approval notification email: {str(e)}")
+    
+    # Log approval action
+    log_action(
+        actor_type=actor_type,
+        actor_email=actor_email,
+        actor_name=actor_name,
+        action='approve',
+        message=f'Approved vacation for {vacation.user.name} ({vacation.date_from} to {vacation.date_to})',
+        ip_address=get_client_ip(request)
+    )
+    
+    # Handle response based on request method
+    if request.method == 'GET':
+        from django.shortcuts import redirect
+        from django.contrib import messages
+        from urllib.parse import quote
+        messages.success(request, str(_('Vacation approved successfully')))
+        return redirect(f'/company/dashboard/?tab=absences&name={quote(vacation.user.name)}')
+    else:  # POST
+        return JsonResponse({
+            'status': 'success',
+            'message': str(_('Vacation approved successfully'))
+        })
 
 
 def generate_attendance_pdf(request, user_id):
@@ -1786,9 +1898,11 @@ def generate_attendance_pdf(request, user_id):
     # Calculate statistics
     total_days = len(daily_data)
     total_work_hours = 0
+    total_work_hours_with_breaks = 0
     total_night_hours = 0
     days_with_issues = []
     total_vacation_days = 0
+    total_home_office_days = 0
     
     # Daily attendance table
     elements.append(Paragraph(str(_('Daily Attendance')), heading_style))
@@ -1859,7 +1973,10 @@ def generate_attendance_pdf(request, user_id):
         vacation_type = vacation_days.get(current_date)
         is_vacation = vacation_type is not None
         if is_vacation:
-            total_vacation_days += 1
+            if vacation_type == 'home_office':
+                total_home_office_days += 1
+            else:
+                total_vacation_days += 1
         
         if is_vacation and not day_scans:
             # Vacation day with no scans - display type
@@ -1879,6 +1996,14 @@ def generate_attendance_pdf(request, user_id):
                     fontName=font_name_bold
                 )
                 leave_label = f"👨‍⚕️ {_('Doctor')}"
+            elif vacation_type == 'home_office':
+                vacation_style = ParagraphStyle(
+                    'HomeOfficeStyle',
+                    parent=cell_style,
+                    textColor=colors.HexColor('#3b82f6'),
+                    fontName=font_name_bold
+                )
+                leave_label = f"🏠 {_('Home Office')}"
             else:
                 vacation_style = ParagraphStyle(
                     'VacationStyle',
@@ -1925,9 +2050,13 @@ def generate_attendance_pdf(request, user_id):
                     notes.append(f"⚠ {_('Scans on sick leave day')}")
                 elif vacation_type == 'doctor':
                     notes.append(f"⚠ {_('Scans on doctor day')}")
+                elif vacation_type == 'home_office':
+                    notes.append(f"🏠 {_('Home Office')}")
                 else:
                     notes.append(f"⚠ {_('Scans on vacation day')}")
-                days_with_issues.append(current_date)
+                # Only mark as issue if not home office (home office + scans is expected)
+                if vacation_type != 'home_office':
+                    days_with_issues.append(current_date)
             
             # Add holiday note
             if is_holiday:
@@ -1953,18 +2082,24 @@ def generate_attendance_pdf(request, user_id):
                 night_hours = calculate_night_hours(first_arrival, last_departure)
                 
                 # Calculate lunch break
-                if company.auto_lunch_breaks:
-                    lunch_break_minutes = 30
-                else:
-                    # Calculate actual lunch break from scans
-                    lunch_starts = [s for s in day_scans if s.scan_type == 'lunch_break_start']
-                    lunch_ends = [s for s in day_scans if s.scan_type == 'lunch_break_end']
-                    if lunch_starts and lunch_ends:
-                        for i in range(min(len(lunch_starts), len(lunch_ends))):
-                            break_duration = lunch_ends[i].timestamp - lunch_starts[i].timestamp
-                            lunch_break_minutes += break_duration.total_seconds() / 60
+                # First check if there are actual lunch break scans
+                lunch_starts = [s for s in day_scans if s.scan_type == 'lunch_break_start']
+                lunch_ends = [s for s in day_scans if s.scan_type == 'lunch_break_end']
                 
-                total_work_hours += hours_worked
+                if lunch_starts and lunch_ends:
+                    # Use actual scanned lunch breaks
+                    for i in range(min(len(lunch_starts), len(lunch_ends))):
+                        break_duration = lunch_ends[i].timestamp - lunch_starts[i].timestamp
+                        lunch_break_minutes += break_duration.total_seconds() / 60
+                elif company.auto_lunch_breaks and user.has_lunch_break:
+                    # No scanned breaks, use default duration if auto breaks enabled
+                    lunch_break_minutes = user.lunch_break_duration
+                # else: lunch_break_minutes stays 0
+                
+                # Track hours with and without breaks
+                hours_without_break = hours_worked - (lunch_break_minutes / 60)
+                total_work_hours += hours_without_break  # Hours without break
+                total_work_hours_with_breaks += hours_worked  # Hours including break
                 total_night_hours += night_hours
                 
                 # Track holiday hours
@@ -2107,7 +2242,11 @@ def generate_attendance_pdf(request, user_id):
             Paragraph(f"{int(expected_hours)}:{int((expected_hours % 1) * 60):02d}", summary_value_style)
         ],
         [
-            Paragraph(str(_('Total Hours Worked')), summary_label_style),
+            Paragraph(str(_('Total Hours (with breaks)')), summary_label_style),
+            Paragraph(f"{int(total_work_hours_with_breaks)}:{int((total_work_hours_with_breaks % 1) * 60):02d}", summary_value_style)
+        ],
+        [
+            Paragraph(str(_('Total Hours (without breaks)')), summary_label_style),
             Paragraph(f"{int(total_work_hours)}:{int((total_work_hours % 1) * 60):02d}", summary_value_style)
         ],
         [
@@ -2129,6 +2268,10 @@ def generate_attendance_pdf(request, user_id):
         [
             Paragraph(str(_('Vacation Days')), summary_label_style),
             Paragraph(str(total_vacation_days), summary_value_style)
+        ],
+        [
+            Paragraph(str(_('Home Office Days')), summary_label_style),
+            Paragraph(str(total_home_office_days), summary_value_style)
         ],
         [
             Paragraph(str(_('Days with Issues')), summary_label_style),
@@ -2355,9 +2498,11 @@ def generate_attendance_excel(request, user_id):
     # Calculate statistics
     total_days = len(daily_data)
     total_work_hours = 0
+    total_work_hours_with_breaks = 0
     total_night_hours = 0
     days_with_issues = []
     total_vacation_days = 0
+    total_home_office_days = 0
     total_holiday_hours = 0
     
     # Get holidays based on language
@@ -2394,7 +2539,10 @@ def generate_attendance_excel(request, user_id):
         vacation_type = vacation_days.get(current_date)
         is_vacation = vacation_type is not None
         if is_vacation:
-            total_vacation_days += 1
+            if vacation_type == 'home_office':
+                total_home_office_days += 1
+            else:
+                total_vacation_days += 1
         
         # Date
         ws.cell(row=row, column=1, value=current_date.strftime('%d.%m.%Y'))
@@ -2422,6 +2570,10 @@ def generate_attendance_excel(request, user_id):
                 ws.cell(row=row, column=8, value=f"👨‍⚕️ {_('Doctor')}")
                 for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = doctor_fill
+            elif vacation_type == 'home_office':
+                ws.cell(row=row, column=8, value=f"🏠 {_('Home Office')}")
+                for col in range(1, 9):
+                    ws.cell(row=row, column=col).fill = PatternFill(start_color='dbeafe', end_color='dbeafe', fill_type='solid')
             else:
                 ws.cell(row=row, column=8, value=f"🏖 {_('Vacation')}")
                 for col in range(1, 9):
@@ -2449,9 +2601,13 @@ def generate_attendance_excel(request, user_id):
                     notes.append(f"⚠ {_('Scans on sick leave day')}")
                 elif vacation_type == 'doctor':
                     notes.append(f"⚠ {_('Scans on doctor day')}")
+                elif vacation_type == 'home_office':
+                    notes.append(f"🏠 {_('Home Office')}")
                 else:
                     notes.append(f"⚠ {_('Scans on vacation day')}")
-                days_with_issues.append(current_date)
+                # Only mark as issue if not home office
+                if vacation_type != 'home_office':
+                    days_with_issues.append(current_date)
             
             # Add holiday note
             if is_holiday:
@@ -2477,18 +2633,24 @@ def generate_attendance_excel(request, user_id):
                 night_hours = calculate_night_hours(first_arrival, last_departure)
                 
                 # Calculate lunch break
-                if company.auto_lunch_breaks:
-                    lunch_break_minutes = 30
-                else:
-                    # Calculate actual lunch break from scans
-                    lunch_starts = [s for s in day_scans if s.scan_type == 'lunch_break_start']
-                    lunch_ends = [s for s in day_scans if s.scan_type == 'lunch_break_end']
-                    if lunch_starts and lunch_ends:
-                        for i in range(min(len(lunch_starts), len(lunch_ends))):
-                            break_duration = lunch_ends[i].timestamp - lunch_starts[i].timestamp
-                            lunch_break_minutes += break_duration.total_seconds() / 60
+                # First check if there are actual lunch break scans
+                lunch_starts = [s for s in day_scans if s.scan_type == 'lunch_break_start']
+                lunch_ends = [s for s in day_scans if s.scan_type == 'lunch_break_end']
                 
-                total_work_hours += hours_worked
+                if lunch_starts and lunch_ends:
+                    # Use actual scanned lunch breaks
+                    for i in range(min(len(lunch_starts), len(lunch_ends))):
+                        break_duration = lunch_ends[i].timestamp - lunch_starts[i].timestamp
+                        lunch_break_minutes += break_duration.total_seconds() / 60
+                elif company.auto_lunch_breaks and user.has_lunch_break:
+                    # No scanned breaks, use default duration if auto breaks enabled
+                    lunch_break_minutes = user.lunch_break_duration
+                # else: lunch_break_minutes stays 0
+                
+                # Track hours with and without breaks
+                hours_without_break = hours_worked - (lunch_break_minutes / 60)
+                total_work_hours += hours_without_break  # Hours without break
+                total_work_hours_with_breaks += hours_worked  # Hours including break
                 total_night_hours += night_hours
                 
                 # Track holiday hours
@@ -2571,12 +2733,14 @@ def generate_attendance_excel(request, user_id):
     summary_data = [
         (str(_('Total Working Days')), str(total_days)),
         (str(_('Expected Hours')), f"{int(expected_hours)}:{int((expected_hours % 1) * 60):02d}"),
-        (str(_('Total Hours Worked')), f"{int(total_work_hours)}:{int((total_work_hours % 1) * 60):02d}"),
+        (str(_('Total Hours (with breaks)')), f"{int(total_work_hours_with_breaks)}:{int((total_work_hours_with_breaks % 1) * 60):02d}"),
+        (str(_('Total Hours (without breaks)')), f"{int(total_work_hours)}:{int((total_work_hours % 1) * 60):02d}"),
         (str(_('Overtime Hours')), f"{int(overtime_hours)}:{int((overtime_hours % 1) * 60):02d}"),
         (str(_('Night Hours (22:00-06:00)')), f"{int(total_night_hours)}:{int((total_night_hours % 1) * 60):02d}"),
         (str(_('Holiday Hours')), f"{int(total_holiday_hours)}:{int((total_holiday_hours % 1) * 60):02d}"),
         (str(_('Average Hours per Day')), f"{int(avg_hours)}:{int((avg_hours % 1) * 60):02d}"),
         (str(_('Vacation Days')), str(total_vacation_days)),
+        (str(_('Home Office Days')), str(total_home_office_days)),
         (str(_('Days with Issues')), str(len(set(days_with_issues)))),
     ]
     
@@ -3937,8 +4101,7 @@ def company_settings(request):
                 # Notification preferences
                 notify_arrival = request.POST.get('notify_arrival') == 'on'
                 notify_departure = request.POST.get('notify_departure') == 'on'
-                notify_lunch_break_start = request.POST.get('notify_lunch_break_start') == 'on'
-                notify_lunch_break_end = request.POST.get('notify_lunch_break_end') == 'on'
+                notify_vacation = request.POST.get('notify_vacation') == 'on'
                 
                 # Validation
                 if not company_name:
@@ -3952,8 +4115,7 @@ def company_settings(request):
                 company.auto_lunch_breaks = auto_lunch_breaks
                 company.notify_arrival = notify_arrival
                 company.notify_departure = notify_departure
-                company.notify_lunch_break_start = notify_lunch_break_start
-                company.notify_lunch_break_end = notify_lunch_break_end
+                company.notify_vacation = notify_vacation
                 company.save()
                 
                 # Log the action

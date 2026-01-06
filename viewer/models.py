@@ -17,8 +17,7 @@ class Company(models.Model):
     notification_company = models.BooleanField(default=False)
     notify_arrival = models.BooleanField(default=False)
     notify_departure = models.BooleanField(default=False)
-    notify_lunch_break_start = models.BooleanField(default=False)
-    notify_lunch_break_end = models.BooleanField(default=False)
+    notify_vacation = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Companies"
@@ -43,6 +42,8 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     working_hours = models.IntegerField(default=160)
+    has_lunch_break = models.BooleanField(default=True)
+    lunch_break_duration = models.IntegerField(default=30)
     holidays_per_year = models.IntegerField(default=20)
     is_manager = models.BooleanField(default=False)
     can_edit_employees = models.BooleanField(default=False)
@@ -51,8 +52,7 @@ class User(models.Model):
     notifications = models.BooleanField(default=False)
     notify_arrival = models.BooleanField(default=False)
     notify_departure = models.BooleanField(default=False)
-    notify_lunch_break_start = models.BooleanField(default=False)
-    notify_lunch_break_end = models.BooleanField(default=False)
+    notify_vacation = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} ({self.company.name})"
