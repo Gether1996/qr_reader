@@ -196,6 +196,126 @@
 }
 
 /* ============================================
+   Key Features Section
+   ============================================ */
+
+.key-features-section {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.75rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.section-title i {
+    color: #fbbf24;
+    margin-right: 0.75rem;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2.5rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card-icon.time {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.feature-card-icon.absence {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.feature-card-icon.analytics {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.feature-card-icon.notifications {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+.feature-card-icon.permissions {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.feature-card-icon.audit {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+}
+
+.feature-card-icon.language {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+}
+
+.feature-card-icon.mobile {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: white;
+}
+
+.feature-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+}
+
+.feature-card-description {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ============================================
    Dark Mode Support
    ============================================ */
 
@@ -293,6 +413,42 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
+:root[data-theme="dark"] .key-features-section {
+    color: white;
+}
+
+:root[data-theme="dark"] .section-title {
+    color: #f9fafb;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .section-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+:root[data-theme="dark"] .feature-card {
+    background: #1f2937;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid #374151;
+}
+
+:root[data-theme="dark"] .feature-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    border-color: #4b5563;
+}
+
+:root[data-theme="dark"] .feature-card-icon {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .feature-card-title {
+    color: #f9fafb;
+}
+
+:root[data-theme="dark"] .feature-card-description {
+    color: #d1d5db;
+}
+
 /* ============================================
    Responsive Design
    ============================================ */
@@ -320,5 +476,22 @@
         padding: 1.5rem;
         flex-direction: column;
         gap: 1.5rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
     }
 }

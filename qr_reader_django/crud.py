@@ -350,11 +350,10 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
     company = qr_code.company
     
     # Check which notification field to check based on scan type
+    # Only arrival and departure have notification fields in models
     notification_field_map = {
         'arrival': 'notify_arrival',
         'departure': 'notify_departure',
-        'lunch_break_start': 'notify_lunch_break_start',
-        'lunch_break_end': 'notify_lunch_break_end'
     }
     
     notification_field = notification_field_map.get(scan_type)
@@ -612,7 +611,7 @@ def update_vacation(vacation_id, company, user_id=None, date_from=None, date_to=
         return None, str(_('User not found'))
 
 
-def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
+def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None, is_self_delete=False):
     from datetime import date
     try:
         vacation = Vacation.objects.get(id=vacation_id, user__company=company)
@@ -623,8 +622,9 @@ def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, act
         vacation_type = vacation.type
         
         # Check if vacation is being cancelled before start date
+        # Don't send email if user is deleting their own vacation
         current_date = date.today()
-        send_cancellation_email = current_date < date_from
+        send_cancellation_email = current_date < date_from and not is_self_delete
         
         vacation.is_active = False
         vacation.save()

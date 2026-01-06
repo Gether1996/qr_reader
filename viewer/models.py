@@ -371,8 +371,8 @@ class PasswordResetToken(models.Model):
     
     def is_valid(self):
         """Check if token is still valid"""
-        from django.utils import timezone
-        return not self.is_used and timezone.now() < self.expires_at
+        from datetime import datetime
+        return not self.is_used and datetime.now() < self.expires_at.replace(tzinfo=None)
 
 
 # ============= AUDIT LOG MODEL =============

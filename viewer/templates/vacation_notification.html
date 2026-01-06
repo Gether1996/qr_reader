@@ -43,16 +43,45 @@
                             </p>
                             
                             <p style="margin: 0 0 30px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                                {% if vacation_type == 'vacation' %}
-                                    {% blocktrans with name=user_name %}{{ name }} has requested vacation time.{% endblocktrans %}
-                                {% elif vacation_type == 'sick_leave' %}
-                                    {% blocktrans with name=user_name %}{{ name }} has reported sick leave.{% endblocktrans %}
-                                {% elif vacation_type == 'doctor' %}
-                                    {% blocktrans with name=user_name %}{{ name }} has scheduled a doctor visit.{% endblocktrans %}
-                                {% elif vacation_type == 'home_office' %}
-                                    {% blocktrans with name=user_name %}{{ name }} will be working from home.{% endblocktrans %}
+                                {% if cancelled %}
+                                    {# Cancelled notification #}
+                                    {% if vacation_type == 'vacation' %}
+                                        {% blocktrans with name=user_name %}The vacation request for {{ name }} has been cancelled.{% endblocktrans %}
+                                    {% elif vacation_type == 'sick_leave' %}
+                                        {% blocktrans with name=user_name %}The sick leave for {{ name }} has been cancelled.{% endblocktrans %}
+                                    {% elif vacation_type == 'doctor' %}
+                                        {% blocktrans with name=user_name %}The doctor visit for {{ name }} has been cancelled.{% endblocktrans %}
+                                    {% elif vacation_type == 'home_office' %}
+                                        {% blocktrans with name=user_name %}The home office request for {{ name }} has been cancelled.{% endblocktrans %}
+                                    {% else %}
+                                        {% blocktrans with name=user_name %}The absence request for {{ name }} has been cancelled.{% endblocktrans %}
+                                    {% endif %}
+                                {% elif approved %}
+                                    {# Approved notification #}
+                                    {% if vacation_type == 'vacation' %}
+                                        {% blocktrans with name=user_name %}The vacation request for {{ name }} has been approved.{% endblocktrans %}
+                                    {% elif vacation_type == 'sick_leave' %}
+                                        {% blocktrans with name=user_name %}The sick leave for {{ name }} has been approved.{% endblocktrans %}
+                                    {% elif vacation_type == 'doctor' %}
+                                        {% blocktrans with name=user_name %}The doctor visit for {{ name }} has been approved.{% endblocktrans %}
+                                    {% elif vacation_type == 'home_office' %}
+                                        {% blocktrans with name=user_name %}The home office request for {{ name }} has been approved.{% endblocktrans %}
+                                    {% else %}
+                                        {% blocktrans with name=user_name %}The absence request for {{ name }} has been approved.{% endblocktrans %}
+                                    {% endif %}
                                 {% else %}
-                                    {% blocktrans with name=user_name %}{{ name }} has requested time off.{% endblocktrans %}
+                                    {# Pending notification #}
+                                    {% if vacation_type == 'vacation' %}
+                                        {% blocktrans with name=user_name %}{{ name }} has requested vacation time.{% endblocktrans %}
+                                    {% elif vacation_type == 'sick_leave' %}
+                                        {% blocktrans with name=user_name %}{{ name }} has reported sick leave.{% endblocktrans %}
+                                    {% elif vacation_type == 'doctor' %}
+                                        {% blocktrans with name=user_name %}{{ name }} has scheduled a doctor visit.{% endblocktrans %}
+                                    {% elif vacation_type == 'home_office' %}
+                                        {% blocktrans with name=user_name %}{{ name }} will be working from home.{% endblocktrans %}
+                                    {% else %}
+                                        {% blocktrans with name=user_name %}{{ name }} has requested time off.{% endblocktrans %}
+                                    {% endif %}
                                 {% endif %}
                             </p>
 

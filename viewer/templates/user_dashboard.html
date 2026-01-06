@@ -438,8 +438,8 @@
                                     </td>
                                     <td>
                                         {% if not absence.approved %}
-                                            <button onclick="editVacationSimple({{ absence.id }}, {{ user.id }}, '{{ user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type }}')" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-edit"></i> {% trans "Edit" %}
+                                            <button onclick="deleteVacation({{ absence.id }})" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i> {% trans "Delete" %}
                                             </button>
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -505,8 +505,8 @@
                                 </div>
                                 {% if not absence.approved %}
                                 <div class="mobile-scan-info-item mt-2">
-                                    <button onclick="editVacationSimple({{ absence.id }}, {{ user.id }}, '{{ user.name }}', '{{ absence.date_from|date:'Y-m-d' }}', '{{ absence.date_to|date:'Y-m-d' }}', '{{ absence.type }}')" class="btn btn-sm btn-outline-primary w-100">
-                                        <i class="fas fa-edit me-1"></i>{% trans "Edit Absence" %}
+                                    <button onclick="deleteVacation({{ absence.id }})" class="btn btn-sm btn-outline-danger w-100">
+                                        <i class="fas fa-trash me-1"></i>{% trans "Delete Absence" %}
                                     </button>
                                 </div>
                                 {% endif %}
