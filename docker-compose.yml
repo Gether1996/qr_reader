@@ -1,7 +1,8 @@
+name: qrreader
+
 services:
 
   web:
-    container_name: qr_reader
     build: .
     ports:
       - "9005:8000"
