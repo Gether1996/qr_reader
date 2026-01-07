@@ -218,6 +218,9 @@ function createUser() {
                                     <span class="input-group-text">min</span>
                                 </div>
                             </div>
+                            <div class="text-muted small mt-1" style="font-size: 0.75rem; line-height: 1.3;">
+                                <i class="fas fa-info-circle me-1"></i>${translations.lunchBreakInfo || 'Used only if employee does not scan a break QR code and if Automatic Lunch Breaks are enabled in company settings.'}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -536,6 +539,9 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                                     <input type="number" id="swal-edit-user-lunch-break" class="form-control" value="${lunchBreakDuration || 30}" required min="0" step="1">
                                     <span class="input-group-text">min</span>
                                 </div>
+                            </div>
+                            <div class="text-muted small mt-1" style="font-size: 0.75rem; line-height: 1.3;">
+                                <i class="fas fa-info-circle me-1"></i>${translations.lunchBreakInfo || 'Used only if employee does not scan a break QR code and if Automatic Lunch Breaks are enabled in company settings.'}
                             </div>
                         </div>
                     </div>

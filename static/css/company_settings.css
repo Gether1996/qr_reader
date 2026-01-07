@@ -1,5 +1,15 @@
 /* Company Settings Page Styles */
 
+/* Global Background */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="dark"] body {
+    background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+}
+
 .settings-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -17,34 +27,40 @@
 .settings-header h1 {
     font-size: 2rem;
     font-weight: 600;
-    color: var(--bs-gray-900);
+    color: white;
     margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 :root[data-theme="dark"] .settings-header h1 {
-    color: var(--text-primary);
+    color: #f9fafb;
 }
 
 .settings-header p {
-    color: var(--bs-gray-600);
+    color: #6b7280;
     font-size: 1rem;
 }
 
 :root[data-theme="dark"] .settings-header p {
-    color: var(--text-secondary);
+    color: #9ca3af;
 }
 
 .settings-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     margin-bottom: 2rem;
     overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.settings-card:hover {
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
 }
 
 :root[data-theme="dark"] .settings-card {
-    background: var(--bg-primary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: #1f2937;
+    color: #f9fafb;
 }
 
 .settings-card-header {
@@ -82,15 +98,15 @@
 .settings-section-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--bs-gray-800);
+    color: #1f2937;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--bs-gray-200);
+    border-bottom: 2px solid #e5e7eb;
 }
 
 :root[data-theme="dark"] .settings-section-title {
-    color: var(--text-primary);
-    border-bottom-color: var(--border-color);
+    color: #f9fafb;
+    border-bottom-color: #4b5563;
 }
 
 .settings-row {
@@ -107,31 +123,33 @@
 
 .settings-field label {
     font-weight: 500;
-    color: var(--bs-gray-700);
+    color: #374151;
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
 }
 
 :root[data-theme="dark"] .settings-field label {
-    color: var(--text-primary);
+    color: #f9fafb;
 }
 
 .settings-field input,
 .settings-field select,
 .settings-field textarea {
     padding: 0.75rem 1rem;
-    border: 1px solid var(--bs-gray-300);
+    border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.2s;
+    background: white;
+    color: #1f2937;
 }
 
 :root[data-theme="dark"] .settings-field input,
 :root[data-theme="dark"] .settings-field select,
 :root[data-theme="dark"] .settings-field textarea {
-    background: var(--bg-secondary);
-    border-color: var(--border-color);
-    color: var(--text-primary);
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
 }
 
 .settings-field input:focus,
@@ -143,12 +161,12 @@
 }
 
 .settings-field input[readonly] {
-    background-color: var(--bs-gray-100);
+    background-color: #f3f4f6;
     cursor: not-allowed;
 }
 
 :root[data-theme="dark"] .settings-field input[readonly] {
-    background-color: var(--bg-secondary);
+    background-color: #1f2937;
     opacity: 0.7;
 }
 
@@ -173,20 +191,25 @@
     display: flex;
     align-items: center;
     padding: 1rem;
-    border: 2px solid var(--bs-gray-200);
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
     transition: all 0.2s;
     cursor: pointer;
+    background-color: white;
 }
 
 :root[data-theme="dark"] .notification-checkbox {
-    border-color: var(--border-color);
-    background-color: var(--bg-secondary);
+    border-color: #4b5563;
+    background-color: #374151;
 }
 
 .notification-checkbox:hover {
     border-color: #667eea;
     background-color: rgba(102, 126, 234, 0.05);
+}
+
+:root[data-theme="dark"] .notification-checkbox:hover {
+    background-color: rgba(102, 126, 234, 0.15);
 }
 
 .notification-checkbox input[type="checkbox"] {
@@ -200,12 +223,12 @@
     margin: 0;
     cursor: pointer;
     font-weight: 500;
-    color: var(--bs-gray-800);
+    color: #1f2937;
     flex: 1;
 }
 
 :root[data-theme="dark"] .notification-checkbox label {
-    color: var(--text-primary);
+    color: #f9fafb;
 }
 
 .notification-checkbox i {
@@ -217,12 +240,12 @@
     display: flex;
     gap: 1rem;
     padding-top: 1.5rem;
-    border-top: 2px solid var(--bs-gray-200);
+    border-top: 2px solid #e5e7eb;
     margin-top: 2rem;
 }
 
 :root[data-theme="dark"] .settings-actions {
-    border-top-color: var(--border-color);
+    border-top-color: #4b5563;
 }
 
 .btn-save-settings {
@@ -247,8 +270,8 @@
 
 .btn-cancel-settings {
     background: white;
-    color: var(--bs-gray-700);
-    border: 2px solid var(--bs-gray-300);
+    color: #374151;
+    border: 2px solid #d1d5db;
     padding: 0.875rem 2rem;
     border-radius: 8px;
     font-weight: 600;
@@ -258,19 +281,19 @@
 }
 
 :root[data-theme="dark"] .btn-cancel-settings {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border-color: var(--border-color);
+    background: #374151;
+    color: #f9fafb;
+    border-color: #4b5563;
 }
 
 .btn-cancel-settings:hover {
-    border-color: var(--bs-gray-400);
-    background-color: var(--bs-gray-100);
+    border-color: #9ca3af;
+    background-color: #f3f4f6;
 }
 
 :root[data-theme="dark"] .btn-cancel-settings:hover {
-    background-color: var(--bg-tertiary);
-    border-color: var(--text-secondary);
+    background-color: #4b5563;
+    border-color: #6b7280;
 }
 
 .btn-reset-password {
@@ -298,13 +321,13 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background-color: var(--bs-gray-100);
+    background-color: #f3f4f6;
     border-radius: 8px;
     margin-bottom: 1rem;
 }
 
 :root[data-theme="dark"] .email-display {
-    background-color: var(--bg-secondary);
+    background-color: #374151;
 }
 
 .email-display i {
@@ -318,23 +341,23 @@
 
 .email-display-label {
     font-size: 0.875rem;
-    color: var(--bs-gray-600);
+    color: #6b7280;
     font-weight: 500;
     margin-bottom: 0.25rem;
 }
 
 :root[data-theme="dark"] .email-display-label {
-    color: var(--text-secondary);
+    color: #9ca3af;
 }
 
 .email-display-value {
     font-size: 1.1rem;
-    color: var(--bs-gray-900);
+    color: #1f2937;
     font-weight: 600;
 }
 
 :root[data-theme="dark"] .email-display-value {
-    color: var(--text-primary);
+    color: #f9fafb;
 }
 
 .alert-info-custom {

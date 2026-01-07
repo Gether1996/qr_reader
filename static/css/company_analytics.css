@@ -18,15 +18,14 @@ body {
     padding: 2rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     margin-bottom: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 :root[data-theme="dark"] .analytics-header {
     background: var(--bg-primary);
     color: var(--text-primary);
 }
 .analytics-header:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
 }
 :root[data-theme="dark"] .analytics-header h2 {
     color: var(--text-primary);
@@ -39,15 +38,14 @@ body {
     padding: 1.5rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     margin-bottom: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 :root[data-theme="dark"] .date-filter-card {
     background: var(--bg-primary);
     color: var(--text-primary);
 }
 .date-filter-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
 }
 
 /* Statistics Cards */
@@ -76,8 +74,7 @@ body {
     transition: width 0.3s ease;
 }
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
 }
 .stat-card:hover::before {
     width: 8px;

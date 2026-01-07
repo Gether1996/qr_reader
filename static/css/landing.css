@@ -450,6 +450,99 @@
 }
 
 /* ============================================
+   Collapsible Feature Details
+   ============================================ */
+
+.feature-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    margin-top: 0;
+}
+
+.feature-details.expanded {
+    max-height: 500px;
+    transition: max-height 0.4s ease-in;
+}
+
+.feature-details-content {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+:root[data-theme="dark"] .feature-details-content {
+    border-top-color: #374151;
+}
+
+.feature-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.feature-details-list li {
+    padding: 0.5rem 0;
+    color: #4b5563;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+:root[data-theme="dark"] .feature-details-list li {
+    color: #9ca3af;
+}
+
+.feature-details-list li i {
+    color: #10b981;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+}
+
+.expand-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.expand-btn:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+:root[data-theme="dark"] .expand-btn {
+    border-color: #4b5563;
+    color: #9ca3af;
+}
+
+:root[data-theme="dark"] .expand-btn:hover {
+    border-color: #60a5fa;
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.1);
+}
+
+.expand-btn i {
+    transition: transform 0.3s ease;
+}
+
+.expand-btn.expanded i {
+    transform: rotate(180deg);
+}
+
+/* ============================================
    Responsive Design
    ============================================ */
 

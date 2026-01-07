@@ -13,7 +13,6 @@
     <!-- Header -->
     <div class="settings-header">
         <h1><i class="fas fa-cog"></i> {% trans "Company Settings" %}</h1>
-        <p>{% trans "Manage your company profile and preferences" %}</p>
     </div>
 
     <!-- Company Profile Card -->
@@ -56,7 +55,6 @@
                                 required
                                 maxlength="255"
                             >
-                            <span class="settings-field-help">{% trans "The official name of your company" %}</span>
                         </div>
                     </div>
                 </div>
@@ -70,7 +68,7 @@
                             <label for="auto_lunch_breaks">
                                 {% trans "Automatic Lunch Breaks" %}
                             </label>
-                            <select id="auto_lunch_breaks" name="auto_lunch_breaks" class="form-select">
+                            <select id="auto_lunch_breaks" name="auto_lunch_breaks" class="form-select" style="cursor: pointer;">
                                 <option value="True" {% if company.auto_lunch_breaks %}selected{% endif %}>
                                     {% trans "Enabled" %}
                                 </option>
@@ -78,9 +76,6 @@
                                     {% trans "Disabled" %}
                                 </option>
                             </select>
-                            <span class="settings-field-help">
-                                {% trans "Automatically track lunch breaks between arrival and departure" %}
-                            </span>
                         </div>
                     </div>
                 </div>
@@ -88,10 +83,6 @@
                 <!-- Notification Settings -->
                 <div class="settings-section">
                     <h3 class="settings-section-title">{% trans "Email Notifications" %}</h3>
-                    
-                    <p class="text-muted mb-3">
-                        {% trans "Choose which scan events should trigger email notifications" %}
-                    </p>
 
                     <div class="notification-checkboxes">
                         <div class="notification-checkbox">

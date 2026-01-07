@@ -33,10 +33,12 @@
                                 <i class="fas fa-cog"></i>
                                 <span>{% trans "Settings" %}</span>
                             </a>
+                            {% comment %}
                             <a href="{% url 'magazine_dashboard' %}" class="dropdown-link">
                                 <i class="fas fa-book"></i>
                                 <span>{% trans "Magazine Creator" %}</span>
                             </a>
+                            {% endcomment %}
                             <a href="{% url 'audit_logs' %}" class="dropdown-link">
                                 <i class="fas fa-clipboard-list"></i>
                                 <span>{% trans "Logging" %}</span>
@@ -323,6 +325,7 @@
                     <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                {% comment %}
                 <a href="{% url 'magazine_dashboard' %}" class="mobile-menu-item">
                     <div class="mobile-menu-item-icon">
                         <i class="fas fa-book"></i>
@@ -333,6 +336,7 @@
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
+                {% endcomment %}
                 
                 <a href="{% url 'audit_logs' %}" class="mobile-menu-item">
                     <div class="mobile-menu-item-icon">

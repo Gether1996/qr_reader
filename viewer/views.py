@@ -420,6 +420,22 @@ def user_dashboard(request):
     
     # Check if any filters are active
     has_active_filters = any([qr_code_filter, scan_type_filter, vacation_type_filter, date_from, date_to])
+    
+    # Calculate year-to-date statistics
+    from django.utils import timezone
+    current_year = timezone.now().year
+    
+    # Get approved absences for current year
+    year_absences = Vacation.objects.filter(
+        user=user,
+        is_active=True,
+        approved=True,
+        date_from__year=current_year
+    )
+    
+    vacation_days_ytd = sum(v.days_count for v in year_absences.filter(type='vacation'))
+    sick_leave_days_ytd = sum(v.days_count for v in year_absences.filter(type='sick_leave'))
+    doctor_days_ytd = sum(v.days_count for v in year_absences.filter(type='doctor'))
 
     context = {
         'user': user,
@@ -431,6 +447,10 @@ def user_dashboard(request):
         'qr_codes': qr_codes,
         'has_active_filters': has_active_filters,
         'datalist_items': qr_code_names,
+        'vacation_days_ytd': vacation_days_ytd,
+        'sick_leave_days_ytd': sick_leave_days_ytd,
+        'doctor_days_ytd': doctor_days_ytd,
+        'current_year': current_year,
         'current_filters': {
             'qr_code': qr_code_filter,
             'scan_type': scan_type_filter,
@@ -740,6 +760,23 @@ def view_user_details(request, user_id):
         scans_count = ScanEvent.objects.filter(scanned_by=user).count()
         vacations_count = Vacation.objects.filter(user=user, is_active=True).count()
         
+        # Calculate year-to-date statistics
+        from django.utils import timezone
+        current_year = timezone.now().year
+        year_start = datetime.date(current_year, 1, 1)
+        
+        # Get approved absences for current year
+        year_absences = Vacation.objects.filter(
+            user=user,
+            is_active=True,
+            approved=True,
+            date_from__year=current_year
+        )
+        
+        vacation_days_ytd = sum(v.days_count for v in year_absences.filter(type='vacation'))
+        sick_leave_days_ytd = sum(v.days_count for v in year_absences.filter(type='sick_leave'))
+        doctor_days_ytd = sum(v.days_count for v in year_absences.filter(type='doctor'))
+        
         context = {
             'company': company,
             'user': user,
@@ -752,6 +789,10 @@ def view_user_details(request, user_id):
             'is_company': is_company,
             'can_edit_absences': is_company or (current_user and current_user.can_edit_absences),
             'can_edit_employees': is_company or (current_user and current_user.can_edit_employees),
+            'vacation_days_ytd': vacation_days_ytd,
+            'sick_leave_days_ytd': sick_leave_days_ytd,
+            'doctor_days_ytd': doctor_days_ytd,
+            'current_year': current_year,
             'current_filters': {
                 'date_from': date_from,
                 'date_to': date_to,
@@ -806,6 +847,23 @@ def view_user_details(request, user_id):
         # Get counts
         scans_count = ScanEvent.objects.filter(scanned_by=user).count()
         vacations_count = Vacation.objects.filter(user=user, is_active=True).count()
+        
+        # Calculate year-to-date statistics
+        from django.utils import timezone
+        current_year = timezone.now().year
+        year_start = datetime.date(current_year, 1, 1)
+        
+        # Get approved absences for current year
+        year_absences = Vacation.objects.filter(
+            user=user,
+            is_active=True,
+            approved=True,
+            date_from__year=current_year
+        )
+        
+        vacation_days_ytd = sum(v.days_count for v in year_absences.filter(type='vacation'))
+        sick_leave_days_ytd = sum(v.days_count for v in year_absences.filter(type='sick_leave'))
+        doctor_days_ytd = sum(v.days_count for v in year_absences.filter(type='doctor'))
 
         context = {
             'company': company,
@@ -820,6 +878,10 @@ def view_user_details(request, user_id):
             'is_company': is_company,
             'can_edit_absences': is_company or (current_user and current_user.can_edit_absences),
             'can_edit_employees': is_company or (current_user and current_user.can_edit_employees),
+            'vacation_days_ytd': vacation_days_ytd,
+            'sick_leave_days_ytd': sick_leave_days_ytd,
+            'doctor_days_ytd': doctor_days_ytd,
+            'current_year': current_year,
             'current_filters': {
                 'qr_code': qr_code_filter,
                 'scan_type': scan_type_filter,
