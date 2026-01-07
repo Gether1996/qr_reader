@@ -453,3 +453,74 @@ body {
         padding: 1.5rem;
     }
 }
+
+@media (max-width: 576px) {
+    .analytics-header {
+        padding: 1.25rem;
+    }
+
+    .analytics-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .date-filter-card {
+        padding: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+    }
+
+    .chart-container {
+        padding: 1rem;
+    }
+
+    .chart-container h5 {
+        font-size: 1.1rem;
+    }
+
+    .chart-wrapper {
+        height: 280px;
+    }
+
+    .period-stats {
+        padding: 1.25rem;
+    }
+
+    .period-stats h3 {
+        font-size: 1.5rem;
+    }
+
+    .top-qr-item {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .top-qr-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .work-hours-table th,
+    .work-hours-table td {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .time-filter-btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+}

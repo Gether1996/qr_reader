@@ -588,3 +588,90 @@
         font-size: 1rem;
     }
 }
+
+@media (max-width: 576px) {
+    .landing-container {
+        padding-top: 2rem;
+        padding-bottom: 1rem;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .access-cards {
+        padding: 0 0.75rem;
+    }
+    
+    .access-card {
+        padding: 1.5rem;
+    }
+
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.75rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    .card-description {
+        font-size: 0.9rem;
+    }
+
+    .action-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .features-strip {
+        padding: 1rem;
+    }
+
+    .feature-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+
+    .feature-text {
+        font-size: 0.9rem;
+    }
+
+    .features-grid {
+        padding: 0 0.75rem;
+        gap: 1rem;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .feature-card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .feature-card-title {
+        font-size: 1.1rem;
+    }
+
+    .feature-card-description {
+        font-size: 0.875rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.9rem;
+    }
+}

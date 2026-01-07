@@ -55,7 +55,7 @@
                         <div class="d-flex align-items-center gap-2">
                             <i class="fas fa-heading text-muted" style="font-size: 0.875rem;"></i>
                             <span class="text-muted small">{% trans "Headers" %}</span>
-                            <select class="form-select form-select-sm" id="sidebarPrimaryFont" style="width: 140px; font-size: 0.875rem; cursor: pointer;">
+                            <select class="form-select form-select-sm" id="sidebarPrimaryFont" style="max-width: 140px; font-size: 0.875rem; cursor: pointer;">
                                 <option value="Playfair Display" {% if magazine.primary_font == 'Playfair Display' %}selected{% endif %}>Playfair Display</option>
                                 <option value="Merriweather" {% if magazine.primary_font == 'Merriweather' %}selected{% endif %}>Merriweather</option>
                                 <option value="Lora" {% if magazine.primary_font == 'Lora' %}selected{% endif %}>Lora</option>
@@ -69,7 +69,7 @@
                         <div class="d-flex align-items-center gap-2">
                             <i class="fas fa-paragraph text-muted" style="font-size: 0.875rem;"></i>
                             <span class="text-muted small">{% trans "Body" %}</span>
-                            <select class="form-select form-select-sm" id="sidebarSecondaryFont" style="width: 140px; font-size: 0.875rem; cursor: pointer;">
+                            <select class="form-select form-select-sm" id="sidebarSecondaryFont" style="max-width: 140px; font-size: 0.875rem; cursor: pointer;">
                                 <option value="Lato" {% if magazine.secondary_font == 'Lato' %}selected{% endif %}>Lato</option>
                                 <option value="Open Sans" {% if magazine.secondary_font == 'Open Sans' %}selected{% endif %}>Open Sans</option>
                                 <option value="Roboto" {% if magazine.secondary_font == 'Roboto' %}selected{% endif %}>Roboto</option>

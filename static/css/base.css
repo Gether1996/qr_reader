@@ -375,3 +375,100 @@ canvas {
     padding-left: 0px;
     padding-right: 0px;
 }
+
+/* ============================================
+   Mobile Touch Targets & Accessibility
+   ============================================ */
+
+/* Ensure all interactive elements have minimum touch target size */
+@media (max-width: 768px) {
+    /* Buttons minimum touch size */
+    .btn,
+    button,
+    a.btn {
+        min-height: 44px;
+        padding: 0.625rem 1rem;
+    }
+
+    .btn-sm {
+        min-height: 38px;
+        padding: 0.5rem 0.875rem;
+    }
+
+    /* Form controls for better usability */
+    .form-control,
+    .form-select,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+
+    /* Checkbox and radio larger touch area */
+    input[type="checkbox"],
+    input[type="radio"] {
+        min-width: 24px;
+        min-height: 24px;
+        cursor: pointer;
+    }
+
+    /* Icon buttons */
+    .btn-icon,
+    [class*="icon-btn"],
+    button[class*="btn-"] i:only-child {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Better text readability */
+    body {
+        font-size: 16px;
+        line-height: 1.6;
+        -webkit-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    /* Better spacing for mobile */
+    .container,
+    .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Card padding optimization */
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Table scrolling */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Even tighter spacing for small screens */
+    .container,
+    .container-fluid {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+}

@@ -142,6 +142,30 @@ body {
     }
 }
 
+@media (max-width: 576px) {
+    .mobile-scan-list {
+        padding: 0.75rem;
+    }
+
+    .mobile-scan-card {
+        padding: 0.875rem;
+        margin-bottom: 0.625rem;
+    }
+
+    .mobile-scan-title {
+        font-size: 1rem;
+    }
+
+    .mobile-scan-type {
+        padding: 0.3rem 0.625rem;
+        font-size: 0.8rem;
+    }
+
+    .mobile-scan-info {
+        gap: 0.375rem;
+    }
+}
+
 /* Mobile Scan Cards */
 .mobile-scan-card {
     background: white;
