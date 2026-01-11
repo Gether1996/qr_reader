@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 12:21+0100\n"
+"POT-Creation-Date: 2026-01-11 14:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -246,7 +246,9 @@ msgstr "Abwesenheit erfolgreich gelöscht"
 msgid ""
 "Access denied. Only company or managers with edit absences permission can "
 "approve."
-msgstr "Zugriff verweigert. Nur Firma oder Manager mit Berechtigung zum Bearbeiten von Abwesenheiten können genehmigen."
+msgstr ""
+"Zugriff verweigert. Nur Firma oder Manager mit Berechtigung zum Bearbeiten "
+"von Abwesenheiten können genehmigen."
 
 #: .\qr_reader_django\crud_vacation.py:319
 msgid "This vacation request has already been approved."
@@ -464,7 +466,7 @@ msgstr "Tage mit Problemen"
 msgid "QR Code not found"
 msgstr "QR-Code nicht gefunden"
 
-#: .\qr_reader_django\generate_vacation_pdf.py:42
+#: .\qr_reader_django\generate_vacation_pdf.py:39
 msgid "time_from/time_to must be time or string 'HH:MM' (or 'HH:MM:SS')"
 msgstr "time_from/time_to muss Zeit oder String 'HH:MM' (oder 'HH:MM:SS') sein"
 
@@ -2453,7 +2455,9 @@ msgstr "Firmen-E-Mail"
 #: .\viewer\templates\company_settings.html:38
 msgid ""
 "Email address cannot be changed. Contact support if you need to update it."
-msgstr "E-Mail-Adresse kann nicht geändert werden. Kontaktieren Sie den Support, wenn Sie sie aktualisieren müssen."
+msgstr ""
+"E-Mail-Adresse kann nicht geändert werden. Kontaktieren Sie den Support, "
+"wenn Sie sie aktualisieren müssen."
 
 #: .\viewer\templates\company_settings.html:43
 #: .\viewer\templates\translations_js.html:64
@@ -2497,7 +2501,9 @@ msgstr "Sicherheit"
 
 #: .\viewer\templates\company_settings.html:154
 msgid "Reset your password by receiving a secure link via email"
-msgstr "Setzen Sie Ihr Passwort zurück, indem Sie einen sicheren Link per E-Mail erhalten"
+msgstr ""
+"Setzen Sie Ihr Passwort zurück, indem Sie einen sicheren Link per E-Mail "
+"erhalten"
 
 #: .\viewer\templates\company_settings.html:159
 msgid "Request Password Reset"
@@ -2683,7 +2689,9 @@ msgstr "Zeiterfassung"
 msgid ""
 "Track arrivals, departures, and breaks with GPS location. Automatic "
 "calculation of working hours, overtime, and night shifts."
-msgstr "Verfolgen Sie Ankünfte, Abfahrten und Pausen mit GPS-Standort. Automatische Berechnung von Arbeitsstunden, Überstunden und Nachtschichten."
+msgstr ""
+"Verfolgen Sie Ankünfte, Abfahrten und Pausen mit GPS-Standort. Automatische "
+"Berechnung von Arbeitsstunden, Überstunden und Nachtschichten."
 
 #: .\viewer\templates\landing.html:87 .\viewer\templates\landing.html:113
 #: .\viewer\templates\landing.html:139 .\viewer\templates\landing.html:165
@@ -2727,7 +2735,9 @@ msgstr "Abwesenheitsverwaltung"
 msgid ""
 "Request and approve vacations, sick leave, doctor visits, and home office. "
 "Email notifications and approval workflow included."
-msgstr "Beantragen und genehmigen Sie Urlaub, Krankheit, Arztbesuche und Homeoffice. E-Mail-Benachrichtigungen und Genehmigungsworkflow sind enthalten."
+msgstr ""
+"Beantragen und genehmigen Sie Urlaub, Krankheit, Arztbesuche und Homeoffice. "
+"E-Mail-Benachrichtigungen und Genehmigungsworkflow sind enthalten."
 
 #: .\viewer\templates\landing.html:119
 msgid "Vacation requests with date range selection"
@@ -2761,7 +2771,9 @@ msgstr "Analysen & Berichte"
 msgid ""
 "Comprehensive PDF and Excel reports with statistics. Interactive charts, "
 "working hours breakdown, and attendance summaries."
-msgstr "Umfassende PDF- und Excel-Berichte mit Statistiken. Interaktive Diagramme, Arbeitsstundenaufschlüsselung und Anwesenheitszusammenfassungen."
+msgstr ""
+"Umfassende PDF- und Excel-Berichte mit Statistiken. Interaktive Diagramme, "
+"Arbeitsstundenaufschlüsselung und Anwesenheitszusammenfassungen."
 
 #: .\viewer\templates\landing.html:145
 msgid "PDF attendance reports with company branding"
@@ -2791,7 +2803,9 @@ msgstr "Benutzerdefinierte Datumsbereichsfilterung"
 msgid ""
 "Automatic notifications for arrivals, departures, and vacation requests. "
 "Customizable notification preferences per company and manager."
-msgstr "Automatische Benachrichtigungen für Ankünfte, Abfahrten und Urlaubsanträge. Anpassbare Benachrichtigungseinstellungen pro Unternehmen und Manager."
+msgstr ""
+"Automatische Benachrichtigungen für Ankünfte, Abfahrten und Urlaubsanträge. "
+"Anpassbare Benachrichtigungseinstellungen pro Unternehmen und Manager."
 
 #: .\viewer\templates\landing.html:171
 msgid "Arrival and departure notifications"
@@ -2825,7 +2839,9 @@ msgstr "Manager-Berechtigungen"
 msgid ""
 "Granular permission system for managers. Control access to employee "
 "management, QR codes, and absence approvals."
-msgstr "Detailliertes Berechtigungssystem für Manager. Zugriffskontrolle auf Mitarbeiterverwaltung, QR-Codes und Abwesenheitsgenehmigungen."
+msgstr ""
+"Detailliertes Berechtigungssystem für Manager. Zugriffskontrolle auf "
+"Mitarbeiterverwaltung, QR-Codes und Abwesenheitsgenehmigungen."
 
 #: .\viewer\templates\landing.html:197
 msgid "Employee management permissions"
@@ -2859,7 +2875,10 @@ msgstr "Audit-Protokollierung"
 msgid ""
 "Complete activity tracking with audit logs. Monitor all actions, changes, "
 "and access with detailed timestamps and IP addresses."
-msgstr "Vollständige Aktivitätsverfolgung mit Audit-Protokollen. Überwachung aller Aktionen, Änderungen und Zugriffe mit detaillierten Zeitstempeln und IP-Adressen."
+msgstr ""
+"Vollständige Aktivitätsverfolgung mit Audit-Protokollen. Überwachung aller "
+"Aktionen, Änderungen und Zugriffe mit detaillierten Zeitstempeln und IP-"
+"Adressen."
 
 #: .\viewer\templates\landing.html:223
 msgid "Complete action and change tracking"
@@ -2893,7 +2912,9 @@ msgstr "Mehrsprachig"
 msgid ""
 "Full support for Slovak, English, German, and Spanish. Translations for "
 "interface, emails, and reports."
-msgstr "Volle Unterstützung für Slowakisch, Englisch, Deutsch und Spanisch. Übersetzungen für Benutzeroberfläche, E-Mails und Berichte."
+msgstr ""
+"Volle Unterstützung für Slowakisch, Englisch, Deutsch und Spanisch. "
+"Übersetzungen für Benutzeroberfläche, E-Mails und Berichte."
 
 #: .\viewer\templates\landing.html:249
 msgid "Slovak, English, German, and Spanish support"
@@ -2927,7 +2948,9 @@ msgstr "Mobiler Zugriff"
 msgid ""
 "Fully responsive design optimized for smartphones and tablets. Scan QR codes "
 "directly from your mobile device."
-msgstr "Vollständig responsives Design optimiert für Smartphones und Tablets. Scannen Sie QR-Codes direkt von Ihrem Mobilgerät."
+msgstr ""
+"Vollständig responsives Design optimiert für Smartphones und Tablets. "
+"Scannen Sie QR-Codes direkt von Ihrem Mobilgerät."
 
 #: .\viewer\templates\landing.html:275
 msgid "Responsive design for all screen sizes"
@@ -3021,7 +3044,9 @@ msgstr "Magazin löschen"
 #: .\viewer\templates\magazine_dashboard.html:110
 msgid ""
 "Are you sure you want to delete this magazine? This action cannot be undone."
-msgstr "Möchten Sie dieses Magazin wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+msgstr ""
+"Möchten Sie dieses Magazin wirklich löschen? Diese Aktion kann nicht "
+"rückgängig gemacht werden."
 
 #: .\viewer\templates\magazine_dashboard.html:147
 #: .\viewer\templates\magazine_dashboard.html:152
@@ -3137,7 +3162,8 @@ msgstr "Kein Artikel ausgewählt"
 
 #: .\viewer\templates\magazine_editor.html:227
 msgid "Create a new article or select one from the sidebar"
-msgstr "Erstellen Sie einen neuen Artikel oder wählen Sie einen aus der Seitenleiste"
+msgstr ""
+"Erstellen Sie einen neuen Artikel oder wählen Sie einen aus der Seitenleiste"
 
 #: .\viewer\templates\magazine_editor.html:229
 msgid "Create Article"
@@ -3404,12 +3430,16 @@ msgstr "Hallo"
 
 #: .\viewer\templates\password_reset_email.html:28
 msgid "We received a request to reset the password for your company account."
-msgstr "Wir haben eine Anfrage zum Zurücksetzen des Passworts für Ihr Firmenkonto erhalten."
+msgstr ""
+"Wir haben eine Anfrage zum Zurücksetzen des Passworts für Ihr Firmenkonto "
+"erhalten."
 
 #: .\viewer\templates\password_reset_email.html:32
 msgid ""
 "If you made this request, click the button below to reset your password:"
-msgstr "Wenn Sie diese Anfrage gestellt haben, klicken Sie auf die Schaltfläche unten, um Ihr Passwort zurückzusetzen:"
+msgstr ""
+"Wenn Sie diese Anfrage gestellt haben, klicken Sie auf die Schaltfläche "
+"unten, um Ihr Passwort zurückzusetzen:"
 
 #: .\viewer\templates\password_reset_email.html:47
 msgid "Or copy and paste this link into your browser:"
@@ -3431,7 +3461,9 @@ msgstr "Haben Sie dies nicht angefordert?"
 msgid ""
 "If you did not request a password reset, please ignore this email. Your "
 "password will remain unchanged."
-msgstr "Wenn Sie keine Passwortzurücksetzung angefordert haben, ignorieren Sie bitte diese E-Mail. Ihr Passwort bleibt unverändert."
+msgstr ""
+"Wenn Sie keine Passwortzurücksetzung angefordert haben, ignorieren Sie bitte "
+"diese E-Mail. Ihr Passwort bleibt unverändert."
 
 #: .\viewer\templates\password_reset_email.html:86
 msgid "Request Time"
@@ -3501,7 +3533,8 @@ msgstr "QR Reader Anwesenheitssystem"
 
 #: .\viewer\templates\scan_notification.html:119
 msgid "You received this email because you have notifications enabled."
-msgstr "Sie haben diese E-Mail erhalten, weil Sie Benachrichtigungen aktiviert haben."
+msgstr ""
+"Sie haben diese E-Mail erhalten, weil Sie Benachrichtigungen aktiviert haben."
 
 #: .\viewer\templates\translations_js.html:5
 msgid "Success!"
@@ -3631,7 +3664,9 @@ msgstr "Mittagspausendauer"
 msgid ""
 "Used only if employee does not scan a break QR code and if Automatic Lunch "
 "Breaks are enabled in company settings."
-msgstr "Wird nur verwendet, wenn der Mitarbeiter keinen Pausen-QR-Code scannt und automatische Mittagspausen in den Unternehmenseinstellungen aktiviert sind."
+msgstr ""
+"Wird nur verwendet, wenn der Mitarbeiter keinen Pausen-QR-Code scannt und "
+"automatische Mittagspausen in den Unternehmenseinstellungen aktiviert sind."
 
 #: .\viewer\templates\translations_js.html:68
 msgid "optional"
@@ -3838,11 +3873,14 @@ msgstr "Einstellungen wurden erfolgreich gespeichert."
 
 #: .\viewer\templates\translations_js.html:145
 msgid "Failed to save settings. Please try again."
-msgstr "Fehler beim Speichern der Einstellungen. Bitte versuchen Sie es erneut."
+msgstr ""
+"Fehler beim Speichern der Einstellungen. Bitte versuchen Sie es erneut."
 
 #: .\viewer\templates\translations_js.html:146
 msgid "Network error. Please check your connection and try again."
-msgstr "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+msgstr ""
+"Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es "
+"erneut."
 
 #: .\viewer\templates\translations_js.html:147
 msgid "Cancel Changes?"
@@ -3864,7 +3902,9 @@ msgstr "Nein, weiter bearbeiten"
 msgid ""
 "A password reset link will be sent to your email address.<br><br>Do you want "
 "to continue?"
-msgstr "Ein Link zum Zurücksetzen des Passworts wird an Ihre E-Mail-Adresse gesendet.<br><br>Möchten Sie fortfahren?"
+msgstr ""
+"Ein Link zum Zurücksetzen des Passworts wird an Ihre E-Mail-Adresse gesendet."
+"<br><br>Möchten Sie fortfahren?"
 
 #: .\viewer\templates\translations_js.html:153
 msgid "Send Reset Link"
@@ -3887,12 +3927,15 @@ msgid ""
 "A password reset link has been sent to your email address.<br><br>Please "
 "check your inbox and follow the instructions."
 msgstr ""
-"Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail-Adresse gesendet.<br><br>Bitte "
-"überprüfen Sie Ihren Posteingang und folgen Sie den Anweisungen."
+"Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail-Adresse "
+"gesendet.<br><br>Bitte überprüfen Sie Ihren Posteingang und folgen Sie den "
+"Anweisungen."
 
 #: .\viewer\templates\translations_js.html:158
 msgid "Failed to send reset email. Please try again."
-msgstr "Fehler beim Senden der E-Mail zum Zurücksetzen. Bitte versuchen Sie es erneut."
+msgstr ""
+"Fehler beim Senden der E-Mail zum Zurücksetzen. Bitte versuchen Sie es "
+"erneut."
 
 #: .\viewer\templates\translations_js.html:159
 msgid "Validation Error"
@@ -4105,7 +4148,8 @@ msgstr "Jetzt genehmigen"
 msgid ""
 "You received this email because you have vacation notifications enabled."
 msgstr ""
-"Sie haben diese E-Mail erhalten, weil Sie Urlaubsbenachrichtigungen aktiviert haben."
+"Sie haben diese E-Mail erhalten, weil Sie Urlaubsbenachrichtigungen "
+"aktiviert haben."
 
 #: .\viewer\views.py:36 .\viewer\views.py:902
 msgid "Please login as a company or manager"
@@ -4161,7 +4205,8 @@ msgstr "Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts"
 
 #: .\viewer\views.py:1549
 msgid "This password reset link has expired or is invalid"
-msgstr "Dieser Link zum Zurücksetzen des Passworts ist abgelaufen oder ungültig"
+msgstr ""
+"Dieser Link zum Zurücksetzen des Passworts ist abgelaufen oder ungültig"
 
 #: .\viewer\views.py:1560
 msgid "Both password fields are required"
@@ -4175,7 +4220,8 @@ msgstr "Das Passwort muss mindestens 6 Zeichen lang sein"
 msgid ""
 "Password has been reset successfully. Please login with your new password."
 msgstr ""
-"Passwort wurde erfolgreich zurückgesetzt. Bitte melden Sie sich mit Ihrem neuen Passwort an."
+"Passwort wurde erfolgreich zurückgesetzt. Bitte melden Sie sich mit Ihrem "
+"neuen Passwort an."
 
 #: .\viewer\views.py:1607
 msgid "Invalid password reset link"

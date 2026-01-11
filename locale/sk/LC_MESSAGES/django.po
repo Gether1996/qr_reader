@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 12:21+0100\n"
+"POT-Creation-Date: 2026-01-11 14:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -247,7 +247,9 @@ msgstr "Neprítemnosť úspešne vymazaná"
 msgid ""
 "Access denied. Only company or managers with edit absences permission can "
 "approve."
-msgstr "Prístup odmietnutý. Len firma alebo manažéri s oprávnením upravovať absencie môžu schváliť."
+msgstr ""
+"Prístup odmietnutý. Len firma alebo manažéri s oprávnením upravovať absencie "
+"môžu schváliť."
 
 #: .\qr_reader_django\crud_vacation.py:319
 msgid "This vacation request has already been approved."
@@ -465,9 +467,10 @@ msgstr "Dni s problémami"
 msgid "QR Code not found"
 msgstr "QR kód nebol nájdený"
 
-#: .\qr_reader_django\generate_vacation_pdf.py:42
+#: .\qr_reader_django\generate_vacation_pdf.py:39
 msgid "time_from/time_to must be time or string 'HH:MM' (or 'HH:MM:SS')"
-msgstr "time_from/time_to musí byť čas alebo reťazec 'HH:MM' (alebo 'HH:MM:SS')"
+msgstr ""
+"time_from/time_to musí byť čas alebo reťazec 'HH:MM' (alebo 'HH:MM:SS')"
 
 #: .\qr_reader_django\login_register_logout.py:24
 msgid "All fields are required"
@@ -2455,7 +2458,8 @@ msgstr "Email spoločnosti"
 msgid ""
 "Email address cannot be changed. Contact support if you need to update it."
 msgstr ""
-"Emailová adresa sa nedá zmeniť. Kontaktujte podporu, ak ju potrebujete aktualizovať."
+"Emailová adresa sa nedá zmeniť. Kontaktujte podporu, ak ju potrebujete "
+"aktualizovať."
 
 #: .\viewer\templates\company_settings.html:43
 #: .\viewer\templates\translations_js.html:64
@@ -2685,7 +2689,9 @@ msgstr "Evidencia času"
 msgid ""
 "Track arrivals, departures, and breaks with GPS location. Automatic "
 "calculation of working hours, overtime, and night shifts."
-msgstr "Sledujte príchody, odchody a prestávky s GPS polohou. Automatický výpočet pracovných hodín, nadčasov a nočných zmien."
+msgstr ""
+"Sledujte príchody, odchody a prestávky s GPS polohou. Automatický výpočet "
+"pracovných hodín, nadčasov a nočných zmien."
 
 #: .\viewer\templates\landing.html:87 .\viewer\templates\landing.html:113
 #: .\viewer\templates\landing.html:139 .\viewer\templates\landing.html:165
@@ -2729,7 +2735,9 @@ msgstr "Správa abséncií"
 msgid ""
 "Request and approve vacations, sick leave, doctor visits, and home office. "
 "Email notifications and approval workflow included."
-msgstr "Žiadosť a schvaľovať dovolenky, neschôpnosť, návštevy lekára a prácu z domu. Emailové notifikácie a schvaľovací proces sú zahrnuté."
+msgstr ""
+"Žiadosť a schvaľovať dovolenky, neschôpnosť, návštevy lekára a prácu z domu. "
+"Emailové notifikácie a schvaľovací proces sú zahrnuté."
 
 #: .\viewer\templates\landing.html:119
 msgid "Vacation requests with date range selection"
@@ -2763,7 +2771,9 @@ msgstr "Analytika a reporty"
 msgid ""
 "Comprehensive PDF and Excel reports with statistics. Interactive charts, "
 "working hours breakdown, and attendance summaries."
-msgstr "Komplexné PDF a Excel reporty so štatistikami. Interaktívne grafy, rozdelenie pracovných hodín a súhrny dochádzky."
+msgstr ""
+"Komplexné PDF a Excel reporty so štatistikami. Interaktívne grafy, "
+"rozdelenie pracovných hodín a súhrny dochádzky."
 
 #: .\viewer\templates\landing.html:145
 msgid "PDF attendance reports with company branding"
@@ -2793,7 +2803,9 @@ msgstr "Vlastné filtrovanie dátumového rozsahu"
 msgid ""
 "Automatic notifications for arrivals, departures, and vacation requests. "
 "Customizable notification preferences per company and manager."
-msgstr "Automatické notifikácie pre príchody, odchody a žiadosti o dovolenku. Prispôsobiteľné nastavenia notifikácií pre firmu a manažéra."
+msgstr ""
+"Automatické notifikácie pre príchody, odchody a žiadosti o dovolenku. "
+"Prispôsobiteľné nastavenia notifikácií pre firmu a manažéra."
 
 #: .\viewer\templates\landing.html:171
 msgid "Arrival and departure notifications"
@@ -2827,7 +2839,9 @@ msgstr "Oprávnenia manažéra"
 msgid ""
 "Granular permission system for managers. Control access to employee "
 "management, QR codes, and absence approvals."
-msgstr "Detailný systém oprávnení pre manažérov. Kontrola prístupu k správe zamestnancov, QR kódom a schvaľovaniu neprítomností."
+msgstr ""
+"Detailný systém oprávnení pre manažérov. Kontrola prístupu k správe "
+"zamestnancov, QR kódom a schvaľovaniu neprítomností."
 
 #: .\viewer\templates\landing.html:197
 msgid "Employee management permissions"
@@ -2861,7 +2875,9 @@ msgstr "Audit logovanie"
 msgid ""
 "Complete activity tracking with audit logs. Monitor all actions, changes, "
 "and access with detailed timestamps and IP addresses."
-msgstr "Kompletné sledovanie aktivít s audit logmi. Monitorujte všetky akcie, zmeny a prístupy s podrobnými časovými pečiatkami a IP adresami."
+msgstr ""
+"Kompletné sledovanie aktivít s audit logmi. Monitorujte všetky akcie, zmeny "
+"a prístupy s podrobnými časovými pečiatkami a IP adresami."
 
 #: .\viewer\templates\landing.html:223
 msgid "Complete action and change tracking"
@@ -2895,7 +2911,9 @@ msgstr "Viacjazyčnosť"
 msgid ""
 "Full support for Slovak, English, German, and Spanish. Translations for "
 "interface, emails, and reports."
-msgstr "Plná podpora slovenčiny, angličtiny, nemčiny a španieľčiny. Preklady rozhrania, emailov a reportov."
+msgstr ""
+"Plná podpora slovenčiny, angličtiny, nemčiny a španieľčiny. Preklady "
+"rozhrania, emailov a reportov."
 
 #: .\viewer\templates\landing.html:249
 msgid "Slovak, English, German, and Spanish support"
@@ -2929,7 +2947,9 @@ msgstr "Mobilný prístup"
 msgid ""
 "Fully responsive design optimized for smartphones and tablets. Scan QR codes "
 "directly from your mobile device."
-msgstr "Plne responzívny dizajn optimalizovaný pre smartfóny a tablety. Skenujte QR kódy priamo z vašeho mobilného zariadenia."
+msgstr ""
+"Plne responzívny dizajn optimalizovaný pre smartfóny a tablety. Skenujte QR "
+"kódy priamo z vašeho mobilného zariadenia."
 
 #: .\viewer\templates\landing.html:275
 msgid "Responsive design for all screen sizes"
@@ -3411,7 +3431,8 @@ msgstr "Obdržali sme žiadosť o obnovenie hesla pre váš firemný účet."
 #: .\viewer\templates\password_reset_email.html:32
 msgid ""
 "If you made this request, click the button below to reset your password:"
-msgstr "Ak ste podali túto žiadosť, kliknite na tlačidlo nižšie pre obnovenie hesla:"
+msgstr ""
+"Ak ste podali túto žiadosť, kliknite na tlačidlo nižšie pre obnovenie hesla:"
 
 #: .\viewer\templates\password_reset_email.html:47
 msgid "Or copy and paste this link into your browser:"
@@ -3433,7 +3454,9 @@ msgstr "Nežiadali ste o toto?"
 msgid ""
 "If you did not request a password reset, please ignore this email. Your "
 "password will remain unchanged."
-msgstr "Ak ste nežiadali o obnovenie hesla, prosím ignorujte tento email. Vaše heslo zostane nezmené."
+msgstr ""
+"Ak ste nežiadali o obnovenie hesla, prosím ignorujte tento email. Vaše heslo "
+"zostane nezmené."
 
 #: .\viewer\templates\password_reset_email.html:86
 msgid "Request Time"
@@ -3633,7 +3656,9 @@ msgstr "Trvania obednej prestávky"
 msgid ""
 "Used only if employee does not scan a break QR code and if Automatic Lunch "
 "Breaks are enabled in company settings."
-msgstr "Používa sa iba ak zamestnanec nenaskenuje QR kód prestávky a ak sú Automatické obedné prestávky zapnuté vo firemných nastaveniach."
+msgstr ""
+"Používa sa iba ak zamestnanec nenaskenuje QR kód prestávky a ak sú "
+"Automatické obedné prestávky zapnuté vo firemných nastaveniach."
 
 #: .\viewer\templates\translations_js.html:68
 msgid "optional"
@@ -3866,7 +3891,9 @@ msgstr "Nie, pokračovať v úprave"
 msgid ""
 "A password reset link will be sent to your email address.<br><br>Do you want "
 "to continue?"
-msgstr "Odkaz na obnovenie hesla bude odoslaný na vašu emailovú adresu.<br><br>Chcete pokračovať?"
+msgstr ""
+"Odkaz na obnovenie hesla bude odoslaný na vašu emailovú adresu."
+"<br><br>Chcete pokračovať?"
 
 #: .\viewer\templates\translations_js.html:153
 msgid "Send Reset Link"
@@ -3888,7 +3915,9 @@ msgstr "Email odoslaný!"
 msgid ""
 "A password reset link has been sent to your email address.<br><br>Please "
 "check your inbox and follow the instructions."
-msgstr "Odkaz na obnovenie hesla bol odoslaný na vašu emailovú adresu.<br><br>Prosím skontrolujte vašu schránku a postupujte podľa informatív."
+msgstr ""
+"Odkaz na obnovenie hesla bol odoslaný na vašu emailovú adresu.<br><br>Prosím "
+"skontrolujte vašu schránku a postupujte podľa informatív."
 
 #: .\viewer\templates\translations_js.html:158
 msgid "Failed to send reset email. Please try again."
