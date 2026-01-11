@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 14:48+0100\n"
+"POT-Creation-Date: 2026-01-11 17:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1210,11 +1210,13 @@ msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:867
 #: .\viewer\templates\company_dashboard.html:267
+#: .\viewer\templates\translations_js.html:125
 msgid "Yes"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:868
 #: .\viewer\templates\company_dashboard.html:272
+#: .\viewer\templates\translations_js.html:126
 msgid "No"
 msgstr ""
 
@@ -2416,7 +2418,7 @@ msgstr "Hier anmelden"
 #: .\viewer\templates\company_reset_password.html:18
 #: .\viewer\templates\company_reset_password.html:80
 #: .\viewer\templates\password_reset_email.html:40
-#: .\viewer\templates\translations_js.html:153
+#: .\viewer\templates\translations_js.html:155
 msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
@@ -3072,7 +3074,7 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: .\viewer\templates\magazine_editor.html:44
-#: .\viewer\templates\translations_js.html:141
+#: .\viewer\templates\translations_js.html:145
 msgid "Print"
 msgstr "Drucken"
 
@@ -3521,7 +3523,7 @@ msgid "%(name)s has left work."
 msgstr "%(name)s hat die Arbeit verlassen."
 
 #: .\viewer\templates\scan_notification.html:76
-#: .\viewer\templates\translations_js.html:132
+#: .\viewer\templates\translations_js.html:136
 msgid "Address"
 msgstr "Adresse"
 
@@ -3774,7 +3776,7 @@ msgid "Scan Recorded"
 msgstr "Scan aufgezeichnet"
 
 #: .\viewer\templates\translations_js.html:107
-#: .\viewer\templates\user_scan_qr.html:82
+#: .\viewer\templates\user_scan_qr.html:84
 msgid "Home Office Scan"
 msgstr "Homeoffice-Scan"
 
@@ -3803,7 +3805,7 @@ msgid "Permission Error"
 msgstr "Berechtigungsfehler"
 
 #: .\viewer\templates\translations_js.html:116
-#: .\viewer\templates\user_scan_qr.html:103
+#: .\viewer\templates\user_scan_qr.html:106
 msgid "Grant Permissions"
 msgstr "Berechtigungen erteilen"
 
@@ -3812,12 +3814,12 @@ msgid "Requesting permissions..."
 msgstr "Berechtigungen werden angefordert..."
 
 #: .\viewer\templates\translations_js.html:118
-#: .\viewer\templates\user_scan_qr.html:76
+#: .\viewer\templates\user_scan_qr.html:78
 msgid "Start Scanner"
 msgstr "Scanner starten"
 
 #: .\viewer\templates\translations_js.html:119
-#: .\viewer\templates\user_scan_qr.html:112
+#: .\viewer\templates\user_scan_qr.html:115
 msgid "Processing scan..."
 msgstr "Scan wird verarbeitet..."
 
@@ -3833,90 +3835,90 @@ msgstr "Vorbereitung..."
 msgid "Please enable location"
 msgstr "Bitte aktivieren Sie den Standort"
 
-#: .\viewer\templates\translations_js.html:125
+#: .\viewer\templates\translations_js.html:123
+msgid "Confirm Home Office"
+msgstr "Homeoffice bestätigen"
+
+#: .\viewer\templates\translations_js.html:124
+msgid "Are you sure you want to scan from home office?"
+msgstr "Möchten Sie wirklich von zu Hause aus scannen?"
+
+#: .\viewer\templates\translations_js.html:129
 msgid "Adding absence..."
 msgstr "Abwesenheit wird hinzugefügt..."
 
-#: .\viewer\templates\translations_js.html:126
+#: .\viewer\templates\translations_js.html:130
 msgid "Updating absence..."
 msgstr "Abwesenheit wird aktualisiert..."
 
-#: .\viewer\templates\translations_js.html:127
+#: .\viewer\templates\translations_js.html:131
 msgid "Deleting absence..."
 msgstr "Abwesenheit wird gelöscht..."
 
-#: .\viewer\templates\translations_js.html:128
+#: .\viewer\templates\translations_js.html:132
 msgid "Approving absence..."
 msgstr "Abwesenheit wird genehmigt..."
 
-#: .\viewer\templates\translations_js.html:131
+#: .\viewer\templates\translations_js.html:135
 msgid "GPS Coordinates"
 msgstr "GPS-Koordinaten"
 
-#: .\viewer\templates\translations_js.html:133
+#: .\viewer\templates\translations_js.html:137
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
-#: .\viewer\templates\translations_js.html:134
+#: .\viewer\templates\translations_js.html:138
 msgid "Failed to process scan"
 msgstr "Scan konnte nicht verarbeitet werden"
 
-#: .\viewer\templates\translations_js.html:135
+#: .\viewer\templates\translations_js.html:139
 msgid "Failed to start scanner"
 msgstr "Scanner konnte nicht gestartet werden"
 
-#: .\viewer\templates\translations_js.html:136
+#: .\viewer\templates\translations_js.html:140
 msgid "Failed to record scan"
 msgstr "Scan konnte nicht aufgezeichnet werden"
 
-#: .\viewer\templates\translations_js.html:137
+#: .\viewer\templates\translations_js.html:141
 msgid "Please enter a QR code UUID"
 msgstr "Bitte geben Sie eine QR-Code UUID ein"
 
-#: .\viewer\templates\translations_js.html:138
+#: .\viewer\templates\translations_js.html:142
 msgid "Please select a date range first!"
 msgstr "Bitte wählen Sie zuerst einen Datumsbereich aus!"
 
-#: .\viewer\templates\translations_js.html:142
+#: .\viewer\templates\translations_js.html:146
 msgid "Close"
 msgstr "Schließen"
 
-#: .\viewer\templates\translations_js.html:145
+#: .\viewer\templates\translations_js.html:149
 msgid "Saving..."
 msgstr "Wird gespeichert..."
 
-#: .\viewer\templates\translations_js.html:146
+#: .\viewer\templates\translations_js.html:150
 msgid "Settings have been saved successfully."
 msgstr "Einstellungen wurden erfolgreich gespeichert."
 
-#: .\viewer\templates\translations_js.html:147
+#: .\viewer\templates\translations_js.html:151
 msgid "Failed to save settings. Please try again."
 msgstr ""
 "Fehler beim Speichern der Einstellungen. Bitte versuchen Sie es erneut."
 
-#: .\viewer\templates\translations_js.html:148
+#: .\viewer\templates\translations_js.html:152
 msgid "Network error. Please check your connection and try again."
 msgstr ""
 "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es "
 "erneut."
 
-#: .\viewer\templates\translations_js.html:149
+#: .\viewer\templates\translations_js.html:153
 msgid "Cancel Changes?"
 msgstr "Änderungen verwerfen?"
 
-#: .\viewer\templates\translations_js.html:150
+#: .\viewer\templates\translations_js.html:154
 msgid "All unsaved changes will be lost."
 msgstr "Alle nicht gespeicherten Änderungen gehen verloren."
 
-#: .\viewer\templates\translations_js.html:151
-msgid "Yes, cancel"
-msgstr "Ja, verwerfen"
-
-#: .\viewer\templates\translations_js.html:152
-msgid "No, continue editing"
-msgstr "Nein, weiter bearbeiten"
-
-#: .\viewer\templates\translations_js.html:154
+#: .\viewer\templates\translations_js.html:156
 msgid ""
 "A password reset link will be sent to your email address.<br><br>Do you want "
 "to continue?"
@@ -3924,23 +3926,23 @@ msgstr ""
 "Ein Link zum Zurücksetzen des Passworts wird an Ihre E-Mail-Adresse gesendet."
 "<br><br>Möchten Sie fortfahren?"
 
-#: .\viewer\templates\translations_js.html:155
+#: .\viewer\templates\translations_js.html:157
 msgid "Send Reset Link"
 msgstr "Reset-Link senden"
 
-#: .\viewer\templates\translations_js.html:156
+#: .\viewer\templates\translations_js.html:158
 msgid "Sending..."
 msgstr "Wird gesendet..."
 
-#: .\viewer\templates\translations_js.html:157
+#: .\viewer\templates\translations_js.html:159
 msgid "Please wait while we send the reset link."
 msgstr "Bitte warten Sie, während wir den Link zum Zurücksetzen senden."
 
-#: .\viewer\templates\translations_js.html:158
+#: .\viewer\templates\translations_js.html:160
 msgid "Email Sent!"
 msgstr "E-Mail gesendet!"
 
-#: .\viewer\templates\translations_js.html:159
+#: .\viewer\templates\translations_js.html:161
 msgid ""
 "A password reset link has been sent to your email address.<br><br>Please "
 "check your inbox and follow the instructions."
@@ -3949,61 +3951,61 @@ msgstr ""
 "gesendet.<br><br>Bitte überprüfen Sie Ihren Posteingang und folgen Sie den "
 "Anweisungen."
 
-#: .\viewer\templates\translations_js.html:160
+#: .\viewer\templates\translations_js.html:162
 msgid "Failed to send reset email. Please try again."
 msgstr ""
 "Fehler beim Senden der E-Mail zum Zurücksetzen. Bitte versuchen Sie es "
 "erneut."
 
-#: .\viewer\templates\translations_js.html:161
+#: .\viewer\templates\translations_js.html:163
 msgid "Validation Error"
 msgstr "Validierungsfehler"
 
-#: .\viewer\templates\translations_js.html:162
+#: .\viewer\templates\translations_js.html:164
 msgid "Company name is required."
 msgstr "Firmenname ist erforderlich."
 
-#: .\viewer\templates\translations_js.html:165
+#: .\viewer\templates\translations_js.html:167
 msgid "Error creating article"
 msgstr "Fehler beim Erstellen des Artikels"
 
-#: .\viewer\templates\translations_js.html:166
+#: .\viewer\templates\translations_js.html:168
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: .\viewer\templates\translations_js.html:167
+#: .\viewer\templates\translations_js.html:169
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
-#: .\viewer\templates\translations_js.html:168
+#: .\viewer\templates\translations_js.html:170
 msgid "Delete this content block?"
 msgstr "Diesen Inhaltsblock löschen?"
 
-#: .\viewer\templates\translations_js.html:169
+#: .\viewer\templates\translations_js.html:171
 msgid "Error saving article"
 msgstr "Fehler beim Speichern des Artikels"
 
-#: .\viewer\templates\translations_js.html:170
+#: .\viewer\templates\translations_js.html:172
 msgid "Delete this article?"
 msgstr "Diesen Artikel löschen?"
 
-#: .\viewer\templates\translations_js.html:171
+#: .\viewer\templates\translations_js.html:173
 msgid "Error deleting article"
 msgstr "Fehler beim Löschen des Artikels"
 
-#: .\viewer\templates\translations_js.html:172
+#: .\viewer\templates\translations_js.html:174
 msgid "Settings saved successfully!"
 msgstr "Einstellungen erfolgreich gespeichert!"
 
-#: .\viewer\templates\translations_js.html:173
+#: .\viewer\templates\translations_js.html:175
 msgid "Error saving settings"
 msgstr "Fehler beim Speichern der Einstellungen"
 
-#: .\viewer\templates\translations_js.html:174
+#: .\viewer\templates\translations_js.html:176
 msgid "Error removing image"
 msgstr "Fehler beim Entfernen des Bildes"
 
-#: .\viewer\templates\translations_js.html:175
+#: .\viewer\templates\translations_js.html:177
 msgid "OK"
 msgstr "OK"
 
@@ -4047,15 +4049,15 @@ msgstr "Bitte wählen Sie den Scantyp aus"
 msgid "Align QR code within the frame"
 msgstr "QR-Code im Rahmen ausrichten"
 
-#: .\viewer\templates\user_scan_qr.html:88
+#: .\viewer\templates\user_scan_qr.html:91
 msgid "Stop Scanner"
 msgstr "Scanner stoppen"
 
-#: .\viewer\templates\user_scan_qr.html:98
+#: .\viewer\templates\user_scan_qr.html:101
 msgid "Camera & Location Required"
 msgstr "Kamera & Standort erforderlich"
 
-#: .\viewer\templates\user_scan_qr.html:100
+#: .\viewer\templates\user_scan_qr.html:103
 msgid ""
 "To scan QR codes and record your location, we need permission to access your "
 "camera and location."
@@ -4244,3 +4246,9 @@ msgstr ""
 #: .\viewer\views.py:1683
 msgid "Invalid password reset link"
 msgstr "Ungültiger Link zum Zurücksetzen des Passworts"
+
+#~ msgid "Yes, cancel"
+#~ msgstr "Ja, verwerfen"
+
+#~ msgid "No, continue editing"
+#~ msgstr "Nein, weiter bearbeiten"

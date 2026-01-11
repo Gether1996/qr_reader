@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 14:48+0100\n"
+"POT-Creation-Date: 2026-01-11 17:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1212,11 +1212,13 @@ msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:867
 #: .\viewer\templates\company_dashboard.html:267
+#: .\viewer\templates\translations_js.html:125
 msgid "Yes"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:868
 #: .\viewer\templates\company_dashboard.html:272
+#: .\viewer\templates\translations_js.html:126
 msgid "No"
 msgstr ""
 
@@ -2418,7 +2420,7 @@ msgstr "Prihláste sa tu"
 #: .\viewer\templates\company_reset_password.html:18
 #: .\viewer\templates\company_reset_password.html:80
 #: .\viewer\templates\password_reset_email.html:40
-#: .\viewer\templates\translations_js.html:153
+#: .\viewer\templates\translations_js.html:155
 msgid "Reset Password"
 msgstr "Obnoviť heslo"
 
@@ -3069,7 +3071,7 @@ msgid "Settings"
 msgstr "Nastavenia"
 
 #: .\viewer\templates\magazine_editor.html:44
-#: .\viewer\templates\translations_js.html:141
+#: .\viewer\templates\translations_js.html:145
 msgid "Print"
 msgstr "Tlačiť"
 
@@ -3514,7 +3516,7 @@ msgid "%(name)s has left work."
 msgstr "%(name)s odišiel/odišla z práce."
 
 #: .\viewer\templates\scan_notification.html:76
-#: .\viewer\templates\translations_js.html:132
+#: .\viewer\templates\translations_js.html:136
 msgid "Address"
 msgstr "Adresa"
 
@@ -3766,7 +3768,7 @@ msgid "Scan Recorded"
 msgstr "Skenovanie zaznamenané"
 
 #: .\viewer\templates\translations_js.html:107
-#: .\viewer\templates\user_scan_qr.html:82
+#: .\viewer\templates\user_scan_qr.html:84
 msgid "Home Office Scan"
 msgstr "Skenovanie z domu"
 
@@ -3795,7 +3797,7 @@ msgid "Permission Error"
 msgstr "Chyba povolenia"
 
 #: .\viewer\templates\translations_js.html:116
-#: .\viewer\templates\user_scan_qr.html:103
+#: .\viewer\templates\user_scan_qr.html:106
 msgid "Grant Permissions"
 msgstr "Udeliť povolenia"
 
@@ -3804,12 +3806,12 @@ msgid "Requesting permissions..."
 msgstr "Žiadam o povolenia..."
 
 #: .\viewer\templates\translations_js.html:118
-#: .\viewer\templates\user_scan_qr.html:76
+#: .\viewer\templates\user_scan_qr.html:78
 msgid "Start Scanner"
 msgstr "Spustiť skener"
 
 #: .\viewer\templates\translations_js.html:119
-#: .\viewer\templates\user_scan_qr.html:112
+#: .\viewer\templates\user_scan_qr.html:115
 msgid "Processing scan..."
 msgstr "Spracuvávam sken..."
 
@@ -3825,87 +3827,87 @@ msgstr "Pripravujem..."
 msgid "Please enable location"
 msgstr "Prosím povoľte polohu"
 
-#: .\viewer\templates\translations_js.html:125
+#: .\viewer\templates\translations_js.html:123
+msgid "Confirm Home Office"
+msgstr "Potvrdiť prácu z domu"
+
+#: .\viewer\templates\translations_js.html:124
+msgid "Are you sure you want to scan from home office?"
+msgstr "Naozaj chcete naskenovať z domu?"
+
+#: .\viewer\templates\translations_js.html:129
 msgid "Adding absence..."
 msgstr "Pridávam neprítomnosť..."
 
-#: .\viewer\templates\translations_js.html:126
+#: .\viewer\templates\translations_js.html:130
 msgid "Updating absence..."
 msgstr "Aktualizujem neprítomnosť..."
 
-#: .\viewer\templates\translations_js.html:127
+#: .\viewer\templates\translations_js.html:131
 msgid "Deleting absence..."
 msgstr "Mažem neprítomnosť..."
 
-#: .\viewer\templates\translations_js.html:128
+#: .\viewer\templates\translations_js.html:132
 msgid "Approving absence..."
 msgstr "Schvaľujem neprítomnosť..."
 
-#: .\viewer\templates\translations_js.html:131
+#: .\viewer\templates\translations_js.html:135
 msgid "GPS Coordinates"
 msgstr "GPS súradnice"
 
-#: .\viewer\templates\translations_js.html:133
+#: .\viewer\templates\translations_js.html:137
 msgid "An unknown error occurred."
 msgstr "Vyskytla sa neznáma chyba."
 
-#: .\viewer\templates\translations_js.html:134
+#: .\viewer\templates\translations_js.html:138
 msgid "Failed to process scan"
 msgstr "Nepodarilo sa spracovať skenovanie"
 
-#: .\viewer\templates\translations_js.html:135
+#: .\viewer\templates\translations_js.html:139
 msgid "Failed to start scanner"
 msgstr "Nepodarilo sa spustiť skener"
 
-#: .\viewer\templates\translations_js.html:136
+#: .\viewer\templates\translations_js.html:140
 msgid "Failed to record scan"
 msgstr "Nepodarilo sa zaznamenať skenovanie"
 
-#: .\viewer\templates\translations_js.html:137
+#: .\viewer\templates\translations_js.html:141
 msgid "Please enter a QR code UUID"
 msgstr "Prosím zadajte UUID QR kódu"
 
-#: .\viewer\templates\translations_js.html:138
+#: .\viewer\templates\translations_js.html:142
 msgid "Please select a date range first!"
 msgstr "Prosím najskôr vyberte rozsah dátumov!"
 
-#: .\viewer\templates\translations_js.html:142
+#: .\viewer\templates\translations_js.html:146
 msgid "Close"
 msgstr "Zavrieť"
 
-#: .\viewer\templates\translations_js.html:145
+#: .\viewer\templates\translations_js.html:149
 msgid "Saving..."
 msgstr "Ukladám..."
 
-#: .\viewer\templates\translations_js.html:146
+#: .\viewer\templates\translations_js.html:150
 msgid "Settings have been saved successfully."
 msgstr "Nastavenia boli úspešne uložené."
 
-#: .\viewer\templates\translations_js.html:147
+#: .\viewer\templates\translations_js.html:151
 msgid "Failed to save settings. Please try again."
 msgstr "Nepodarilo sa uložiť nastavenia. Skúste to prosím znova."
 
-#: .\viewer\templates\translations_js.html:148
+#: .\viewer\templates\translations_js.html:152
 msgid "Network error. Please check your connection and try again."
 msgstr "Chyba siete. Prosím skontrolujte vaše pripojenie a skúste to znova."
 
-#: .\viewer\templates\translations_js.html:149
+#: .\viewer\templates\translations_js.html:153
 msgid "Cancel Changes?"
 msgstr "Zrušiť zmeny?"
 
-#: .\viewer\templates\translations_js.html:150
+#: .\viewer\templates\translations_js.html:154
 msgid "All unsaved changes will be lost."
 msgstr "Všetky neuložené zmeny budú stratené."
 
-#: .\viewer\templates\translations_js.html:151
-msgid "Yes, cancel"
-msgstr "Áno, zrušiť"
-
-#: .\viewer\templates\translations_js.html:152
-msgid "No, continue editing"
-msgstr "Nie, pokračovať v úprave"
-
-#: .\viewer\templates\translations_js.html:154
+#: .\viewer\templates\translations_js.html:156
 msgid ""
 "A password reset link will be sent to your email address.<br><br>Do you want "
 "to continue?"
@@ -3913,23 +3915,23 @@ msgstr ""
 "Odkaz na obnovenie hesla bude odoslaný na vašu emailovú adresu."
 "<br><br>Chcete pokračovať?"
 
-#: .\viewer\templates\translations_js.html:155
+#: .\viewer\templates\translations_js.html:157
 msgid "Send Reset Link"
 msgstr "Odoslať odkaz na obnovenie"
 
-#: .\viewer\templates\translations_js.html:156
+#: .\viewer\templates\translations_js.html:158
 msgid "Sending..."
 msgstr "Odosielam..."
 
-#: .\viewer\templates\translations_js.html:157
+#: .\viewer\templates\translations_js.html:159
 msgid "Please wait while we send the reset link."
 msgstr "Prosím počkajte kým odošleme odkaz na obnovenie."
 
-#: .\viewer\templates\translations_js.html:158
+#: .\viewer\templates\translations_js.html:160
 msgid "Email Sent!"
 msgstr "Email odoslaný!"
 
-#: .\viewer\templates\translations_js.html:159
+#: .\viewer\templates\translations_js.html:161
 msgid ""
 "A password reset link has been sent to your email address.<br><br>Please "
 "check your inbox and follow the instructions."
@@ -3937,59 +3939,59 @@ msgstr ""
 "Odkaz na obnovenie hesla bol odoslaný na vašu emailovú adresu.<br><br>Prosím "
 "skontrolujte vašu schránku a postupujte podľa informatív."
 
-#: .\viewer\templates\translations_js.html:160
+#: .\viewer\templates\translations_js.html:162
 msgid "Failed to send reset email. Please try again."
 msgstr "Nepodarilo sa odoslať email na obnovenie. Skúste to prosím znova."
 
-#: .\viewer\templates\translations_js.html:161
+#: .\viewer\templates\translations_js.html:163
 msgid "Validation Error"
 msgstr "Chyba validácie"
 
-#: .\viewer\templates\translations_js.html:162
+#: .\viewer\templates\translations_js.html:164
 msgid "Company name is required."
 msgstr "Názov firmy je povinný."
 
-#: .\viewer\templates\translations_js.html:165
+#: .\viewer\templates\translations_js.html:167
 msgid "Error creating article"
 msgstr "Chyba pri vytváraní článku"
 
-#: .\viewer\templates\translations_js.html:166
+#: .\viewer\templates\translations_js.html:168
 msgid "Unknown error"
 msgstr "Neznáma chyba"
 
-#: .\viewer\templates\translations_js.html:167
+#: .\viewer\templates\translations_js.html:169
 msgid "Error uploading image"
 msgstr "Chyba pri nahrávaní obrázka"
 
-#: .\viewer\templates\translations_js.html:168
+#: .\viewer\templates\translations_js.html:170
 msgid "Delete this content block?"
 msgstr "Odstrániť tento obsahový blok?"
 
-#: .\viewer\templates\translations_js.html:169
+#: .\viewer\templates\translations_js.html:171
 msgid "Error saving article"
 msgstr "Chyba pri ukladaní článku"
 
-#: .\viewer\templates\translations_js.html:170
+#: .\viewer\templates\translations_js.html:172
 msgid "Delete this article?"
 msgstr "Odstrániť tento článok?"
 
-#: .\viewer\templates\translations_js.html:171
+#: .\viewer\templates\translations_js.html:173
 msgid "Error deleting article"
 msgstr "Chyba pri odstraňovaní článku"
 
-#: .\viewer\templates\translations_js.html:172
+#: .\viewer\templates\translations_js.html:174
 msgid "Settings saved successfully!"
 msgstr "Nastavenia úspešne uložené!"
 
-#: .\viewer\templates\translations_js.html:173
+#: .\viewer\templates\translations_js.html:175
 msgid "Error saving settings"
 msgstr "Chyba pri ukladaní nastavení"
 
-#: .\viewer\templates\translations_js.html:174
+#: .\viewer\templates\translations_js.html:176
 msgid "Error removing image"
 msgstr "Chyba pri odstraňovaní obrázka"
 
-#: .\viewer\templates\translations_js.html:175
+#: .\viewer\templates\translations_js.html:177
 msgid "OK"
 msgstr "OK"
 
@@ -4033,15 +4035,15 @@ msgstr "Prosím vyberte typ skenovania"
 msgid "Align QR code within the frame"
 msgstr "Zarovnajte QR kód do rámca"
 
-#: .\viewer\templates\user_scan_qr.html:88
+#: .\viewer\templates\user_scan_qr.html:91
 msgid "Stop Scanner"
 msgstr "Zastaviť skener"
 
-#: .\viewer\templates\user_scan_qr.html:98
+#: .\viewer\templates\user_scan_qr.html:101
 msgid "Camera & Location Required"
 msgstr "Kamera a poloha sú povinné"
 
-#: .\viewer\templates\user_scan_qr.html:100
+#: .\viewer\templates\user_scan_qr.html:103
 msgid ""
 "To scan QR codes and record your location, we need permission to access your "
 "camera and location."
@@ -4225,3 +4227,9 @@ msgstr "Heslo bolo úspešne obnovené. Prosím prihláste sa s novým heslom."
 #: .\viewer\views.py:1683
 msgid "Invalid password reset link"
 msgstr "Neplatný odkaz na obnovenie hesla"
+
+#~ msgid "Yes, cancel"
+#~ msgstr "Áno, zrušiť"
+
+#~ msgid "No, continue editing"
+#~ msgstr "Nie, pokračovať v úprave"
