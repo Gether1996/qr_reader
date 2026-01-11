@@ -202,7 +202,8 @@
     
     .swal2-actions {
         gap: 0.5rem !important;
-        flex-wrap: wrap !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
     }
     
     .swal-btn-gradient-green,
@@ -211,8 +212,9 @@
     .swal-btn-gradient-blue {
         padding: 0.5rem 1rem !important;
         font-size: 0.875rem !important;
-        flex: 1 1 auto !important;
-        min-width: 100px !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        width: auto !important;
     }
 }
 

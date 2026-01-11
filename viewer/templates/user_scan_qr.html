@@ -118,6 +118,9 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+{% include 'translations_js.html' %}
+</script>
 <script src="{% static 'scripts/libraries/html5-qrcode.min.js' %}"></script>
 <script src="{% static 'scripts/user-scan-qr.js' %}"></script>
 {% endblock %}
