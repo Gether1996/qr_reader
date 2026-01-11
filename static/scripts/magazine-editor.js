@@ -53,7 +53,7 @@ function createArticle() {
         if (data.success) {
             window.location.reload();
         } else {
-            alert(translations.errorCreatingArticle + ': ' + (data.error || translations.unknownError));
+            alert(translations.errorCreatingArticle + ': ' + (data.error || translations.magazineUnknownError));
         }
     })
     .catch(error => {
@@ -302,7 +302,7 @@ function addImageBlock() {
                     }
                 }, 300);
             } else {
-                alert(translations.errorUploadingImage + ': ' + (data.error || translations.unknownError));
+                alert(translations.errorUploadingImage + ': ' + (data.error || translations.magazineUnknownError));
             }
         } catch (error) {
             console.error('Error:', error);
@@ -475,7 +475,7 @@ window.saveArticle = function saveArticle() {
             // Update live preview
             updateLivePreview();
         } else {
-            alert(translations.errorSavingArticle + ': ' + (data.error || translations.unknownError));
+            alert(translations.errorSavingArticle + ': ' + (data.error || translations.magazineUnknownError));
         }
     })
     .catch(error => {
@@ -1043,7 +1043,7 @@ window.uploadHeaderImage = function uploadHeaderImage() {
             fileInput.value = '';
             updateLivePreview();
         } else {
-            alert(translations.errorUploadingImage + ': ' + (data.error || translations.unknownError));
+            alert(translations.errorUploadingImage + ': ' + (data.error || translations.magazineUnknownError));
             previewDiv.innerHTML = '';
         }
     })
