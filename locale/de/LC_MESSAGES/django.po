@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 14:03+0100\n"
+"POT-Creation-Date: 2026-01-11 14:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,116 +27,125 @@ msgid "Email already exists"
 msgstr "E-Mail existiert bereits"
 
 #: .\qr_reader_django\crud.py:209 .\qr_reader_django\crud.py:233
-#: .\qr_reader_django\crud.py:668 .\qr_reader_django\crud_user.py:102
+#: .\qr_reader_django\crud.py:671 .\qr_reader_django\crud_user.py:102
 #: .\qr_reader_django\crud_user.py:181 .\qr_reader_django\crud_vacation.py:30
 #: .\qr_reader_django\crud_vacation.py:58
 #: .\qr_reader_django\crud_vacation.py:121
 #: .\qr_reader_django\crud_vacation.py:198
 #: .\qr_reader_django\crud_vacation.py:280
 #: .\qr_reader_django\generate_pdf_excel.py:49
-#: .\qr_reader_django\generate_pdf_excel.py:674 .\viewer\views.py:327
-#: .\viewer\views.py:474 .\viewer\views.py:1306
+#: .\qr_reader_django\generate_pdf_excel.py:680 .\viewer\views.py:330
+#: .\viewer\views.py:488 .\viewer\views.py:1382
 msgid "User not found"
 msgstr "Benutzer nicht gefunden"
 
-#: .\qr_reader_django\crud.py:298 .\viewer\views.py:596
+#: .\qr_reader_django\crud.py:298 .\viewer\views.py:643
 msgid "QR code not found"
 msgstr "QR-Code nicht gefunden"
 
-#: .\qr_reader_django\crud.py:428 .\qr_reader_django\generate_pdf_excel.py:221
-#: .\qr_reader_django\generate_pdf_excel.py:759
+#: .\qr_reader_django\crud.py:431 .\qr_reader_django\generate_pdf_excel.py:221
+#: .\qr_reader_django\generate_pdf_excel.py:765
 #: .\viewer\templates\company_register.html:74
 #: .\viewer\templates\company_settings.html:97
 #: .\viewer\templates\company_user_details.html:200
-#: .\viewer\templates\company_user_details.html:332
-#: .\viewer\templates\company_user_details.html:369
+#: .\viewer\templates\company_user_details.html:338
+#: .\viewer\templates\company_user_details.html:381
 #: .\viewer\templates\filters_card.html:75 .\viewer\templates\qr_scans.html:100
 #: .\viewer\templates\qr_scans.html:143
 #: .\viewer\templates\translations_js.html:55
 #: .\viewer\templates\user_dashboard.html:190
-#: .\viewer\templates\user_dashboard.html:321
-#: .\viewer\templates\user_dashboard.html:358
+#: .\viewer\templates\user_dashboard.html:327
+#: .\viewer\templates\user_dashboard.html:370
 #: .\viewer\templates\user_scan_qr.html:29
 msgid "Arrival"
 msgstr "Ankunft"
 
-#: .\qr_reader_django\crud.py:429 .\qr_reader_django\generate_pdf_excel.py:222
-#: .\qr_reader_django\generate_pdf_excel.py:760
+#: .\qr_reader_django\crud.py:432 .\qr_reader_django\generate_pdf_excel.py:222
+#: .\qr_reader_django\generate_pdf_excel.py:766
 #: .\viewer\templates\company_register.html:80
 #: .\viewer\templates\company_settings.html:110
 #: .\viewer\templates\company_user_details.html:213
-#: .\viewer\templates\company_user_details.html:334
-#: .\viewer\templates\company_user_details.html:369
+#: .\viewer\templates\company_user_details.html:340
+#: .\viewer\templates\company_user_details.html:381
 #: .\viewer\templates\filters_card.html:76 .\viewer\templates\qr_scans.html:102
 #: .\viewer\templates\qr_scans.html:143
 #: .\viewer\templates\translations_js.html:56
 #: .\viewer\templates\user_dashboard.html:203
-#: .\viewer\templates\user_dashboard.html:323
-#: .\viewer\templates\user_dashboard.html:358
+#: .\viewer\templates\user_dashboard.html:329
+#: .\viewer\templates\user_dashboard.html:370
 #: .\viewer\templates\user_scan_qr.html:35
 msgid "Departure"
 msgstr "Abgang"
 
-#: .\qr_reader_django\crud.py:430
+#: .\qr_reader_django\crud.py:433
 msgid "Lunch Break Started"
 msgstr "Mittagspause begonnen"
 
-#: .\qr_reader_django\crud.py:431
+#: .\qr_reader_django\crud.py:434
 msgid "Lunch Break Ended"
 msgstr "Mittagspause beendet"
 
-#: .\qr_reader_django\crud.py:477
+#: .\qr_reader_django\crud.py:480
 msgid "End date cannot be before start date"
 msgstr "Enddatum kann nicht vor dem Startdatum liegen"
 
-#: .\qr_reader_django\crud.py:573
+#: .\qr_reader_django\crud.py:576
 #: .\viewer\templates\vacation_notification.html:20
 msgid "Vacation Request"
 msgstr "Urlaubsantrag"
 
-#: .\qr_reader_django\crud.py:574 .\qr_reader_django\generate_pdf_excel.py:293
-#: .\qr_reader_django\generate_pdf_excel.py:887
+#: .\qr_reader_django\crud.py:577 .\qr_reader_django\generate_pdf_excel.py:293
+#: .\qr_reader_django\generate_pdf_excel.py:893
 #: .\viewer\templates\company_dashboard.html:431
 #: .\viewer\templates\company_dashboard.html:502
 #: .\viewer\templates\company_user_details.html:117
-#: .\viewer\templates\company_user_details.html:460
-#: .\viewer\templates\company_user_details.html:544
+#: .\viewer\templates\company_user_details.html:472
+#: .\viewer\templates\company_user_details.html:556
 #: .\viewer\templates\filters_card.html:86
 #: .\viewer\templates\user_dashboard.html:107
-#: .\viewer\templates\user_dashboard.html:448
-#: .\viewer\templates\user_dashboard.html:514
+#: .\viewer\templates\user_dashboard.html:460
+#: .\viewer\templates\user_dashboard.html:526
 #: .\viewer\templates\vacation_notification.html:23
 #: .\viewer\templates\vacation_notification.html:109
 msgid "Sick Leave"
 msgstr "Krankenstand"
 
-#: .\qr_reader_django\crud.py:575
+#: .\qr_reader_django\crud.py:578
 #: .\viewer\templates\vacation_notification.html:26
 msgid "Doctor Visit"
 msgstr "Arztbesuch"
 
-#: .\qr_reader_django\crud.py:576 .\qr_reader_django\generate_pdf_excel.py:309
+#: .\qr_reader_django\crud.py:579 .\qr_reader_django\generate_pdf_excel.py:309
 #: .\qr_reader_django\generate_pdf_excel.py:357
-#: .\qr_reader_django\generate_pdf_excel.py:895
-#: .\qr_reader_django\generate_pdf_excel.py:926
+#: .\qr_reader_django\generate_pdf_excel.py:415
+#: .\qr_reader_django\generate_pdf_excel.py:420
+#: .\qr_reader_django\generate_pdf_excel.py:901
+#: .\qr_reader_django\generate_pdf_excel.py:932
+#: .\qr_reader_django\generate_pdf_excel.py:1003
+#: .\qr_reader_django\generate_pdf_excel.py:1008
 #: .\viewer\templates\company_dashboard.html:437
 #: .\viewer\templates\company_dashboard.html:508
-#: .\viewer\templates\company_user_details.html:466
-#: .\viewer\templates\company_user_details.html:550
+#: .\viewer\templates\company_user_details.html:331
+#: .\viewer\templates\company_user_details.html:374
+#: .\viewer\templates\company_user_details.html:478
+#: .\viewer\templates\company_user_details.html:562
 #: .\viewer\templates\filters_card.html:88
-#: .\viewer\templates\user_dashboard.html:454
-#: .\viewer\templates\user_dashboard.html:520
+#: .\viewer\templates\user_dashboard.html:320
+#: .\viewer\templates\user_dashboard.html:363
+#: .\viewer\templates\user_dashboard.html:466
+#: .\viewer\templates\user_dashboard.html:532
 #: .\viewer\templates\vacation_notification.html:29
-#: .\viewer\templates\vacation_notification.html:113
+#: .\viewer\templates\vacation_notification.html:113 .\viewer\views.py:522
+#: .\viewer\views.py:1070
 msgid "Home Office"
 msgstr "Homeoffice"
 
-#: .\qr_reader_django\crud.py:579
+#: .\qr_reader_django\crud.py:582
 #: .\viewer\templates\vacation_notification.html:32
 msgid "Absence Request"
 msgstr "Abwesenheitsantrag"
 
-#: .\qr_reader_django\crud.py:666 .\qr_reader_django\crud.py:760
+#: .\qr_reader_django\crud.py:669 .\qr_reader_django\crud.py:763
 #: .\qr_reader_django\crud_vacation.py:131
 #: .\qr_reader_django\crud_vacation.py:208
 #: .\qr_reader_django\crud_vacation.py:309
@@ -144,7 +153,7 @@ msgstr "Abwesenheitsantrag"
 msgid "Vacation not found"
 msgstr "Abwesenheit nicht gefunden"
 
-#: .\qr_reader_django\crud.py:733
+#: .\qr_reader_django\crud.py:736
 msgid "Vacation Request Cancelled"
 msgstr "Urlaubsantrag storniert"
 
@@ -155,16 +164,16 @@ msgstr "Urlaubsantrag storniert"
 #: .\qr_reader_django\crud_vacation.py:187
 #: .\qr_reader_django\crud_vacation.py:265
 #: .\qr_reader_django\generate_pdf_excel.py:30
-#: .\qr_reader_django\generate_pdf_excel.py:655
-#: .\qr_reader_django\generate_pdf_excel.py:1130
+#: .\qr_reader_django\generate_pdf_excel.py:661
+#: .\qr_reader_django\generate_pdf_excel.py:1142
 #: .\qr_reader_django\magazine.py:110 .\qr_reader_django\magazine.py:182
 #: .\qr_reader_django\magazine.py:216 .\qr_reader_django\magazine.py:266
 #: .\qr_reader_django\magazine.py:327 .\qr_reader_django\magazine.py:365
 #: .\qr_reader_django\magazine.py:409 .\qr_reader_django\magazine.py:452
 #: .\qr_reader_django\magazine.py:522 .\qr_reader_django\magazine.py:577
 #: .\qr_reader_django\magazine.py:615 .\qr_reader_django\magazine.py:650
-#: .\viewer\views.py:577 .\viewer\views.py:676 .\viewer\views.py:1165
-#: .\viewer\views.py:1467
+#: .\viewer\views.py:624 .\viewer\views.py:723 .\viewer\views.py:1236
+#: .\viewer\views.py:1543
 msgid "Unauthorized"
 msgstr "Nicht autorisiert"
 
@@ -174,10 +183,10 @@ msgstr "Nicht autorisiert"
 #: .\qr_reader_django\crud_vacation.py:141
 #: .\qr_reader_django\crud_vacation.py:218
 #: .\qr_reader_django\generate_pdf_excel.py:39
-#: .\qr_reader_django\generate_pdf_excel.py:664
-#: .\qr_reader_django\generate_pdf_excel.py:1139 .\viewer\views.py:46
-#: .\viewer\views.py:586 .\viewer\views.py:686 .\viewer\views.py:911
-#: .\viewer\views.py:1173
+#: .\qr_reader_django\generate_pdf_excel.py:670
+#: .\qr_reader_django\generate_pdf_excel.py:1151 .\viewer\views.py:46
+#: .\viewer\views.py:633 .\viewer\views.py:733 .\viewer\views.py:967
+#: .\viewer\views.py:1244
 msgid "Access denied"
 msgstr "Zugriff verweigert"
 
@@ -188,10 +197,10 @@ msgstr "Zugriff verweigert"
 #: .\qr_reader_django\crud_vacation.py:202
 #: .\qr_reader_django\crud_vacation.py:292
 #: .\qr_reader_django\generate_pdf_excel.py:44
-#: .\qr_reader_django\generate_pdf_excel.py:669
-#: .\qr_reader_django\generate_pdf_excel.py:1144 .\viewer\views.py:51
-#: .\viewer\views.py:591 .\viewer\views.py:691 .\viewer\views.py:916
-#: .\viewer\views.py:1177 .\viewer\views.py:1312 .\viewer\views.py:1471
+#: .\qr_reader_django\generate_pdf_excel.py:675
+#: .\qr_reader_django\generate_pdf_excel.py:1156 .\viewer\views.py:51
+#: .\viewer\views.py:638 .\viewer\views.py:738 .\viewer\views.py:972
+#: .\viewer\views.py:1248 .\viewer\views.py:1388 .\viewer\views.py:1547
 msgid "Company not found"
 msgstr "Firma nicht gefunden"
 
@@ -272,28 +281,28 @@ msgid "This email is already registered in the system"
 msgstr "Diese E-Mail ist bereits im System registriert"
 
 #: .\qr_reader_django\generate_pdf_excel.py:68
-#: .\qr_reader_django\generate_pdf_excel.py:693 .\viewer\views.py:1346
+#: .\qr_reader_django\generate_pdf_excel.py:699 .\viewer\views.py:1422
 msgid "Invalid date range"
 msgstr "Ungültiger Datumsbereich"
 
 #: .\qr_reader_django\generate_pdf_excel.py:71
-#: .\qr_reader_django\generate_pdf_excel.py:696
+#: .\qr_reader_django\generate_pdf_excel.py:702
 msgid "Invalid date format"
 msgstr "Ungültiges Datumsformat"
 
 #: .\qr_reader_django\generate_pdf_excel.py:152
-#: .\qr_reader_django\generate_pdf_excel.py:725
-#: .\qr_reader_django\generate_pdf_excel.py:743
+#: .\qr_reader_django\generate_pdf_excel.py:731
+#: .\qr_reader_django\generate_pdf_excel.py:749
 msgid "Attendance Report"
 msgstr "Anwesenheitsbericht"
 
 #: .\qr_reader_django\generate_pdf_excel.py:153
-#: .\qr_reader_django\generate_pdf_excel.py:748
+#: .\qr_reader_django\generate_pdf_excel.py:754
 msgid "Period"
 msgstr "Zeitraum"
 
 #: .\qr_reader_django\generate_pdf_excel.py:154
-#: .\qr_reader_django\generate_pdf_excel.py:752
+#: .\qr_reader_django\generate_pdf_excel.py:758
 #: .\viewer\templates\audit_logs.html:163
 #: .\viewer\templates\audit_logs.html:211
 #: .\viewer\templates\password_reset_email.html:72
@@ -305,164 +314,164 @@ msgid "Daily Attendance"
 msgstr "Tägliche Anwesenheit"
 
 #: .\qr_reader_django\generate_pdf_excel.py:219
-#: .\qr_reader_django\generate_pdf_excel.py:757
+#: .\qr_reader_django\generate_pdf_excel.py:763
 msgid "Date"
 msgstr "Datum"
 
 #: .\qr_reader_django\generate_pdf_excel.py:220
-#: .\qr_reader_django\generate_pdf_excel.py:758
+#: .\qr_reader_django\generate_pdf_excel.py:764
 msgid "Day"
 msgstr "Tag"
 
 #: .\qr_reader_django\generate_pdf_excel.py:223
-#: .\qr_reader_django\generate_pdf_excel.py:761
+#: .\qr_reader_django\generate_pdf_excel.py:767
 #: .\viewer\templates\company_analytics.html:219
 msgid "Hours"
 msgstr "Stunden"
 
 #: .\qr_reader_django\generate_pdf_excel.py:224
-#: .\qr_reader_django\generate_pdf_excel.py:762
+#: .\qr_reader_django\generate_pdf_excel.py:768
 msgid "Break"
 msgstr "Pause"
 
 #: .\qr_reader_django\generate_pdf_excel.py:225
-#: .\qr_reader_django\generate_pdf_excel.py:763
+#: .\qr_reader_django\generate_pdf_excel.py:769
 msgid "Scanned QR"
 msgstr "Gescannter QR"
 
 #: .\qr_reader_django\generate_pdf_excel.py:226
-#: .\qr_reader_django\generate_pdf_excel.py:764
+#: .\qr_reader_django\generate_pdf_excel.py:770
 msgid "Notes"
 msgstr "Notizen"
 
 #: .\qr_reader_django\generate_pdf_excel.py:301
-#: .\qr_reader_django\generate_pdf_excel.py:891
+#: .\qr_reader_django\generate_pdf_excel.py:897
 #: .\viewer\templates\company_dashboard.html:433
 #: .\viewer\templates\company_dashboard.html:504
 #: .\viewer\templates\company_user_details.html:124
-#: .\viewer\templates\company_user_details.html:462
-#: .\viewer\templates\company_user_details.html:546
+#: .\viewer\templates\company_user_details.html:474
+#: .\viewer\templates\company_user_details.html:558
 #: .\viewer\templates\filters_card.html:87
 #: .\viewer\templates\user_dashboard.html:114
-#: .\viewer\templates\user_dashboard.html:452
-#: .\viewer\templates\user_dashboard.html:518
+#: .\viewer\templates\user_dashboard.html:464
+#: .\viewer\templates\user_dashboard.html:530
 #: .\viewer\templates\vacation_notification.html:111
 msgid "Doctor"
 msgstr "Arzt"
 
 #: .\qr_reader_django\generate_pdf_excel.py:317
-#: .\qr_reader_django\generate_pdf_excel.py:899
+#: .\qr_reader_django\generate_pdf_excel.py:905
 #: .\viewer\templates\company_dashboard.html:435
 #: .\viewer\templates\company_dashboard.html:506
 #: .\viewer\templates\company_user_details.html:110
 #: .\viewer\templates\company_user_details.html:226
-#: .\viewer\templates\company_user_details.html:464
-#: .\viewer\templates\company_user_details.html:548
+#: .\viewer\templates\company_user_details.html:476
+#: .\viewer\templates\company_user_details.html:560
 #: .\viewer\templates\filters_card.html:85
 #: .\viewer\templates\user_dashboard.html:100
 #: .\viewer\templates\user_dashboard.html:216
-#: .\viewer\templates\user_dashboard.html:450
-#: .\viewer\templates\user_dashboard.html:516
+#: .\viewer\templates\user_dashboard.html:462
+#: .\viewer\templates\user_dashboard.html:528
 #: .\viewer\templates\vacation_notification.html:107
 msgid "Vacation"
 msgstr "Urlaub"
 
 #: .\qr_reader_django\generate_pdf_excel.py:339
-#: .\qr_reader_django\generate_pdf_excel.py:910
+#: .\qr_reader_django\generate_pdf_excel.py:916
 msgid "No scans"
 msgstr "Keine Scans"
 
 #: .\qr_reader_django\generate_pdf_excel.py:353
-#: .\qr_reader_django\generate_pdf_excel.py:922
+#: .\qr_reader_django\generate_pdf_excel.py:928
 msgid "Scans on sick leave day"
 msgstr "Scans am Krankheitstag"
 
 #: .\qr_reader_django\generate_pdf_excel.py:355
-#: .\qr_reader_django\generate_pdf_excel.py:924
+#: .\qr_reader_django\generate_pdf_excel.py:930
 msgid "Scans on doctor day"
 msgstr "Scans am Arzttag"
 
 #: .\qr_reader_django\generate_pdf_excel.py:359
-#: .\qr_reader_django\generate_pdf_excel.py:928
+#: .\qr_reader_django\generate_pdf_excel.py:934
 msgid "Scans on vacation day"
 msgstr "Scans am Urlaubstag"
 
 #: .\qr_reader_django\generate_pdf_excel.py:369
-#: .\qr_reader_django\generate_pdf_excel.py:938
+#: .\qr_reader_django\generate_pdf_excel.py:944
 msgid "Missing arrival"
 msgstr "Fehlende Ankunft"
 
 #: .\qr_reader_django\generate_pdf_excel.py:372
-#: .\qr_reader_django\generate_pdf_excel.py:941
+#: .\qr_reader_django\generate_pdf_excel.py:947
 msgid "Missing departure"
 msgstr "Fehlender Abgang"
 
-#: .\qr_reader_django\generate_pdf_excel.py:500
-#: .\qr_reader_django\generate_pdf_excel.py:1033
+#: .\qr_reader_django\generate_pdf_excel.py:506
+#: .\qr_reader_django\generate_pdf_excel.py:1045
 msgid "Summary Statistics"
 msgstr "Zusammenfassende Statistiken"
 
-#: .\qr_reader_django\generate_pdf_excel.py:547
-#: .\qr_reader_django\generate_pdf_excel.py:1062
+#: .\qr_reader_django\generate_pdf_excel.py:553
+#: .\qr_reader_django\generate_pdf_excel.py:1074
 msgid "Total Working Days"
 msgstr "Gesamte Arbeitstage"
 
-#: .\qr_reader_django\generate_pdf_excel.py:551
-#: .\qr_reader_django\generate_pdf_excel.py:1063
+#: .\qr_reader_django\generate_pdf_excel.py:557
+#: .\qr_reader_django\generate_pdf_excel.py:1075
 msgid "Expected Hours"
 msgstr "Erwartete Stunden"
 
-#: .\qr_reader_django\generate_pdf_excel.py:555
-#: .\qr_reader_django\generate_pdf_excel.py:1064
+#: .\qr_reader_django\generate_pdf_excel.py:561
+#: .\qr_reader_django\generate_pdf_excel.py:1076
 msgid "Total Hours (with breaks)"
 msgstr "Gesamtstunden (mit Pausen)"
 
-#: .\qr_reader_django\generate_pdf_excel.py:559
-#: .\qr_reader_django\generate_pdf_excel.py:1065
+#: .\qr_reader_django\generate_pdf_excel.py:565
+#: .\qr_reader_django\generate_pdf_excel.py:1077
 msgid "Total Hours (without breaks)"
 msgstr "Gesamtstunden (ohne Pausen)"
 
-#: .\qr_reader_django\generate_pdf_excel.py:563
-#: .\qr_reader_django\generate_pdf_excel.py:1066
+#: .\qr_reader_django\generate_pdf_excel.py:569
+#: .\qr_reader_django\generate_pdf_excel.py:1078
 msgid "Total Break Time"
 msgstr "Gesamte Pausenzeit"
 
-#: .\qr_reader_django\generate_pdf_excel.py:567
-#: .\qr_reader_django\generate_pdf_excel.py:1067
+#: .\qr_reader_django\generate_pdf_excel.py:573
+#: .\qr_reader_django\generate_pdf_excel.py:1079
 msgid "Overtime Hours"
 msgstr "Überstunden"
 
-#: .\qr_reader_django\generate_pdf_excel.py:571
-#: .\qr_reader_django\generate_pdf_excel.py:1068
+#: .\qr_reader_django\generate_pdf_excel.py:577
+#: .\qr_reader_django\generate_pdf_excel.py:1080
 msgid "Night Hours (22:00-06:00)"
 msgstr "Nachtstunden (22:00-06:00)"
 
-#: .\qr_reader_django\generate_pdf_excel.py:575
-#: .\qr_reader_django\generate_pdf_excel.py:1069
+#: .\qr_reader_django\generate_pdf_excel.py:581
+#: .\qr_reader_django\generate_pdf_excel.py:1081
 msgid "Holiday Hours"
 msgstr "Feiertagsstunden"
 
-#: .\qr_reader_django\generate_pdf_excel.py:579
-#: .\qr_reader_django\generate_pdf_excel.py:1070
+#: .\qr_reader_django\generate_pdf_excel.py:585
+#: .\qr_reader_django\generate_pdf_excel.py:1082
 msgid "Average Hours per Day"
 msgstr "Durchschnittliche Stunden pro Tag"
 
-#: .\qr_reader_django\generate_pdf_excel.py:583
-#: .\qr_reader_django\generate_pdf_excel.py:1071
+#: .\qr_reader_django\generate_pdf_excel.py:589
+#: .\qr_reader_django\generate_pdf_excel.py:1083
 msgid "Vacation Days"
 msgstr "Urlaubstage"
 
-#: .\qr_reader_django\generate_pdf_excel.py:587
-#: .\qr_reader_django\generate_pdf_excel.py:1072
+#: .\qr_reader_django\generate_pdf_excel.py:593
+#: .\qr_reader_django\generate_pdf_excel.py:1084
 msgid "Home Office Days"
 msgstr "Homeoffice-Tage"
 
-#: .\qr_reader_django\generate_pdf_excel.py:591
-#: .\qr_reader_django\generate_pdf_excel.py:1073
+#: .\qr_reader_django\generate_pdf_excel.py:597
+#: .\qr_reader_django\generate_pdf_excel.py:1085
 msgid "Days with Issues"
 msgstr "Tage mit Problemen"
 
-#: .\qr_reader_django\generate_pdf_excel.py:1149
+#: .\qr_reader_django\generate_pdf_excel.py:1161
 msgid "QR Code not found"
 msgstr "QR-Code nicht gefunden"
 
@@ -476,7 +485,7 @@ msgstr "Alle Felder sind erforderlich"
 
 #: .\qr_reader_django\login_register_logout.py:28
 #: .\viewer\templates\company_reset_password.html:127
-#: .\viewer\templates\translations_js.html:73 .\viewer\views.py:1567
+#: .\viewer\templates\translations_js.html:73 .\viewer\views.py:1643
 msgid "Passwords do not match"
 msgstr "Passwörter stimmen nicht überein"
 
@@ -1132,11 +1141,11 @@ msgstr ""
 #: .\viewer\templates\company_dashboard.html:201
 #: .\viewer\templates\company_dashboard.html:470
 #: .\viewer\templates\company_dashboard.html:535
-#: .\viewer\templates\company_user_details.html:495
-#: .\viewer\templates\company_user_details.html:578
+#: .\viewer\templates\company_user_details.html:507
+#: .\viewer\templates\company_user_details.html:590
 #: .\viewer\templates\magazine_dashboard.html:78
 #: .\viewer\templates\magazine_dashboard.html:114
-#: .\viewer\templates\user_dashboard.html:472
+#: .\viewer\templates\user_dashboard.html:484
 msgid "Delete"
 msgstr ""
 
@@ -1876,8 +1885,8 @@ msgstr "Aktualisieren"
 #: .\viewer\templates\audit_logs.html:224
 #: .\viewer\templates\company_dashboard.html:461
 #: .\viewer\templates\company_dashboard.html:528
-#: .\viewer\templates\company_user_details.html:485
-#: .\viewer\templates\company_user_details.html:570
+#: .\viewer\templates\company_user_details.html:497
+#: .\viewer\templates\company_user_details.html:582
 msgid "Approve"
 msgstr "Genehmigen"
 
@@ -1890,8 +1899,8 @@ msgstr "Anmelden"
 
 #: .\viewer\templates\audit_logs.html:182
 #: .\viewer\templates\audit_logs.html:228 .\viewer\templates\navbar.html:50
-#: .\viewer\templates\navbar.html:134 .\viewer\templates\navbar.html:361
-#: .\viewer\templates\navbar.html:422
+#: .\viewer\templates\navbar.html:133 .\viewer\templates\navbar.html:360
+#: .\viewer\templates\navbar.html:421
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -1901,7 +1910,7 @@ msgid "No logs found"
 msgstr "Keine Protokolle gefunden"
 
 #: .\viewer\templates\company_analytics.html:5
-#: .\viewer\templates\navbar.html:30 .\viewer\templates\navbar.html:312
+#: .\viewer\templates\navbar.html:30 .\viewer\templates\navbar.html:311
 msgid "Analytics"
 msgstr "Analytik"
 
@@ -1934,12 +1943,12 @@ msgid "Selected Period Statistics"
 msgstr "Statistiken des ausgewählten Zeitraums"
 
 #: .\viewer\templates\company_analytics.html:106
-#: .\viewer\templates\company_dashboard.html:118 .\viewer\views.py:1214
+#: .\viewer\templates\company_dashboard.html:118 .\viewer\views.py:1287
 msgid "Arrivals"
 msgstr "Ankünfte"
 
 #: .\viewer\templates\company_analytics.html:111
-#: .\viewer\templates\company_dashboard.html:119 .\viewer\views.py:1221
+#: .\viewer\templates\company_dashboard.html:119 .\viewer\views.py:1294
 msgid "Departures"
 msgstr "Abgänge"
 
@@ -1965,12 +1974,12 @@ msgstr "Anwesenheitsbericht"
 #: .\viewer\templates\company_user_details.html:112
 #: .\viewer\templates\company_user_details.html:119
 #: .\viewer\templates\company_user_details.html:126
-#: .\viewer\templates\company_user_details.html:456
+#: .\viewer\templates\company_user_details.html:468
 #: .\viewer\templates\user_dashboard.html:72
 #: .\viewer\templates\user_dashboard.html:102
 #: .\viewer\templates\user_dashboard.html:109
 #: .\viewer\templates\user_dashboard.html:116
-#: .\viewer\templates\user_dashboard.html:444
+#: .\viewer\templates\user_dashboard.html:456
 msgid "days"
 msgstr "tage"
 
@@ -2015,7 +2024,7 @@ msgid "Employee"
 msgstr "Mitarbeiter"
 
 #: .\viewer\templates\company_dashboard.html:5
-#: .\viewer\templates\navbar.html:124 .\viewer\templates\navbar.html:397
+#: .\viewer\templates\navbar.html:123 .\viewer\templates\navbar.html:396
 msgid "Company Dashboard"
 msgstr "Unternehmens-Dashboard"
 
@@ -2089,22 +2098,22 @@ msgstr "Standort"
 #: .\viewer\templates\company_dashboard.html:110
 #: .\viewer\templates\company_dashboard.html:238
 #: .\viewer\templates\company_user_details.html:272
-#: .\viewer\templates\user_dashboard.html:262 .\viewer\views.py:1277
+#: .\viewer\templates\user_dashboard.html:262 .\viewer\views.py:1353
 msgid "Scans"
 msgstr "Scans"
 
 #: .\viewer\templates\company_dashboard.html:122
 #: .\viewer\templates\company_dashboard.html:409
-#: .\viewer\templates\company_user_details.html:434
-#: .\viewer\templates\user_dashboard.html:423
+#: .\viewer\templates\company_user_details.html:446
+#: .\viewer\templates\user_dashboard.html:435
 msgid "Created"
 msgstr "Erstellt"
 
 #: .\viewer\templates\company_dashboard.html:130
 #: .\viewer\templates\company_dashboard.html:257
 #: .\viewer\templates\company_dashboard.html:410
-#: .\viewer\templates\company_user_details.html:442
-#: .\viewer\templates\user_dashboard.html:431
+#: .\viewer\templates\company_user_details.html:454
+#: .\viewer\templates\user_dashboard.html:443
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -2188,8 +2197,8 @@ msgstr "Nicht bei der Arbeit"
 #: .\viewer\templates\company_dashboard.html:339
 #: .\viewer\templates\company_dashboard.html:466
 #: .\viewer\templates\company_dashboard.html:532
-#: .\viewer\templates\company_user_details.html:491
-#: .\viewer\templates\company_user_details.html:575
+#: .\viewer\templates\company_user_details.html:503
+#: .\viewer\templates\company_user_details.html:587
 #: .\viewer\templates\magazine_dashboard.html:72
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -2199,69 +2208,69 @@ msgid "Deactivate"
 msgstr "Deaktivieren"
 
 #: .\viewer\templates\company_dashboard.html:369
-#: .\viewer\templates\company_user_details.html:411
-#: .\viewer\templates\user_dashboard.html:400
+#: .\viewer\templates\company_user_details.html:423
+#: .\viewer\templates\user_dashboard.html:412
 msgid "Date From"
 msgstr "Datum Von"
 
 #: .\viewer\templates\company_dashboard.html:379
-#: .\viewer\templates\company_user_details.html:421
-#: .\viewer\templates\user_dashboard.html:410
+#: .\viewer\templates\company_user_details.html:433
+#: .\viewer\templates\user_dashboard.html:422
 msgid "Date To"
 msgstr "Datum Bis"
 
 #: .\viewer\templates\company_dashboard.html:397
-#: .\viewer\templates\company_user_details.html:429
-#: .\viewer\templates\user_dashboard.html:418
+#: .\viewer\templates\company_user_details.html:441
+#: .\viewer\templates\user_dashboard.html:430
 #: .\viewer\templates\vacation_notification.html:137
 msgid "Days"
 msgstr "Tage"
 
 #: .\viewer\templates\company_dashboard.html:400
 #: .\viewer\templates\company_user_details.html:312
-#: .\viewer\templates\company_user_details.html:430
+#: .\viewer\templates\company_user_details.html:442
 #: .\viewer\templates\filters_card.html:72
 #: .\viewer\templates\filters_card.html:82 .\viewer\templates\qr_scans.html:74
 #: .\viewer\templates\user_dashboard.html:301
-#: .\viewer\templates\user_dashboard.html:419
+#: .\viewer\templates\user_dashboard.html:431
 #: .\viewer\templates\vacation_notification.html:103
 msgid "Type"
 msgstr "Typ"
 
 #: .\viewer\templates\company_dashboard.html:408
-#: .\viewer\templates\company_user_details.html:431
+#: .\viewer\templates\company_user_details.html:443
 #: .\viewer\templates\magazine_editor.html:176
-#: .\viewer\templates\user_dashboard.html:420
+#: .\viewer\templates\user_dashboard.html:432
 msgid "Status"
 msgstr "Status"
 
 #: .\viewer\templates\company_dashboard.html:439
 #: .\viewer\templates\company_dashboard.html:510
-#: .\viewer\templates\company_user_details.html:468
-#: .\viewer\templates\company_user_details.html:524
-#: .\viewer\templates\company_user_details.html:552
-#: .\viewer\templates\user_dashboard.html:456
-#: .\viewer\templates\user_dashboard.html:494
-#: .\viewer\templates\user_dashboard.html:522
+#: .\viewer\templates\company_user_details.html:480
+#: .\viewer\templates\company_user_details.html:536
+#: .\viewer\templates\company_user_details.html:564
+#: .\viewer\templates\user_dashboard.html:468
+#: .\viewer\templates\user_dashboard.html:506
+#: .\viewer\templates\user_dashboard.html:534
 msgid "Absence"
 msgstr "Abwesenheit"
 
 #: .\viewer\templates\company_dashboard.html:444
 #: .\viewer\templates\company_dashboard.html:514
-#: .\viewer\templates\company_user_details.html:473
-#: .\viewer\templates\company_user_details.html:560
-#: .\viewer\templates\user_dashboard.html:461
-#: .\viewer\templates\user_dashboard.html:530
+#: .\viewer\templates\company_user_details.html:485
+#: .\viewer\templates\company_user_details.html:572
+#: .\viewer\templates\user_dashboard.html:473
+#: .\viewer\templates\user_dashboard.html:542
 #: .\viewer\templates\vacation_notification.html:158
 msgid "Approved"
 msgstr "Genehmigt"
 
 #: .\viewer\templates\company_dashboard.html:446
 #: .\viewer\templates\company_dashboard.html:516
-#: .\viewer\templates\company_user_details.html:475
-#: .\viewer\templates\company_user_details.html:562
-#: .\viewer\templates\user_dashboard.html:463
-#: .\viewer\templates\user_dashboard.html:532
+#: .\viewer\templates\company_user_details.html:487
+#: .\viewer\templates\company_user_details.html:574
+#: .\viewer\templates\user_dashboard.html:475
+#: .\viewer\templates\user_dashboard.html:544
 msgid "Pending"
 msgstr "Ausstehend"
 
@@ -2276,27 +2285,27 @@ msgstr "Bearbeitet"
 #: .\viewer\templates\company_dashboard.html:477
 #: .\viewer\templates\company_dashboard.html:538
 #: .\viewer\templates\company_user_details.html:46
-#: .\viewer\templates\company_user_details.html:503
-#: .\viewer\templates\company_user_details.html:581
+#: .\viewer\templates\company_user_details.html:515
+#: .\viewer\templates\company_user_details.html:593
 msgid "Generate PDF"
 msgstr "PDF generieren"
 
 #: .\viewer\templates\company_dashboard.html:485
 #: .\viewer\templates\company_dashboard.html:547
-#: .\viewer\templates\user_dashboard.html:481
-#: .\viewer\templates\user_dashboard.html:548
+#: .\viewer\templates\user_dashboard.html:493
+#: .\viewer\templates\user_dashboard.html:560
 msgid "No absences found"
 msgstr "Keine Abwesenheiten gefunden"
 
 #: .\viewer\templates\company_dashboard.html:520
-#: .\viewer\templates\company_user_details.html:530
-#: .\viewer\templates\user_dashboard.html:500
+#: .\viewer\templates\company_user_details.html:542
+#: .\viewer\templates\user_dashboard.html:512
 msgid "From:"
 msgstr "Von:"
 
 #: .\viewer\templates\company_dashboard.html:523
-#: .\viewer\templates\company_user_details.html:534
-#: .\viewer\templates\user_dashboard.html:504
+#: .\viewer\templates\company_user_details.html:546
+#: .\viewer\templates\user_dashboard.html:516
 msgid "To:"
 msgstr "Bis:"
 
@@ -2343,8 +2352,8 @@ msgid "Password (leave blank to keep current)"
 msgstr "Passwort (leer lassen, um aktuelles zu behalten)"
 
 #: .\viewer\templates\company_login.html:5
-#: .\viewer\templates\company_login.html:19 .\viewer\templates\navbar.html:242
-#: .\viewer\templates\navbar.html:448
+#: .\viewer\templates\company_login.html:19 .\viewer\templates\navbar.html:241
+#: .\viewer\templates\navbar.html:447
 msgid "Company Login"
 msgstr "Firmen-Anmeldung"
 
@@ -2407,7 +2416,7 @@ msgstr "Hier anmelden"
 #: .\viewer\templates\company_reset_password.html:18
 #: .\viewer\templates\company_reset_password.html:80
 #: .\viewer\templates\password_reset_email.html:40
-#: .\viewer\templates\translations_js.html:151
+#: .\viewer\templates\translations_js.html:153
 msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
@@ -2581,31 +2590,31 @@ msgstr "Benachrichtigungen"
 msgid "Hide Details"
 msgstr "Details verbergen"
 
-#: .\viewer\templates\company_user_details.html:353
-#: .\viewer\templates\company_user_details.html:395
+#: .\viewer\templates\company_user_details.html:359
+#: .\viewer\templates\company_user_details.html:407
 #: .\viewer\templates\qr_scans.html:121 .\viewer\templates\qr_scans.html:169
-#: .\viewer\templates\user_dashboard.html:342
-#: .\viewer\templates\user_dashboard.html:384
+#: .\viewer\templates\user_dashboard.html:348
+#: .\viewer\templates\user_dashboard.html:396
 msgid "No scans found"
 msgstr "Keine Scans gefunden"
 
-#: .\viewer\templates\company_user_details.html:511
-#: .\viewer\templates\company_user_details.html:591
+#: .\viewer\templates\company_user_details.html:523
+#: .\viewer\templates\company_user_details.html:603
 msgid "No vacations found"
 msgstr "Keine Abwesenheiten gefunden"
 
-#: .\viewer\templates\company_user_details.html:538
-#: .\viewer\templates\user_dashboard.html:508
+#: .\viewer\templates\company_user_details.html:550
+#: .\viewer\templates\user_dashboard.html:520
 msgid "Days:"
 msgstr "Tage:"
 
-#: .\viewer\templates\company_user_details.html:542
-#: .\viewer\templates\user_dashboard.html:512
+#: .\viewer\templates\company_user_details.html:554
+#: .\viewer\templates\user_dashboard.html:524
 msgid "Type:"
 msgstr "Typ:"
 
-#: .\viewer\templates\company_user_details.html:558
-#: .\viewer\templates\user_dashboard.html:528
+#: .\viewer\templates\company_user_details.html:570
+#: .\viewer\templates\user_dashboard.html:540
 msgid "Status:"
 msgstr "Status:"
 
@@ -2663,8 +2672,8 @@ msgstr ""
 "Sehen Sie die QR-Codes Ihres Unternehmens und greifen Sie auf Scan-Historie "
 "und Analytik zu"
 
-#: .\viewer\templates\landing.html:58 .\viewer\templates\navbar.html:246
-#: .\viewer\templates\navbar.html:459 .\viewer\templates\user_login.html:5
+#: .\viewer\templates\landing.html:58 .\viewer\templates\navbar.html:245
+#: .\viewer\templates\navbar.html:458 .\viewer\templates\user_login.html:5
 #: .\viewer\templates\user_login.html:19
 msgid "User Login"
 msgstr "Benutzer-Anmeldung"
@@ -3058,12 +3067,12 @@ msgid "Editor"
 msgstr "Editor"
 
 #: .\viewer\templates\magazine_editor.html:38 .\viewer\templates\navbar.html:34
-#: .\viewer\templates\navbar.html:323
+#: .\viewer\templates\navbar.html:322
 msgid "Settings"
 msgstr "Einstellungen"
 
 #: .\viewer\templates\magazine_editor.html:44
-#: .\viewer\templates\translations_js.html:139
+#: .\viewer\templates\translations_js.html:141
 msgid "Print"
 msgstr "Drucken"
 
@@ -3281,91 +3290,91 @@ msgstr "Inhalt"
 msgid "Page"
 msgstr "Seite"
 
-#: .\viewer\templates\navbar.html:26 .\viewer\templates\navbar.html:119
-#: .\viewer\templates\navbar.html:301 .\viewer\templates\navbar.html:374
+#: .\viewer\templates\navbar.html:26 .\viewer\templates\navbar.html:114
+#: .\viewer\templates\navbar.html:300 .\viewer\templates\navbar.html:373
 #: .\viewer\templates\user_dashboard.html:5
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: .\viewer\templates\navbar.html:45 .\viewer\templates\navbar.html:129
-#: .\viewer\templates\navbar.html:348 .\viewer\templates\navbar.html:409
+#: .\viewer\templates\navbar.html:45 .\viewer\templates\navbar.html:128
+#: .\viewer\templates\navbar.html:347 .\viewer\templates\navbar.html:408
 msgid "Logging"
 msgstr "Protokollierung"
 
-#: .\viewer\templates\navbar.html:107
+#: .\viewer\templates\navbar.html:118
 msgid "Scan QR"
 msgstr "QR scannen"
 
-#: .\viewer\templates\navbar.html:302
+#: .\viewer\templates\navbar.html:301
 msgid "Overview & Statistics"
 msgstr "Übersicht & Statistiken"
 
-#: .\viewer\templates\navbar.html:313
+#: .\viewer\templates\navbar.html:312
 msgid "Charts & Reports"
 msgstr "Diagramme & Berichte"
 
-#: .\viewer\templates\navbar.html:324
+#: .\viewer\templates\navbar.html:323
 msgid "Company Profile & Preferences"
 msgstr "Firmenprofil & Einstellungen"
 
-#: .\viewer\templates\navbar.html:349 .\viewer\templates\navbar.html:410
+#: .\viewer\templates\navbar.html:348 .\viewer\templates\navbar.html:409
 msgid "Activity Logs"
 msgstr "Aktivitätsprotokolle"
 
-#: .\viewer\templates\navbar.html:362 .\viewer\templates\navbar.html:423
+#: .\viewer\templates\navbar.html:361 .\viewer\templates\navbar.html:422
 msgid "Sign out from account"
 msgstr "Vom Konto abmelden"
 
-#: .\viewer\templates\navbar.html:375
+#: .\viewer\templates\navbar.html:374
 msgid "Your QR Codes"
 msgstr "Ihre QR-Codes"
 
-#: .\viewer\templates\navbar.html:385 .\viewer\templates\user_dashboard.html:40
+#: .\viewer\templates\navbar.html:384 .\viewer\templates\user_dashboard.html:40
 #: .\viewer\templates\user_scan_qr.html:5
 msgid "Scan QR Code"
 msgstr "QR-Code scannen"
 
-#: .\viewer\templates\navbar.html:386
+#: .\viewer\templates\navbar.html:385
 msgid "Scan to record location"
 msgstr "Scannen, um Standort aufzuzeichnen"
 
-#: .\viewer\templates\navbar.html:398
+#: .\viewer\templates\navbar.html:397
 msgid "Manage employees & QR codes"
 msgstr "Mitarbeiter & QR-Codes verwalten"
 
-#: .\viewer\templates\navbar.html:435
+#: .\viewer\templates\navbar.html:434
 msgid "Home"
 msgstr "Startseite"
 
-#: .\viewer\templates\navbar.html:436
+#: .\viewer\templates\navbar.html:435
 msgid "Back to homepage"
 msgstr "Zurück zur Startseite"
 
-#: .\viewer\templates\navbar.html:449
+#: .\viewer\templates\navbar.html:448
 msgid "For organizations"
 msgstr "Für Organisationen"
 
-#: .\viewer\templates\navbar.html:460
+#: .\viewer\templates\navbar.html:459
 msgid "For individuals"
 msgstr "Für Einzelpersonen"
 
-#: .\viewer\templates\navbar.html:475
+#: .\viewer\templates\navbar.html:474
 msgid "Dark Mode"
 msgstr "Dunkler Modus"
 
-#: .\viewer\templates\navbar.html:475
+#: .\viewer\templates\navbar.html:474
 msgid "Light Mode"
 msgstr "Heller Modus"
 
-#: .\viewer\templates\navbar.html:476
+#: .\viewer\templates\navbar.html:475
 msgid "Switch to dark theme"
 msgstr "Zu dunklem Thema wechseln"
 
-#: .\viewer\templates\navbar.html:476
+#: .\viewer\templates\navbar.html:475
 msgid "Switch to light theme"
 msgstr "Zu hellem Thema wechseln"
 
-#: .\viewer\templates\navbar.html:487
+#: .\viewer\templates\navbar.html:486
 msgid "Language"
 msgstr "Sprache"
 
@@ -3418,7 +3427,7 @@ msgid "scans"
 msgstr "Scans"
 
 #: .\viewer\templates\password_reset_email.html:7
-#: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1510
+#: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1586
 msgid "Password Reset Request"
 msgstr "Anfrage zur Passwortzurücksetzung"
 
@@ -3512,7 +3521,7 @@ msgid "%(name)s has left work."
 msgstr "%(name)s hat die Arbeit verlassen."
 
 #: .\viewer\templates\scan_notification.html:76
-#: .\viewer\templates\translations_js.html:130
+#: .\viewer\templates\translations_js.html:132
 msgid "Address"
 msgstr "Adresse"
 
@@ -3756,7 +3765,7 @@ msgstr "Weiteren scannen"
 msgid "Scanned At"
 msgstr "Gescannt um"
 
-#: .\viewer\templates\translations_js.html:105 .\viewer\views.py:517
+#: .\viewer\templates\translations_js.html:105 .\viewer\views.py:564
 msgid "Scan recorded successfully!"
 msgstr "Scan erfolgreich aufgezeichnet!"
 
@@ -3764,141 +3773,150 @@ msgstr "Scan erfolgreich aufgezeichnet!"
 msgid "Scan Recorded"
 msgstr "Scan aufgezeichnet"
 
-#: .\viewer\templates\translations_js.html:109
+#: .\viewer\templates\translations_js.html:107
+#: .\viewer\templates\user_scan_qr.html:82
+msgid "Home Office Scan"
+msgstr "Homeoffice-Scan"
+
+#: .\viewer\templates\translations_js.html:108 .\viewer\views.py:520
+msgid "Home office scan recorded successfully!"
+msgstr "Homeoffice-Scan erfolgreich aufgezeichnet!"
+
+#: .\viewer\templates\translations_js.html:111
 msgid "Camera permission denied"
 msgstr "Kameraberechtigung verweigert"
 
-#: .\viewer\templates\translations_js.html:110
+#: .\viewer\templates\translations_js.html:112
 msgid "Camera not supported"
 msgstr "Kamera nicht unterstützt"
 
-#: .\viewer\templates\translations_js.html:111
+#: .\viewer\templates\translations_js.html:113
 msgid "Permissions Granted"
 msgstr "Berechtigungen erteilt"
 
-#: .\viewer\templates\translations_js.html:112
+#: .\viewer\templates\translations_js.html:114
 msgid "You can now scan QR codes"
 msgstr "Sie können jetzt QR-Codes scannen"
 
-#: .\viewer\templates\translations_js.html:113
+#: .\viewer\templates\translations_js.html:115
 msgid "Permission Error"
 msgstr "Berechtigungsfehler"
 
-#: .\viewer\templates\translations_js.html:114
-#: .\viewer\templates\user_scan_qr.html:97
+#: .\viewer\templates\translations_js.html:116
+#: .\viewer\templates\user_scan_qr.html:103
 msgid "Grant Permissions"
 msgstr "Berechtigungen erteilen"
 
-#: .\viewer\templates\translations_js.html:115
+#: .\viewer\templates\translations_js.html:117
 msgid "Requesting permissions..."
 msgstr "Berechtigungen werden angefordert..."
 
-#: .\viewer\templates\translations_js.html:116
+#: .\viewer\templates\translations_js.html:118
 #: .\viewer\templates\user_scan_qr.html:76
 msgid "Start Scanner"
 msgstr "Scanner starten"
 
-#: .\viewer\templates\translations_js.html:117
-#: .\viewer\templates\user_scan_qr.html:106
+#: .\viewer\templates\translations_js.html:119
+#: .\viewer\templates\user_scan_qr.html:112
 msgid "Processing scan..."
 msgstr "Scan wird verarbeitet..."
 
-#: .\viewer\templates\translations_js.html:118
+#: .\viewer\templates\translations_js.html:120
 msgid "Initializing scanner..."
 msgstr "Scanner wird initialisiert..."
 
-#: .\viewer\templates\translations_js.html:119
+#: .\viewer\templates\translations_js.html:121
 msgid "Preparing..."
 msgstr "Vorbereitung..."
 
-#: .\viewer\templates\translations_js.html:120
+#: .\viewer\templates\translations_js.html:122
 msgid "Please enable location"
 msgstr "Bitte aktivieren Sie den Standort"
 
-#: .\viewer\templates\translations_js.html:123
+#: .\viewer\templates\translations_js.html:125
 msgid "Adding absence..."
 msgstr "Abwesenheit wird hinzugefügt..."
 
-#: .\viewer\templates\translations_js.html:124
+#: .\viewer\templates\translations_js.html:126
 msgid "Updating absence..."
 msgstr "Abwesenheit wird aktualisiert..."
 
-#: .\viewer\templates\translations_js.html:125
+#: .\viewer\templates\translations_js.html:127
 msgid "Deleting absence..."
 msgstr "Abwesenheit wird gelöscht..."
 
-#: .\viewer\templates\translations_js.html:126
+#: .\viewer\templates\translations_js.html:128
 msgid "Approving absence..."
 msgstr "Abwesenheit wird genehmigt..."
 
-#: .\viewer\templates\translations_js.html:129
+#: .\viewer\templates\translations_js.html:131
 msgid "GPS Coordinates"
 msgstr "GPS-Koordinaten"
 
-#: .\viewer\templates\translations_js.html:131
+#: .\viewer\templates\translations_js.html:133
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
-#: .\viewer\templates\translations_js.html:132
+#: .\viewer\templates\translations_js.html:134
 msgid "Failed to process scan"
 msgstr "Scan konnte nicht verarbeitet werden"
 
-#: .\viewer\templates\translations_js.html:133
+#: .\viewer\templates\translations_js.html:135
 msgid "Failed to start scanner"
 msgstr "Scanner konnte nicht gestartet werden"
 
-#: .\viewer\templates\translations_js.html:134
+#: .\viewer\templates\translations_js.html:136
 msgid "Failed to record scan"
 msgstr "Scan konnte nicht aufgezeichnet werden"
 
-#: .\viewer\templates\translations_js.html:135
+#: .\viewer\templates\translations_js.html:137
 msgid "Please enter a QR code UUID"
 msgstr "Bitte geben Sie eine QR-Code UUID ein"
 
-#: .\viewer\templates\translations_js.html:136
+#: .\viewer\templates\translations_js.html:138
 msgid "Please select a date range first!"
 msgstr "Bitte wählen Sie zuerst einen Datumsbereich aus!"
 
-#: .\viewer\templates\translations_js.html:140
+#: .\viewer\templates\translations_js.html:142
 msgid "Close"
 msgstr "Schließen"
 
-#: .\viewer\templates\translations_js.html:143
+#: .\viewer\templates\translations_js.html:145
 msgid "Saving..."
 msgstr "Wird gespeichert..."
 
-#: .\viewer\templates\translations_js.html:144
+#: .\viewer\templates\translations_js.html:146
 msgid "Settings have been saved successfully."
 msgstr "Einstellungen wurden erfolgreich gespeichert."
 
-#: .\viewer\templates\translations_js.html:145
+#: .\viewer\templates\translations_js.html:147
 msgid "Failed to save settings. Please try again."
 msgstr ""
 "Fehler beim Speichern der Einstellungen. Bitte versuchen Sie es erneut."
 
-#: .\viewer\templates\translations_js.html:146
+#: .\viewer\templates\translations_js.html:148
 msgid "Network error. Please check your connection and try again."
 msgstr ""
 "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es "
 "erneut."
 
-#: .\viewer\templates\translations_js.html:147
+#: .\viewer\templates\translations_js.html:149
 msgid "Cancel Changes?"
 msgstr "Änderungen verwerfen?"
 
-#: .\viewer\templates\translations_js.html:148
+#: .\viewer\templates\translations_js.html:150
 msgid "All unsaved changes will be lost."
 msgstr "Alle nicht gespeicherten Änderungen gehen verloren."
 
-#: .\viewer\templates\translations_js.html:149
+#: .\viewer\templates\translations_js.html:151
 msgid "Yes, cancel"
 msgstr "Ja, verwerfen"
 
-#: .\viewer\templates\translations_js.html:150
+#: .\viewer\templates\translations_js.html:152
 msgid "No, continue editing"
 msgstr "Nein, weiter bearbeiten"
 
-#: .\viewer\templates\translations_js.html:152
+#: .\viewer\templates\translations_js.html:154
 msgid ""
 "A password reset link will be sent to your email address.<br><br>Do you want "
 "to continue?"
@@ -3906,23 +3924,23 @@ msgstr ""
 "Ein Link zum Zurücksetzen des Passworts wird an Ihre E-Mail-Adresse gesendet."
 "<br><br>Möchten Sie fortfahren?"
 
-#: .\viewer\templates\translations_js.html:153
+#: .\viewer\templates\translations_js.html:155
 msgid "Send Reset Link"
 msgstr "Reset-Link senden"
 
-#: .\viewer\templates\translations_js.html:154
+#: .\viewer\templates\translations_js.html:156
 msgid "Sending..."
 msgstr "Wird gesendet..."
 
-#: .\viewer\templates\translations_js.html:155
+#: .\viewer\templates\translations_js.html:157
 msgid "Please wait while we send the reset link."
 msgstr "Bitte warten Sie, während wir den Link zum Zurücksetzen senden."
 
-#: .\viewer\templates\translations_js.html:156
+#: .\viewer\templates\translations_js.html:158
 msgid "Email Sent!"
 msgstr "E-Mail gesendet!"
 
-#: .\viewer\templates\translations_js.html:157
+#: .\viewer\templates\translations_js.html:159
 msgid ""
 "A password reset link has been sent to your email address.<br><br>Please "
 "check your inbox and follow the instructions."
@@ -3931,65 +3949,65 @@ msgstr ""
 "gesendet.<br><br>Bitte überprüfen Sie Ihren Posteingang und folgen Sie den "
 "Anweisungen."
 
-#: .\viewer\templates\translations_js.html:158
+#: .\viewer\templates\translations_js.html:160
 msgid "Failed to send reset email. Please try again."
 msgstr ""
 "Fehler beim Senden der E-Mail zum Zurücksetzen. Bitte versuchen Sie es "
 "erneut."
 
-#: .\viewer\templates\translations_js.html:159
+#: .\viewer\templates\translations_js.html:161
 msgid "Validation Error"
 msgstr "Validierungsfehler"
 
-#: .\viewer\templates\translations_js.html:160
+#: .\viewer\templates\translations_js.html:162
 msgid "Company name is required."
 msgstr "Firmenname ist erforderlich."
 
-#: .\viewer\templates\translations_js.html:163
+#: .\viewer\templates\translations_js.html:165
 msgid "Error creating article"
 msgstr "Fehler beim Erstellen des Artikels"
 
-#: .\viewer\templates\translations_js.html:164
+#: .\viewer\templates\translations_js.html:166
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: .\viewer\templates\translations_js.html:165
+#: .\viewer\templates\translations_js.html:167
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
-#: .\viewer\templates\translations_js.html:166
+#: .\viewer\templates\translations_js.html:168
 msgid "Delete this content block?"
 msgstr "Diesen Inhaltsblock löschen?"
 
-#: .\viewer\templates\translations_js.html:167
+#: .\viewer\templates\translations_js.html:169
 msgid "Error saving article"
 msgstr "Fehler beim Speichern des Artikels"
 
-#: .\viewer\templates\translations_js.html:168
+#: .\viewer\templates\translations_js.html:170
 msgid "Delete this article?"
 msgstr "Diesen Artikel löschen?"
 
-#: .\viewer\templates\translations_js.html:169
+#: .\viewer\templates\translations_js.html:171
 msgid "Error deleting article"
 msgstr "Fehler beim Löschen des Artikels"
 
-#: .\viewer\templates\translations_js.html:170
+#: .\viewer\templates\translations_js.html:172
 msgid "Settings saved successfully!"
 msgstr "Einstellungen erfolgreich gespeichert!"
 
-#: .\viewer\templates\translations_js.html:171
+#: .\viewer\templates\translations_js.html:173
 msgid "Error saving settings"
 msgstr "Fehler beim Speichern der Einstellungen"
 
-#: .\viewer\templates\translations_js.html:172
+#: .\viewer\templates\translations_js.html:174
 msgid "Error removing image"
 msgstr "Fehler beim Entfernen des Bildes"
 
-#: .\viewer\templates\translations_js.html:173
+#: .\viewer\templates\translations_js.html:175
 msgid "OK"
 msgstr "OK"
 
-#: .\viewer\templates\user_dashboard.html:539
+#: .\viewer\templates\user_dashboard.html:551
 msgid "Delete Absence"
 msgstr "Abwesenheit löschen"
 
@@ -4029,15 +4047,15 @@ msgstr "Bitte wählen Sie den Scantyp aus"
 msgid "Align QR code within the frame"
 msgstr "QR-Code im Rahmen ausrichten"
 
-#: .\viewer\templates\user_scan_qr.html:82
+#: .\viewer\templates\user_scan_qr.html:88
 msgid "Stop Scanner"
 msgstr "Scanner stoppen"
 
-#: .\viewer\templates\user_scan_qr.html:92
+#: .\viewer\templates\user_scan_qr.html:98
 msgid "Camera & Location Required"
 msgstr "Kamera & Standort erforderlich"
 
-#: .\viewer\templates\user_scan_qr.html:94
+#: .\viewer\templates\user_scan_qr.html:100
 msgid ""
 "To scan QR codes and record your location, we need permission to access your "
 "camera and location."
@@ -4151,78 +4169,78 @@ msgstr ""
 "Sie haben diese E-Mail erhalten, weil Sie Urlaubsbenachrichtigungen "
 "aktiviert haben."
 
-#: .\viewer\views.py:36 .\viewer\views.py:902
+#: .\viewer\views.py:36 .\viewer\views.py:958
 msgid "Please login as a company or manager"
 msgstr "Bitte melden Sie sich als Firma oder Manager an"
 
-#: .\viewer\views.py:322 .\viewer\views.py:469
+#: .\viewer\views.py:325 .\viewer\views.py:483
 msgid "Please login as a user"
 msgstr "Bitte melden Sie sich als Benutzer an"
 
-#: .\viewer\views.py:491
-msgid "QR code not found or inactive"
-msgstr "QR-Code nicht gefunden oder inaktiv"
-
-#: .\viewer\views.py:497
-msgid "This QR code does not belong to your company"
-msgstr "Dieser QR-Code gehört nicht zu Ihrer Firma"
-
-#: .\viewer\views.py:524
+#: .\viewer\views.py:527 .\viewer\views.py:571
 msgid "Address not available"
 msgstr "Adresse nicht verfügbar"
 
-#: .\viewer\views.py:696
+#: .\viewer\views.py:537
+msgid "QR code not found or inactive"
+msgstr "QR-Code nicht gefunden oder inaktiv"
+
+#: .\viewer\views.py:543
+msgid "This QR code does not belong to your company"
+msgstr "Dieser QR-Code gehört nicht zu Ihrer Firma"
+
+#: .\viewer\views.py:743
 msgid "User not found or inactive"
 msgstr "Benutzer nicht gefunden oder inaktiv"
 
-#: .\viewer\views.py:1285
+#: .\viewer\views.py:1361
 msgid "Invalid chart type"
 msgstr "Ungültiger Diagrammtyp"
 
-#: .\viewer\views.py:1293
+#: .\viewer\views.py:1369
 msgid "Please login to access this page"
 msgstr "Bitte melden Sie sich an, um auf diese Seite zuzugreifen"
 
-#: .\viewer\views.py:1427
+#: .\viewer\views.py:1503
 msgid "Company name is required"
 msgstr "Firmenname ist erforderlich"
 
-#: .\viewer\views.py:1450
+#: .\viewer\views.py:1526
 msgid "Settings saved successfully"
 msgstr "Einstellungen erfolgreich gespeichert"
 
-#: .\viewer\views.py:1455
+#: .\viewer\views.py:1531
 msgid "An error occurred while saving settings"
 msgstr "Beim Speichern der Einstellungen ist ein Fehler aufgetreten"
 
-#: .\viewer\views.py:1530
+#: .\viewer\views.py:1606
 msgid "Password reset link has been sent to your email"
 msgstr "Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail gesendet"
 
-#: .\viewer\views.py:1536
+#: .\viewer\views.py:1612
 msgid "Failed to send password reset email"
 msgstr "Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts"
 
-#: .\viewer\views.py:1549
+#: .\viewer\views.py:1625
 msgid "This password reset link has expired or is invalid"
 msgstr ""
 "Dieser Link zum Zurücksetzen des Passworts ist abgelaufen oder ungültig"
 
-#: .\viewer\views.py:1560
+#: .\viewer\views.py:1636
 msgid "Both password fields are required"
 msgstr "Beide Passwortfelder sind erforderlich"
 
-#: .\viewer\views.py:1574
+#: .\viewer\views.py:1650
 msgid "Password must be at least 6 characters long"
 msgstr "Das Passwort muss mindestens 6 Zeichen lang sein"
 
-#: .\viewer\views.py:1598
+#: .\viewer\views.py:1674
 msgid ""
 "Password has been reset successfully. Please login with your new password."
 msgstr ""
 "Passwort wurde erfolgreich zurückgesetzt. Bitte melden Sie sich mit Ihrem "
 "neuen Passwort an."
 
-#: .\viewer\views.py:1607
+#: .\viewer\views.py:1683
 msgid "Invalid password reset link"
 msgstr "Ungültiger Link zum Zurücksetzen des Passworts"

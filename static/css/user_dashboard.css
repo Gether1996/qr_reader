@@ -44,6 +44,9 @@ body {
     min-width: 140px;
     font-size: 0.9rem;
     padding: 0.5rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Data Table Card */

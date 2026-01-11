@@ -126,9 +126,10 @@ class ScanEvent(models.Model):
         ('lunch_break_end', 'Prestávka koniec'),
     ]
     
-    qr_code = models.ForeignKey(QRCodeProfile, on_delete=models.CASCADE, related_name='scans')
+    qr_code = models.ForeignKey(QRCodeProfile, on_delete=models.CASCADE, related_name='scans', null=True, blank=True)
     scanned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='scans')
     scan_type = models.CharField(max_length=20, choices=SCAN_TYPE_CHOICES, default='arrival')
+    is_home_office = models.BooleanField(default=False, help_text="Indicates if this is a home office scan")
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.CharField(max_length=500, blank=True, null=True, help_text="Human-readable address")
@@ -139,7 +140,9 @@ class ScanEvent(models.Model):
         ordering = ['-timestamp']
 
     def __str__(self):
-        return f"{self.qr_code.name} scanned at {self.timestamp}"
+        if self.is_home_office:
+            return f"Home Office scan at {self.timestamp}"
+        return f"{self.qr_code.name if self.qr_code else 'Unknown'} scanned at {self.timestamp}"
     
     def get_address_from_coordinates(self):
         """Reverse geocode coordinates to get human-readable address"""

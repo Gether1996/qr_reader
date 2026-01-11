@@ -326,7 +326,13 @@
                             <td>
                                 <i class="fas fa-clock me-1"></i>{{ scan.timestamp|date:"d.m.Y H:i" }}
                             </td>
-                            <td><strong>{{ scan.qr_code.name }}</strong></td>
+                            <td>
+                                {% if scan.is_home_office %}
+                                    <strong><i class="fas fa-home me-1 text-success"></i>{% trans "Home Office" %}</strong>
+                                {% else %}
+                                    <strong>{{ scan.qr_code.name }}</strong>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if scan.scan_type == 'arrival' %}
                                     <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
@@ -363,7 +369,13 @@
                 {% for scan in scans_page %}
                 <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
                     <div class="mobile-scan-header">
-                        <div class="mobile-scan-title">{{ scan.qr_code.name }}</div>
+                        <div class="mobile-scan-title">
+                            {% if scan.is_home_office %}
+                                <i class="fas fa-home me-1 text-success"></i>{% trans "Home Office" %}
+                            {% else %}
+                                {{ scan.qr_code.name }}
+                            {% endif %}
+                        </div>
                         <div class="mobile-scan-type {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
                             <i class="fas fa-{% if scan.scan_type == 'arrival' %}sign-in-alt{% else %}sign-out-alt{% endif %} me-1"></i>
                             {% if scan.scan_type == 'arrival' %}{% trans "Arrival" %}{% else %}{% trans "Departure" %}{% endif %}

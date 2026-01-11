@@ -120,7 +120,7 @@ function createUser() {
                 .swal-section { 
                     background: rgba(0,0,0,0.02); 
                     border-radius: 8px; 
-                    padding: 12px; 
+                    padding: 15px; 
                     margin-bottom: 16px;
                 }
                 @media (prefers-color-scheme: dark) {
@@ -130,27 +130,54 @@ function createUser() {
                     .swal-checkbox-label:hover { background: rgba(255,255,255,0.08) !important; }
                 }
                 .swal-section-title { 
-                    font-size: 0.875rem; 
+                    font-size: 0.95rem; 
                     font-weight: 600; 
                     color: #495057; 
-                    margin-bottom: 12px;
+                    margin-bottom: 14px;
                     display: flex;
                     align-items: center;
-                    gap: 6px;
+                    gap: 8px;
                 }
                 .swal-checkbox-label {
                     display: flex;
                     align-items: center;
-                    padding: 10px 12px;
+                    padding: 12px 14px;
                     border: 1px solid #dee2e6;
-                    border-radius: 6px;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s;
                     background: white;
+                    min-height: 44px;
                 }
                 .swal-checkbox-label:hover { background: #f8f9fa; border-color: #adb5bd; }
-                .swal-checkbox-label input { margin: 0 8px 0 0; }
-                .swal-checkbox-label span { font-size: 0.875rem; }
+                .swal-checkbox-label input { 
+                    margin: 0 10px 0 0; 
+                    width: 18px;
+                    height: 18px;
+                    cursor: pointer;
+                }
+                .swal-checkbox-label span { font-size: 0.9rem; }
+                
+                .required-field::after {
+                    content: ' *';
+                    color: #dc3545;
+                    font-weight: bold;
+                }
+                .field-error {
+                    border-color: #dc3545 !important;
+                    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+                }
+                
+                /* Mobile optimizations */
+                @media (max-width: 576px) {
+                    .swal2-popup { padding: 15px !important; }
+                    .swal-section { padding: 12px; margin-bottom: 12px; }
+                    .swal-section-title { font-size: 0.9rem; margin-bottom: 10px; }
+                    .swal-checkbox-label { padding: 10px 12px; font-size: 0.875rem; }
+                    .form-control, .form-select { font-size: 16px !important; min-height: 44px; }
+                    .input-group-text { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
+                    .form-label { font-size: 0.875rem !important; }
+                }
             </style>
             <div class="container-fluid px-0">
                 <!-- Basic Information -->
@@ -160,10 +187,10 @@ function createUser() {
                     </div>
                     <div class="row g-2">
                         <div class="col-12">
-                            <input type="text" id="swal-user-name" class="form-control" placeholder="${translations.name}" required autocomplete="off">
+                            <input type="text" id="swal-user-name" class="form-control required-field" placeholder="${translations.name} *" required autocomplete="off">
                         </div>
                         <div class="col-12">
-                            <input type="email" id="swal-user-email" class="form-control" placeholder="${translations.email}" required autocomplete="off">
+                            <input type="email" id="swal-user-email" class="form-control required-field" placeholder="${translations.email} *" required autocomplete="off">
                         </div>
                         <div class="col-md-6 col-12">
                             <input type="text" id="swal-user-rc" class="form-control" placeholder="${translations.rc || 'Personal ID'}" autocomplete="off">
@@ -185,10 +212,10 @@ function createUser() {
                     </div>
                     <div class="row g-2">
                         <div class="col-md-6 col-12">
-                            <input type="password" id="swal-user-password" class="form-control" placeholder="${translations.password}" required autocomplete="new-password">
+                            <input type="password" id="swal-user-password" class="form-control required-field" placeholder="${translations.password} *" required autocomplete="new-password">
                         </div>
                         <div class="col-md-6 col-12">
-                            <input type="password" id="swal-user-password-confirm" class="form-control" placeholder="${translations.confirmPassword}" required autocomplete="new-password">
+                            <input type="password" id="swal-user-password-confirm" class="form-control required-field" placeholder="${translations.confirmPassword} *" required autocomplete="new-password">
                         </div>
                     </div>
                 </div>
@@ -200,35 +227,33 @@ function createUser() {
                     </div>
                     <div class="row g-2">
                         <div class="col-sm-6 col-12">
-                            <label class="form-label mb-1 small">${translations.basicWorkHours}</label>
-                            <div class="input-group input-group-sm">
+                            <label class="form-label mb-1 small required-field">${translations.basicWorkHours}</label>
+                            <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                 <input type="number" id="swal-user-work-hours" class="form-control" value="160" required min="0" step="1">
                                 <span class="input-group-text">h</span>
                             </div>
                         </div>
                         <div class="col-sm-6 col-12">
-                            <label class="form-label mb-1 small">${translations.holidaysPerYear}</label>
-                            <div class="input-group input-group-sm">
+                            <label class="form-label mb-1 small required-field">${translations.holidaysPerYear}</label>
+                            <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-umbrella-beach"></i></span>
-                                <input type="number" id="swal-user-holidays" class="form-control" value="20" required min="0" step="1">
+                                <input type="number" id="swal-user-holidays" class="form-control required-field" value="20" required min="0" step="1">
                                 <span class="input-group-text">days</span>
                             </div>
                         </div>
-                        <div class="col-12 mt-2">
-                            <label class="form-label mb-1 small">${translations.lunchBreakDuration || 'Lunch Break Duration'}</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <label class="swal-checkbox-label mb-0 flex-shrink-0" style="width: auto;">
-                                    <input class="form-check-input" type="checkbox" id="swal-user-has-lunch-break" checked>
-                                    <span><i class="fas fa-utensils text-success me-1"></i>${translations.hasLunchBreak || 'Lunch Break'}</span>
-                                </label>
-                                <div class="input-group input-group-sm" id="lunch-break-duration-container" style="flex: 1;">
-                                    <span class="input-group-text"><i class="fas fa-hourglass-half"></i></span>
-                                    <input type="number" id="swal-user-lunch-break" class="form-control" value="30" required min="0" step="1">
-                                    <span class="input-group-text">min</span>
-                                </div>
+                        <div class="col-12 mt-3">
+                            <label class="form-label mb-2 small">${translations.lunchBreakDuration || 'Lunch Break Duration'}</label>
+                            <label class="swal-checkbox-label mb-2">
+                                <input class="form-check-input" type="checkbox" id="swal-user-has-lunch-break" checked>
+                                <span><i class="fas fa-utensils text-success me-1"></i>${translations.hasLunchBreak || 'Lunch Break'}</span>
+                            </label>
+                            <div class="input-group" id="lunch-break-duration-container">
+                                <span class="input-group-text"><i class="fas fa-hourglass-half"></i></span>
+                                <input type="number" id="swal-user-lunch-break" class="form-control required-field" value="30" required min="0" step="1">
+                                <span class="input-group-text">min</span>
                             </div>
-                            <div class="text-muted small mt-1" style="font-size: 0.75rem; line-height: 1.3;">
+                            <div class="text-muted small mt-2" style="font-size: 0.8rem; line-height: 1.4;">
                                 <i class="fas fa-info-circle me-1"></i>${translations.lunchBreakInfo || 'Used only if employee does not scan a break QR code and if Automatic Lunch Breaks are enabled in company settings.'}
                             </div>
                         </div>
@@ -240,13 +265,13 @@ function createUser() {
                     <div class="swal-section-title">
                         <i class="fas fa-user-shield"></i>${translations.rolePermissions || 'Role & Permissions'}
                     </div>
-                    <select id="swal-user-role" class="form-select form-select-sm mb-2">
+                    <select id="swal-user-role" class="form-select mb-3">
                         <option value="employee">${translations.employee}</option>
                         <option value="manager">${translations.manager}</option>
                     </select>
                     
                     <div id="manager-permissions" style="display: none;">
-                        <div class="d-flex flex-column gap-2 mb-2">
+                        <div class="d-flex flex-column gap-2 mb-3">
                             <label class="swal-checkbox-label">
                                 <input class="form-check-input" type="checkbox" id="perm-edit-employees" checked>
                                 <span><i class="fas fa-users text-primary me-1"></i>${translations.canEditEmployees}</span>
@@ -261,23 +286,23 @@ function createUser() {
                             </label>
                         </div>
                         
-                        <label class="swal-checkbox-label mb-2">
+                        <label class="swal-checkbox-label mb-3">
                             <input class="form-check-input" type="checkbox" id="manager-enable-notifications" checked>
                             <span><i class="fas fa-bell text-info me-1"></i>${translations.enableNotifications}</span>
                         </label>
                         
-                        <div id="manager-notification-options" class="ms-3">
-                            <div class="d-flex flex-column gap-1">
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.813rem; padding: 4px 0;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-arrival" checked style="transform: scale(0.85);">
+                        <div id="manager-notification-options" class="ps-3">
+                            <div class="d-flex flex-column gap-2">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
+                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-arrival" checked style="width: 18px; height: 18px; cursor: pointer;">
                                     <span><i class="fas fa-sign-in-alt me-1"></i>${translations.arrival}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.813rem; padding: 4px 0;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-departure" checked style="transform: scale(0.85);">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
+                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-departure" checked style="width: 18px; height: 18px; cursor: pointer;">
                                     <span><i class="fas fa-sign-out-alt me-1"></i>${translations.departure}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.813rem; padding: 4px 0;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-vacation" checked style="transform: scale(0.85);">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
+                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-vacation" checked style="width: 18px; height: 18px; cursor: pointer;">
                                     <span><i class="fas fa-calendar-times me-1"></i>${translations.vacation || 'Vacation/Absence'}</span>
                                 </label>
                             </div>
@@ -286,27 +311,41 @@ function createUser() {
                 </div>
             </div>
         `,
-        width: '600px',
-        showCancelButton: true,
-        confirmButtonText: translations.register,
-        cancelButtonText: translations.cancel,
+        width: '100%',
         customClass: {
+            popup: 'swal-mobile-optimized',
             confirmButton: 'swal-btn-gradient-green',
-            cancelButton: 'swal-btn-gradient-gray',
-            popup: 'swal-popup-rounded'
+            cancelButton: 'swal-btn-gradient-gray'
         },
-        buttonsStyling: false,
         didOpen: () => {
+            // Add mobile responsive styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .swal-mobile-optimized {
+                    max-width: 600px !important;
+                    width: calc(100% - 20px) !important;
+                    margin: 10px;
+                }
+                @media (max-width: 576px) {
+                    .swal-mobile-optimized {
+                        max-height: calc(100vh - 20px) !important;
+                        margin: 10px;
+                    }
+                    .swal2-html-container {
+                        max-height: calc(100vh - 200px) !important;
+                        overflow-y: auto !important;
+                        padding: 0 5px;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
             const hasLunchBreakCheckbox = document.getElementById('swal-user-has-lunch-break');
             const lunchBreakContainer = document.getElementById('lunch-break-duration-container');
             
             // Toggle lunch break duration field
             hasLunchBreakCheckbox.addEventListener('change', () => {
-                if (hasLunchBreakCheckbox.checked) {
-                    lunchBreakContainer.style.display = 'flex';
-                } else {
-                    lunchBreakContainer.style.display = 'none';
-                }
+                lunchBreakContainer.style.display = hasLunchBreakCheckbox.checked ? 'flex' : 'none';
             });
             
             const roleSelect = document.getElementById('swal-user-role');
@@ -330,7 +369,14 @@ function createUser() {
                 });
             }
         },
+        showCancelButton: true,
+        confirmButtonText: translations.register,
+        cancelButtonText: translations.cancel,
+        buttonsStyling: false,
         preConfirm: () => {
+            // Remove previous error styling
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+            
             const name = document.getElementById('swal-user-name').value;
             const email = document.getElementById('swal-user-email').value;
             const rc = document.getElementById('swal-user-rc').value || null;
@@ -341,19 +387,41 @@ function createUser() {
             const role = document.getElementById('swal-user-role').value;
             const workHours = document.getElementById('swal-user-work-hours').value;
             const holidays = document.getElementById('swal-user-holidays').value;
-            const lunchBreak = document.getElementById('swal-user-lunch-break').value;
+            const hasLunchBreak = document.getElementById('swal-user-has-lunch-break').checked;
+            const lunchBreak = hasLunchBreak ? document.getElementById('swal-user-lunch-break').value : '0';
             
-            if (!name || !email || !password || !passwordConfirm || !workHours || !holidays || !lunchBreak) {
+            // Validate required fields and add error styling
+            const requiredFields = [
+                { id: 'swal-user-name', value: name },
+                { id: 'swal-user-email', value: email },
+                { id: 'swal-user-password', value: password },
+                { id: 'swal-user-password-confirm', value: passwordConfirm },
+                { id: 'swal-user-work-hours', value: workHours },
+                { id: 'swal-user-holidays', value: holidays }
+            ];
+            
+            if (hasLunchBreak) {
+                requiredFields.push({ id: 'swal-user-lunch-break', value: lunchBreak });
+            }
+            
+            const emptyFields = requiredFields.filter(field => !field.value);
+            if (emptyFields.length > 0) {
+                emptyFields.forEach(field => {
+                    document.getElementById(field.id).classList.add('field-error');
+                });
                 Swal.showValidationMessage(translations.fillAllFields);
                 return false;
             }
             
             if (password.length < 8) {
+                document.getElementById('swal-user-password').classList.add('field-error');
                 Swal.showValidationMessage(translations.passwordMinLength);
                 return false;
             }
             
             if (password !== passwordConfirm) {
+                document.getElementById('swal-user-password').classList.add('field-error');
+                document.getElementById('swal-user-password-confirm').classList.add('field-error');
                 Swal.showValidationMessage(translations.passwordsDontMatch);
                 return false;
             }
@@ -466,7 +534,7 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 .swal-section { 
                     background: rgba(0,0,0,0.02); 
                     border-radius: 8px; 
-                    padding: 12px; 
+                    padding: 15px; 
                     margin-bottom: 16px;
                 }
                 @media (prefers-color-scheme: dark) {
@@ -476,27 +544,54 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                     .swal-checkbox-label:hover { background: rgba(255,255,255,0.08) !important; }
                 }
                 .swal-section-title { 
-                    font-size: 0.875rem; 
+                    font-size: 0.95rem; 
                     font-weight: 600; 
                     color: #495057; 
-                    margin-bottom: 12px;
+                    margin-bottom: 14px;
                     display: flex;
                     align-items: center;
-                    gap: 6px;
+                    gap: 8px;
                 }
                 .swal-checkbox-label {
                     display: flex;
                     align-items: center;
-                    padding: 10px 12px;
+                    padding: 12px 14px;
                     border: 1px solid #dee2e6;
-                    border-radius: 6px;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s;
                     background: white;
+                    min-height: 44px;
                 }
                 .swal-checkbox-label:hover { background: #f8f9fa; border-color: #adb5bd; }
-                .swal-checkbox-label input { margin: 0 8px 0 0; }
-                .swal-checkbox-label span { font-size: 0.875rem; }
+                .swal-checkbox-label input { 
+                    margin: 0 10px 0 0; 
+                    width: 18px;
+                    height: 18px;
+                    cursor: pointer;
+                }
+                .swal-checkbox-label span { font-size: 0.9rem; }
+                
+                .required-field::after {
+                    content: ' *';
+                    color: #dc3545;
+                    font-weight: bold;
+                }
+                .field-error {
+                    border-color: #dc3545 !important;
+                    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+                }
+                
+                /* Mobile optimizations */
+                @media (max-width: 576px) {
+                    .swal2-popup { padding: 15px !important; }
+                    .swal-section { padding: 12px; margin-bottom: 12px; }
+                    .swal-section-title { font-size: 0.9rem; margin-bottom: 10px; }
+                    .swal-checkbox-label { padding: 10px 12px; font-size: 0.875rem; }
+                    .form-control, .form-select { font-size: 16px !important; min-height: 44px; }
+                    .input-group-text { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
+                    .form-label { font-size: 0.875rem !important; }
+                }
             </style>
             <div class="container-fluid px-0">
                 <!-- Basic Information -->
@@ -506,10 +601,10 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                     </div>
                     <div class="row g-2">
                         <div class="col-12">
-                            <input type="text" id="swal-edit-user-name" class="form-control" value="${name}" placeholder="${translations.name}" required autocomplete="off">
+                            <input type="text" id="swal-edit-user-name" class="form-control" value="${name}" placeholder="${translations.name} *" required autocomplete="off">
                         </div>
                         <div class="col-12">
-                            <input type="email" id="swal-edit-user-email" class="form-control" value="${email}" placeholder="${translations.email}" required autocomplete="off">
+                            <input type="email" id="swal-edit-user-email" class="form-control" value="${email}" placeholder="${translations.email} *" required autocomplete="off">
                         </div>
                         <div class="col-md-6 col-12">
                             <input type="text" id="swal-edit-user-rc" class="form-control" value="${rc || ''}" placeholder="${translations.rc || 'Personal ID'}" autocomplete="off">
@@ -546,35 +641,33 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                     </div>
                     <div class="row g-2">
                         <div class="col-sm-6 col-12">
-                            <label class="form-label mb-1 small">${translations.basicWorkHours}</label>
-                            <div class="input-group input-group-sm">
+                            <label class="form-label mb-1 small required-field">${translations.basicWorkHours}</label>
+                            <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                 <input type="number" id="swal-edit-user-work-hours" class="form-control" value="${basicWorkHours || 160}" required min="0" step="1">
                                 <span class="input-group-text">h</span>
                             </div>
                         </div>
                         <div class="col-sm-6 col-12">
-                            <label class="form-label mb-1 small">${translations.holidaysPerYear}</label>
-                            <div class="input-group input-group-sm">
+                            <label class="form-label mb-1 small required-field">${translations.holidaysPerYear}</label>
+                            <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-umbrella-beach"></i></span>
                                 <input type="number" id="swal-edit-user-holidays" class="form-control" value="${holidaysPerYear || 20}" required min="0" step="1">
                                 <span class="input-group-text">days</span>
                             </div>
                         </div>
-                        <div class="col-12 mt-2">
-                            <label class="form-label mb-1 small">${translations.lunchBreakDuration || 'Lunch Break Duration'}</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <label class="swal-checkbox-label mb-0 flex-shrink-0" style="width: auto;">
-                                    <input class="form-check-input" type="checkbox" id="swal-edit-user-has-lunch-break" ${hasLunchBreak ? 'checked' : ''}>
-                                    <span><i class="fas fa-utensils text-success me-1"></i>${translations.hasLunchBreak || 'Lunch Break'}</span>
-                                </label>
-                                <div class="input-group input-group-sm" id="edit-lunch-break-duration-container" style="flex: 1; display: ${hasLunchBreak ? 'flex' : 'none'};">
-                                    <span class="input-group-text"><i class="fas fa-hourglass-half"></i></span>
-                                    <input type="number" id="swal-edit-user-lunch-break" class="form-control" value="${lunchBreakDuration || 30}" required min="0" step="1">
-                                    <span class="input-group-text">min</span>
-                                </div>
+                        <div class="col-12 mt-3">
+                            <label class="form-label mb-2 small">${translations.lunchBreakDuration || 'Lunch Break Duration'}</label>
+                            <label class="swal-checkbox-label mb-2">
+                                <input class="form-check-input" type="checkbox" id="swal-edit-user-has-lunch-break" ${hasLunchBreak ? 'checked' : ''}>
+                                <span><i class="fas fa-utensils text-success me-1"></i>${translations.hasLunchBreak || 'Lunch Break'}</span>
+                            </label>
+                            <div class="input-group" id="edit-lunch-break-duration-container" style="display: ${hasLunchBreak ? 'flex' : 'none'};">
+                                <span class="input-group-text"><i class="fas fa-hourglass-half"></i></span>
+                                <input type="number" id="swal-edit-user-lunch-break" class="form-control" value="${lunchBreakDuration || 30}" required min="0" step="1">
+                                <span class="input-group-text">min</span>
                             </div>
-                            <div class="text-muted small mt-1" style="font-size: 0.75rem; line-height: 1.3;">
+                            <div class="text-muted small mt-2" style="font-size: 0.8rem; line-height: 1.4;">
                                 <i class="fas fa-info-circle me-1"></i>${translations.lunchBreakInfo || 'Used only if employee does not scan a break QR code and if Automatic Lunch Breaks are enabled in company settings.'}
                             </div>
                         </div>
@@ -586,13 +679,13 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                     <div class="swal-section-title">
                         <i class="fas fa-user-shield"></i>${translations.rolePermissions || 'Role & Permissions'}
                     </div>
-                    <select id="swal-edit-user-role" class="form-select form-select-sm mb-2">
+                    <select id="swal-edit-user-role" class="form-select mb-3">
                         <option value="employee" ${!isManager ? 'selected' : ''}>${translations.employee}</option>
                         <option value="manager" ${isManager ? 'selected' : ''}>${translations.manager}</option>
                     </select>
                     
                     <div id="edit-manager-permissions" style="display: ${isManager ? 'block' : 'none'};">
-                        <div class="d-flex flex-column gap-2 mb-2">
+                        <div class="d-flex flex-column gap-2 mb-3">
                             <label class="swal-checkbox-label">
                                 <input class="form-check-input" type="checkbox" id="edit-perm-edit-employees" ${canEditEmployees ? 'checked' : ''}>
                                 <span><i class="fas fa-users text-primary me-1"></i>${translations.canEditEmployees}</span>
@@ -607,23 +700,23 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                             </label>
                         </div>
                         
-                        <label class="swal-checkbox-label mb-2">
+                        <label class="swal-checkbox-label mb-3">
                             <input class="form-check-input" type="checkbox" id="edit-manager-enable-notifications" ${notificationsEnabled ? 'checked' : ''}>
                             <span><i class="fas fa-bell text-info me-1"></i>${translations.enableNotifications}</span>
                         </label>
                         
-                        <div id="edit-manager-notification-options" class="ms-3" style="display: ${notificationsEnabled ? 'block' : 'none'};">
-                            <div class="d-flex flex-column gap-1">
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.813rem; padding: 4px 0;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-arrival" ${notifyArrival ? 'checked' : ''} style="transform: scale(0.85);">
+                        <div id="edit-manager-notification-options" class="ps-3" style="display: ${notificationsEnabled ? 'block' : 'none'};">
+                            <div class="d-flex flex-column gap-2">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
+                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-arrival" ${notifyArrival ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
                                     <span><i class="fas fa-sign-in-alt me-1"></i>${translations.arrival}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.813rem; padding: 4px 0;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-departure" ${notifyDeparture ? 'checked' : ''} style="transform: scale(0.85);">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
+                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-departure" ${notifyDeparture ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
                                     <span><i class="fas fa-sign-out-alt me-1"></i>${translations.departure}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.813rem; padding: 4px 0;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-vacation" ${notifyVacation ? 'checked' : ''} style="transform: scale(0.85);">
+                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
+                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-vacation" ${notifyVacation ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
                                     <span><i class="fas fa-calendar-times me-1"></i>${translations.vacation || 'Vacation/Absence'}</span>
                                 </label>
                             </div>
@@ -632,27 +725,41 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 </div>
             </div>
         `,
-        width: '600px',
-        showCancelButton: true,
-        confirmButtonText: translations.save,
-        cancelButtonText: translations.cancel,
+        width: '100%',
         customClass: {
+            popup: 'swal-mobile-optimized',
             confirmButton: 'swal-btn-gradient-green',
-            cancelButton: 'swal-btn-gradient-gray',
-            popup: 'swal-popup-rounded'
+            cancelButton: 'swal-btn-gradient-gray'
         },
-        buttonsStyling: false,
         didOpen: () => {
+            // Add mobile responsive styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .swal-mobile-optimized {
+                    max-width: 600px !important;
+                    width: calc(100% - 20px) !important;
+                    margin: 10px;
+                }
+                @media (max-width: 576px) {
+                    .swal-mobile-optimized {
+                        max-height: calc(100vh - 20px) !important;
+                        margin: 10px;
+                    }
+                    .swal2-html-container {
+                        max-height: calc(100vh - 200px) !important;
+                        overflow-y: auto !important;
+                        padding: 0 5px;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
             const hasLunchBreakCheckbox = document.getElementById('swal-edit-user-has-lunch-break');
             const lunchBreakContainer = document.getElementById('edit-lunch-break-duration-container');
             
             // Toggle lunch break duration field
             hasLunchBreakCheckbox.addEventListener('change', () => {
-                if (hasLunchBreakCheckbox.checked) {
-                    lunchBreakContainer.style.display = 'flex';
-                } else {
-                    lunchBreakContainer.style.display = 'none';
-                }
+                lunchBreakContainer.style.display = hasLunchBreakCheckbox.checked ? 'flex' : 'none';
             });
             
             const roleSelect = document.getElementById('swal-edit-user-role');
@@ -676,7 +783,14 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 });
             }
         },
+        showCancelButton: true,
+        confirmButtonText: translations.save,
+        cancelButtonText: translations.cancel,
+        buttonsStyling: false,
         preConfirm: async () => {
+            // Remove previous error styling
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+            
             const name = document.getElementById('swal-edit-user-name').value;
             const email = document.getElementById('swal-edit-user-email').value;
             const rc = document.getElementById('swal-edit-user-rc').value || null;
@@ -690,12 +804,23 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
             const lunchBreak = hasLunchBreak ? document.getElementById('swal-edit-user-lunch-break').value : 0;
             const role = document.getElementById('swal-edit-user-role').value;
             
-            if (!name || !email || !workHours || !holidays) {
-                Swal.showValidationMessage(translations.fillAllFields);
-                return false;
+            // Validate required fields and add error styling
+            const requiredFields = [
+                { id: 'swal-edit-user-name', value: name },
+                { id: 'swal-edit-user-email', value: email },
+                { id: 'swal-edit-user-work-hours', value: workHours },
+                { id: 'swal-edit-user-holidays', value: holidays }
+            ];
+            
+            if (hasLunchBreak) {
+                requiredFields.push({ id: 'swal-edit-user-lunch-break', value: lunchBreak });
             }
             
-            if (hasLunchBreak && !lunchBreak) {
+            const emptyFields = requiredFields.filter(field => !field.value);
+            if (emptyFields.length > 0) {
+                emptyFields.forEach(field => {
+                    document.getElementById(field.id).classList.add('field-error');
+                });
                 Swal.showValidationMessage(translations.fillAllFields);
                 return false;
             }
@@ -703,11 +828,14 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
             // Validate password only if provided
             if (password || passwordConfirm) {
                 if (password.length < 8) {
+                    document.getElementById('swal-edit-user-password').classList.add('field-error');
                     Swal.showValidationMessage(translations.passwordMinLength);
                     return false;
                 }
                 
                 if (password !== passwordConfirm) {
+                    document.getElementById('swal-edit-user-password').classList.add('field-error');
+                    document.getElementById('swal-edit-user-password-confirm').classList.add('field-error');
                     Swal.showValidationMessage(translations.passwordsDontMatch);
                     return false;
                 }

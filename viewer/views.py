@@ -8,7 +8,7 @@ import json
 from viewer.models import ScanEvent, Vacation
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, F
 import datetime
 
 # ============= PUBLIC VIEWS =============
@@ -164,19 +164,22 @@ def company_dashboard(request):
     else:
         qr_codes_page = None
     
-    # Calculate total scans for each user (only from active QR codes)
+    # Calculate total scans for each user (including home office scans)
     # Store users as list to allow filtering by work status
     users_list = list(users)
     for user in users_list:
+        # Include both regular QR scans and home office scans
         user.total_scans = ScanEvent.objects.filter(
-            scanned_by=user,
-            qr_code__is_active=True
+            scanned_by=user
+        ).filter(
+            Q(qr_code__is_active=True) | Q(is_home_office=True)
         ).count()
         
-        # Get last scan to determine if user is at work
+        # Get last scan to determine if user is at work (including home office)
         last_scan = ScanEvent.objects.filter(
-            scanned_by=user,
-            qr_code__is_active=True
+            scanned_by=user
+        ).filter(
+            Q(qr_code__is_active=True) | Q(is_home_office=True)
         ).order_by('-timestamp').first()
         
         if last_scan:
@@ -349,10 +352,12 @@ def user_dashboard(request):
         per_page = 20
     
     # ===== SCANS TAB =====
+    # Include both regular QR code scans and home office scans
     scans = ScanEvent.objects.filter(
-        qr_code__company=user.company,
-        scanned_by=user,
-        qr_code__is_active=True
+        scanned_by=user
+    ).filter(
+        Q(qr_code__company=user.company, qr_code__is_active=True) | 
+        Q(is_home_office=True, scanned_by__company=user.company)
     ).select_related('qr_code', 'scanned_by')
     
     # Scans-specific filters
@@ -360,7 +365,8 @@ def user_dashboard(request):
     scan_type_filter = request.GET.get('scan_type', '')
     
     if qr_code_filter:
-        scans = scans.filter(qr_code__name__icontains=qr_code_filter)
+        # Filter by QR code name, but exclude home office scans (where qr_code is NULL)
+        scans = scans.filter(qr_code__isnull=False, qr_code__name__icontains=qr_code_filter)
     
     if scan_type_filter:
         scans = scans.filter(scan_type=scan_type_filter)
@@ -378,7 +384,15 @@ def user_dashboard(request):
                          'scan_type', '-scan_type']
     
     if active_tab == 'scans' and sort_by in valid_scan_sort_fields:
-        scans = scans.order_by(sort_by)
+        # For QR code name sorting, handle NULL values (home office scans)
+        if 'qr_code__name' in sort_by:
+            # Sort with NULL values at the end
+            if sort_by.startswith('-'):
+                scans = scans.order_by(F('qr_code__name').desc(nulls_last=True))
+            else:
+                scans = scans.order_by(F('qr_code__name').asc(nulls_last=True))
+        else:
+            scans = scans.order_by(sort_by)
     else:
         scans = scans.order_by('-timestamp')
     
@@ -481,6 +495,38 @@ def user_scan_qr(request):
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             scan_type = data.get('scan_type', 'arrival')
+            is_home_office = data.get('is_home_office', False)
+            
+            # For home office scans, we don't need a QR code
+            if is_home_office:
+                # Record the home office scan without QR code
+                scan, address = crud.create_scan_event(
+                    qr_code=None,
+                    scanned_by=user,
+                    latitude=latitude,
+                    longitude=longitude,
+                    scan_type=scan_type,
+                    device_info=request.META.get('HTTP_USER_AGENT', ''),
+                    is_home_office=True,
+                    actor_type='user',
+                    actor_email=user.email,
+                    actor_name=user.name,
+                    ip_address=get_client_ip(request),
+                    request=request
+                )
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'message': str(_('Home office scan recorded successfully!')),
+                    'data': {
+                        'qr_name': str(_('Home Office')),
+                        'qr_location': '',
+                        'scan_timestamp': scan.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                        'scan_latitude': latitude,
+                        'scan_longitude': longitude,
+                        'scan_address': address or str(_('Address not available'))
+                    }
+                })
             
             # Check if QR code exists and belongs to user's company
             qr_code = crud.get_qr_code_by_uuid(uuid)
@@ -505,6 +551,7 @@ def user_scan_qr(request):
                 longitude=longitude,
                 scan_type=scan_type,
                 device_info=request.META.get('HTTP_USER_AGENT', ''),
+                is_home_office=False,
                 actor_type='user',
                 actor_email=user.email,
                 actor_name=user.name,
@@ -810,7 +857,8 @@ def view_user_details(request, user_id):
         scan_type_filter = request.GET.get('scan_type', '')
         
         if qr_code_filter:
-            scans = scans.filter(qr_code__name__icontains=qr_code_filter)
+            # Filter by QR code name, but exclude home office scans (where qr_code is NULL)
+            scans = scans.filter(qr_code__isnull=False, qr_code__name__icontains=qr_code_filter)
         
         if scan_type_filter:
             scans = scans.filter(scan_type=scan_type_filter)
@@ -829,7 +877,15 @@ def view_user_details(request, user_id):
                              'scan_type', '-scan_type']
         
         if sort_by in valid_sort_fields:
-            scans = scans.order_by(sort_by)
+            # For QR code name sorting, handle NULL values (home office scans)
+            if 'qr_code__name' in sort_by:
+                # Sort with NULL values at the end
+                if sort_by.startswith('-'):
+                    scans = scans.order_by(F('qr_code__name').desc(nulls_last=True))
+                else:
+                    scans = scans.order_by(F('qr_code__name').asc(nulls_last=True))
+            else:
+                scans = scans.order_by(sort_by)
         else:
             scans = scans.order_by('-timestamp')
         
@@ -957,19 +1013,21 @@ def company_analytics(request):
     users = crud.get_company_users(company)
     qr_codes = crud.get_company_qr_codes(company)
     
-    # Today's statistics (always based on actual today)
+    # Today's statistics (always based on actual today) - include home office
     today_scans = ScanEvent.objects.filter(
-        qr_code__company=company,
         timestamp__date=today
+    ).filter(
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
     )
     today_arrivals = today_scans.filter(scan_type='arrival').count()
     today_departures = today_scans.filter(scan_type='departure').count()
     
-    # Statistics for selected date range
+    # Statistics for selected date range - include home office
     range_scans = ScanEvent.objects.filter(
-        qr_code__company=company,
         timestamp__date__gte=date_from,
         timestamp__date__lte=date_to
+    ).filter(
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
     )
     range_arrivals = range_scans.filter(scan_type='arrival').count()
     range_departures = range_scans.filter(scan_type='departure').count()
@@ -977,42 +1035,49 @@ def company_analytics(request):
     
     # Weekly statistics
     week_scans = ScanEvent.objects.filter(
-        qr_code__company=company,
         timestamp__date__gte=week_ago
+    ).filter(
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
     ).count()
     
     # Current month statistics
     current_month_scans = ScanEvent.objects.filter(
-        qr_code__company=company,
         timestamp__date__gte=current_month_start,
         timestamp__date__lte=today
+    ).filter(
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
     ).count()
     
     # Previous month statistics
     prev_month_scans = ScanEvent.objects.filter(
-        qr_code__company=company,
         timestamp__date__gte=prev_month_start,
         timestamp__date__lte=prev_month_end
+    ).filter(
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
     ).count()
     
     # Currently in office (last scan was arrival)
     currently_in_office = []
     for user in users:
+        # Get last scan for this user (including home office scans)
         last_scan = ScanEvent.objects.filter(
-            scanned_by=user,
-            qr_code__company=company
+            scanned_by=user
+        ).filter(
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
         ).order_by('-timestamp').first()
         
         if last_scan and last_scan.scan_type == 'arrival':
+            location = _('Home Office') if last_scan.is_home_office else last_scan.qr_code.name
             currently_in_office.append({
                 'user': user,
-                'location': last_scan.qr_code.name,
+                'location': location,
                 'time': last_scan.timestamp
             })
     
-    # Top 5 most used QR codes (for selected date range)
+    # Top 5 most used QR codes (for selected date range) - exclude home office scans
     top_qr_codes = ScanEvent.objects.filter(
         qr_code__company=company,
+        qr_code__isnull=False,
         timestamp__date__gte=date_from,
         timestamp__date__lte=date_to
     ).values('qr_code__name', 'qr_code__location').annotate(
@@ -1028,11 +1093,13 @@ def company_analytics(request):
     
     selected_range_work_hours = []
     for user in users:
+        # Include both regular QR scans and home office scans
         scans = ScanEvent.objects.filter(
             scanned_by=user,
-            qr_code__company=company,
             timestamp__date__gte=date_from,
             timestamp__date__lte=date_to
+        ).filter(
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1058,11 +1125,13 @@ def company_analytics(request):
     # Calculate working hours for current month (calendar)
     current_month_work_hours = []
     for user in users:
+        # Include both regular QR scans and home office scans
         scans = ScanEvent.objects.filter(
             scanned_by=user,
-            qr_code__company=company,
             timestamp__date__gte=current_month_start,
             timestamp__date__lte=today
+        ).filter(
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1086,11 +1155,13 @@ def company_analytics(request):
     # Calculate working hours for previous month
     prev_month_work_hours = []
     for user in users:
+        # Include both regular QR scans and home office scans
         scans = ScanEvent.objects.filter(
             scanned_by=user,
-            qr_code__company=company,
             timestamp__date__gte=prev_month_start,
             timestamp__date__lte=prev_month_end
+        ).filter(
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1196,9 +1267,11 @@ def analytics_chart_data(request):
             date = start_date + timedelta(days=i)
             labels.append(date.strftime('%d.%m'))
             
+            # Include both regular QR scans and home office scans
             day_scans = ScanEvent.objects.filter(
-                qr_code__company=company,
                 timestamp__date=date
+            ).filter(
+                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
             )
             
             arrivals = day_scans.filter(scan_type='arrival').count()
@@ -1228,9 +1301,10 @@ def analytics_chart_data(request):
         })
     
     elif chart_type == 'qr_usage':
-        # QR code usage pie chart
+        # QR code usage pie chart - exclude home office scans (where qr_code is NULL)
         qr_data = ScanEvent.objects.filter(
             qr_code__company=company,
+            qr_code__isnull=False,
             timestamp__date__gte=start_date
         ).values('qr_code__name').annotate(
             count=Count('id')
@@ -1264,10 +1338,12 @@ def analytics_chart_data(request):
         data = []
         
         for hour in hours:
+            # Include both regular QR scans and home office scans
             count = ScanEvent.objects.filter(
-                qr_code__company=company,
                 timestamp__date=today,
                 timestamp__hour=hour
+            ).filter(
+                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
             ).count()
             data.append(count)
         

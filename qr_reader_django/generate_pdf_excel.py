@@ -411,9 +411,15 @@ def generate_attendance_pdf(request, user_id):
             
             # Get QR code info with location
             if arrivals:
-                qr_info = f"{arrivals[0].qr_code.name}<br/><font size=8 color='#6b7280'>{arrivals[0].qr_code.location}</font>"
+                if arrivals[0].is_home_office:
+                    qr_info = f"{_('Home Office')}<br/><font size=8 color='#6b7280'>{_('Home Office')}</font>"
+                else:
+                    qr_info = f"{arrivals[0].qr_code.name}<br/><font size=8 color='#6b7280'>{arrivals[0].qr_code.location}</font>"
             elif departures:
-                qr_info = f"{departures[0].qr_code.name}<br/><font size=8 color='#6b7280'>{departures[0].qr_code.location}</font>"
+                if departures[0].is_home_office:
+                    qr_info = f"{_('Home Office')}<br/><font size=8 color='#6b7280'>{_('Home Office')}</font>"
+                else:
+                    qr_info = f"{departures[0].qr_code.name}<br/><font size=8 color='#6b7280'>{departures[0].qr_code.location}</font>"
             else:
                 qr_info = '-'
             
@@ -993,9 +999,15 @@ def generate_attendance_excel(request, user_id):
             
             # Get QR code info
             if arrivals:
-                qr_info = f"{arrivals[0].qr_code.name} - {arrivals[0].qr_code.location}"
+                if arrivals[0].is_home_office:
+                    qr_info = f"{_('Home Office')} - {_('Home Office')}"
+                else:
+                    qr_info = f"{arrivals[0].qr_code.name} - {arrivals[0].qr_code.location}"
             elif departures:
-                qr_info = f"{departures[0].qr_code.name} - {departures[0].qr_code.location}"
+                if departures[0].is_home_office:
+                    qr_info = f"{_('Home Office')} - {_('Home Office')}"
+                else:
+                    qr_info = f"{departures[0].qr_code.name} - {departures[0].qr_code.location}"
             else:
                 qr_info = '-'
             

@@ -28,10 +28,18 @@ class QRCodeProfileAdmin(admin.ModelAdmin):
 
 @admin.register(ScanEvent)
 class ScanEventAdmin(admin.ModelAdmin):
-    list_display = ('qr_code', 'scanned_by', 'latitude', 'longitude', 'timestamp')
-    list_filter = ('timestamp', 'qr_code__company')
+    list_display = ('get_scan_location', 'scanned_by', 'scan_type', 'is_home_office', 'latitude', 'longitude', 'timestamp')
+    list_filter = ('timestamp', 'scan_type', 'is_home_office', 'qr_code__company')
     search_fields = ('qr_code__name', 'scanned_by__name')
     readonly_fields = ('timestamp',)
+    
+    def get_scan_location(self, obj):
+        """Display scan location - either QR code name or Home Office"""
+        if obj.is_home_office:
+            return "🏠 Home Office"
+        return obj.qr_code.name if obj.qr_code else "Unknown"
+    get_scan_location.short_description = 'Location'
+    get_scan_location.admin_order_field = 'qr_code__name'
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)

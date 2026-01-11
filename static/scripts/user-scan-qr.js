@@ -189,6 +189,12 @@ function initScanTypeButtons() {
             startBtn.disabled = false;
             startBtn.innerHTML = '<i class="fas fa-camera"></i><span>' + (translations.startScanner || 'Start Scanner') + '</span>';
             
+            // Show home office button
+            var homeOfficeBtn = document.getElementById('homeOfficeBtn');
+            homeOfficeBtn.classList.remove('d-none');
+            homeOfficeBtn.classList.add('d-flex');
+            homeOfficeBtn.disabled = false;
+            
             console.log('Scan type selected:', selectedScanType);
         });
     });
@@ -202,9 +208,15 @@ function stopScanner() {
             html5QrcodeScanner = null;
             document.getElementById('camera-container').classList.add('d-none');
             document.getElementById('stopScanBtn').classList.add('d-none');
+            
             const startBtn = document.getElementById('startScanBtn');
             startBtn.classList.remove('d-none');
             startBtn.classList.add('d-flex');
+            
+            // Show home office button again
+            const homeOfficeBtn = document.getElementById('homeOfficeBtn');
+            homeOfficeBtn.classList.remove('d-none');
+            homeOfficeBtn.classList.add('d-flex');
         }).catch(function(err) {
             console.error('Error stopping scanner:', err);
             isScanning = false;
@@ -220,7 +232,7 @@ function processScan(uuid, scanUrl) {
     submitScan(uuid, scanUrl);
 }
 
-function submitScan(uuid, scanUrl) {
+function submitScan(uuid, scanUrl, isHomeOffice = false) {
     if (!selectedScanType) {
         document.getElementById('scan-type-warning').classList.remove('d-none');
         return;
@@ -245,12 +257,26 @@ function submitScan(uuid, scanUrl) {
     loadingOverlay.classList.add('d-flex');
     loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-sync fa-spin me-2"></i>' + (translations.processingScan || 'Processing scan...');
     
-    var extractedUuid = uuid.trim();
-    if (extractedUuid.includes('/scan/')) {
-        var parts = extractedUuid.split('/scan/');
-        if (parts.length > 1) {
-            extractedUuid = parts[1].replace(/\//g, '');
+    var extractedUuid = null;
+    if (!isHomeOffice && uuid) {
+        extractedUuid = uuid.trim();
+        if (extractedUuid.includes('/scan/')) {
+            var parts = extractedUuid.split('/scan/');
+            if (parts.length > 1) {
+                extractedUuid = parts[1].replace(/\//g, '');
+            }
         }
+    }
+    
+    var requestBody = {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        scan_type: selectedScanType,
+        is_home_office: isHomeOffice
+    };
+    
+    if (!isHomeOffice && extractedUuid) {
+        requestBody.uuid = extractedUuid;
     }
 
     fetch(scanUrl, {
@@ -259,12 +285,7 @@ function submitScan(uuid, scanUrl) {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken
         },
-        body: JSON.stringify({
-            uuid: extractedUuid,
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-            scan_type: selectedScanType
-        })
+        body: JSON.stringify(requestBody)
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
@@ -273,10 +294,15 @@ function submitScan(uuid, scanUrl) {
         overlay.classList.add('d-none');
         
         if (data.status === 'success') {
+            var successMessage = data.data.qr_name;
+            if (data.data.qr_location) {
+                successMessage += ' - ' + data.data.qr_location;
+            }
+            
             Swal.fire({
                 icon: 'success',
                 title: translations.scanSuccessful || 'Scan Successful',
-                text: data.data.qr_name + ' - ' + data.data.qr_location,
+                text: successMessage,
                 timer: 1500,
                 showConfirmButton: false,
                 allowOutsideClick: false,
@@ -359,6 +385,12 @@ function startScanner() {
         cameraContainer.classList.remove('d-none');
         cameraContainer.classList.add('d-flex');
         startBtn.classList.add('d-none');
+        
+        // Hide home office button when scanner is active
+        var homeOfficeBtn = document.getElementById('homeOfficeBtn');
+        homeOfficeBtn.classList.add('d-none');
+        homeOfficeBtn.classList.remove('d-flex');
+        
         stopBtn.classList.remove('d-none');
         stopBtn.classList.add('d-flex');
     }).catch(function(err) {
@@ -452,12 +484,72 @@ function initStopScanButton() {
     });
 }
 
+function initHomeOfficeButton() {
+    document.getElementById('homeOfficeBtn').addEventListener('click', function() {
+        if (!selectedScanType) {
+            document.getElementById('scan-type-warning').classList.remove('d-none');
+            return;
+        }
+        
+        if (!permissionsGranted || !userLocation) {
+            // Request location if not already granted
+            var loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.remove('d-none');
+            loadingOverlay.classList.add('d-flex');
+            loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations.preparing || 'Preparing...');
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    userLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
+                    locationPermission = true;
+                    permissionsGranted = true;
+                    loadingOverlay.classList.remove('d-flex');
+                    loadingOverlay.classList.add('d-none');
+                    
+                    // Now submit the home office scan
+                    const langCode = window.location.pathname.split('/')[1];
+                    const scanUrl = `/${langCode}/user/scan/`;
+                    submitScan(null, scanUrl, true);
+                },
+                function(error) {
+                    loadingOverlay.classList.remove('d-flex');
+                    loadingOverlay.classList.add('d-none');
+                    Swal.fire({
+                        icon: 'error',
+                        title: translations.locationRequired || 'Location Required',
+                        text: translations.allowLocationAccess || 'Please allow location access',
+                        customClass: {
+                            confirmButton: 'swal-btn-gradient-red',
+                            popup: 'swal-popup-rounded'
+                        },
+                        buttonsStyling: false
+                    });
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            // Submit home office scan directly
+            const langCode = window.location.pathname.split('/')[1];
+            const scanUrl = `/${langCode}/user/scan/`;
+            submitScan(null, scanUrl, true);
+        }
+    });
+}
+
 // Initialize everything
 function initUserScanQR() {
     initGrantPermissionButton();
     initScanTypeButtons();
     initStartScanButton();
     initStopScanButton();
+    initHomeOfficeButton();
     
     // Check permissions on page load
     checkExistingPermissions();
