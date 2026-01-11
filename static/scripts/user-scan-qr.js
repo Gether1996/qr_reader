@@ -498,55 +498,73 @@ function initHomeOfficeButton() {
             return;
         }
         
-        if (!permissionsGranted || !userLocation) {
-            // Request location if not already granted
-            var loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.classList.remove('d-none');
-            loadingOverlay.classList.add('d-flex');
-            loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations.preparing || 'Preparing...');
-            
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    userLocation = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    };
-                    locationPermission = true;
-                    permissionsGranted = true;
-                    loadingOverlay.classList.remove('d-flex');
-                    loadingOverlay.classList.add('d-none');
+        // Show confirmation dialog
+        Swal.fire({
+            title: translations.confirmHomeOffice || 'Confirm Home Office',
+            text: translations.confirmHomeOfficeText || 'Are you sure you want to scan from home office?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: translations.yes || 'Yes',
+            cancelButtonText: translations.no || 'No',
+            customClass: {
+                confirmButton: 'swal-btn-gradient-green',
+                cancelButton: 'swal-btn-gradient-red',
+                popup: 'swal-popup-rounded'
+            },
+            buttonsStyling: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (!permissionsGranted || !userLocation) {
+                    // Request location if not already granted
+                    var loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.classList.remove('d-none');
+                    loadingOverlay.classList.add('d-flex');
+                    loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations.preparing || 'Preparing...');
                     
-                    // Now submit the home office scan
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            userLocation = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            };
+                            locationPermission = true;
+                            permissionsGranted = true;
+                            loadingOverlay.classList.remove('d-flex');
+                            loadingOverlay.classList.add('d-none');
+                            
+                            // Now submit the home office scan
+                            const langCode = window.location.pathname.split('/')[1];
+                            const scanUrl = `/${langCode}/user/scan/`;
+                            submitScan(null, scanUrl, true);
+                        },
+                        function(error) {
+                            loadingOverlay.classList.remove('d-flex');
+                            loadingOverlay.classList.add('d-none');
+                            Swal.fire({
+                                icon: 'error',
+                                title: translations.locationRequired || 'Location Required',
+                                text: translations.allowLocationAccess || 'Please allow location access',
+                                customClass: {
+                                    confirmButton: 'swal-btn-gradient-red',
+                                    popup: 'swal-popup-rounded'
+                                },
+                                buttonsStyling: false
+                            });
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 15000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    // Submit home office scan directly
                     const langCode = window.location.pathname.split('/')[1];
                     const scanUrl = `/${langCode}/user/scan/`;
                     submitScan(null, scanUrl, true);
-                },
-                function(error) {
-                    loadingOverlay.classList.remove('d-flex');
-                    loadingOverlay.classList.add('d-none');
-                    Swal.fire({
-                        icon: 'error',
-                        title: translations.locationRequired || 'Location Required',
-                        text: translations.allowLocationAccess || 'Please allow location access',
-                        customClass: {
-                            confirmButton: 'swal-btn-gradient-red',
-                            popup: 'swal-popup-rounded'
-                        },
-                        buttonsStyling: false
-                    });
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
                 }
-            );
-        } else {
-            // Submit home office scan directly
-            const langCode = window.location.pathname.split('/')[1];
-            const scanUrl = `/${langCode}/user/scan/`;
-            submitScan(null, scanUrl, true);
-        }
+            }
+        });
     });
 }
 
