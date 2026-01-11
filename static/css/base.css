@@ -6,33 +6,41 @@
 /* Dark Mode Variables */
 :root[data-theme="light"] {
     --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --bg-tertiary: #f3f4f6;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-tertiary: #9ca3af;
-    --border-color: #e5e7eb;
-    --shadow: rgba(0, 0, 0, 0.1);
-    --gradient-start: #667eea;
-    --gradient-end: #764ba2;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #eff6ff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    --border-color: #cbd5e1;
+    --shadow: rgba(37, 99, 235, 0.1);
+    --gradient-start: #1e40af;
+    --gradient-end: #3b82f6;
+    --blue-primary: #2563eb;
+    --blue-secondary: #60a5fa;
+    --blue-light: #dbeafe;
+    --blue-dark: #1e40af;
 }
 
 :root[data-theme="dark"] {
-    --bg-primary: #1f2937;
-    --bg-secondary: #111827;
-    --bg-tertiary: #374151;
-    --text-primary: #ffffff;
-    --text-secondary: #f9fafb;
-    --text-tertiary: #d1d5db;
-    --border-color: #374151;
-    --shadow: rgba(0, 0, 0, 0.3);
-    --gradient-start: #4c1d95;
-    --gradient-end: #1e1b4b;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --border-color: #475569;
+    --shadow: rgba(30, 64, 175, 0.3);
+    --gradient-start: #1e3a8a;
+    --gradient-end: #1e40af;
+    --blue-primary: #3b82f6;
+    --blue-secondary: #60a5fa;
+    --blue-light: #1e3a8a;
+    --blue-dark: #1e40af;
 }
 
 /* Apply dark mode styles */
 :root[data-theme="dark"] body {
-    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
     color: var(--text-primary);
 }
 
@@ -61,7 +69,7 @@
 :root[data-theme="dark"] .form-select:focus {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
-    border-color: #667eea;
+    border-color: var(--blue-primary);
 }
 
 :root[data-theme="dark"] .table {

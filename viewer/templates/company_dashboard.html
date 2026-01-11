@@ -285,7 +285,7 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <button type="button" class="action-icon-btn action-btn-edit" 
-                                                    onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}); return false;"
+                                                    onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}, '{{ user.rc|default_if_none:"" }}', '{{ user.phone|default_if_none:"" }}', '{{ user.birth_date|date:"Y-m-d"|default_if_none:"" }}'); return false;"
                                                     title="{% trans 'Edit Employee' %}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
@@ -335,7 +335,7 @@
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
                         <button type="button" class="btn btn-sm flex-fill btn-edit-blue" 
-                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}); return false;">
+                                onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}, '{{ user.rc|default_if_none:"" }}', '{{ user.phone|default_if_none:"" }}', '{{ user.birth_date|date:"Y-m-d"|default_if_none:"" }}'); return false;">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                         </button>
                         <button type="button" class="btn btn-sm flex-fill btn-delete-red" 
@@ -408,16 +408,17 @@
                             <th style="width: 80px; text-align: center;">{% trans "Status" %}</th>
                             <th>{% trans "Created" %}</th>
                             <th class="text-center">{% trans "Actions" %}</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for absence in absences_page %}
                         <tr>
                             <td>
-                                <i class="fas fa-calendar-day me-1"></i>{{ absence.date_from|date:"d.m.Y" }}
+                                <i class="fas fa-calendar-day me-1"></i>{{ absence.date_from|date:"d.m.Y" }}{% if absence.time_from %} {{ absence.time_from|time:"H:i" }}{% endif %}
                             </td>
                             <td>
-                                <i class="fas fa-calendar-check me-1"></i>{{ absence.date_to|date:"d.m.Y" }}
+                                <i class="fas fa-calendar-check me-1"></i>{{ absence.date_to|date:"d.m.Y" }}{% if absence.time_to %} {{ absence.time_to|time:"H:i" }}{% endif %}
                             </td>
                             <td>
                                 <i class="fas fa-user me-1"></i><strong>{{ absence.user.name }}</strong>
@@ -471,10 +472,17 @@
                                     </button>
                                 </div>
                             </td>
+                            <td class="text-center">
+                                {% if absence.type == 'vacation' %}
+                                <button class="btn btn-sm btn-danger" onclick="generateVacationPDF({{ absence.user_id }}, '{{ absence.date_from|date:"Y-m-d" }}', '{{ absence.date_to|date:"Y-m-d" }}', '{{ absence.time_from|time:"H:i" }}', '{{ absence.time_to|time:"H:i" }}')" title="{% trans 'Generate PDF' %}">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">{% trans "No absences found" %}</td>
+                            <td colspan="9" class="text-center text-muted py-4">{% trans "No absences found" %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -509,10 +517,10 @@
                         {% endif %}
                     </div>
                     <p class="text-muted small mb-1">
-                        <i class="fas fa-calendar-day me-1"></i><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}
+                        <i class="fas fa-calendar-day me-1"></i><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}{% if absence.time_from %} {{ absence.time_from|time:"H:i" }}{% endif %}
                     </p>
                     <p class="text-muted small mb-1">
-                        <i class="fas fa-calendar-check me-1"></i><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}
+                        <i class="fas fa-calendar-check me-1"></i><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}{% if absence.time_to %} {{ absence.time_to|time:"H:i" }}{% endif %}
                     </p>
                     <div class="mt-2 d-flex gap-2">
                         {% if not absence.approved and can_edit_absences %}
@@ -526,6 +534,11 @@
                         <button type="button" class="btn btn-sm btn-danger flex-fill" onclick="deleteVacation({{ absence.id }}, '{{ absence.user.name }}')">
                             <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
                         </button>
+                        {% if absence.type == 'vacation' %}
+                        <button class="btn btn-sm btn-danger flex-fill" onclick="generateVacationPDF({{ absence.user_id }}, '{{ absence.date_from|date:"Y-m-d" }}', '{{ absence.date_to|date:"Y-m-d" }}', '{{ absence.time_from|time:"H:i" }}', '{{ absence.time_to|time:"H:i" }}')" title="{% trans 'Generate PDF' %}">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
                 {% empty %}

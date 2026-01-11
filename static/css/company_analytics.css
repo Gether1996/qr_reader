@@ -1,10 +1,10 @@
 /* Global Styles */
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #dbeafe 100%);
     background-attachment: fixed;
 }
 :root[data-theme="dark"] body {
-    background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
 }
 
 .container {
@@ -25,7 +25,7 @@ body {
     color: var(--text-primary);
 }
 .analytics-header:hover {
-    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
 }
 :root[data-theme="dark"] .analytics-header h2 {
     color: var(--text-primary);
@@ -45,7 +45,7 @@ body {
     color: var(--text-primary);
 }
 .date-filter-card:hover {
-    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
 }
 
 /* Statistics Cards */
@@ -74,7 +74,7 @@ body {
     transition: width 0.3s ease;
 }
 .stat-card:hover {
-    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
 }
 .stat-card:hover::before {
     width: 8px;
@@ -88,7 +88,7 @@ body {
     font-size: 2.75rem;
     font-weight: 800;
     margin: 0.5rem 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -453,3 +453,17 @@ body {
         padding: 1.5rem;
     }
 }
+ 
+ / *   M i n   H e i g h t   f o r   S t a t   C a r d s   * / 
+ 
+ . s t a t - c a r d - m i n - h e i g h t   {   m i n - h e i g h t :   1 2 0 p x ;   } 
+ 
+ 
+ 
+ / *   I c o n   C o l o r s   * / 
+ 
+ . i c o n - c o l o r - w a r n i n g   {   c o l o r :   # f 5 9 e 0 b ;   } 
+ 
+ . i c o n - c o l o r - i n f o   {   c o l o r :   # 3 b 8 2 f 6 ;   } 
+ 
+ 

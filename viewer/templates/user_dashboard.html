@@ -435,10 +435,10 @@
                                 {% for absence in absences_page %}
                                 <tr>
                                     <td>
-                                        <i class="fas fa-calendar-day me-1"></i>{{ absence.date_from|date:"d.m.Y" }}
+                                        <i class="fas fa-calendar-day me-1"></i>{{ absence.date_from|date:"d.m.Y" }}{% if absence.time_from %} {{ absence.time_from|time:"H:i" }}{% endif %}
                                     </td>
                                     <td>
-                                        <i class="fas fa-calendar-check me-1"></i>{{ absence.date_to|date:"d.m.Y" }}
+                                        <i class="fas fa-calendar-check me-1"></i>{{ absence.date_to|date:"d.m.Y" }}{% if absence.time_to %} {{ absence.time_to|time:"H:i" }}{% endif %}
                                     </td>
                                     <td>
                                         <span class="badge bg-info">{{ absence.days_count }} {% trans "days" %}</span>
@@ -497,11 +497,11 @@
                             <div class="mobile-scan-info">
                                 <div class="mobile-scan-info-item">
                                     <i class="fas fa-calendar-day"></i>
-                                    <span><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}</span>
+                                    <span><strong>{% trans "From:" %}</strong> {{ absence.date_from|date:"d.m.Y" }}{% if absence.time_from %} {{ absence.time_from|time:"H:i" }}{% endif %}</span>
                                 </div>
                                 <div class="mobile-scan-info-item">
                                     <i class="fas fa-calendar-check"></i>
-                                    <span><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}</span>
+                                    <span><strong>{% trans "To:" %}</strong> {{ absence.date_to|date:"d.m.Y" }}{% if absence.time_to %} {{ absence.time_to|time:"H:i" }}{% endif %}</span>
                                 </div>
                                 <div class="mobile-scan-info-item">
                                     <i class="fas fa-hourglass-half"></i>

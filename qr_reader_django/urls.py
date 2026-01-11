@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from viewer import views
 from qr_reader_django.generate_pdf_excel import generate_qr_code_pdf, generate_attendance_pdf, generate_attendance_excel
+from qr_reader_django.generate_vacation_pdf import dovolenka_pdf
 from qr_reader_django.general import check_email
 from qr_reader_django.login_register_logout import company_register, company_login, company_logout, user_login, user_logout
 from qr_reader_django.crud_qr_code import create_qr_code, delete_qr_code
@@ -60,6 +61,7 @@ urlpatterns += i18n_patterns(
     path('absence/<int:vacation_id>/edit/', edit_vacation, name='edit_vacation'),
     path('absence/<int:vacation_id>/delete/', delete_vacation, name='delete_vacation'),
     path('absence/<int:vacation_id>/approve/', approve_vacation, name='approve_vacation'),
+    path('absence/generate-pdf/', dovolenka_pdf, name='generate_vacation_pdf'),
     
     # Analytics
     path('company/analytics/', views.company_analytics, name='company_analytics'),

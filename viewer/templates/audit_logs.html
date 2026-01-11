@@ -80,7 +80,7 @@
                     </div>
 
                     <div class="col-lg-1 col-md-3 col-6 filter-input-group">
-                        <label class="form-label">{% trans "Per Page" %}</label>
+                        <label class="form-label" style="white-space: nowrap;">{% trans "Per Page" %}</label>
                         <select name="items_per_page" class="form-select" style="cursor: pointer;">
                             <option value="10" {% if current_filters.items_per_page == '10' %}selected{% endif %}>10</option>
                             <option value="25" {% if current_filters.items_per_page == '25' %}selected{% endif %}>25</option>

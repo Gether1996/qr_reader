@@ -34,7 +34,7 @@
                 <div class="col-lg-6 col-md-12">
                     <div class="d-flex gap-2 justify-content-lg-end justify-content-start flex-wrap">
                         {% if can_edit_employees %}
-                        <button type="button" class="btn btn-primary flex-fill flex-lg-grow-0" onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }})">
+                        <button type="button" class="btn btn-primary flex-fill flex-lg-grow-0" onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}, '{{ user.rc|default_if_none:"" }}', '{{ user.phone|default_if_none:"" }}', '{{ user.birth_date|date:"Y-m-d"|default_if_none:"" }}')">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit Employee" %}
                         </button>
                         {% endif %}
@@ -440,16 +440,17 @@
                                         </a>
                                     </th>
                                     <th class="text-center">{% trans "Actions" %}</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for vacation in vacations_page %}
                                 <tr>
                                     <td>
-                                        <i class="fas fa-calendar-day me-1"></i>{{ vacation.date_from|date:"d.m.Y" }}
+                                        <i class="fas fa-calendar-day me-1"></i>{{ vacation.date_from|date:"d.m.Y" }}{% if vacation.time_from %} {{ vacation.time_from|time:"H:i" }}{% endif %}
                                     </td>
                                     <td>
-                                        <i class="fas fa-calendar-check me-1"></i>{{ vacation.date_to|date:"d.m.Y" }}
+                                        <i class="fas fa-calendar-check me-1"></i>{{ vacation.date_to|date:"d.m.Y" }}{% if vacation.time_to %} {{ vacation.time_to|time:"H:i" }}{% endif %}
                                     </td>
                                     <td>
                                         <span class="badge bg-info">{{ vacation.days_count }} {% trans "days" %}</span>
@@ -497,10 +498,17 @@
                                             {% endif %}
                                         </div>
                                     </td>
+                                    <td class="text-center">
+                                        {% if vacation.type == 'vacation' %}
+                                        <button class="btn btn-sm btn-danger" onclick="generateVacationPDF({{ user.id }}, '{{ vacation.date_from|date:"Y-m-d" }}', '{{ vacation.date_to|date:"Y-m-d" }}', '{{ vacation.time_from|time:"H:i" }}', '{{ vacation.time_to|time:"H:i" }}')" title="{% trans 'Generate PDF' %}">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </button>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">{% trans "No vacations found" %}</td>
+                                    <td colspan="9" class="text-center text-muted py-4">{% trans "No vacations found" %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -519,11 +527,11 @@
                             <div class="mobile-scan-info">
                                 <div class="mobile-scan-info-item">
                                     <i class="fas fa-calendar-day"></i>
-                                    <span><strong>{% trans "From:" %}</strong> {{ vacation.date_from|date:"d.m.Y" }}</span>
+                                    <span><strong>{% trans "From:" %}</strong> {{ vacation.date_from|date:"d.m.Y" }}{% if vacation.time_from %} {{ vacation.time_from|time:"H:i" }}{% endif %}</span>
                                 </div>
                                 <div class="mobile-scan-info-item">
                                     <i class="fas fa-calendar-check"></i>
-                                    <span><strong>{% trans "To:" %}</strong> {{ vacation.date_to|date:"d.m.Y" }}</span>
+                                    <span><strong>{% trans "To:" %}</strong> {{ vacation.date_to|date:"d.m.Y" }}{% if vacation.time_to %} {{ vacation.time_to|time:"H:i" }}{% endif %}</span>
                                 </div>
                                 <div class="mobile-scan-info-item">
                                     <i class="fas fa-hourglass-half"></i>
@@ -569,6 +577,11 @@
                                 <button type="button" class="btn btn-sm btn-danger flex-fill" onclick="deleteVacation({{ vacation.id }}, '{{ user.name }}')">
                                     <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
                                 </button>
+                                {% if vacation.type == 'vacation' %}
+                                <button class="btn btn-sm btn-danger flex-fill" onclick="generateVacationPDF({{ user.id }}, '{{ vacation.date_from|date:"Y-m-d" }}', '{{ vacation.date_to|date:"Y-m-d" }}', '{{ vacation.time_from|time:"H:i" }}', '{{ vacation.time_to|time:"H:i" }}')" title="{% trans 'Generate PDF' %}">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </div>

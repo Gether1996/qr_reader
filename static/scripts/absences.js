@@ -28,6 +28,9 @@ const vacationTranslations = {
         fillAllFields: 'Vyplňte všetky polia vrátane typu',
         invalidDateRange: 'Neplatné obdobie - dátum ukončenia musí byť po dátume začiatku',
         selectDates: 'Vyberte dátumy',
+        timeFrom: 'Čas od',
+        timeTo: 'Čas do',
+        timeOptional: 'Voliteľné pre jednodňové absencie',
         type: 'Typ',
         vacation: 'Dovolenka',
         sickLeave: 'PN (Pracovná neschopnosť)',
@@ -38,7 +41,11 @@ const vacationTranslations = {
         confirmApproveText: 'Naozaj chcete schváliť absenciu pre',
         yesApprove: 'Áno, schváliť',
         absenceApproved: 'Absencia bola úspešne schválená',
-        absenceApproveFailed: 'Nepodarilo sa schváliť absenciu'
+        absenceApproveFailed: 'Nepodarilo sa schváliť absenciu',
+        addingAbsence: 'Pridávam absenciu...',
+        updatingAbsence: 'Aktualizujem absenciu...',
+        deletingAbsence: 'Odstraňujem absenciu...',
+        approvingAbsence: 'Schvaľujem absenciu...'
     },
     en: {
         addAbsence: 'Add Absence',
@@ -68,6 +75,9 @@ const vacationTranslations = {
         fillAllFields: 'Please fill all fields including type',
         invalidDateRange: 'Invalid date range - end date must be after start date',
         selectDates: 'Select dates',
+        timeFrom: 'Time from',
+        timeTo: 'Time to',
+        timeOptional: 'Optional for single-day absences',
         type: 'Type',
         vacation: 'Vacation',
         sickLeave: 'Sick Leave',
@@ -78,7 +88,11 @@ const vacationTranslations = {
         confirmApproveText: 'Are you sure you want to approve absence for',
         yesApprove: 'Yes, approve',
         absenceApproved: 'Absence successfully approved',
-        absenceApproveFailed: 'Failed to approve absence'
+        absenceApproveFailed: 'Failed to approve absence',
+        addingAbsence: 'Adding absence...',
+        updatingAbsence: 'Updating absence...',
+        deletingAbsence: 'Deleting absence...',
+        approvingAbsence: 'Approving absence...'
     },
     es: {
         addAbsence: 'Agregar Ausencia',
@@ -108,6 +122,9 @@ const vacationTranslations = {
         fillAllFields: 'Por favor complete todos los campos incluyendo el tipo',
         invalidDateRange: 'Rango de fechas no válido - la fecha de fin debe ser posterior a la fecha de inicio',
         selectDates: 'Seleccionar fechas',
+        timeFrom: 'Hora desde',
+        timeTo: 'Hora hasta',
+        timeOptional: 'Opcional para ausencias de un día',
         type: 'Tipo',
         vacation: 'Vacaciones',
         sickLeave: 'Baja por enfermedad',
@@ -118,7 +135,11 @@ const vacationTranslations = {
         confirmApproveText: '¿Está seguro de que desea aprobar la ausencia para',
         yesApprove: 'Sí, aprobar',
         absenceApproved: 'Ausencia aprobada exitosamente',
-        absenceApproveFailed: 'No se pudo aprobar la ausencia'
+        absenceApproveFailed: 'No se pudo aprobar la ausencia',
+        addingAbsence: 'Agregando ausencia...',
+        updatingAbsence: 'Actualizando ausencia...',
+        deletingAbsence: 'Eliminando ausencia...',
+        approvingAbsence: 'Aprobando ausencia...'
     },
     de: {
         addAbsence: 'Abwesenheit hinzufügen',
@@ -148,6 +169,9 @@ const vacationTranslations = {
         fillAllFields: 'Bitte füllen Sie alle Felder einschließlich Typ aus',
         invalidDateRange: 'Ungültiger Datumsbereich - Enddatum muss nach Startdatum liegen',
         selectDates: 'Daten auswählen',
+        timeFrom: 'Zeit von',
+        timeTo: 'Zeit bis',
+        timeOptional: 'Optional für eintägige Abwesenheiten',
         type: 'Typ',
         vacation: 'Urlaub',
         sickLeave: 'Krankschreibung',
@@ -158,7 +182,11 @@ const vacationTranslations = {
         confirmApproveText: 'Möchten Sie die Abwesenheit für',
         yesApprove: 'Ja, genehmigen',
         absenceApproved: 'Abwesenheit erfolgreich genehmigt',
-        absenceApproveFailed: 'Abwesenheit konnte nicht genehmigt werden'
+        absenceApproveFailed: 'Abwesenheit konnte nicht genehmigt werden',
+        addingAbsence: 'Abwesenheit wird hinzugefügt...',
+        updatingAbsence: 'Abwesenheit wird aktualisiert...',
+        deletingAbsence: 'Abwesenheit wird gelöscht...',
+        approvingAbsence: 'Abwesenheit wird genehmigt...'
     }
 };
 
@@ -199,34 +227,77 @@ function addVacation(users) {
     });
 
     Swal.fire({
-        title: t.addAbsence,
+        title: `<i class="fas fa-calendar-plus me-2"></i>${t.addAbsence}`,
         html: `
-            <div class="container-fluid px-0">
+            <div class="px-2">
                 <div class="row g-3">
+                    <!-- Employee Selection -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.employee}</label>
-                        <select id="swal-employee" class="form-select form-select-lg" style="cursor: pointer;">
-                            ${employeeOptions}
-                        </select>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-user text-primary"></i>
+                            </span>
+                            <select id="swal-employee" class="form-select border-start-0" style="cursor: pointer;">
+                                ${employeeOptions}
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Absence Type -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="" disabled selected>${t.selectType}</option>
-                            <option value="vacation">${t.vacation}</option>
-                            <option value="sick_leave">${t.sickLeave}</option>
-                            <option value="doctor">${t.doctor}</option>
-                            <option value="home_office">${t.homeOffice || 'Home Office'}</option>
-                        </select>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-tags text-primary"></i>
+                            </span>
+                            <select id="swal-type" class="form-select border-start-0" style="cursor: pointer;">
+                                <option value="" disabled selected>${t.selectType}</option>
+                                <option value="vacation">🏖️ ${t.vacation}</option>
+                                <option value="sick_leave">🤒 ${t.sickLeave}</option>
+                                <option value="doctor">⚕️ ${t.doctor}</option>
+                                <option value="home_office">🏠 ${t.homeOffice || 'Home Office'}</option>
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Date Range -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" style="cursor: pointer; ">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-calendar-alt text-primary"></i>
+                            </span>
+                            <input type="text" id="swal-daterange" class="form-control border-start-0" readonly placeholder="${t.selectDates}" style="cursor: pointer; background-color: white;">
+                        </div>
+                    </div>
+                    
+                    <!-- Time Fields (shown only for single day) -->
+                    <div class="col-12" id="time-fields" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
+                        <div class="card border-primary bg-light bg-opacity-10">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
+                                        </label>
+                                        <input type="time" id="swal-time-from" class="form-control form-control-lg">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
+                                        </label>
+                                        <input type="time" id="swal-time-to" class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '600px',
+        width: '550px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
@@ -240,11 +311,30 @@ function addVacation(users) {
             initModalDateRangePicker('swal-daterange', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
+                
+                const timeFields = document.getElementById('time-fields');
+                
+                // Show time fields with smooth animation for single-day absences
+                if (startDate === endDate) {
+                    timeFields.style.display = 'block';
+                    setTimeout(() => {
+                        timeFields.style.opacity = '1';
+                    }, 10);
+                } else {
+                    timeFields.style.opacity = '0';
+                    setTimeout(() => {
+                        timeFields.style.display = 'none';
+                        document.getElementById('swal-time-from').value = '';
+                        document.getElementById('swal-time-to').value = '';
+                    }, 300);
+                }
             });
         },
         preConfirm: () => {
             selectedUserId = document.getElementById('swal-employee').value;
             const selectedType = document.getElementById('swal-type').value;
+            const timeFrom = document.getElementById('swal-time-from').value;
+            const timeTo = document.getElementById('swal-time-to').value;
             
             if (!selectedUserId || !selectedType || !startDate || !endDate) {
                 Swal.showValidationMessage(t.fillAllFields);
@@ -256,14 +346,22 @@ function addVacation(users) {
                 return false;
             }
 
-            return { userId: selectedUserId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            const result = { userId: selectedUserId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            
+            // Add time fields only if both are provided and it's a single day
+            if (startDate === endDate && timeFrom && timeTo) {
+                result.timeFrom = timeFrom;
+                result.timeTo = timeTo;
+            }
+            
+            return result;
         }
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
             
             Swal.fire({
-                title: translations.addingAbsence,
+                title: t.addingAbsence,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
@@ -281,7 +379,9 @@ function addVacation(users) {
                     user_id: data.userId,
                     date_from: data.dateFrom,
                     date_to: data.dateTo,
-                    type: data.type
+                    type: data.type,
+                    time_from: data.timeFrom,
+                    time_to: data.timeTo
                 })
             })
             .then(response => response.json())
@@ -329,7 +429,7 @@ function addVacation(users) {
 }
 
 // Edit Vacation
-function editVacation(vacationId, currentUserId, currentUserName, currentDateFrom, currentDateTo, currentType, users) {
+function editVacation(vacationId, currentUserId, currentUserName, currentDateFrom, currentDateTo, currentType, currentTimeFrom, currentTimeTo, users) {
     let selectedUserId = currentUserId;
     let startDate = currentDateFrom;
     let endDate = currentDateTo;
@@ -348,36 +448,82 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
     };
 
     const displayRange = `${formatDate(currentDateFrom)} - ${formatDate(currentDateTo)}`;
+    
+    // Check if single day for showing time fields
+    const isSingleDay = currentDateFrom === currentDateTo;
 
     Swal.fire({
-        title: t.editLeave,
+        title: `<i class="fas fa-edit me-2"></i>${t.editAbsence}`,
         html: `
-            <div class="container-fluid px-0">
+            <div class="px-2">
                 <div class="row g-3">
+                    <!-- Employee Selection -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.employee}</label>
-                        <select id="swal-employee" class="form-select form-select-lg" style="cursor: pointer;">
-                            ${employeeOptions}
-                        </select>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-user text-info"></i>
+                            </span>
+                            <select id="swal-employee" class="form-select border-start-0" style="cursor: pointer;">
+                                ${employeeOptions}
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Absence Type -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="" disabled>${t.selectType}</option>
-                            <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
-                            <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
-                            <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
-                            <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>${t.homeOffice || 'Home Office'}</option>
-                        </select>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-tags text-info"></i>
+                            </span>
+                            <select id="swal-type" class="form-select border-start-0" style="cursor: pointer;">
+                                <option value="" disabled>${t.selectType}</option>
+                                <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>🏖️ ${t.vacation}</option>
+                                <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>🤒 ${t.sickLeave}</option>
+                                <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>⚕️ ${t.doctor}</option>
+                                <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>🏠 ${t.homeOffice || 'Home Office'}</option>
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Date Range -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; ">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-calendar-alt text-info"></i>
+                            </span>
+                            <input type="text" id="swal-daterange" class="form-control border-start-0" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; background-color: white;">
+                        </div>
+                    </div>
+                    
+                    <!-- Time Fields (shown only for single day) -->
+                    <div class="col-12" id="time-fields-edit" style="display: ${isSingleDay ? 'block' : 'none'}; opacity: ${isSingleDay ? '1' : '0'}; transition: opacity 0.3s ease;">
+                        <div class="card border-info bg-light bg-opacity-10">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock text-info me-2"></i>
+                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
+                                        </label>
+                                        <input type="time" id="swal-time-from-edit" class="form-control form-control-lg" value="${currentTimeFrom || ''}">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
+                                        </label>
+                                        <input type="time" id="swal-time-to-edit" class="form-control form-control-lg" value="${currentTimeTo || ''}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '600px',
+        width: '550px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
@@ -391,11 +537,30 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
             initModalDateRangePicker('swal-daterange', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
+                
+                const timeFields = document.getElementById('time-fields-edit');
+                
+                // Show/hide time fields with smooth animation based on date range
+                if (startDate === endDate) {
+                    timeFields.style.display = 'block';
+                    setTimeout(() => {
+                        timeFields.style.opacity = '1';
+                    }, 10);
+                } else {
+                    timeFields.style.opacity = '0';
+                    setTimeout(() => {
+                        timeFields.style.display = 'none';
+                        document.getElementById('swal-time-from-edit').value = '';
+                        document.getElementById('swal-time-to-edit').value = '';
+                    }, 300);
+                }
             });
         },
         preConfirm: () => {
             selectedUserId = document.getElementById('swal-employee').value;
             const selectedType = document.getElementById('swal-type').value;
+            const timeFrom = document.getElementById('swal-time-from-edit').value;
+            const timeTo = document.getElementById('swal-time-to-edit').value;
             
             if (!selectedUserId || !selectedType || !startDate || !endDate) {
                 Swal.showValidationMessage(t.fillAllFields);
@@ -407,14 +572,22 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                 return false;
             }
 
-            return { userId: selectedUserId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            const result = { userId: selectedUserId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            
+            // Add time fields only if both are provided and it's a single day
+            if (startDate === endDate && timeFrom && timeTo) {
+                result.timeFrom = timeFrom;
+                result.timeTo = timeTo;
+            }
+            
+            return result;
         }
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
             
             Swal.fire({
-                title: translations.updatingAbsence,
+                title: t.updatingAbsence,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
@@ -432,7 +605,9 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
                     user_id: data.userId,
                     date_from: data.dateFrom,
                     date_to: data.dateTo,
-                    type: data.type
+                    type: data.type,
+                    time_from: data.timeFrom,
+                    time_to: data.timeTo
                 })
             })
             .then(response => response.json())
@@ -485,32 +660,75 @@ function addVacationForUser(userId, userName) {
     let endDate = null;
 
     Swal.fire({
-        title: t.addAbsence,
+        title: `<i class="fas fa-calendar-plus me-2"></i>${t.addAbsence}`,
         html: `
             <div class="container-fluid px-0">
                 <div class="row g-3">
+                    <!-- Employee (Read-only) -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.employee}</label>
-                        <input type="text" class="form-control form-control-lg" value="${userName}" readonly disabled>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-user text-primary"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 bg-light" value="${userName}" readonly disabled>
+                        </div>
                     </div>
+                    
+                    <!-- Absence Type -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="" disabled selected>${t.selectType}</option>
-                            <option value="vacation">${t.vacation}</option>
-                            <option value="sick_leave">${t.sickLeave}</option>
-                            <option value="doctor">${t.doctor}</option>
-                            <option value="home_office">${t.homeOffice || 'Home Office'}</option>
-                        </select>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-tags text-primary"></i>
+                            </span>
+                            <select id="swal-type" class="form-select border-start-0" style="cursor: pointer;">
+                                <option value="" disabled selected>${t.selectType}</option>
+                                <option value="vacation">🏖️ ${t.vacation}</option>
+                                <option value="sick_leave">🤒 ${t.sickLeave}</option>
+                                <option value="doctor">⚕️ ${t.doctor}</option>
+                                <option value="home_office">🏠 ${t.homeOffice || 'Home Office'}</option>
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Date Range -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" style="cursor: pointer; ">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-calendar-alt text-primary"></i>
+                            </span>
+                            <input type="text" id="swal-daterange-user" class="form-control border-start-0" readonly placeholder="${t.selectDates}" style="cursor: pointer; background-color: white;">
+                        </div>
+                    </div>
+                    
+                    <!-- Time Fields (shown only for single day) -->
+                    <div class="col-12" id="time-fields-user" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
+                        <div class="card border-primary bg-light bg-opacity-10">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
+                                        </label>
+                                        <input type="time" id="swal-time-from-user" class="form-control form-control-lg">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
+                                        </label>
+                                        <input type="time" id="swal-time-to-user" class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '600px',
+        width: '650px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
@@ -521,13 +739,32 @@ function addVacationForUser(userId, userName) {
         },
         buttonsStyling: false,
         didOpen: () => {
-            initModalDateRangePicker('swal-daterange', (start, end) => {
+            initModalDateRangePicker('swal-daterange-user', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
+                
+                const timeFields = document.getElementById('time-fields-user');
+                
+                // Show time fields with smooth animation for single-day absences
+                if (startDate === endDate) {
+                    timeFields.style.display = 'block';
+                    setTimeout(() => {
+                        timeFields.style.opacity = '1';
+                    }, 10);
+                } else {
+                    timeFields.style.opacity = '0';
+                    setTimeout(() => {
+                        timeFields.style.display = 'none';
+                        document.getElementById('swal-time-from-user').value = '';
+                        document.getElementById('swal-time-to-user').value = '';
+                    }, 300);
+                }
             });
         },
         preConfirm: () => {
             const selectedType = document.getElementById('swal-type').value;
+            const timeFrom = document.getElementById('swal-time-from-user').value;
+            const timeTo = document.getElementById('swal-time-to-user').value;
             
             if (!selectedType || !startDate || !endDate) {
                 Swal.showValidationMessage(t.fillAllFields);
@@ -539,14 +776,22 @@ function addVacationForUser(userId, userName) {
                 return false;
             }
 
-            return { userId: userId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            const result = { userId: userId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            
+            // Add time fields only if both are provided and it's a single day
+            if (startDate === endDate && timeFrom && timeTo) {
+                result.timeFrom = timeFrom;
+                result.timeTo = timeTo;
+            }
+            
+            return result;
         }
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
             
             Swal.fire({
-                title: translations.addingAbsence,
+                title: t.addingAbsence,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
@@ -564,7 +809,9 @@ function addVacationForUser(userId, userName) {
                     user_id: data.userId,
                     date_from: data.dateFrom,
                     date_to: data.dateTo,
-                    type: data.type
+                    type: data.type,
+                    time_from: data.timeFrom,
+                    time_to: data.timeTo
                 })
             })
             .then(response => response.json())
@@ -612,7 +859,7 @@ function addVacationForUser(userId, userName) {
 }
 
 // Edit Vacation Simple (without employee selector - for user details page)
-function editVacationSimple(vacationId, userId, userName, currentDateFrom, currentDateTo, currentType) {
+function editVacationSimple(vacationId, userId, userName, currentDateFrom, currentDateTo, currentType, currentTimeFrom, currentTimeTo) {
     let startDate = currentDateFrom;
     let endDate = currentDateTo;
 
@@ -623,34 +870,80 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
     };
 
     const displayRange = `${formatDate(currentDateFrom)} - ${formatDate(currentDateTo)}`;
+    
+    // Check if single day for showing time fields
+    const isSingleDay = currentDateFrom === currentDateTo;
 
     Swal.fire({
-        title: t.editAbsence,
+        title: `<i class="fas fa-edit me-2"></i>${t.editAbsence}`,
         html: `
-            <div class="container-fluid px-0">
+            <div class="px-2">
                 <div class="row g-3">
+                    <!-- Employee (Read-only) -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.employee}</label>
-                        <input type="text" class="form-control form-control-lg" value="${userName}" readonly disabled>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-user text-info"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 bg-light" value="${userName}" readonly disabled>
+                        </div>
                     </div>
+                    
+                    <!-- Absence Type -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.type}</label>
-                        <select id="swal-type" class="form-select form-select-lg" style="cursor: pointer;">
-                            <option value="" disabled>${t.selectType}</option>
-                            <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
-                            <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
-                            <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
-                            <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>${t.homeOffice || 'Home Office'}</option>
-                        </select>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-tags text-info"></i>
+                            </span>
+                            <select id="swal-type-simple" class="form-select border-start-0" style="cursor: pointer;">
+                                <option value="" disabled>${t.selectType}</option>
+                                <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>🏖️ ${t.vacation}</option>
+                                <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>🤒 ${t.sickLeave}</option>
+                                <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>⚕️ ${t.doctor}</option>
+                                <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>🏠 ${t.homeOffice || 'Home Office'}</option>
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Date Range -->
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${t.dateRange}</label>
-                        <input type="text" id="swal-daterange" class="form-control form-control-lg" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; ">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-calendar-alt text-info"></i>
+                            </span>
+                            <input type="text" id="swal-daterange-simple" class="form-control border-start-0" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; background-color: white;">
+                        </div>
+                    </div>
+                    
+                    <!-- Time Fields (shown only for single day) -->
+                    <div class="col-12" id="time-fields-simple" style="display: ${isSingleDay ? 'block' : 'none'}; opacity: ${isSingleDay ? '1' : '0'}; transition: opacity 0.3s ease;">
+                        <div class="card border-info bg-light bg-opacity-10">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock text-info me-2"></i>
+                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
+                                        </label>
+                                        <input type="time" id="swal-time-from-simple" class="form-control form-control-lg" value="${currentTimeFrom || ''}">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small mb-1">
+                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
+                                        </label>
+                                        <input type="time" id="swal-time-to-simple" class="form-control form-control-lg" value="${currentTimeTo || ''}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '600px',
+        width: '550px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
@@ -661,13 +954,32 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
         },
         buttonsStyling: false,
         didOpen: () => {
-            initModalDateRangePicker('swal-daterange', (start, end) => {
+            initModalDateRangePicker('swal-daterange-simple', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
+                
+                const timeFields = document.getElementById('time-fields-simple');
+                
+                // Show/hide time fields with smooth animation based on date range
+                if (startDate === endDate) {
+                    timeFields.style.display = 'block';
+                    setTimeout(() => {
+                        timeFields.style.opacity = '1';
+                    }, 10);
+                } else {
+                    timeFields.style.opacity = '0';
+                    setTimeout(() => {
+                        timeFields.style.display = 'none';
+                        document.getElementById('swal-time-from-simple').value = '';
+                        document.getElementById('swal-time-to-simple').value = '';
+                    }, 300);
+                }
             });
         },
         preConfirm: () => {
-            const selectedType = document.getElementById('swal-type').value;
+            const selectedType = document.getElementById('swal-type-simple').value;
+            const timeFrom = document.getElementById('swal-time-from-simple').value;
+            const timeTo = document.getElementById('swal-time-to-simple').value;
             
             if (!selectedType || !startDate || !endDate) {
                 Swal.showValidationMessage(t.fillAllFields);
@@ -679,14 +991,22 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                 return false;
             }
 
-            return { userId: userId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            const result = { userId: userId, dateFrom: startDate, dateTo: endDate, type: selectedType };
+            
+            // Add time fields only if both are provided and it's a single day
+            if (startDate === endDate && timeFrom && timeTo) {
+                result.timeFrom = timeFrom;
+                result.timeTo = timeTo;
+            }
+            
+            return result;
         }
     }).then((result) => {
         if (result.isConfirmed) {
             const data = result.value;
             
             Swal.fire({
-                title: translations.updatingAbsence,
+                title: t.updatingAbsence,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
@@ -704,7 +1024,9 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
                     user_id: data.userId,
                     date_from: data.dateFrom,
                     date_to: data.dateTo,
-                    type: data.type
+                    type: data.type,
+                    time_from: data.timeFrom,
+                    time_to: data.timeTo
                 })
             })
             .then(response => response.json())
@@ -770,7 +1092,7 @@ function deleteVacation(vacationId, userName) {
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
-                title: translations.deletingAbsence,
+                title: t.deletingAbsence,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
@@ -828,6 +1150,58 @@ function deleteVacation(vacationId, userName) {
         }
     });
 }
+function generateVacationPDF(userId, dateFrom, dateTo, timeFrom, timeTo) {
+    const langCode = window.location.pathname.split('/')[1];
+    const url = `/${langCode}/absence/generate-pdf/`;
+    
+    // Create form data
+    const formData = new FormData();
+    formData.append('user_id', userId);
+    formData.append('date_from', dateFrom);
+    formData.append('date_to', dateTo);
+    if (timeFrom && timeFrom !== 'None') {
+        formData.append('time_from', timeFrom);
+    }
+    if (timeTo && timeTo !== 'None') {
+        formData.append('time_to', timeTo);
+    }
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Failed to generate PDF');
+    })
+    .then(blob => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        // Open in new window
+        window.open(url, '_blank');
+        // Clean up
+        setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: t.error,
+            text: 'Failed to generate PDF',
+            customClass: {
+                confirmButton: 'swal-btn-gradient-gray',
+                popup: 'swal-popup-rounded'
+            },
+            buttonsStyling: false
+        });
+    });
+}
+
 function approveVacation(vacationId, userName) {
     Swal.fire({
         title: t.approveAbsence,
@@ -846,7 +1220,7 @@ function approveVacation(vacationId, userName) {
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
-                title: translations.approvingAbsence,
+                title: t.approvingAbsence,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {

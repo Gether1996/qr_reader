@@ -37,6 +37,7 @@ function initDateRangePicker(suffix) {
         timePicker: false,
         timePicker24Hour: false,
         showDropdowns: true,
+        linkedCalendars: false,
         opens: isMobile ? 'center' : 'center',
         drops: isMobile ? 'down' : 'auto',
         alwaysShowCalendars: true,

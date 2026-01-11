@@ -38,6 +38,9 @@ class User(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='users')
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
+    rc = models.CharField(max_length=20, blank=True, null=True, default=None) # rodné číslo
+    phone = models.CharField(max_length=20, blank=True, null=True, default=None)
+    birth_date = models.DateField(blank=True, null=True, default=None)
     password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -201,6 +204,8 @@ class Vacation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vacations')
     date_from = models.DateField(help_text="Start date of vacation")
     date_to = models.DateField(help_text="End date of vacation")
+    time_from = models.TimeField(blank=True, null=True, default=None)
+    time_to = models.TimeField(blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -217,9 +222,78 @@ class Vacation(models.Model):
     def days_count(self):
         """Calculate number of days in vacation"""
         if self.date_from and self.date_to:
+            # If same day and has time_from and time_to, it's half day
+            if self.date_from == self.date_to and self.time_from and self.time_to:
+                return 0.5
             return (self.date_to - self.date_from).days + 1
         return 0
 
+# ============= PASSWORD RESET MODEL =============
+
+class PasswordResetToken(models.Model):
+    """Password reset tokens for companies"""
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='reset_tokens')
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Reset token for {self.company.name}"
+    
+    def is_valid(self):
+        """Check if token is still valid"""
+        from datetime import datetime
+        return not self.is_used and datetime.now() < self.expires_at.replace(tzinfo=None)
+
+
+# ============= AUDIT LOG MODEL =============
+
+class AuditLog(models.Model):
+    """Audit log for tracking all CRUD operations"""
+    ACTION_CHOICES = [
+        ('create', 'Create'),
+        ('update', 'Update'),
+        ('delete', 'Delete'),
+        ('approve', 'Approve'),
+        ('login', 'Login'),
+        ('logout', 'Logout'),
+    ]
+    
+    ACTOR_TYPE_CHOICES = [
+        ('company', 'Company'),
+        ('user', 'User'),
+    ]
+    
+    # Who performed the action
+    actor_type = models.CharField(max_length=10, choices=ACTOR_TYPE_CHOICES)
+    actor_email = models.EmailField()
+    actor_name = models.CharField(max_length=255)
+    
+    # What was done
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    message = models.TextField()
+    
+    # When
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    # Additional context
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['-timestamp']),
+            models.Index(fields=['actor_email']),
+        ]
+    
+    def __str__(self):
+        return f"{self.actor_name} ({self.actor_type}) - {self.action} at {self.timestamp}"
+
+
+
+
+##################################################
 
 # ============= MAGAZINE MODELS =============
 
@@ -355,65 +429,3 @@ class ContentBlock(models.Model):
     
     def __str__(self):
         return f"{self.block_type} block for {self.article.title}"
-
-# ============= PASSWORD RESET MODEL =============
-
-class PasswordResetToken(models.Model):
-    """Password reset tokens for companies"""
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='reset_tokens')
-    token = models.CharField(max_length=64, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField()
-    is_used = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return f"Reset token for {self.company.name}"
-    
-    def is_valid(self):
-        """Check if token is still valid"""
-        from datetime import datetime
-        return not self.is_used and datetime.now() < self.expires_at.replace(tzinfo=None)
-
-
-# ============= AUDIT LOG MODEL =============
-
-class AuditLog(models.Model):
-    """Audit log for tracking all CRUD operations"""
-    ACTION_CHOICES = [
-        ('create', 'Create'),
-        ('update', 'Update'),
-        ('delete', 'Delete'),
-        ('approve', 'Approve'),
-        ('login', 'Login'),
-        ('logout', 'Logout'),
-    ]
-    
-    ACTOR_TYPE_CHOICES = [
-        ('company', 'Company'),
-        ('user', 'User'),
-    ]
-    
-    # Who performed the action
-    actor_type = models.CharField(max_length=10, choices=ACTOR_TYPE_CHOICES)
-    actor_email = models.EmailField()
-    actor_name = models.CharField(max_length=255)
-    
-    # What was done
-    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
-    message = models.TextField()
-    
-    # When
-    timestamp = models.DateTimeField(auto_now_add=True)
-    
-    # Additional context
-    ip_address = models.GenericIPAddressField(null=True, blank=True)
-    
-    class Meta:
-        ordering = ['-timestamp']
-        indexes = [
-            models.Index(fields=['-timestamp']),
-            models.Index(fields=['actor_email']),
-        ]
-    
-    def __str__(self):
-        return f"{self.actor_name} ({self.actor_type}) - {self.action} at {self.timestamp}"

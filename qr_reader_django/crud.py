@@ -55,7 +55,7 @@ def get_company_by_id(company_id):
 
 # ============= USER CRUD =============
 
-def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, has_lunch_break=True, lunch_break_duration=30, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, notify_arrival=False, notify_departure=False, notify_vacation=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def create_user(company, name, email, password, basic_work_hours=160, holidays_per_year=20, has_lunch_break=True, lunch_break_duration=30, is_manager=False, can_edit_employees=False, can_edit_qr_codes=False, can_edit_absences=False, notify_arrival=False, notify_departure=False, notify_vacation=False, rc=None, phone=None, birth_date=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Create a new user under a company"""
     if User.objects.filter(email=email).exists():
         return None, str(_('Email already exists'))
@@ -64,6 +64,9 @@ def create_user(company, name, email, password, basic_work_hours=160, holidays_p
         company=company,
         name=name,
         email=email,
+        rc=rc,
+        phone=phone,
+        birth_date=birth_date,
         working_hours=basic_work_hours,
         holidays_per_year=holidays_per_year,
         has_lunch_break=has_lunch_break,
@@ -108,7 +111,7 @@ def get_user_by_id(user_id):
         return None
 
 
-def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, has_lunch_break=None, lunch_break_duration=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, notify_arrival=None, notify_departure=None, notify_vacation=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def update_user(user_id, company, name=None, email=None, password=None, basic_work_hours=None, holidays_per_year=None, has_lunch_break=None, lunch_break_duration=None, is_active=None, is_manager=None, can_edit_employees=None, can_edit_qr_codes=None, can_edit_absences=None, notify_arrival=None, notify_departure=None, notify_vacation=None, rc=None, phone=None, birth_date=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
     """Update user details"""
     try:
         user = User.objects.get(id=user_id, company=company)
@@ -122,6 +125,14 @@ def update_user(user_id, company, name=None, email=None, password=None, basic_wo
         # Update name if provided
         if name:
             user.name = name
+        
+        # Update optional fields if provided
+        if rc is not None:
+            user.rc = rc
+        if phone is not None:
+            user.phone = phone
+        if birth_date is not None:
+            user.birth_date = birth_date
         
         # Update basic work hours if provided
         if basic_work_hours is not None:
@@ -440,14 +451,26 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
 
 # ============= VACATION CRUD =============
 
-def create_vacation(user, date_from, date_to, vacation_type='vacation', approved=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
-    from datetime import datetime
+def create_vacation(user, date_from, date_to, time_from=None, time_to=None, vacation_type='vacation', approved=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
+    from datetime import datetime, time as dt_time
     
     # Convert strings to date objects if needed
     if isinstance(date_from, str):
         date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
     if isinstance(date_to, str):
         date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
+    
+    # Convert time strings to time objects if needed
+    if time_from and isinstance(time_from, str):
+        try:
+            time_from = datetime.strptime(time_from, '%H:%M').time()
+        except:
+            time_from = None
+    if time_to and isinstance(time_to, str):
+        try:
+            time_to = datetime.strptime(time_to, '%H:%M').time()
+        except:
+            time_to = None
     
     # Validate dates
     if date_to < date_from:
@@ -457,6 +480,8 @@ def create_vacation(user, date_from, date_to, vacation_type='vacation', approved
         user=user,
         date_from=date_from,
         date_to=date_to,
+        time_from=time_from,
+        time_to=time_to,
         type=vacation_type,
         approved=approved
     )
@@ -569,7 +594,8 @@ def create_vacation(user, date_from, date_to, vacation_type='vacation', approved
     return vacation, None
 
 
-def update_vacation(vacation_id, company, user_id=None, date_from=None, date_to=None, vacation_type=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+def update_vacation(vacation_id, company, user_id=None, date_from=None, date_to=None, time_from=None, time_to=None, vacation_type=None, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+    from datetime import datetime
     try:
         vacation = Vacation.objects.get(id=vacation_id, user__company=company)
         changes = []
@@ -587,6 +613,37 @@ def update_vacation(vacation_id, company, user_id=None, date_from=None, date_to=
         if date_to:
             vacation.date_to = date_to
             changes.append(f'date_to to {date_to}')
+        
+        # Handle time fields
+        if time_from is not None:  # Allow empty string to clear the field
+            if time_from == '':
+                vacation.time_from = None
+                changes.append('time_from cleared')
+            else:
+                if isinstance(time_from, str):
+                    try:
+                        vacation.time_from = datetime.strptime(time_from, '%H:%M').time()
+                        changes.append(f'time_from to {time_from}')
+                    except:
+                        pass
+                else:
+                    vacation.time_from = time_from
+                    changes.append(f'time_from to {time_from}')
+        
+        if time_to is not None:  # Allow empty string to clear the field
+            if time_to == '':
+                vacation.time_to = None
+                changes.append('time_to cleared')
+            else:
+                if isinstance(time_to, str):
+                    try:
+                        vacation.time_to = datetime.strptime(time_to, '%H:%M').time()
+                        changes.append(f'time_to to {time_to}')
+                    except:
+                        pass
+                else:
+                    vacation.time_to = time_to
+                    changes.append(f'time_to to {time_to}')
         
         if vacation_type:
             vacation.type = vacation_type

@@ -4,10 +4,10 @@
     --success-color: #10b981;
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
-    --info-color: #06b6d4;
-    --dark-color: #1f2937;
-    --light-color: #f9fafb;
-    --border-color: #e5e7eb;
+    --info-color: #3b82f6;
+    --dark-color: #0f172a;
+    --light-color: #f8fafc;
+    --border-color: #cbd5e1;
 }
 
 body {
@@ -1471,3 +1471,44 @@ body {
     background: #1f2937;
     color: #ffffff;
 }
+
+/* Clear Filters Button */
+.btn-clear-filters {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+}
+.btn-clear-filters:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-1px);
+}
+
+/* Filter Labels */
+.filter-label-primary {
+    font-weight: 700;
+    color: #2563eb;
+    font-size: 1rem;
+}
+:root[data-theme="dark"] .filter-label-primary {
+    color: #60a5fa;
+}
+
+/* Filter Controls */
+.filter-input-group { cursor: pointer; }
+.filter-input-group .form-select { cursor: pointer; }
+
+/* Submit Filter Button */
+.btn-submit-filter {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    font-weight: 600;
+}
+.btn-submit-filter:hover {
+    background: linear-gradient(135deg, #1e40af, #1e3a8a);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Per Page Label */
+.per-page-label { white-space: nowrap; }

@@ -53,12 +53,12 @@ function createArticle() {
         if (data.success) {
             window.location.reload();
         } else {
-            alert('Error creating article: ' + (data.error || 'Unknown error'));
+            alert(translations.errorCreatingArticle + ': ' + (data.error || translations.unknownError));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error creating article');
+        alert(translations.errorCreatingArticle);
     });
 }
 
@@ -302,11 +302,11 @@ function addImageBlock() {
                     }
                 }, 300);
             } else {
-                alert('Error uploading image: ' + (data.error || 'Unknown error'));
+                alert(translations.errorUploadingImage + ': ' + (data.error || translations.unknownError));
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error uploading image');
+            alert(translations.errorUploadingImage);
         } finally {
             loadingMsg.remove();
         }
@@ -359,7 +359,7 @@ function updateBlock(blockId) {
 
 // Delete block
 function deleteBlock(blockId) {
-    if (!confirm('Delete this content block?')) return;
+    if (!confirm(translations.deleteContentBlock)) return;
     
     fetch(`${languagePrefix}/magazine/block/${blockId}/delete/`, {
         method: 'POST',
@@ -475,12 +475,12 @@ window.saveArticle = function saveArticle() {
             // Update live preview
             updateLivePreview();
         } else {
-            alert('Error saving article: ' + (data.error || 'Unknown error'));
+            alert(translations.errorSavingArticle + ': ' + (data.error || translations.unknownError));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error saving article');
+        alert(translations.errorSavingArticle);
     });
 };
 
@@ -488,7 +488,7 @@ window.saveArticle = function saveArticle() {
 function deleteArticle(articleId, event) {
     event.stopPropagation();
     
-    if (!confirm('Delete this article?')) return;
+    if (!confirm(translations.deleteArticle)) return;
     
     fetch(`${languagePrefix}/magazine/article/${articleId}/delete/`, {
         method: 'POST',
@@ -502,12 +502,12 @@ function deleteArticle(articleId, event) {
         if (data.success) {
             window.location.reload();
         } else {
-            alert('Error deleting article');
+            alert(translations.errorDeletingArticle);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error deleting article');
+        alert(translations.errorDeletingArticle);
     });
 }
 
@@ -679,15 +679,15 @@ function saveMagazineConfig() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Settings saved successfully!');
+            alert(translations.settingsSavedSuccess);
             window.location.reload();
         } else {
-            alert('Error saving settings');
+            alert(translations.errorSavingSettings);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error saving settings');
+        alert(translations.errorSavingSettings);
     });
 }
 
@@ -1043,13 +1043,13 @@ window.uploadHeaderImage = function uploadHeaderImage() {
             fileInput.value = '';
             updateLivePreview();
         } else {
-            alert('Error uploading image: ' + (data.error || 'Unknown error'));
+            alert(translations.errorUploadingImage + ': ' + (data.error || translations.unknownError));
             previewDiv.innerHTML = '';
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error uploading image');
+        alert(translations.errorUploadingImage);
         previewDiv.innerHTML = '';
     });
 };
@@ -1071,12 +1071,12 @@ window.removeHeaderImage = function removeHeaderImage() {
             document.getElementById('headerImagePreview').innerHTML = '';
             updateLivePreview();
         } else {
-            alert('Error removing image');
+            alert(translations.errorRemovingImage);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error removing image');
+        alert(translations.errorRemovingImage);
     });
 };
 

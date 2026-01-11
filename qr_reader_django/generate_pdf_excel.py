@@ -267,8 +267,9 @@ def generate_attendance_pdf(request, user_id):
         holiday_name = country_holidays.get(current_date, '') if is_holiday else ''
         
         # Check if this day is a vacation day
-        vacation_type = vacation_days.get(current_date)
-        is_vacation = vacation_type is not None
+        vacation_obj = vacation_days.get(current_date)
+        is_vacation = vacation_obj is not None
+        vacation_type = vacation_obj.type if vacation_obj else None
         if is_vacation:
             if vacation_type == 'home_office':
                 total_home_office_days += 1
@@ -277,6 +278,11 @@ def generate_attendance_pdf(request, user_id):
         
         if is_vacation and not day_scans:
             # Vacation day with no scans - display type
+            # Format time if available
+            time_info = ""
+            if vacation_obj and vacation_obj.time_from and vacation_obj.time_to:
+                time_info = f" ({vacation_obj.time_from.strftime('%H:%M')} - {vacation_obj.time_to.strftime('%H:%M')})"
+            
             if vacation_type == 'sick_leave':
                 vacation_style = ParagraphStyle(
                     'SickLeaveStyle',
@@ -284,7 +290,7 @@ def generate_attendance_pdf(request, user_id):
                     textColor=colors.HexColor('#f59e0b'),
                     fontName=font_name_bold
                 )
-                leave_label = f"🏥 {_('Sick Leave')}"
+                leave_label = f"🏥 {_('Sick Leave')}{time_info}"
             elif vacation_type == 'doctor':
                 vacation_style = ParagraphStyle(
                     'DoctorStyle',
@@ -292,7 +298,7 @@ def generate_attendance_pdf(request, user_id):
                     textColor=colors.HexColor('#8b5cf6'),
                     fontName=font_name_bold
                 )
-                leave_label = f"👨‍⚕️ {_('Doctor')}"
+                leave_label = f"👨‍⚕️ {_('Doctor')}{time_info}"
             elif vacation_type == 'home_office':
                 vacation_style = ParagraphStyle(
                     'HomeOfficeStyle',
@@ -300,7 +306,7 @@ def generate_attendance_pdf(request, user_id):
                     textColor=colors.HexColor('#3b82f6'),
                     fontName=font_name_bold
                 )
-                leave_label = f"🏠 {_('Home Office')}"
+                leave_label = f"🏠 {_('Home Office')}{time_info}"
             else:
                 vacation_style = ParagraphStyle(
                     'VacationStyle',
@@ -308,7 +314,7 @@ def generate_attendance_pdf(request, user_id):
                     textColor=colors.HexColor('#10b981'),
                     fontName=font_name_bold
                 )
-                leave_label = f"🏖 {_('Vacation')}"
+                leave_label = f"🏖 {_('Vacation')}{time_info}"
             
             table_data.append([
                 Paragraph(current_date.strftime('%d.%m.%Y'), cell_style_centered),
@@ -772,12 +778,12 @@ def generate_attendance_excel(request, user_id):
         day = scan.timestamp.date()
         daily_data[day].append(scan)
     
-    # Create dictionary of vacation days with type
+    # Create dictionary of vacation days with vacation object
     vacation_days = {}
     for vacation in vacations:
         current = vacation.date_from
         while current <= vacation.date_to:
-            vacation_days[current] = vacation.type if vacation.type else 'vacation'
+            vacation_days[current] = vacation
             current += timedelta(days=1)
     
     # Helper function to calculate night hours (22:00-06:00)
@@ -845,8 +851,9 @@ def generate_attendance_excel(request, user_id):
         holiday_name = country_holidays.get(current_date, '') if is_holiday else ''
         
         # Check if this day is a vacation day
-        vacation_type = vacation_days.get(current_date)
-        is_vacation = vacation_type is not None
+        vacation_obj = vacation_days.get(current_date)
+        is_vacation = vacation_obj is not None
+        vacation_type = vacation_obj.type if vacation_obj else None
         if is_vacation:
             if vacation_type == 'home_office':
                 total_home_office_days += 1
@@ -871,20 +878,25 @@ def generate_attendance_excel(request, user_id):
             ws.cell(row=row, column=6, value='-')
             ws.cell(row=row, column=7, value='-')
             
+            # Format time if available
+            time_info = ""
+            if vacation_obj and vacation_obj.time_from and vacation_obj.time_to:
+                time_info = f" ({vacation_obj.time_from.strftime('%H:%M')} - {vacation_obj.time_to.strftime('%H:%M')})"
+            
             if vacation_type == 'sick_leave':
-                ws.cell(row=row, column=8, value=f"🏥 {_('Sick Leave')}")
+                ws.cell(row=row, column=8, value=f"🏥 {_('Sick Leave')}{time_info}")
                 for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = sick_fill
             elif vacation_type == 'doctor':
-                ws.cell(row=row, column=8, value=f"👨‍⚕️ {_('Doctor')}")
+                ws.cell(row=row, column=8, value=f"👨‍⚕️ {_('Doctor')}{time_info}")
                 for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = doctor_fill
             elif vacation_type == 'home_office':
-                ws.cell(row=row, column=8, value=f"🏠 {_('Home Office')}")
+                ws.cell(row=row, column=8, value=f"🏠 {_('Home Office')}{time_info}")
                 for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = PatternFill(start_color='dbeafe', end_color='dbeafe', fill_type='solid')
             else:
-                ws.cell(row=row, column=8, value=f"🏖 {_('Vacation')}")
+                ws.cell(row=row, column=8, value=f"🏖 {_('Vacation')}{time_info}")
                 for col in range(1, 9):
                     ws.cell(row=row, column=col).fill = vacation_fill
         

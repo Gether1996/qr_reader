@@ -104,17 +104,17 @@ def magazine_preview(request, magazine_id):
 def api_magazine_update(request, magazine_id):
     """API: Update magazine configuration"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import Magazine
     company_id = request.session['company_id']
     
     magazine = Magazine.objects.filter(id=magazine_id, company_id=company_id).first()
     if not magazine:
-        return JsonResponse({'error': 'Magazine not found'}, status=404)
+        return JsonResponse({'error': str(_('Magazine not found'))}, status=404)
     
     try:
         data = json.loads(request.body)
@@ -176,17 +176,17 @@ def api_magazine_update(request, magazine_id):
 def api_magazine_delete(request, magazine_id):
     """API: Delete a magazine"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import Magazine
     company_id = request.session['company_id']
     
     magazine = Magazine.objects.filter(id=magazine_id, company_id=company_id).first()
     if not magazine:
-        return JsonResponse({'error': 'Magazine not found'}, status=404)
+        return JsonResponse({'error': str(_('Magazine not found'))}, status=404)
     
     magazine_title = magazine.title
     magazine.delete()
@@ -210,17 +210,17 @@ def api_magazine_delete(request, magazine_id):
 def api_article_create(request, magazine_id):
     """API: Create a new article"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import Magazine, MagazineArticle, User
     company_id = request.session['company_id']
     
     magazine = Magazine.objects.filter(id=magazine_id, company_id=company_id).first()
     if not magazine:
-        return JsonResponse({'error': 'Magazine not found'}, status=404)
+        return JsonResponse({'error': str(_('Magazine not found'))}, status=404)
     
     try:
         data = json.loads(request.body)
@@ -260,10 +260,10 @@ def api_article_create(request, magazine_id):
 def api_article_update(request, article_id):
     """API: Update an article"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle
     company_id = request.session['company_id']
@@ -274,7 +274,7 @@ def api_article_update(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     try:
         data = json.loads(request.body)
@@ -321,10 +321,10 @@ def api_article_update(request, article_id):
 def api_article_delete(request, article_id):
     """API: Delete an article"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle
     company_id = request.session['company_id']
@@ -335,7 +335,7 @@ def api_article_delete(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     article_title = article.title
     article.delete()
@@ -359,10 +359,10 @@ def api_article_delete(request, article_id):
 def api_article_upload_header_image(request, article_id):
     """API: Upload header image for article"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle
     company_id = request.session['company_id']
@@ -373,11 +373,11 @@ def api_article_upload_header_image(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     try:
         if not request.FILES.get('header_image'):
-            return JsonResponse({'error': 'No image provided'}, status=400)
+            return JsonResponse({'error': str(_('No image provided'))}, status=400)
         
         article.header_image = request.FILES['header_image']
         article.save()
@@ -403,10 +403,10 @@ def api_article_upload_header_image(request, article_id):
 def api_article_remove_header_image(request, article_id):
     """API: Remove header image from article"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle
     company_id = request.session['company_id']
@@ -417,7 +417,7 @@ def api_article_remove_header_image(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     try:
         if article.header_image:
@@ -446,10 +446,10 @@ def api_article_remove_header_image(request, article_id):
 def api_content_block_create(request, article_id):
     """API: Create a content block"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle, ContentBlock
     company_id = request.session['company_id']
@@ -460,7 +460,7 @@ def api_content_block_create(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     try:
         # Get next order
@@ -516,10 +516,10 @@ def api_content_block_create(request, article_id):
 def api_content_block_update(request, block_id):
     """API: Update a content block"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import ContentBlock
     company_id = request.session['company_id']
@@ -530,7 +530,7 @@ def api_content_block_update(request, block_id):
     ).first()
     
     if not block:
-        return JsonResponse({'error': 'Block not found'}, status=404)
+        return JsonResponse({'error': str(_('Block not found'))}, status=404)
     
     try:
         data = json.loads(request.body)
@@ -571,10 +571,10 @@ def api_content_block_update(request, block_id):
 def api_content_block_delete(request, block_id):
     """API: Delete a content block"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import ContentBlock
     company_id = request.session['company_id']
@@ -585,7 +585,7 @@ def api_content_block_delete(request, block_id):
     ).first()
     
     if not block:
-        return JsonResponse({'error': 'Block not found'}, status=404)
+        return JsonResponse({'error': str(_('Block not found'))}, status=404)
     
     article_title = block.article.title
     block.delete()
@@ -609,10 +609,10 @@ def api_content_block_delete(request, block_id):
 def api_article_reorder_blocks(request, article_id):
     """API: Reorder content blocks"""
     if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=400)
+        return JsonResponse({'error': str(_('POST required'))}, status=400)
     
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle, ContentBlock
     company_id = request.session['company_id']
@@ -623,7 +623,7 @@ def api_article_reorder_blocks(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     try:
         data = json.loads(request.body)
@@ -647,7 +647,7 @@ def api_article_reorder_blocks(request, article_id):
 def api_article_data(request, article_id):
     """API: Get article data with content blocks"""
     if 'company_id' not in request.session:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     from viewer.models import MagazineArticle
     company_id = request.session['company_id']
@@ -658,7 +658,7 @@ def api_article_data(request, article_id):
     ).first()
     
     if not article:
-        return JsonResponse({'error': 'Article not found'}, status=404)
+        return JsonResponse({'error': str(_('Article not found'))}, status=404)
     
     # Get content blocks
     blocks = []

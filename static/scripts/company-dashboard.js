@@ -165,6 +165,16 @@ function createUser() {
                         <div class="col-12">
                             <input type="email" id="swal-user-email" class="form-control" placeholder="${translations.email}" required autocomplete="off">
                         </div>
+                        <div class="col-md-6 col-12">
+                            <input type="text" id="swal-user-rc" class="form-control" placeholder="${translations.rc || 'Personal ID'}" autocomplete="off">
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <input type="tel" id="swal-user-phone" class="form-control" placeholder="${translations.phone || 'Phone'}" autocomplete="off">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label mb-1 small">${translations.birthDate || 'Birth Date'}</label>
+                            <input type="date" id="swal-user-birth-date" class="form-control">
+                        </div>
                     </div>
                 </div>
 
@@ -323,6 +333,9 @@ function createUser() {
         preConfirm: () => {
             const name = document.getElementById('swal-user-name').value;
             const email = document.getElementById('swal-user-email').value;
+            const rc = document.getElementById('swal-user-rc').value || null;
+            const phone = document.getElementById('swal-user-phone').value || null;
+            const birthDate = document.getElementById('swal-user-birth-date').value || null;
             const password = document.getElementById('swal-user-password').value;
             const passwordConfirm = document.getElementById('swal-user-password-confirm').value;
             const role = document.getElementById('swal-user-role').value;
@@ -345,7 +358,18 @@ function createUser() {
                 return false;
             }
 
-            const data = { name, email, password, basic_work_hours: parseInt(workHours), holidays_per_year: parseInt(holidays), lunch_break_duration: parseInt(lunchBreak), is_manager: role === 'manager' };
+            const data = { 
+                name, 
+                email, 
+                rc, 
+                phone, 
+                birth_date: birthDate,
+                password, 
+                basic_work_hours: parseInt(workHours), 
+                holidays_per_year: parseInt(holidays), 
+                lunch_break_duration: parseInt(lunchBreak), 
+                is_manager: role === 'manager' 
+            };
             
             if (role === 'manager') {
                 data.can_edit_employees = document.getElementById('perm-edit-employees').checked;
@@ -431,7 +455,7 @@ function createUser() {
     });
 }
 
-function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunchBreak, lunchBreakDuration, isManager, canEditEmployees, canEditQR, canEditAbsences, notifyArrival, notifyDeparture, notifyVacation) {
+function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunchBreak, lunchBreakDuration, isManager, canEditEmployees, canEditQR, canEditAbsences, notifyArrival, notifyDeparture, notifyVacation, rc = '', phone = '', birthDate = '') {
     // Determine if notifications are enabled (any notification is checked)
     const notificationsEnabled = notifyArrival || notifyDeparture || notifyVacation;
     
@@ -486,6 +510,16 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                         </div>
                         <div class="col-12">
                             <input type="email" id="swal-edit-user-email" class="form-control" value="${email}" placeholder="${translations.email}" required autocomplete="off">
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <input type="text" id="swal-edit-user-rc" class="form-control" value="${rc || ''}" placeholder="${translations.rc || 'Personal ID'}" autocomplete="off">
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <input type="tel" id="swal-edit-user-phone" class="form-control" value="${phone || ''}" placeholder="${translations.phone || 'Phone'}" autocomplete="off">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label mb-1 small">${translations.birthDate || 'Birth Date'}</label>
+                            <input type="date" id="swal-edit-user-birth-date" class="form-control" value="${birthDate || ''}">
                         </div>
                     </div>
                 </div>
@@ -645,6 +679,9 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
         preConfirm: async () => {
             const name = document.getElementById('swal-edit-user-name').value;
             const email = document.getElementById('swal-edit-user-email').value;
+            const rc = document.getElementById('swal-edit-user-rc').value || null;
+            const phone = document.getElementById('swal-edit-user-phone').value || null;
+            const birthDate = document.getElementById('swal-edit-user-birth-date').value || null;
             const password = document.getElementById('swal-edit-user-password').value;
             const passwordConfirm = document.getElementById('swal-edit-user-password-confirm').value;
             const workHours = document.getElementById('swal-edit-user-work-hours').value;
@@ -676,7 +713,18 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 }
             }
 
-            const data = { name, email, basic_work_hours: parseInt(workHours), holidays_per_year: parseInt(holidays), has_lunch_break: hasLunchBreak, lunch_break_duration: parseInt(lunchBreak), is_manager: role === 'manager' };
+            const data = { 
+                name, 
+                email, 
+                rc, 
+                phone, 
+                birth_date: birthDate, 
+                basic_work_hours: parseInt(workHours), 
+                holidays_per_year: parseInt(holidays), 
+                has_lunch_break: hasLunchBreak, 
+                lunch_break_duration: parseInt(lunchBreak), 
+                is_manager: role === 'manager' 
+            };
             if (password) {
                 data.password = password;
             }

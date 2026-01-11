@@ -1162,7 +1162,7 @@ def analytics_chart_data(request):
     is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
     
     if not (is_company or is_manager):
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({'error': str(_('Unauthorized'))}, status=401)
     
     # Get company
     if is_company:
@@ -1170,11 +1170,11 @@ def analytics_chart_data(request):
     else:
         user = crud.get_user_by_id(request.session['user_id'])
         if not user or not user.is_manager:
-            return JsonResponse({'error': 'Access denied'}, status=403)
+            return JsonResponse({'error': str(_('Access denied'))}, status=403)
         company = user.company
     
     if not company:
-        return JsonResponse({'error': 'Company not found'}, status=404)
+        return JsonResponse({'error': str(_('Company not found'))}, status=404)
     
     from django.db.models import Count
     from datetime import timedelta, date
@@ -1282,7 +1282,7 @@ def analytics_chart_data(request):
             }]
         })
     
-    return JsonResponse({'error': 'Invalid chart type'}, status=400)
+    return JsonResponse({'error': str(_('Invalid chart type'))}, status=400)
 
 def audit_logs(request):
     """View audit logs - company and managers see all, regular users see only their own"""
@@ -1464,11 +1464,11 @@ def company_request_password_reset(request):
     """Handle password reset request - generate token and send email"""
     # Accept both regular POST and Ajax POST
     if 'company_id' not in request.session or request.session.get('user_type') != 'company':
-        return JsonResponse({'success': False, 'message': 'Unauthorized'})
+        return JsonResponse({'success': False, 'message': str(_('Unauthorized'))})
     
     company = crud.get_company_by_id(request.session['company_id'])
     if not company:
-        return JsonResponse({'success': False, 'message': 'Company not found'})
+        return JsonResponse({'success': False, 'message': str(_('Company not found'))})
     
     try:
         import secrets
