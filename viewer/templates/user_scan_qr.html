@@ -72,23 +72,27 @@
 
     <!-- Action Buttons Container -->
     <div class="action-buttons-container d-none" id="action-buttons-container">
-        <!-- Start Button -->
-        <button id="startScanBtn" class="btn btn-primary action-button-mobile">
+        <!-- Start Button - Full Width -->
+        <button id="startScanBtn" class="btn btn-primary action-button-mobile w-100 mb-3">
             <i class="fas fa-camera"></i>
             <span>{% trans "Start Scanner" %}</span>
         </button>
 
-        <!-- Home Office Button -->
-        <button id="homeOfficeBtn" class="btn btn-success action-button-mobile">
-            <i class="fas fa-home"></i>
-            <span>{% trans "Home Office Scan" %}</span>
-        </button>
-
-        <!-- Business Trip Button -->
-        <button id="businessTripBtn" class="btn btn-info action-button-mobile">
-            <i class="fas fa-briefcase"></i>
-            <span>{% trans "Business Trip Scan" %}</span>
-        </button>
+        <!-- Home Office and Business Trip Buttons - Side by Side -->
+        <div class="row g-2">
+            <div class="col-6">
+                <button id="homeOfficeBtn" class="btn btn-success action-button-mobile w-100">
+                    <i class="fas fa-home"></i>
+                    <span>{% trans "Home Office Scan" %}</span>
+                </button>
+            </div>
+            <div class="col-6">
+                <button id="businessTripBtn" class="btn btn-info action-button-mobile w-100">
+                    <i class="fas fa-briefcase"></i>
+                    <span>{% trans "Business Trip Scan" %}</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Stop Button -->
