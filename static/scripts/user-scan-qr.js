@@ -182,17 +182,26 @@ function initScanTypeButtons() {
             // Hide warning
             document.getElementById('scan-type-warning').classList.add('d-none');
             
-            // Show start button
+            // Get elements
+            var actionButtonsContainer = document.getElementById('action-buttons-container');
             var startBtn = document.getElementById('startScanBtn');
-            startBtn.classList.remove('d-none');
-            startBtn.classList.add('d-flex');
+            var homeOfficeBtn = document.getElementById('homeOfficeBtn');
+            var stopBtn = document.getElementById('stopScanBtn');
+            var cameraContainer = document.getElementById('camera-container');
+            
+            // Make sure scanner is stopped
+            cameraContainer.classList.add('d-none');
+            stopBtn.classList.add('d-none');
+            stopBtn.classList.remove('d-flex');
+            
+            // Show action buttons container
+            actionButtonsContainer.classList.remove('d-none');
+            actionButtonsContainer.classList.add('d-flex');
+            
+            // Reset buttons
             startBtn.disabled = false;
             startBtn.innerHTML = '<i class="fas fa-camera"></i><span>' + (translations.startScanner || 'Start Scanner') + '</span>';
             
-            // Show home office button
-            var homeOfficeBtn = document.getElementById('homeOfficeBtn');
-            homeOfficeBtn.classList.remove('d-none');
-            homeOfficeBtn.classList.add('d-flex');
             homeOfficeBtn.disabled = false;
             
             console.log('Scan type selected:', selectedScanType);
@@ -209,14 +218,10 @@ function stopScanner() {
             document.getElementById('camera-container').classList.add('d-none');
             document.getElementById('stopScanBtn').classList.add('d-none');
             
-            const startBtn = document.getElementById('startScanBtn');
-            startBtn.classList.remove('d-none');
-            startBtn.classList.add('d-flex');
-            
-            // Show home office button again
-            const homeOfficeBtn = document.getElementById('homeOfficeBtn');
-            homeOfficeBtn.classList.remove('d-none');
-            homeOfficeBtn.classList.add('d-flex');
+            // Show action buttons container again
+            const actionButtonsContainer = document.getElementById('action-buttons-container');
+            actionButtonsContainer.classList.remove('d-none');
+            actionButtonsContainer.classList.add('d-flex');
         }).catch(function(err) {
             console.error('Error stopping scanner:', err);
             isScanning = false;
@@ -384,12 +389,11 @@ function startScanner() {
         overlay.classList.add('d-none');
         cameraContainer.classList.remove('d-none');
         cameraContainer.classList.add('d-flex');
-        startBtn.classList.add('d-none');
         
-        // Hide home office button when scanner is active
-        var homeOfficeBtn = document.getElementById('homeOfficeBtn');
-        homeOfficeBtn.classList.add('d-none');
-        homeOfficeBtn.classList.remove('d-flex');
+        // Hide action buttons container when scanner is active
+        var actionButtonsContainer = document.getElementById('action-buttons-container');
+        actionButtonsContainer.classList.add('d-none');
+        actionButtonsContainer.classList.remove('d-flex');
         
         stopBtn.classList.remove('d-none');
         stopBtn.classList.add('d-flex');
@@ -411,10 +415,13 @@ function startScanner() {
         });
         
         cameraContainer.classList.add('d-none');
-        startBtn.classList.remove('d-none');
-        startBtn.classList.add('d-flex');
         startBtn.disabled = false;
         stopBtn.classList.add('d-none');
+        
+        // Show action buttons container again on error
+        var actionButtonsContainer = document.getElementById('action-buttons-container');
+        actionButtonsContainer.classList.remove('d-none');
+        actionButtonsContainer.classList.add('d-flex');
     });
 }
 
