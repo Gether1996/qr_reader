@@ -20,75 +20,163 @@
                         <p class="text-muted">{% trans "Create an account to start managing QR codes" %}</p>
                     </div>
 
-                    <form method="post" class="auth-form">
+                    <form method="post" class="auth-form" id="company-register-form">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="name" class="form-label">
-                                <i class="fas fa-building me-1"></i>{% trans "Company Name" %}
-                            </label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">
-                                <i class="fas fa-envelope me-1"></i>{% trans "Email" %}
-                            </label>
-                            <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">
-                                <i class="fas fa-lock me-1"></i>{% trans "Password" %}
-                            </label>
-                            <div class="position-relative">
-                                <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
-                                <i class="fas fa-eye password-toggle-icon" id="togglePassword"></i>
+                        
+                        <!-- Required Information Section -->
+                        <div class="form-section required-section">
+                            <div class="section-header">
+                                <i class="fas fa-star-of-life section-icon"></i>
+                                <h5 class="section-title">{% trans "Required Information" %}</h5>
+                            </div>
+                            <div class="section-content">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-building me-1"></i>{% trans "Company Name" %}
+                                    </label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-1"></i>{% trans "Email" %}
+                                    </label>
+                                    <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">
+                                        <i class="fas fa-lock me-1"></i>{% trans "Password" %}
+                                    </label>
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
+                                        <i class="fas fa-eye password-toggle-icon" id="togglePassword"></i>
+                                    </div>
+                                </div>
+                                <div class="mb-0">
+                                    <label for="confirm_password" class="form-label">
+                                        <i class="fas fa-lock me-1"></i>{% trans "Confirm Password" %}
+                                    </label>
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+                                        <i class="fas fa-eye password-toggle-icon" id="toggleConfirmPassword"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="confirm_password" class="form-label">
-                                <i class="fas fa-lock me-1"></i>{% trans "Confirm Password" %}
-                            </label>
-                            <div class="position-relative">
-                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
-                                <i class="fas fa-eye password-toggle-icon" id="toggleConfirmPassword"></i>
+
+                        <!-- Optional Company Details Section -->
+                        <div class="form-section optional-section">
+                            <div class="section-header">
+                                <i class="fas fa-info-circle section-icon"></i>
+                                <h5 class="section-title">{% trans "Company Details" %}</h5>
+                                <span class="optional-badge">{% trans "Optional" %}</span>
+                            </div>
+                            <div class="section-content">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="ico" class="form-label">
+                                            <i class="fas fa-id-card me-1"></i>{% trans "Company ID" %}
+                                        </label>
+                                        <input type="text" class="form-control" id="ico" name="ico">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="dic" class="form-label">
+                                            <i class="fas fa-receipt me-1"></i>{% trans "VAT Number" %}
+                                        </label>
+                                        <input type="text" class="form-control" id="dic" name="dic">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone me-1"></i>{% trans "Phone" %}
+                                    </label>
+                                    <input type="tel" class="form-control" id="phone" name="phone">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8 mb-3">
+                                        <label for="street" class="form-label">
+                                            <i class="fas fa-road me-1"></i>{% trans "Street" %}
+                                        </label>
+                                        <input type="text" class="form-control" id="street" name="street">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="street_number" class="form-label">
+                                            <i class="fas fa-hashtag me-1"></i>{% trans "Number" %}
+                                        </label>
+                                        <input type="text" class="form-control" id="street_number" name="street_number">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="zip_code" class="form-label">
+                                            <i class="fas fa-mail-bulk me-1"></i>{% trans "ZIP Code" %}
+                                        </label>
+                                        <input type="text" class="form-control" id="zip_code" name="zip_code">
+                                    </div>
+                                    <div class="col-md-8 mb-3">
+                                        <label for="city" class="form-label">
+                                            <i class="fas fa-city me-1"></i>{% trans "City" %}
+                                        </label>
+                                        <input type="text" class="form-control" id="city" name="city">
+                                    </div>
+                                </div>
+                                <div class="mb-0">
+                                    <label for="state" class="form-label">
+                                        <i class="fas fa-flag me-1"></i>{% trans "State" %}
+                                    </label>
+                                    <input type="text" class="form-control" id="state" name="state">
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
+
+                        <!-- Settings Section -->
+                        <div class="form-section settings-section">
+                            <div class="section-header">
+                                <i class="fas fa-cog section-icon"></i>
+                                <h5 class="section-title">{% trans "Settings" %}</h5>
+                            </div>
+                            <div class="section-content">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="auto_lunch_breaks" name="auto_lunch_breaks" style="cursor: pointer;">
+                                        <label class="form-check-label" for="auto_lunch_breaks" style="cursor: pointer;">
+                                            <i class="fas fa-utensils me-1"></i>{% trans "Automatic lunch breaks" %}
+                                        </label>
+                                    </div>
+                                    <div class="form-text" style="margin-left: 1.5rem; margin-top: 0.25rem;">
+                                        {% trans "Automatically deduct lunch break time from work hours if employee doesn't scan a break QR code" %}
+                                    </div>
+                                </div>
+                                <div class="mb-0">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="auto_lunch_breaks" name="auto_lunch_breaks">
-                                <label class="form-check-label" for="auto_lunch_breaks">
-                                    <i class="fas fa-utensils me-1"></i>{% trans "Automatic lunch breaks" %}
-                                </label>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="enable_notifications" name="enable_notifications" checked>
-                                <label class="form-check-label" for="enable_notifications">
+                                <input class="form-check-input" type="checkbox" id="enable_notifications" name="enable_notifications" checked style="cursor: pointer;">
+                                <label class="form-check-label" for="enable_notifications" style="cursor: pointer;">
                                     <i class="fas fa-bell me-1"></i>{% trans "Enable notifications" %}
                                 </label>
                             </div>
                             <div id="notification_options" class="ms-4 mt-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="notify_arrival" name="notify_arrival" checked>
-                                    <label class="form-check-label" for="notify_arrival">
+                                    <input class="form-check-input" type="checkbox" id="notify_arrival" name="notify_arrival" checked style="cursor: pointer;">
+                                    <label class="form-check-label" for="notify_arrival" style="cursor: pointer;">
                                         <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="notify_departure" name="notify_departure" checked>
-                                    <label class="form-check-label" for="notify_departure">
+                                    <input class="form-check-input" type="checkbox" id="notify_departure" name="notify_departure" checked style="cursor: pointer;">
+                                    <label class="form-check-label" for="notify_departure" style="cursor: pointer;">
                                         <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="notify_vacation" name="notify_vacation" checked>
-                                    <label class="form-check-label" for="notify_vacation">
+                                    <input class="form-check-input" type="checkbox" id="notify_vacation" name="notify_vacation" checked style="cursor: pointer;">
+                                    <label class="form-check-label" for="notify_vacation" style="cursor: pointer;">
                                         <i class="fas fa-calendar-times me-1"></i>{% trans "Vacation/Absence" %}
                                     </label>
                                 </div>
                             </div>
                         </div>
-                        <div class="d-grid">
+                        </div>
+                        
+                        <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-primary btn-lg auth-submit-btn">
                                 <i class="fas fa-user-plus me-2"></i>{% trans "Register" %}
                             </button>

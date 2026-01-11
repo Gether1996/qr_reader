@@ -19,9 +19,19 @@ def company_register(request):
         notify_arrival = enable_notifications and request.POST.get('notify_arrival') == 'on'
         notify_departure = enable_notifications and request.POST.get('notify_departure') == 'on'
         notify_vacation = enable_notifications and request.POST.get('notify_vacation') == 'on'
+        
+        # Optional company details
+        ico = request.POST.get('ico', '').strip() or None
+        dic = request.POST.get('dic', '').strip() or None
+        phone = request.POST.get('phone', '').strip() or None
+        street = request.POST.get('street', '').strip() or None
+        street_number = request.POST.get('street_number', '').strip() or None
+        zip_code = request.POST.get('zip_code', '').strip() or None
+        city = request.POST.get('city', '').strip() or None
+        state = request.POST.get('state', '').strip() or None
 
         if not all([name, email, password, confirm_password]):
-            messages.error(request, _('All fields are required'))
+            messages.error(request, _('All required fields must be filled'))
             return render(request, 'company_register.html')
 
         if password != confirm_password:
@@ -36,6 +46,14 @@ def company_register(request):
             notify_arrival=notify_arrival,
             notify_departure=notify_departure,
             notify_vacation=notify_vacation,
+            ico=ico,
+            dic=dic,
+            phone=phone,
+            street=street,
+            street_number=street_number,
+            zip_code=zip_code,
+            city=city,
+            state=state,
             ip_address=get_client_ip(request)
         )
         if error:

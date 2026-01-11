@@ -79,6 +79,22 @@ function saveSettings() {
     const formData = new FormData(form);
     const submitButton = form.querySelector('button[type="submit"]');
     
+    // Validate required fields
+    const companyName = document.getElementById('company_name');
+    if (!companyName.value.trim()) {
+        companyName.style.borderColor = '#dc3545';
+        companyName.focus();
+        Swal.fire({
+            title: translations.error || 'Error!',
+            text: translations.companyNameRequired || 'Company name is required',
+            icon: 'error',
+            confirmButtonText: translations.ok || 'OK'
+        });
+        return;
+    } else {
+        companyName.style.borderColor = '';
+    }
+    
     // Disable submit button
     submitButton.disabled = true;
     const originalText = submitButton.innerHTML;

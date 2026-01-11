@@ -413,11 +413,15 @@ def generate_attendance_pdf(request, user_id):
             if arrivals:
                 if arrivals[0].is_home_office:
                     qr_info = f"{_('Home Office')}<br/><font size=8 color='#6b7280'>{_('Home Office')}</font>"
+                elif arrivals[0].is_business_trip:
+                    qr_info = f"{_('Business Trip')}<br/><font size=8 color='#6b7280'>{_('Business Trip')}</font>"
                 else:
                     qr_info = f"{arrivals[0].qr_code.name}<br/><font size=8 color='#6b7280'>{arrivals[0].qr_code.location}</font>"
             elif departures:
                 if departures[0].is_home_office:
                     qr_info = f"{_('Home Office')}<br/><font size=8 color='#6b7280'>{_('Home Office')}</font>"
+                elif departures[0].is_business_trip:
+                    qr_info = f"{_('Business Trip')}<br/><font size=8 color='#6b7280'>{_('Business Trip')}</font>"
                 else:
                     qr_info = f"{departures[0].qr_code.name}<br/><font size=8 color='#6b7280'>{departures[0].qr_code.location}</font>"
             else:
@@ -1001,11 +1005,15 @@ def generate_attendance_excel(request, user_id):
             if arrivals:
                 if arrivals[0].is_home_office:
                     qr_info = f"{_('Home Office')} - {_('Home Office')}"
+                elif arrivals[0].is_business_trip:
+                    qr_info = f"{_('Business Trip')} - {_('Business Trip')}"
                 else:
                     qr_info = f"{arrivals[0].qr_code.name} - {arrivals[0].qr_code.location}"
             elif departures:
                 if departures[0].is_home_office:
                     qr_info = f"{_('Home Office')} - {_('Home Office')}"
+                elif departures[0].is_business_trip:
+                    qr_info = f"{_('Business Trip')} - {_('Business Trip')}"
                 else:
                     qr_info = f"{departures[0].qr_code.name} - {departures[0].qr_code.location}"
             else:

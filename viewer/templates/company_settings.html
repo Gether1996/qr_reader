@@ -54,6 +54,127 @@
                                 value="{{ company.name }}" 
                                 required
                                 maxlength="255"
+                                class="required-field"
+                            >
+                        </div>
+                    </div>
+                    
+                    <!-- Optional Company Details -->
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="ico">
+                                {% trans "Company ID" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="ico" 
+                                name="ico" 
+                                value="{{ company.ico|default:'' }}" 
+                                maxlength="50"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                        <div class="settings-field">
+                            <label for="dic">
+                                {% trans "VAT Number" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="dic" 
+                                name="dic" 
+                                value="{{ company.dic|default:'' }}" 
+                                maxlength="50"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="phone">
+                                {% trans "Phone" %}
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                value="{{ company.phone|default:'' }}" 
+                                maxlength="50"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="street">
+                                {% trans "Street" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="street" 
+                                name="street" 
+                                value="{{ company.street|default:'' }}" 
+                                maxlength="255"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                        <div class="settings-field">
+                            <label for="street_number">
+                                {% trans "Number" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="street_number" 
+                                name="street_number" 
+                                value="{{ company.street_number|default:'' }}" 
+                                maxlength="50"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="zip_code">
+                                {% trans "ZIP Code" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="zip_code" 
+                                name="zip_code" 
+                                value="{{ company.zip_code|default:'' }}" 
+                                maxlength="20"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                        <div class="settings-field">
+                            <label for="city">
+                                {% trans "City" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="city" 
+                                name="city" 
+                                value="{{ company.city|default:'' }}" 
+                                maxlength="255"
+                                placeholder="{% trans 'Optional' %}"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-field">
+                            <label for="state">
+                                {% trans "State" %}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="state" 
+                                name="state" 
+                                value="{{ company.state|default:'' }}" 
+                                maxlength="255"
+                                placeholder="{% trans 'Optional' %}"
                             >
                         </div>
                     </div>

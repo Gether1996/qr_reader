@@ -66,6 +66,85 @@
     color: #2563eb;
 }
 
+/* Form Sections */
+.form-section {
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.required-section {
+    border-left: 4px solid #dc2626;
+    background: linear-gradient(to right, #fef2f2 0%, #ffffff 100%);
+}
+
+.optional-section {
+    border-left: 4px solid #3b82f6;
+    background: linear-gradient(to right, #eff6ff 0%, #ffffff 100%);
+}
+
+.settings-section {
+    border-left: 4px solid #8b5cf6;
+    background: linear-gradient(to right, #f5f3ff 0%, #ffffff 100%);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-icon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    color: #64748b;
+}
+
+.required-section .section-icon {
+    color: #dc2626;
+}
+
+.optional-section .section-icon {
+    color: #3b82f6;
+}
+
+.settings-section .section-icon {
+    color: #8b5cf6;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1e293b;
+}
+
+.optional-badge {
+    margin-left: auto;
+    padding: 0.25rem 0.75rem;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-content {
+    padding: 0;
+}
+
 /* Auth Form Styling */
 .auth-form .form-label {
     font-weight: 500;
@@ -142,5 +221,11 @@ cbd5e1;
     
     .auth-header h3 {
         font-size: 1.5rem;
+    }
+    
+    /* Stack form rows on mobile */
+    .row > .col-md-8,
+    .row > .col-md-4 {
+        margin-bottom: 1rem;
     }
 }

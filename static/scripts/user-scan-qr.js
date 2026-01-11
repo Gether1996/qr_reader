@@ -186,6 +186,7 @@ function initScanTypeButtons() {
             var actionButtonsContainer = document.getElementById('action-buttons-container');
             var startBtn = document.getElementById('startScanBtn');
             var homeOfficeBtn = document.getElementById('homeOfficeBtn');
+            var businessTripBtn = document.getElementById('businessTripBtn');
             var stopBtn = document.getElementById('stopScanBtn');
             var cameraContainer = document.getElementById('camera-container');
             
@@ -203,6 +204,7 @@ function initScanTypeButtons() {
             startBtn.innerHTML = '<i class="fas fa-camera"></i><span>' + (translations.startScanner || 'Start Scanner') + '</span>';
             
             homeOfficeBtn.disabled = false;
+            businessTripBtn.disabled = false;
             
             console.log('Scan type selected:', selectedScanType);
         });
@@ -237,7 +239,7 @@ function processScan(uuid, scanUrl) {
     submitScan(uuid, scanUrl);
 }
 
-function submitScan(uuid, scanUrl, isHomeOffice = false) {
+function submitScan(uuid, scanUrl, isHomeOffice = false, isBusinessTrip = false) {
     if (!selectedScanType) {
         document.getElementById('scan-type-warning').classList.remove('d-none');
         return;
@@ -263,7 +265,7 @@ function submitScan(uuid, scanUrl, isHomeOffice = false) {
     loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-sync fa-spin me-2"></i>' + (translations.processingScan || 'Processing scan...');
     
     var extractedUuid = null;
-    if (!isHomeOffice && uuid) {
+    if (!isHomeOffice && !isBusinessTrip && uuid) {
         extractedUuid = uuid.trim();
         if (extractedUuid.includes('/scan/')) {
             var parts = extractedUuid.split('/scan/');
@@ -277,10 +279,11 @@ function submitScan(uuid, scanUrl, isHomeOffice = false) {
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
         scan_type: selectedScanType,
-        is_home_office: isHomeOffice
+        is_home_office: isHomeOffice,
+        is_business_trip: isBusinessTrip
     };
     
-    if (!isHomeOffice && extractedUuid) {
+    if (!isHomeOffice && !isBusinessTrip && extractedUuid) {
         requestBody.uuid = extractedUuid;
     }
 
@@ -568,6 +571,83 @@ function initHomeOfficeButton() {
     });
 }
 
+function initBusinessTripButton() {
+    document.getElementById('businessTripBtn').addEventListener('click', function() {
+        if (!selectedScanType) {
+            document.getElementById('scan-type-warning').classList.remove('d-none');
+            return;
+        }
+        
+        // Show confirmation dialog
+        Swal.fire({
+            title: translations.confirmBusinessTrip || 'Confirm Business Trip',
+            text: translations.confirmBusinessTripText || 'Are you sure you want to scan from business trip?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: translations.yes || 'Yes',
+            cancelButtonText: translations.no || 'No',
+            customClass: {
+                confirmButton: 'swal-btn-gradient-green',
+                cancelButton: 'swal-btn-gradient-red',
+                popup: 'swal-popup-rounded'
+            },
+            buttonsStyling: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (!permissionsGranted || !userLocation) {
+                    // Request location if not already granted
+                    var loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.classList.remove('d-none');
+                    loadingOverlay.classList.add('d-flex');
+                    loadingOverlay.querySelector('.text-white').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (translations.preparing || 'Preparing...');
+                    
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            userLocation = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            };
+                            locationPermission = true;
+                            permissionsGranted = true;
+                            loadingOverlay.classList.remove('d-flex');
+                            loadingOverlay.classList.add('d-none');
+                            
+                            // Now submit the business trip scan
+                            const langCode = window.location.pathname.split('/')[1];
+                            const scanUrl = `/${langCode}/user/scan/`;
+                            submitScan(null, scanUrl, false, true);
+                        },
+                        function(error) {
+                            loadingOverlay.classList.remove('d-flex');
+                            loadingOverlay.classList.add('d-none');
+                            Swal.fire({
+                                icon: 'error',
+                                title: translations.locationRequired || 'Location Required',
+                                text: translations.allowLocationAccess || 'Please allow location access',
+                                customClass: {
+                                    confirmButton: 'swal-btn-gradient-red',
+                                    popup: 'swal-popup-rounded'
+                                },
+                                buttonsStyling: false
+                            });
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 15000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    // Submit business trip scan directly
+                    const langCode = window.location.pathname.split('/')[1];
+                    const scanUrl = `/${langCode}/user/scan/`;
+                    submitScan(null, scanUrl, false, true);
+                }
+            }
+        });
+    });
+}
+
 // Initialize everything
 function initUserScanQR() {
     initGrantPermissionButton();
@@ -575,6 +655,7 @@ function initUserScanQR() {
     initStartScanButton();
     initStopScanButton();
     initHomeOfficeButton();
+    initBusinessTripButton();
     
     // Check permissions on page load
     checkExistingPermissions();

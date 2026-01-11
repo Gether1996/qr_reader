@@ -9,7 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 # ============= COMPANY CRUD =============
 
-def create_company(name, email, password, auto_lunch_breaks=False, notify_arrival=False, notify_departure=False, notify_vacation=False, ip_address=None):
+def create_company(name, email, password, auto_lunch_breaks=False, notify_arrival=False, notify_departure=False, notify_vacation=False, ico=None, dic=None, phone=None, street=None, street_number=None, zip_code=None, city=None, state=None, ip_address=None):
     """Create a new company"""
     if Company.objects.filter(email=email).exists():
         return None, str(_('Email already registered'))
@@ -20,7 +20,15 @@ def create_company(name, email, password, auto_lunch_breaks=False, notify_arriva
         auto_lunch_breaks=auto_lunch_breaks,
         notify_arrival=notify_arrival,
         notify_departure=notify_departure,
-        notify_vacation=notify_vacation
+        notify_vacation=notify_vacation,
+        ico=ico,
+        dic=dic,
+        phone=phone,
+        street=street,
+        street_number=street_number,
+        zip_code=zip_code,
+        city=city,
+        state=state
     )
     company.set_password(password)
     company.save()
@@ -330,7 +338,7 @@ def get_user_scans(user):
 
 # ============= SCAN EVENT CRUD =============
 
-def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info='', is_home_office=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
+def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info='', is_home_office=False, is_business_trip=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
     """Create a new scan event"""
     scan = ScanEvent.objects.create(
         qr_code=qr_code,
@@ -339,7 +347,8 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
         latitude=latitude,
         longitude=longitude,
         device_info=device_info,
-        is_home_office=is_home_office
+        is_home_office=is_home_office,
+        is_business_trip=is_business_trip
     )
     
     # Get address from coordinates
@@ -349,7 +358,12 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
         scan.save()
     
     if actor_type and actor_email and actor_name:
-        scan_location = "Home Office" if is_home_office else f'QR Code "{qr_code.name}"'
+        if is_home_office:
+            scan_location = "Home Office"
+        elif is_business_trip:
+            scan_location = "Business Trip"
+        else:
+            scan_location = f'QR Code "{qr_code.name}"'
         log_action(
             actor_type=actor_type,
             actor_email=actor_email,
@@ -360,8 +374,8 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
         )
     
     # Send notifications based on company and manager settings
-    # For home office scans, get company from scanned_by user
-    company = scanned_by.company if is_home_office else qr_code.company
+    # For home office and business trip scans, get company from scanned_by user
+    company = scanned_by.company if (is_home_office or is_business_trip) else qr_code.company
     
     # Check which notification field to check based on scan type
     # Only arrival and departure have notification fields in models
@@ -412,7 +426,7 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
                     'scan_type': scan_type,
                     'user_name': scanned_by.name,
                     'timestamp': scan.timestamp,
-                    'qr_name': 'Home Office' if is_home_office else qr_code.name,
+                    'qr_name': 'Business Trip' if is_business_trip else ('Home Office' if is_home_office else qr_code.name),
                     'address': address or '',
                     'company_name': company.name,
                     'dashboard_url': dashboard_url,

@@ -436,6 +436,12 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
 
     // Create employee select options
     let employeeOptions = '';
+    
+    // Check if users array is provided, if not use current user only
+    if (!users || !Array.isArray(users)) {
+        users = [{ id: currentUserId, name: currentUserName }];
+    }
+    
     users.forEach(user => {
         const selected = user.id === currentUserId ? 'selected' : '';
         employeeOptions += `<option value="${user.id}" ${selected}>${user.name}</option>`;

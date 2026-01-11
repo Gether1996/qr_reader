@@ -25,9 +25,55 @@ function initCompanyRegisterPasswordToggle() {
     }
 }
 
+// Validation for required fields
+function initFormValidation() {
+    const form = document.getElementById('company-register-form');
+    if (!form) return;
+    
+    const requiredFields = ['name', 'email', 'password', 'confirm_password'];
+    
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field && !field.value.trim()) {
+                field.classList.add('is-invalid');
+                field.style.borderColor = '#dc3545';
+                isValid = false;
+            } else if (field) {
+                field.classList.remove('is-invalid');
+                field.style.borderColor = '';
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Remove red border on input
+    requiredFields.forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        if (field) {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                    this.style.borderColor = '';
+                }
+            });
+        }
+    });
+}
+
 // Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCompanyRegisterPasswordToggle);
+    document.addEventListener('DOMContentLoaded', function() {
+        initCompanyRegisterPasswordToggle();
+        initFormValidation();
+    });
 } else {
     initCompanyRegisterPasswordToggle();
+    initFormValidation();
 }

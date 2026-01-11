@@ -20,8 +20,15 @@
                         <div class="rounded-circle d-flex align-items-center justify-content-center me-3 company-icon-circle">
                             <i class="fas fa-building fa-2x text-white"></i>
                         </div>
-                        <div>
-                            <h4 class="mb-1 fw-bold">{{ company.name }}</h4>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <h4 class="mb-1 fw-bold">{{ company.name }}</h4>
+                                {% if request.session.user_type == 'company' %}
+                                <a href="{% url 'company_settings' %}" class="btn btn-sm btn-primary" title="{% trans 'Company Settings' %}" style="padding: 0.25rem 0.5rem;">
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                                {% endif %}
+                            </div>
                             <p class="text-muted mb-0">
                                 <i class="fas fa-envelope me-2"></i>{{ company.email }}
                             </p>

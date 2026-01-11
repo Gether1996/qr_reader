@@ -11,6 +11,17 @@ class Company(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
+    
+    # Optional company details
+    ico = models.CharField(max_length=50, blank=True, null=True, default=None, help_text="IČO - Identifikačné číslo organizácie")
+    dic = models.CharField(max_length=50, blank=True, null=True, default=None, help_text="DIČ - Daňové identifikačné číslo")
+    phone = models.CharField(max_length=50, blank=True, null=True, default=None, help_text="Telefón")
+    street = models.CharField(max_length=255, blank=True, null=True, default=None, help_text="Ulica")
+    street_number = models.CharField(max_length=50, blank=True, null=True, default=None, help_text="Číslo domu")
+    zip_code = models.CharField(max_length=20, blank=True, null=True, default=None, help_text="PSČ")
+    city = models.CharField(max_length=255, blank=True, null=True, default=None, help_text="Mesto")
+    state = models.CharField(max_length=255, blank=True, null=True, default=None, help_text="Štát")
+    
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     auto_lunch_breaks = models.BooleanField(default=False)
@@ -130,6 +141,7 @@ class ScanEvent(models.Model):
     scanned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='scans')
     scan_type = models.CharField(max_length=20, choices=SCAN_TYPE_CHOICES, default='arrival')
     is_home_office = models.BooleanField(default=False, help_text="Indicates if this is a home office scan")
+    is_business_trip = models.BooleanField(default=False, help_text="Indicates if this is a business trip scan")
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.CharField(max_length=500, blank=True, null=True, help_text="Human-readable address")
@@ -142,6 +154,8 @@ class ScanEvent(models.Model):
     def __str__(self):
         if self.is_home_office:
             return f"Home Office scan at {self.timestamp}"
+        if self.is_business_trip:
+            return f"Business Trip scan at {self.timestamp}"
         return f"{self.qr_code.name if self.qr_code else 'Unknown'} scanned at {self.timestamp}"
     
     def get_address_from_coordinates(self):

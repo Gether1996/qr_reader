@@ -45,8 +45,8 @@ Pokročilý webový systém pre evidenciu dochádzky a riadenie pracovnej sily v
 - **Sledovanie nočných hodín** - Automatický výpočet práce medzi 22:00-06:00
 - **Monitorovanie v reálnom čase** - Vidíte, kto je práve v práci
 
-### 📅 Správa neprítomnosti
-- **4 typy neprítomnosti**:
+### 📅 Správa absencií
+- **4 typy absencií**:
   - Dovolenka
   - PN (Práceneschopnosť)
   - Lekár
@@ -57,7 +57,7 @@ Pokročilý webový systém pre evidenciu dochádzky a riadenie pracovnej sily v
   - Schválenie/zamietnutie s emailovým potvrdením
   - Priame schvaľovacie linky v emailoch
 - **Detekcia konfliktov** - Upozorňuje na skeny počas dovolenkových dní
-- **Integrácia kalendára** - Vizuálne zobrazenie neprítomností
+- **Integrácia kalendára** - Vizuálne zobrazenie absencií
 
 ### 📊 Analytika a reporty
 
@@ -129,7 +129,7 @@ Pokročilý webový systém pre evidenciu dochádzky a riadenie pracovnej sily v
   - Podľa mena zamestnanca
   - Podľa QR lokality
   - Podľa typu skenu
-  - Podľa typu neprítomnosti
+  - Podľa typu absencie
   - Podľa pracovného stavu (v práci/nie v práci)
 - **Vyhľadávanie v reálnom čase** - Okamžité filtrovanie s datalistami
 - **Zoraditeľné stĺpce** - Kliknite na hlavičku pre zoradenie (ASC/DESC)
@@ -198,7 +198,7 @@ Pokročilý webový systém pre evidenciu dochádzky a riadenie pracovnej sily v
 - **Auto obedné prestávky** - Voliteľné automatické odpočítanie prestávky
 - **Počítadlá dní dovolenky** - Sledovanie zostávajúcich dní dovolenky
 - **Kalendár sviatkov** - Rozpoznávanie sviatkov podľa krajiny
-- **Home Office podpora** - Špeciálny typ neprítomnosti pre prácu na diaľku
+- **Home Office podpora** - Špeciálny typ absencie pre prácu na diaľku
 - **Export dát** - Sťahovanie reportov vo formáte PDF/Excel
 - **Správa bielych znakov** - Čisté spracovanie a validácia dát
 
@@ -254,7 +254,7 @@ qr_reader/
 │   ├── crud.py                 # CRUD operácie
 │   ├── crud_qr_code.py        # QR kód operácie
 │   ├── crud_user.py           # User operácie
-│   ├── crud_vacation.py       # Operácie neprítomnosti
+│   ├── crud_vacation.py       # Operácie absencie
 │   ├── login_register_logout.py # Autentifikácia
 │   ├── generate_pdf_excel.py  # Generovanie reportov
 │   ├── audit.py               # Auditné zaznamenávanie
@@ -333,7 +333,7 @@ qr_reader/
    - Analýza pracovných vzorov
    - Monitorovanie nadčasov
    - Využitie lokalít
-   - Trendy neprítomnosti
+   - Trendy absencie
 
 5. **Spokojnosť zamestnancov**
    - Jednoduché používanie

@@ -172,14 +172,14 @@ def company_dashboard(request):
         user.total_scans = ScanEvent.objects.filter(
             scanned_by=user
         ).filter(
-            Q(qr_code__is_active=True) | Q(is_home_office=True)
+            Q(qr_code__is_active=True) | Q(is_home_office=True) | Q(is_business_trip=True)
         ).count()
         
         # Get last scan to determine if user is at work (including home office)
         last_scan = ScanEvent.objects.filter(
             scanned_by=user
         ).filter(
-            Q(qr_code__is_active=True) | Q(is_home_office=True)
+            Q(qr_code__is_active=True) | Q(is_home_office=True) | Q(is_business_trip=True)
         ).order_by('-timestamp').first()
         
         if last_scan:
@@ -358,7 +358,8 @@ def user_dashboard(request):
         scanned_by=user
     ).filter(
         Q(qr_code__company=user.company, qr_code__is_active=True) | 
-        Q(is_home_office=True, scanned_by__company=user.company)
+        Q(is_home_office=True, scanned_by__company=user.company) |
+        Q(is_business_trip=True, scanned_by__company=user.company)
     ).select_related('qr_code', 'scanned_by')
     
     # Scans-specific filters
@@ -497,10 +498,14 @@ def user_scan_qr(request):
             longitude = data.get('longitude')
             scan_type = data.get('scan_type', 'arrival')
             is_home_office = data.get('is_home_office', False)
+            is_business_trip = data.get('is_business_trip', False)
             
-            # For home office scans, we don't need a QR code
-            if is_home_office:
-                # Record the home office scan without QR code
+            # For home office or business trip scans, we don't need a QR code
+            if is_home_office or is_business_trip:
+                # Determine the label for this scan type
+                scan_label = _('Home Office') if is_home_office else _('Business Trip')
+                
+                # Record the scan without QR code
                 scan, address = crud.create_scan_event(
                     qr_code=None,
                     scanned_by=user,
@@ -508,7 +513,8 @@ def user_scan_qr(request):
                     longitude=longitude,
                     scan_type=scan_type,
                     device_info=request.META.get('HTTP_USER_AGENT', ''),
-                    is_home_office=True,
+                    is_home_office=is_home_office,
+                    is_business_trip=is_business_trip,
                     actor_type='user',
                     actor_email=user.email,
                     actor_name=user.name,
@@ -518,9 +524,9 @@ def user_scan_qr(request):
                 
                 return JsonResponse({
                     'status': 'success',
-                    'message': str(_('Home office scan recorded successfully!')),
+                    'message': str(_('{} scan recorded successfully!').format(scan_label)),
                     'data': {
-                        'qr_name': str(_('Home Office')),
+                        'qr_name': str(scan_label),
                         'qr_location': '',
                         'scan_timestamp': scan.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                         'scan_latitude': latitude,
@@ -553,6 +559,7 @@ def user_scan_qr(request):
                 scan_type=scan_type,
                 device_info=request.META.get('HTTP_USER_AGENT', ''),
                 is_home_office=False,
+                is_business_trip=False,
                 actor_type='user',
                 actor_email=user.email,
                 actor_name=user.name,
@@ -1018,7 +1025,7 @@ def company_analytics(request):
     today_scans = ScanEvent.objects.filter(
         timestamp__date=today
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
     )
     today_arrivals = today_scans.filter(scan_type='arrival').count()
     today_departures = today_scans.filter(scan_type='departure').count()
@@ -1028,7 +1035,7 @@ def company_analytics(request):
         timestamp__date__gte=date_from,
         timestamp__date__lte=date_to
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
     )
     range_arrivals = range_scans.filter(scan_type='arrival').count()
     range_departures = range_scans.filter(scan_type='departure').count()
@@ -1038,7 +1045,7 @@ def company_analytics(request):
     week_scans = ScanEvent.objects.filter(
         timestamp__date__gte=week_ago
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
     ).count()
     
     # Current month statistics
@@ -1046,7 +1053,7 @@ def company_analytics(request):
         timestamp__date__gte=current_month_start,
         timestamp__date__lte=today
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
     ).count()
     
     # Previous month statistics
@@ -1054,7 +1061,7 @@ def company_analytics(request):
         timestamp__date__gte=prev_month_start,
         timestamp__date__lte=prev_month_end
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
     ).count()
     
     # Currently in office (last scan was arrival)
@@ -1064,12 +1071,17 @@ def company_analytics(request):
         last_scan = ScanEvent.objects.filter(
             scanned_by=user
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
         ).order_by('-timestamp').first()
         
         # User is at work if last scan was arrival or lunch_break_end
         if last_scan and last_scan.scan_type in ['arrival', 'lunch_break_end']:
-            location = _('Home Office') if last_scan.is_home_office else last_scan.qr_code.name
+            if last_scan.is_home_office:
+                location = _('Home Office')
+            elif last_scan.is_business_trip:
+                location = _('Business Trip')
+            else:
+                location = last_scan.qr_code.name
             currently_in_office.append({
                 'user': user,
                 'location': location,
@@ -1101,7 +1113,7 @@ def company_analytics(request):
             timestamp__date__gte=date_from,
             timestamp__date__lte=date_to
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1146,7 +1158,7 @@ def company_analytics(request):
             timestamp__date__gte=current_month_start,
             timestamp__date__lte=today
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1189,7 +1201,7 @@ def company_analytics(request):
             timestamp__date__gte=prev_month_start,
             timestamp__date__lte=prev_month_end
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1312,7 +1324,7 @@ def analytics_chart_data(request):
             day_scans = ScanEvent.objects.filter(
                 timestamp__date=date
             ).filter(
-                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
             )
             
             arrivals = day_scans.filter(scan_type='arrival').count()
@@ -1384,7 +1396,7 @@ def analytics_chart_data(request):
                 timestamp__date=today,
                 timestamp__hour=hour
             ).filter(
-                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
+                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
             ).count()
             data.append(count)
         
@@ -1537,6 +1549,16 @@ def company_settings(request):
                 notify_departure = request.POST.get('notify_departure') == 'on'
                 notify_vacation = request.POST.get('notify_vacation') == 'on'
                 
+                # Optional company details
+                ico = request.POST.get('ico', '').strip() or None
+                dic = request.POST.get('dic', '').strip() or None
+                phone = request.POST.get('phone', '').strip() or None
+                street = request.POST.get('street', '').strip() or None
+                street_number = request.POST.get('street_number', '').strip() or None
+                zip_code = request.POST.get('zip_code', '').strip() or None
+                city = request.POST.get('city', '').strip() or None
+                state = request.POST.get('state', '').strip() or None
+                
                 # Validation
                 if not company_name:
                     return JsonResponse({
@@ -1550,6 +1572,14 @@ def company_settings(request):
                 company.notify_arrival = notify_arrival
                 company.notify_departure = notify_departure
                 company.notify_vacation = notify_vacation
+                company.ico = ico
+                company.dic = dic
+                company.phone = phone
+                company.street = street
+                company.street_number = street_number
+                company.zip_code = zip_code
+                company.city = city
+                company.state = state
                 company.save()
                 
                 # Log the action

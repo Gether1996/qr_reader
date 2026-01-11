@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 18:26+0100\n"
+"POT-Creation-Date: 2026-01-11 20:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,131 +22,131 @@ msgstr ""
 msgid "Email already registered"
 msgstr "Email je už zaregistrovaný"
 
-#: .\qr_reader_django\crud.py:61 .\qr_reader_django\crud.py:122
+#: .\qr_reader_django\crud.py:69 .\qr_reader_django\crud.py:130
 #: .\viewer\templates\translations_js.html:74
 msgid "Email already exists"
 msgstr "Email už existuje"
 
-#: .\qr_reader_django\crud.py:209 .\qr_reader_django\crud.py:233
-#: .\qr_reader_django\crud.py:671 .\qr_reader_django\crud_user.py:102
+#: .\qr_reader_django\crud.py:217 .\qr_reader_django\crud.py:241
+#: .\qr_reader_django\crud.py:685 .\qr_reader_django\crud_user.py:102
 #: .\qr_reader_django\crud_user.py:181 .\qr_reader_django\crud_vacation.py:30
 #: .\qr_reader_django\crud_vacation.py:58
 #: .\qr_reader_django\crud_vacation.py:121
 #: .\qr_reader_django\crud_vacation.py:198
 #: .\qr_reader_django\crud_vacation.py:280
 #: .\qr_reader_django\generate_pdf_excel.py:49
-#: .\qr_reader_django\generate_pdf_excel.py:680 .\viewer\views.py:331
-#: .\viewer\views.py:489 .\viewer\views.py:1423
+#: .\qr_reader_django\generate_pdf_excel.py:684 .\viewer\views.py:331
+#: .\viewer\views.py:490 .\viewer\views.py:1435
 msgid "User not found"
 msgstr "Používateľ nebol nájdený"
 
-#: .\qr_reader_django\crud.py:298 .\viewer\views.py:644
+#: .\qr_reader_django\crud.py:306 .\viewer\views.py:651
 msgid "QR code not found"
 msgstr "QR kód nebol nájdený"
 
-#: .\qr_reader_django\crud.py:431 .\qr_reader_django\generate_pdf_excel.py:221
-#: .\qr_reader_django\generate_pdf_excel.py:765
-#: .\viewer\templates\company_register.html:74
-#: .\viewer\templates\company_settings.html:97
+#: .\qr_reader_django\crud.py:445 .\qr_reader_django\generate_pdf_excel.py:221
+#: .\qr_reader_django\generate_pdf_excel.py:769
+#: .\viewer\templates\company_register.html:160
+#: .\viewer\templates\company_settings.html:218
 #: .\viewer\templates\company_user_details.html:200
-#: .\viewer\templates\company_user_details.html:338
-#: .\viewer\templates\company_user_details.html:385
+#: .\viewer\templates\company_user_details.html:340
+#: .\viewer\templates\company_user_details.html:389
 #: .\viewer\templates\filters_card.html:75 .\viewer\templates\qr_scans.html:100
 #: .\viewer\templates\qr_scans.html:147
 #: .\viewer\templates\translations_js.html:55
 #: .\viewer\templates\user_dashboard.html:190
-#: .\viewer\templates\user_dashboard.html:327
-#: .\viewer\templates\user_dashboard.html:374
+#: .\viewer\templates\user_dashboard.html:329
+#: .\viewer\templates\user_dashboard.html:378
 #: .\viewer\templates\user_scan_qr.html:29
 msgid "Arrival"
 msgstr "Príchod"
 
-#: .\qr_reader_django\crud.py:432 .\qr_reader_django\generate_pdf_excel.py:222
-#: .\qr_reader_django\generate_pdf_excel.py:766
-#: .\viewer\templates\company_register.html:80
-#: .\viewer\templates\company_settings.html:110
+#: .\qr_reader_django\crud.py:446 .\qr_reader_django\generate_pdf_excel.py:222
+#: .\qr_reader_django\generate_pdf_excel.py:770
+#: .\viewer\templates\company_register.html:166
+#: .\viewer\templates\company_settings.html:231
 #: .\viewer\templates\company_user_details.html:213
-#: .\viewer\templates\company_user_details.html:340
-#: .\viewer\templates\company_user_details.html:387
+#: .\viewer\templates\company_user_details.html:342
+#: .\viewer\templates\company_user_details.html:391
 #: .\viewer\templates\filters_card.html:76 .\viewer\templates\qr_scans.html:102
 #: .\viewer\templates\qr_scans.html:149
 #: .\viewer\templates\translations_js.html:56
 #: .\viewer\templates\user_dashboard.html:203
-#: .\viewer\templates\user_dashboard.html:329
-#: .\viewer\templates\user_dashboard.html:376
+#: .\viewer\templates\user_dashboard.html:331
+#: .\viewer\templates\user_dashboard.html:380
 #: .\viewer\templates\user_scan_qr.html:35
 msgid "Departure"
 msgstr "Odchod"
 
-#: .\qr_reader_django\crud.py:433
+#: .\qr_reader_django\crud.py:447
 msgid "Lunch Break Started"
 msgstr "Obedová prestávka začala"
 
-#: .\qr_reader_django\crud.py:434
+#: .\qr_reader_django\crud.py:448
 msgid "Lunch Break Ended"
 msgstr "Obedová prestávka skončila"
 
-#: .\qr_reader_django\crud.py:480
+#: .\qr_reader_django\crud.py:494
 msgid "End date cannot be before start date"
 msgstr "Dátum ukončenia nemôže byť pred dátumom začiatku"
 
-#: .\qr_reader_django\crud.py:576
+#: .\qr_reader_django\crud.py:590
 #: .\viewer\templates\vacation_notification.html:20
 msgid "Vacation Request"
 msgstr "Žiadosť o dovolenku"
 
-#: .\qr_reader_django\crud.py:577 .\qr_reader_django\generate_pdf_excel.py:293
-#: .\qr_reader_django\generate_pdf_excel.py:893
-#: .\viewer\templates\company_dashboard.html:431
-#: .\viewer\templates\company_dashboard.html:502
+#: .\qr_reader_django\crud.py:591 .\qr_reader_django\generate_pdf_excel.py:293
+#: .\qr_reader_django\generate_pdf_excel.py:897
+#: .\viewer\templates\company_dashboard.html:438
+#: .\viewer\templates\company_dashboard.html:509
 #: .\viewer\templates\company_user_details.html:117
-#: .\viewer\templates\company_user_details.html:483
-#: .\viewer\templates\company_user_details.html:567
+#: .\viewer\templates\company_user_details.html:487
+#: .\viewer\templates\company_user_details.html:571
 #: .\viewer\templates\filters_card.html:86
 #: .\viewer\templates\user_dashboard.html:107
-#: .\viewer\templates\user_dashboard.html:471
-#: .\viewer\templates\user_dashboard.html:537
+#: .\viewer\templates\user_dashboard.html:475
+#: .\viewer\templates\user_dashboard.html:541
 #: .\viewer\templates\vacation_notification.html:23
 #: .\viewer\templates\vacation_notification.html:109
 msgid "Sick Leave"
 msgstr "Pracovná neschopnosť"
 
-#: .\qr_reader_django\crud.py:578
+#: .\qr_reader_django\crud.py:592
 #: .\viewer\templates\vacation_notification.html:26
 msgid "Doctor Visit"
 msgstr "Návšteva lekára"
 
-#: .\qr_reader_django\crud.py:579 .\qr_reader_django\generate_pdf_excel.py:309
+#: .\qr_reader_django\crud.py:593 .\qr_reader_django\generate_pdf_excel.py:309
 #: .\qr_reader_django\generate_pdf_excel.py:357
 #: .\qr_reader_django\generate_pdf_excel.py:415
-#: .\qr_reader_django\generate_pdf_excel.py:420
-#: .\qr_reader_django\generate_pdf_excel.py:901
-#: .\qr_reader_django\generate_pdf_excel.py:932
-#: .\qr_reader_django\generate_pdf_excel.py:1003
-#: .\qr_reader_django\generate_pdf_excel.py:1008
-#: .\viewer\templates\company_dashboard.html:437
-#: .\viewer\templates\company_dashboard.html:508
+#: .\qr_reader_django\generate_pdf_excel.py:422
+#: .\qr_reader_django\generate_pdf_excel.py:905
+#: .\qr_reader_django\generate_pdf_excel.py:936
+#: .\qr_reader_django\generate_pdf_excel.py:1007
+#: .\qr_reader_django\generate_pdf_excel.py:1014
+#: .\viewer\templates\company_dashboard.html:444
+#: .\viewer\templates\company_dashboard.html:515
 #: .\viewer\templates\company_user_details.html:331
-#: .\viewer\templates\company_user_details.html:378
-#: .\viewer\templates\company_user_details.html:489
-#: .\viewer\templates\company_user_details.html:573
+#: .\viewer\templates\company_user_details.html:380
+#: .\viewer\templates\company_user_details.html:493
+#: .\viewer\templates\company_user_details.html:577
 #: .\viewer\templates\filters_card.html:88
 #: .\viewer\templates\user_dashboard.html:320
-#: .\viewer\templates\user_dashboard.html:367
-#: .\viewer\templates\user_dashboard.html:477
-#: .\viewer\templates\user_dashboard.html:543
+#: .\viewer\templates\user_dashboard.html:369
+#: .\viewer\templates\user_dashboard.html:481
+#: .\viewer\templates\user_dashboard.html:547
 #: .\viewer\templates\vacation_notification.html:29
-#: .\viewer\templates\vacation_notification.html:113 .\viewer\views.py:523
-#: .\viewer\views.py:1072
+#: .\viewer\templates\vacation_notification.html:113 .\viewer\views.py:506
+#: .\viewer\views.py:1080
 msgid "Home Office"
 msgstr "Práca z domu"
 
-#: .\qr_reader_django\crud.py:582
+#: .\qr_reader_django\crud.py:596
 #: .\viewer\templates\vacation_notification.html:32
 msgid "Absence Request"
 msgstr "Žiadosť o absenciu"
 
-#: .\qr_reader_django\crud.py:669 .\qr_reader_django\crud.py:763
+#: .\qr_reader_django\crud.py:683 .\qr_reader_django\crud.py:777
 #: .\qr_reader_django\crud_vacation.py:131
 #: .\qr_reader_django\crud_vacation.py:208
 #: .\qr_reader_django\crud_vacation.py:309
@@ -154,7 +154,7 @@ msgstr "Žiadosť o absenciu"
 msgid "Vacation not found"
 msgstr "Absencia nebola nájdená"
 
-#: .\qr_reader_django\crud.py:736
+#: .\qr_reader_django\crud.py:750
 msgid "Vacation Request Cancelled"
 msgstr "Žiadosť o dovolenku zrušená"
 
@@ -165,16 +165,16 @@ msgstr "Žiadosť o dovolenku zrušená"
 #: .\qr_reader_django\crud_vacation.py:187
 #: .\qr_reader_django\crud_vacation.py:265
 #: .\qr_reader_django\generate_pdf_excel.py:30
-#: .\qr_reader_django\generate_pdf_excel.py:661
-#: .\qr_reader_django\generate_pdf_excel.py:1142
+#: .\qr_reader_django\generate_pdf_excel.py:665
+#: .\qr_reader_django\generate_pdf_excel.py:1150
 #: .\qr_reader_django\magazine.py:110 .\qr_reader_django\magazine.py:182
 #: .\qr_reader_django\magazine.py:216 .\qr_reader_django\magazine.py:266
 #: .\qr_reader_django\magazine.py:327 .\qr_reader_django\magazine.py:365
 #: .\qr_reader_django\magazine.py:409 .\qr_reader_django\magazine.py:452
 #: .\qr_reader_django\magazine.py:522 .\qr_reader_django\magazine.py:577
 #: .\qr_reader_django\magazine.py:615 .\qr_reader_django\magazine.py:650
-#: .\viewer\views.py:625 .\viewer\views.py:724 .\viewer\views.py:1277
-#: .\viewer\views.py:1584
+#: .\viewer\views.py:632 .\viewer\views.py:731 .\viewer\views.py:1289
+#: .\viewer\views.py:1614
 msgid "Unauthorized"
 msgstr "Neautorizované"
 
@@ -184,10 +184,10 @@ msgstr "Neautorizované"
 #: .\qr_reader_django\crud_vacation.py:141
 #: .\qr_reader_django\crud_vacation.py:218
 #: .\qr_reader_django\generate_pdf_excel.py:39
-#: .\qr_reader_django\generate_pdf_excel.py:670
-#: .\qr_reader_django\generate_pdf_excel.py:1151 .\viewer\views.py:46
-#: .\viewer\views.py:634 .\viewer\views.py:734 .\viewer\views.py:968
-#: .\viewer\views.py:1285
+#: .\qr_reader_django\generate_pdf_excel.py:674
+#: .\qr_reader_django\generate_pdf_excel.py:1159 .\viewer\views.py:46
+#: .\viewer\views.py:641 .\viewer\views.py:741 .\viewer\views.py:975
+#: .\viewer\views.py:1297
 msgid "Access denied"
 msgstr "Prístup odmietnutý"
 
@@ -198,10 +198,10 @@ msgstr "Prístup odmietnutý"
 #: .\qr_reader_django\crud_vacation.py:202
 #: .\qr_reader_django\crud_vacation.py:292
 #: .\qr_reader_django\generate_pdf_excel.py:44
-#: .\qr_reader_django\generate_pdf_excel.py:675
-#: .\qr_reader_django\generate_pdf_excel.py:1156 .\viewer\views.py:51
-#: .\viewer\views.py:639 .\viewer\views.py:739 .\viewer\views.py:973
-#: .\viewer\views.py:1289 .\viewer\views.py:1429 .\viewer\views.py:1588
+#: .\qr_reader_django\generate_pdf_excel.py:679
+#: .\qr_reader_django\generate_pdf_excel.py:1164 .\viewer\views.py:51
+#: .\viewer\views.py:646 .\viewer\views.py:746 .\viewer\views.py:980
+#: .\viewer\views.py:1301 .\viewer\views.py:1441 .\viewer\views.py:1618
 msgid "Company not found"
 msgstr "Firma nebola nájdená"
 
@@ -245,11 +245,11 @@ msgstr "Absencia úspešne vytvorená"
 
 #: .\qr_reader_django\crud_vacation.py:173
 msgid "Vacation updated successfully"
-msgstr "Neprítemnosť úspešne aktualizovaná"
+msgstr "Absencia úspešne aktualizovaná"
 
 #: .\qr_reader_django\crud_vacation.py:247
 msgid "Vacation deleted successfully"
-msgstr "Neprítemnosť úspešne vymazaná"
+msgstr "Absencia úspešne vymazaná"
 
 #: .\qr_reader_django\crud_vacation.py:298
 #: .\qr_reader_django\crud_vacation.py:300
@@ -282,28 +282,28 @@ msgid "This email is already registered in the system"
 msgstr "Tento email je už v systéme zaregistrovaný"
 
 #: .\qr_reader_django\generate_pdf_excel.py:68
-#: .\qr_reader_django\generate_pdf_excel.py:699 .\viewer\views.py:1463
+#: .\qr_reader_django\generate_pdf_excel.py:703 .\viewer\views.py:1475
 msgid "Invalid date range"
 msgstr "Neplatný rozsah dátumov"
 
 #: .\qr_reader_django\generate_pdf_excel.py:71
-#: .\qr_reader_django\generate_pdf_excel.py:702
+#: .\qr_reader_django\generate_pdf_excel.py:706
 msgid "Invalid date format"
 msgstr "Neplatný formát dátumu"
 
 #: .\qr_reader_django\generate_pdf_excel.py:152
-#: .\qr_reader_django\generate_pdf_excel.py:731
-#: .\qr_reader_django\generate_pdf_excel.py:749
+#: .\qr_reader_django\generate_pdf_excel.py:735
+#: .\qr_reader_django\generate_pdf_excel.py:753
 msgid "Attendance Report"
 msgstr "Správa o dochádzke"
 
 #: .\qr_reader_django\generate_pdf_excel.py:153
-#: .\qr_reader_django\generate_pdf_excel.py:754
+#: .\qr_reader_django\generate_pdf_excel.py:758
 msgid "Period"
 msgstr "Obdobie"
 
 #: .\qr_reader_django\generate_pdf_excel.py:154
-#: .\qr_reader_django\generate_pdf_excel.py:758
+#: .\qr_reader_django\generate_pdf_excel.py:762
 #: .\viewer\templates\audit_logs.html:163
 #: .\viewer\templates\audit_logs.html:211
 #: .\viewer\templates\password_reset_email.html:72
@@ -315,164 +315,176 @@ msgid "Daily Attendance"
 msgstr "Denná dochádzka"
 
 #: .\qr_reader_django\generate_pdf_excel.py:219
-#: .\qr_reader_django\generate_pdf_excel.py:763
+#: .\qr_reader_django\generate_pdf_excel.py:767
 msgid "Date"
 msgstr "Dátum"
 
 #: .\qr_reader_django\generate_pdf_excel.py:220
-#: .\qr_reader_django\generate_pdf_excel.py:764
+#: .\qr_reader_django\generate_pdf_excel.py:768
 msgid "Day"
 msgstr "Deň"
 
 #: .\qr_reader_django\generate_pdf_excel.py:223
-#: .\qr_reader_django\generate_pdf_excel.py:767
+#: .\qr_reader_django\generate_pdf_excel.py:771
 #: .\viewer\templates\company_analytics.html:219
 msgid "Hours"
 msgstr "Hodiny"
 
 #: .\qr_reader_django\generate_pdf_excel.py:224
-#: .\qr_reader_django\generate_pdf_excel.py:768
+#: .\qr_reader_django\generate_pdf_excel.py:772
 msgid "Break"
 msgstr "Prestávka"
 
 #: .\qr_reader_django\generate_pdf_excel.py:225
-#: .\qr_reader_django\generate_pdf_excel.py:769
+#: .\qr_reader_django\generate_pdf_excel.py:773
 msgid "Scanned QR"
 msgstr "Naskenovaný QR"
 
 #: .\qr_reader_django\generate_pdf_excel.py:226
-#: .\qr_reader_django\generate_pdf_excel.py:770
+#: .\qr_reader_django\generate_pdf_excel.py:774
 msgid "Notes"
 msgstr "Poznámky"
 
 #: .\qr_reader_django\generate_pdf_excel.py:301
-#: .\qr_reader_django\generate_pdf_excel.py:897
-#: .\viewer\templates\company_dashboard.html:433
-#: .\viewer\templates\company_dashboard.html:504
+#: .\qr_reader_django\generate_pdf_excel.py:901
+#: .\viewer\templates\company_dashboard.html:440
+#: .\viewer\templates\company_dashboard.html:511
 #: .\viewer\templates\company_user_details.html:124
-#: .\viewer\templates\company_user_details.html:485
-#: .\viewer\templates\company_user_details.html:569
+#: .\viewer\templates\company_user_details.html:489
+#: .\viewer\templates\company_user_details.html:573
 #: .\viewer\templates\filters_card.html:87
 #: .\viewer\templates\user_dashboard.html:114
-#: .\viewer\templates\user_dashboard.html:475
-#: .\viewer\templates\user_dashboard.html:541
+#: .\viewer\templates\user_dashboard.html:479
+#: .\viewer\templates\user_dashboard.html:545
 #: .\viewer\templates\vacation_notification.html:111
 msgid "Doctor"
 msgstr "Lekár"
 
 #: .\qr_reader_django\generate_pdf_excel.py:317
-#: .\qr_reader_django\generate_pdf_excel.py:905
-#: .\viewer\templates\company_dashboard.html:435
-#: .\viewer\templates\company_dashboard.html:506
+#: .\qr_reader_django\generate_pdf_excel.py:909
+#: .\viewer\templates\company_dashboard.html:442
+#: .\viewer\templates\company_dashboard.html:513
 #: .\viewer\templates\company_user_details.html:110
 #: .\viewer\templates\company_user_details.html:226
-#: .\viewer\templates\company_user_details.html:487
-#: .\viewer\templates\company_user_details.html:571
+#: .\viewer\templates\company_user_details.html:491
+#: .\viewer\templates\company_user_details.html:575
 #: .\viewer\templates\filters_card.html:85
 #: .\viewer\templates\user_dashboard.html:100
 #: .\viewer\templates\user_dashboard.html:216
-#: .\viewer\templates\user_dashboard.html:473
-#: .\viewer\templates\user_dashboard.html:539
+#: .\viewer\templates\user_dashboard.html:477
+#: .\viewer\templates\user_dashboard.html:543
 #: .\viewer\templates\vacation_notification.html:107
 msgid "Vacation"
 msgstr "Dovolenka"
 
 #: .\qr_reader_django\generate_pdf_excel.py:339
-#: .\qr_reader_django\generate_pdf_excel.py:916
+#: .\qr_reader_django\generate_pdf_excel.py:920
 msgid "No scans"
 msgstr "Žiadne skeny"
 
 #: .\qr_reader_django\generate_pdf_excel.py:353
-#: .\qr_reader_django\generate_pdf_excel.py:928
+#: .\qr_reader_django\generate_pdf_excel.py:932
 msgid "Scans on sick leave day"
 msgstr "Skenovania v deň PN"
 
 #: .\qr_reader_django\generate_pdf_excel.py:355
-#: .\qr_reader_django\generate_pdf_excel.py:930
+#: .\qr_reader_django\generate_pdf_excel.py:934
 msgid "Scans on doctor day"
 msgstr "Skenovania v deň návštevy lekára"
 
 #: .\qr_reader_django\generate_pdf_excel.py:359
-#: .\qr_reader_django\generate_pdf_excel.py:934
+#: .\qr_reader_django\generate_pdf_excel.py:938
 msgid "Scans on vacation day"
 msgstr "Skenovania v deň dovolenky"
 
 #: .\qr_reader_django\generate_pdf_excel.py:369
-#: .\qr_reader_django\generate_pdf_excel.py:944
+#: .\qr_reader_django\generate_pdf_excel.py:948
 msgid "Missing arrival"
 msgstr "Chýba príchod"
 
 #: .\qr_reader_django\generate_pdf_excel.py:372
-#: .\qr_reader_django\generate_pdf_excel.py:947
+#: .\qr_reader_django\generate_pdf_excel.py:951
 msgid "Missing departure"
 msgstr "Chýba odchod"
 
-#: .\qr_reader_django\generate_pdf_excel.py:506
-#: .\qr_reader_django\generate_pdf_excel.py:1045
+#: .\qr_reader_django\generate_pdf_excel.py:417
+#: .\qr_reader_django\generate_pdf_excel.py:424
+#: .\qr_reader_django\generate_pdf_excel.py:1009
+#: .\qr_reader_django\generate_pdf_excel.py:1016
+#: .\viewer\templates\company_user_details.html:333
+#: .\viewer\templates\company_user_details.html:382
+#: .\viewer\templates\user_dashboard.html:322
+#: .\viewer\templates\user_dashboard.html:371 .\viewer\views.py:506
+#: .\viewer\views.py:1082
+msgid "Business Trip"
+msgstr ""
+
+#: .\qr_reader_django\generate_pdf_excel.py:510
+#: .\qr_reader_django\generate_pdf_excel.py:1053
 msgid "Summary Statistics"
 msgstr "Súhrnné štatistiky"
 
-#: .\qr_reader_django\generate_pdf_excel.py:553
-#: .\qr_reader_django\generate_pdf_excel.py:1074
+#: .\qr_reader_django\generate_pdf_excel.py:557
+#: .\qr_reader_django\generate_pdf_excel.py:1082
 msgid "Total Working Days"
 msgstr "Celkový počet pracovných dní"
 
-#: .\qr_reader_django\generate_pdf_excel.py:557
-#: .\qr_reader_django\generate_pdf_excel.py:1075
+#: .\qr_reader_django\generate_pdf_excel.py:561
+#: .\qr_reader_django\generate_pdf_excel.py:1083
 msgid "Expected Hours"
 msgstr "Očakávané hodiny"
 
-#: .\qr_reader_django\generate_pdf_excel.py:561
-#: .\qr_reader_django\generate_pdf_excel.py:1076
+#: .\qr_reader_django\generate_pdf_excel.py:565
+#: .\qr_reader_django\generate_pdf_excel.py:1084
 msgid "Total Hours (with breaks)"
 msgstr "Celkový počet hodín (s prestávkami)"
 
-#: .\qr_reader_django\generate_pdf_excel.py:565
-#: .\qr_reader_django\generate_pdf_excel.py:1077
+#: .\qr_reader_django\generate_pdf_excel.py:569
+#: .\qr_reader_django\generate_pdf_excel.py:1085
 msgid "Total Hours (without breaks)"
 msgstr "Celkový počet hodín (bez prestávok)"
 
-#: .\qr_reader_django\generate_pdf_excel.py:569
-#: .\qr_reader_django\generate_pdf_excel.py:1078
+#: .\qr_reader_django\generate_pdf_excel.py:573
+#: .\qr_reader_django\generate_pdf_excel.py:1086
 msgid "Total Break Time"
 msgstr "Celkový čas prestávok"
 
-#: .\qr_reader_django\generate_pdf_excel.py:573
-#: .\qr_reader_django\generate_pdf_excel.py:1079
+#: .\qr_reader_django\generate_pdf_excel.py:577
+#: .\qr_reader_django\generate_pdf_excel.py:1087
 msgid "Overtime Hours"
 msgstr "Hodiny nadčasu"
 
-#: .\qr_reader_django\generate_pdf_excel.py:577
-#: .\qr_reader_django\generate_pdf_excel.py:1080
+#: .\qr_reader_django\generate_pdf_excel.py:581
+#: .\qr_reader_django\generate_pdf_excel.py:1088
 msgid "Night Hours (22:00-06:00)"
 msgstr "Nočné hodiny (22:00-06:00)"
 
-#: .\qr_reader_django\generate_pdf_excel.py:581
-#: .\qr_reader_django\generate_pdf_excel.py:1081
+#: .\qr_reader_django\generate_pdf_excel.py:585
+#: .\qr_reader_django\generate_pdf_excel.py:1089
 msgid "Holiday Hours"
 msgstr "Hodiny vo sviatok"
 
-#: .\qr_reader_django\generate_pdf_excel.py:585
-#: .\qr_reader_django\generate_pdf_excel.py:1082
+#: .\qr_reader_django\generate_pdf_excel.py:589
+#: .\qr_reader_django\generate_pdf_excel.py:1090
 msgid "Average Hours per Day"
 msgstr "Priemerný počet hodín za deň"
 
-#: .\qr_reader_django\generate_pdf_excel.py:589
-#: .\qr_reader_django\generate_pdf_excel.py:1083
+#: .\qr_reader_django\generate_pdf_excel.py:593
+#: .\qr_reader_django\generate_pdf_excel.py:1091
 msgid "Vacation Days"
 msgstr "Dni dovolenky"
 
-#: .\qr_reader_django\generate_pdf_excel.py:593
-#: .\qr_reader_django\generate_pdf_excel.py:1084
+#: .\qr_reader_django\generate_pdf_excel.py:597
+#: .\qr_reader_django\generate_pdf_excel.py:1092
 msgid "Home Office Days"
 msgstr "Dni práce z domu"
 
-#: .\qr_reader_django\generate_pdf_excel.py:597
-#: .\qr_reader_django\generate_pdf_excel.py:1085
+#: .\qr_reader_django\generate_pdf_excel.py:601
+#: .\qr_reader_django\generate_pdf_excel.py:1093
 msgid "Days with Issues"
 msgstr "Dni s problémami"
 
-#: .\qr_reader_django\generate_pdf_excel.py:1161
+#: .\qr_reader_django\generate_pdf_excel.py:1169
 msgid "QR Code not found"
 msgstr "QR kód nebol nájdený"
 
@@ -481,32 +493,32 @@ msgid "time_from/time_to must be time or string 'HH:MM' (or 'HH:MM:SS')"
 msgstr ""
 "time_from/time_to musí byť čas alebo reťazec 'HH:MM' (alebo 'HH:MM:SS')"
 
-#: .\qr_reader_django\login_register_logout.py:24
-msgid "All fields are required"
-msgstr "Všetky polia sú povinné"
+#: .\qr_reader_django\login_register_logout.py:34
+msgid "All required fields must be filled"
+msgstr ""
 
-#: .\qr_reader_django\login_register_logout.py:28
+#: .\qr_reader_django\login_register_logout.py:38
 #: .\viewer\templates\company_reset_password.html:127
-#: .\viewer\templates\translations_js.html:73 .\viewer\views.py:1684
+#: .\viewer\templates\translations_js.html:73 .\viewer\views.py:1714
 msgid "Passwords do not match"
 msgstr "Heslá sa nezhodujú"
 
-#: .\qr_reader_django\login_register_logout.py:45
+#: .\qr_reader_django\login_register_logout.py:63
 msgid "Company registered successfully! Please login."
 msgstr "Firma úspešne zaregistrovaná! Prosím prihláste sa."
 
-#: .\qr_reader_django\login_register_logout.py:71
-#: .\qr_reader_django\login_register_logout.py:123
+#: .\qr_reader_django\login_register_logout.py:89
+#: .\qr_reader_django\login_register_logout.py:141
 msgid "Welcome back, {}!"
 msgstr "Vitajte späť, {}!"
 
-#: .\qr_reader_django\login_register_logout.py:74
-#: .\qr_reader_django\login_register_logout.py:126
+#: .\qr_reader_django\login_register_logout.py:92
+#: .\qr_reader_django\login_register_logout.py:144
 msgid "Invalid credentials"
 msgstr "Neplatné prihlasovacie údaje"
 
-#: .\qr_reader_django\login_register_logout.py:94
-#: .\qr_reader_django\login_register_logout.py:146
+#: .\qr_reader_django\login_register_logout.py:112
+#: .\qr_reader_django\login_register_logout.py:164
 msgid "Logged out successfully"
 msgstr "Úspešne odhlásený"
 
@@ -1139,15 +1151,15 @@ msgstr ""
 #: .\venv\Lib\site-packages\django\forms\formsets.py:499
 #: .\viewer\templates\audit_logs.html:176
 #: .\viewer\templates\audit_logs.html:222
-#: .\viewer\templates\company_dashboard.html:160
-#: .\viewer\templates\company_dashboard.html:201
-#: .\viewer\templates\company_dashboard.html:470
-#: .\viewer\templates\company_dashboard.html:535
-#: .\viewer\templates\company_user_details.html:518
-#: .\viewer\templates\company_user_details.html:601
+#: .\viewer\templates\company_dashboard.html:167
+#: .\viewer\templates\company_dashboard.html:208
+#: .\viewer\templates\company_dashboard.html:477
+#: .\viewer\templates\company_dashboard.html:542
+#: .\viewer\templates\company_user_details.html:522
+#: .\viewer\templates\company_user_details.html:605
 #: .\viewer\templates\magazine_dashboard.html:78
 #: .\viewer\templates\magazine_dashboard.html:114
-#: .\viewer\templates\user_dashboard.html:495
+#: .\viewer\templates\user_dashboard.html:499
 msgid "Delete"
 msgstr ""
 
@@ -1211,13 +1223,13 @@ msgid "Unknown"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:867
-#: .\viewer\templates\company_dashboard.html:267
+#: .\viewer\templates\company_dashboard.html:274
 #: .\viewer\templates\translations_js.html:125
 msgid "Yes"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:868
-#: .\viewer\templates\company_dashboard.html:272
+#: .\viewer\templates\company_dashboard.html:279
 #: .\viewer\templates\translations_js.html:126
 msgid "No"
 msgstr ""
@@ -1874,23 +1886,23 @@ msgstr "Používateľ"
 
 #: .\viewer\templates\audit_logs.html:172
 #: .\viewer\templates\audit_logs.html:218
-#: .\viewer\templates\company_dashboard.html:586
+#: .\viewer\templates\company_dashboard.html:593
 #: .\viewer\templates\translations_js.html:20
 msgid "Create"
 msgstr "Vytvoriť"
 
 #: .\viewer\templates\audit_logs.html:174
 #: .\viewer\templates\audit_logs.html:220
-#: .\viewer\templates\company_dashboard.html:653
+#: .\viewer\templates\company_dashboard.html:660
 msgid "Update"
 msgstr "Aktualizovať"
 
 #: .\viewer\templates\audit_logs.html:178
 #: .\viewer\templates\audit_logs.html:224
-#: .\viewer\templates\company_dashboard.html:461
-#: .\viewer\templates\company_dashboard.html:528
-#: .\viewer\templates\company_user_details.html:508
-#: .\viewer\templates\company_user_details.html:593
+#: .\viewer\templates\company_dashboard.html:468
+#: .\viewer\templates\company_dashboard.html:535
+#: .\viewer\templates\company_user_details.html:512
+#: .\viewer\templates\company_user_details.html:597
 msgid "Approve"
 msgstr "Schváliť"
 
@@ -1947,12 +1959,12 @@ msgid "Selected Period Statistics"
 msgstr "Štatistiky vybraného obdobia"
 
 #: .\viewer\templates\company_analytics.html:106
-#: .\viewer\templates\company_dashboard.html:118 .\viewer\views.py:1328
+#: .\viewer\templates\company_dashboard.html:125 .\viewer\views.py:1340
 msgid "Arrivals"
 msgstr "Príchody"
 
 #: .\viewer\templates\company_analytics.html:111
-#: .\viewer\templates\company_dashboard.html:119 .\viewer\views.py:1335
+#: .\viewer\templates\company_dashboard.html:126 .\viewer\views.py:1347
 msgid "Departures"
 msgstr "Odchody"
 
@@ -1972,18 +1984,18 @@ msgstr "Správa o dochádzke"
 #: .\viewer\templates\company_analytics.html:137
 #: .\viewer\templates\company_analytics.html:138
 #: .\viewer\templates\company_analytics.html:227
-#: .\viewer\templates\company_dashboard.html:427
-#: .\viewer\templates\company_dashboard.html:512
+#: .\viewer\templates\company_dashboard.html:434
+#: .\viewer\templates\company_dashboard.html:519
 #: .\viewer\templates\company_user_details.html:82
 #: .\viewer\templates\company_user_details.html:112
 #: .\viewer\templates\company_user_details.html:119
 #: .\viewer\templates\company_user_details.html:126
-#: .\viewer\templates\company_user_details.html:479
+#: .\viewer\templates\company_user_details.html:483
 #: .\viewer\templates\user_dashboard.html:72
 #: .\viewer\templates\user_dashboard.html:102
 #: .\viewer\templates\user_dashboard.html:109
 #: .\viewer\templates\user_dashboard.html:116
-#: .\viewer\templates\user_dashboard.html:467
+#: .\viewer\templates\user_dashboard.html:471
 msgid "days"
 msgstr "dní"
 
@@ -2015,9 +2027,9 @@ msgid "Working Hours"
 msgstr "Pracovné hodiny"
 
 #: .\viewer\templates\company_analytics.html:218
-#: .\viewer\templates\company_dashboard.html:279
-#: .\viewer\templates\company_dashboard.html:322
-#: .\viewer\templates\company_dashboard.html:389
+#: .\viewer\templates\company_dashboard.html:286
+#: .\viewer\templates\company_dashboard.html:329
+#: .\viewer\templates\company_dashboard.html:396
 #: .\viewer\templates\company_user_details.html:147
 #: .\viewer\templates\qr_scans.html:35 .\viewer\templates\qr_scans.html:64
 #: .\viewer\templates\scan_notification.html:51
@@ -2032,47 +2044,53 @@ msgstr "Zamestnanec"
 msgid "Company Dashboard"
 msgstr "Firemný dashboard"
 
-#: .\viewer\templates\company_dashboard.html:35
+#: .\viewer\templates\company_dashboard.html:27
+#: .\viewer\templates\company_settings.html:5
+#: .\viewer\templates\company_settings.html:15
+msgid "Company Settings"
+msgstr "Nastavenia spoločnosti"
+
+#: .\viewer\templates\company_dashboard.html:42
 #: .\viewer\templates\translations_js.html:11
 msgid "Create QR Code"
 msgstr "Vytvoriť QR kód"
 
-#: .\viewer\templates\company_dashboard.html:40
+#: .\viewer\templates\company_dashboard.html:47
 #: .\viewer\templates\translations_js.html:26
 msgid "Register Employee"
 msgstr "Registrovať zamestnanca"
 
-#: .\viewer\templates\company_dashboard.html:45
+#: .\viewer\templates\company_dashboard.html:52
 #: .\viewer\templates\company_user_details.html:43
 #: .\viewer\templates\user_dashboard.html:37
 msgid "Add Absence"
 msgstr "Pridať absenciu"
 
-#: .\viewer\templates\company_dashboard.html:56
+#: .\viewer\templates\company_dashboard.html:63
 #: .\viewer\templates\translations_js.html:15
 msgid "QR Code Name"
 msgstr "Názov QR kódu"
 
-#: .\viewer\templates\company_dashboard.html:58
-#: .\viewer\templates\company_dashboard.html:60
+#: .\viewer\templates\company_dashboard.html:65
+#: .\viewer\templates\company_dashboard.html:67
 msgid "Employee Name"
 msgstr "Meno zamestnanca"
 
-#: .\viewer\templates\company_dashboard.html:70
+#: .\viewer\templates\company_dashboard.html:77
 msgid "QR Codes"
 msgstr "QR kódy"
 
-#: .\viewer\templates\company_dashboard.html:76
+#: .\viewer\templates\company_dashboard.html:83
 msgid "Employees"
 msgstr "Zamestnanci"
 
-#: .\viewer\templates\company_dashboard.html:82
+#: .\viewer\templates\company_dashboard.html:89
 #: .\viewer\templates\company_user_details.html:276
 #: .\viewer\templates\user_dashboard.html:266
 msgid "Absences"
 msgstr "Absencie"
 
-#: .\viewer\templates\company_dashboard.html:97
+#: .\viewer\templates\company_dashboard.html:104
 #: .\viewer\templates\company_user_details.html:261
 #: .\viewer\templates\company_user_details.html:302
 #: .\viewer\templates\user_dashboard.html:251
@@ -2080,17 +2098,17 @@ msgstr "Absencie"
 msgid "QR Code"
 msgstr "QR kódy"
 
-#: .\viewer\templates\company_dashboard.html:100
-#: .\viewer\templates\company_dashboard.html:228
-#: .\viewer\templates\company_dashboard.html:571
-#: .\viewer\templates\company_dashboard.html:604
-#: .\viewer\templates\company_dashboard.html:638
+#: .\viewer\templates\company_dashboard.html:107
+#: .\viewer\templates\company_dashboard.html:235
+#: .\viewer\templates\company_dashboard.html:578
+#: .\viewer\templates\company_dashboard.html:611
+#: .\viewer\templates\company_dashboard.html:645
 #: .\viewer\templates\translations_js.html:17
 msgid "Name"
 msgstr "Meno"
 
-#: .\viewer\templates\company_dashboard.html:100
-#: .\viewer\templates\company_dashboard.html:575
+#: .\viewer\templates\company_dashboard.html:107
+#: .\viewer\templates\company_dashboard.html:582
 #: .\viewer\templates\company_user_details.html:320
 #: .\viewer\templates\qr_scans.html:82
 #: .\viewer\templates\scan_notification.html:67
@@ -2099,259 +2117,259 @@ msgstr "Meno"
 msgid "Location"
 msgstr "Poloha"
 
-#: .\viewer\templates\company_dashboard.html:110
-#: .\viewer\templates\company_dashboard.html:238
+#: .\viewer\templates\company_dashboard.html:117
+#: .\viewer\templates\company_dashboard.html:245
 #: .\viewer\templates\company_user_details.html:272
-#: .\viewer\templates\user_dashboard.html:262 .\viewer\views.py:1394
+#: .\viewer\templates\user_dashboard.html:262 .\viewer\views.py:1406
 msgid "Scans"
 msgstr "Skenovania"
 
-#: .\viewer\templates\company_dashboard.html:122
-#: .\viewer\templates\company_dashboard.html:409
-#: .\viewer\templates\company_user_details.html:457
-#: .\viewer\templates\user_dashboard.html:446
+#: .\viewer\templates\company_dashboard.html:129
+#: .\viewer\templates\company_dashboard.html:416
+#: .\viewer\templates\company_user_details.html:461
+#: .\viewer\templates\user_dashboard.html:450
 msgid "Created"
 msgstr "Vytvorené"
 
-#: .\viewer\templates\company_dashboard.html:130
-#: .\viewer\templates\company_dashboard.html:257
-#: .\viewer\templates\company_dashboard.html:410
-#: .\viewer\templates\company_user_details.html:465
-#: .\viewer\templates\user_dashboard.html:454
+#: .\viewer\templates\company_dashboard.html:137
+#: .\viewer\templates\company_dashboard.html:264
+#: .\viewer\templates\company_dashboard.html:417
+#: .\viewer\templates\company_user_details.html:469
+#: .\viewer\templates\user_dashboard.html:458
 msgid "Actions"
 msgstr "Akcie"
 
-#: .\viewer\templates\company_dashboard.html:139
-#: .\viewer\templates\company_dashboard.html:184
+#: .\viewer\templates\company_dashboard.html:146
+#: .\viewer\templates\company_dashboard.html:191
 msgid "Print QR Code"
 msgstr "Tlačiť QR kód"
 
-#: .\viewer\templates\company_dashboard.html:156
+#: .\viewer\templates\company_dashboard.html:163
 msgid "View Scans"
 msgstr "Zobraziť skenovania"
 
-#: .\viewer\templates\company_dashboard.html:168
-#: .\viewer\templates\company_dashboard.html:208
+#: .\viewer\templates\company_dashboard.html:175
+#: .\viewer\templates\company_dashboard.html:215
 msgid "No QR codes yet. Create one to get started!"
 msgstr "Zatiaľ žiadne QR kódy. Vytvorte jeden pre začiatok!"
 
-#: .\viewer\templates\company_dashboard.html:197
-#: .\viewer\templates\company_dashboard.html:335
+#: .\viewer\templates\company_dashboard.html:204
+#: .\viewer\templates\company_dashboard.html:342
 msgid "View"
 msgstr "Zobraziť"
 
-#: .\viewer\templates\company_dashboard.html:228
-#: .\viewer\templates\company_dashboard.html:608
-#: .\viewer\templates\company_dashboard.html:642
+#: .\viewer\templates\company_dashboard.html:235
+#: .\viewer\templates\company_dashboard.html:615
+#: .\viewer\templates\company_dashboard.html:649
 #: .\viewer\templates\company_login.html:27
-#: .\viewer\templates\company_register.html:33
+#: .\viewer\templates\company_register.html:41
 #: .\viewer\templates\password_reset_email.html:79
 #: .\viewer\templates\translations_js.html:40
 #: .\viewer\templates\user_login.html:27
 msgid "Email"
 msgstr "E-mail"
 
-#: .\viewer\templates\company_dashboard.html:248
-#: .\viewer\templates\company_dashboard.html:325
+#: .\viewer\templates\company_dashboard.html:255
+#: .\viewer\templates\company_dashboard.html:332
 #: .\viewer\templates\filters_card.html:97
 msgid "At Work"
 msgstr "V práci"
 
-#: .\viewer\templates\company_dashboard.html:256
+#: .\viewer\templates\company_dashboard.html:263
 #: .\viewer\templates\company_user_details.html:140
 #: .\viewer\templates\translations_js.html:47
 #: .\viewer\templates\user_dashboard.html:130
 msgid "Role"
 msgstr "Rola"
 
-#: .\viewer\templates\company_dashboard.html:277
-#: .\viewer\templates\company_dashboard.html:320
+#: .\viewer\templates\company_dashboard.html:284
+#: .\viewer\templates\company_dashboard.html:327
 #: .\viewer\templates\company_user_details.html:144
 #: .\viewer\templates\translations_js.html:49
 #: .\viewer\templates\user_dashboard.html:134
 msgid "Manager"
 msgstr "Manažér"
 
-#: .\viewer\templates\company_dashboard.html:284
+#: .\viewer\templates\company_dashboard.html:291
 msgid "View Details"
 msgstr "Zobraziť detaily"
 
-#: .\viewer\templates\company_dashboard.html:289
-#: .\viewer\templates\company_dashboard.html:630
+#: .\viewer\templates\company_dashboard.html:296
+#: .\viewer\templates\company_dashboard.html:637
 #: .\viewer\templates\company_user_details.html:38
 #: .\viewer\templates\translations_js.html:77
 msgid "Edit Employee"
 msgstr "Upraviť zamestnanca"
 
-#: .\viewer\templates\company_dashboard.html:294
+#: .\viewer\templates\company_dashboard.html:301
 msgid "Deactivate Employee"
 msgstr "Deaktivovať zamestnanca"
 
-#: .\viewer\templates\company_dashboard.html:302
-#: .\viewer\templates\company_dashboard.html:350
+#: .\viewer\templates\company_dashboard.html:309
+#: .\viewer\templates\company_dashboard.html:357
 msgid "No employees yet. Register employees to give them access!"
 msgstr ""
 "Zatiaľ žiadni zamestnanci. Zaregistrujte zamestnancov, aby im bol umožnený "
 "prístup!"
 
-#: .\viewer\templates\company_dashboard.html:327
+#: .\viewer\templates\company_dashboard.html:334
 msgid "Off Work"
 msgstr "Mimo práce"
 
-#: .\viewer\templates\company_dashboard.html:339
-#: .\viewer\templates\company_dashboard.html:466
-#: .\viewer\templates\company_dashboard.html:532
-#: .\viewer\templates\company_user_details.html:514
-#: .\viewer\templates\company_user_details.html:598
+#: .\viewer\templates\company_dashboard.html:346
+#: .\viewer\templates\company_dashboard.html:473
+#: .\viewer\templates\company_dashboard.html:539
+#: .\viewer\templates\company_user_details.html:518
+#: .\viewer\templates\company_user_details.html:602
 #: .\viewer\templates\magazine_dashboard.html:72
 msgid "Edit"
 msgstr "Upraviť"
 
-#: .\viewer\templates\company_dashboard.html:343
+#: .\viewer\templates\company_dashboard.html:350
 msgid "Deactivate"
 msgstr "Deaktivovať"
 
-#: .\viewer\templates\company_dashboard.html:369
-#: .\viewer\templates\company_user_details.html:434
-#: .\viewer\templates\user_dashboard.html:423
+#: .\viewer\templates\company_dashboard.html:376
+#: .\viewer\templates\company_user_details.html:438
+#: .\viewer\templates\user_dashboard.html:427
 msgid "Date From"
 msgstr "Dátum od"
 
-#: .\viewer\templates\company_dashboard.html:379
-#: .\viewer\templates\company_user_details.html:444
-#: .\viewer\templates\user_dashboard.html:433
+#: .\viewer\templates\company_dashboard.html:386
+#: .\viewer\templates\company_user_details.html:448
+#: .\viewer\templates\user_dashboard.html:437
 msgid "Date To"
 msgstr "Dátum do"
 
-#: .\viewer\templates\company_dashboard.html:397
-#: .\viewer\templates\company_user_details.html:452
-#: .\viewer\templates\user_dashboard.html:441
+#: .\viewer\templates\company_dashboard.html:404
+#: .\viewer\templates\company_user_details.html:456
+#: .\viewer\templates\user_dashboard.html:445
 #: .\viewer\templates\vacation_notification.html:137
 msgid "Days"
 msgstr "Dni"
 
-#: .\viewer\templates\company_dashboard.html:400
+#: .\viewer\templates\company_dashboard.html:407
 #: .\viewer\templates\company_user_details.html:312
-#: .\viewer\templates\company_user_details.html:453
+#: .\viewer\templates\company_user_details.html:457
 #: .\viewer\templates\filters_card.html:72
 #: .\viewer\templates\filters_card.html:82 .\viewer\templates\qr_scans.html:74
 #: .\viewer\templates\user_dashboard.html:301
-#: .\viewer\templates\user_dashboard.html:442
+#: .\viewer\templates\user_dashboard.html:446
 #: .\viewer\templates\vacation_notification.html:103
 msgid "Type"
 msgstr "Typ"
 
-#: .\viewer\templates\company_dashboard.html:408
-#: .\viewer\templates\company_user_details.html:454
+#: .\viewer\templates\company_dashboard.html:415
+#: .\viewer\templates\company_user_details.html:458
 #: .\viewer\templates\magazine_editor.html:176
-#: .\viewer\templates\user_dashboard.html:443
+#: .\viewer\templates\user_dashboard.html:447
 msgid "Status"
 msgstr "Stav"
 
-#: .\viewer\templates\company_dashboard.html:439
-#: .\viewer\templates\company_dashboard.html:510
-#: .\viewer\templates\company_user_details.html:491
-#: .\viewer\templates\company_user_details.html:547
-#: .\viewer\templates\company_user_details.html:575
-#: .\viewer\templates\user_dashboard.html:479
-#: .\viewer\templates\user_dashboard.html:517
-#: .\viewer\templates\user_dashboard.html:545
+#: .\viewer\templates\company_dashboard.html:446
+#: .\viewer\templates\company_dashboard.html:517
+#: .\viewer\templates\company_user_details.html:495
+#: .\viewer\templates\company_user_details.html:551
+#: .\viewer\templates\company_user_details.html:579
+#: .\viewer\templates\user_dashboard.html:483
+#: .\viewer\templates\user_dashboard.html:521
+#: .\viewer\templates\user_dashboard.html:549
 msgid "Absence"
 msgstr "Absencia"
 
-#: .\viewer\templates\company_dashboard.html:444
-#: .\viewer\templates\company_dashboard.html:514
-#: .\viewer\templates\company_user_details.html:496
-#: .\viewer\templates\company_user_details.html:583
-#: .\viewer\templates\user_dashboard.html:484
-#: .\viewer\templates\user_dashboard.html:553
+#: .\viewer\templates\company_dashboard.html:451
+#: .\viewer\templates\company_dashboard.html:521
+#: .\viewer\templates\company_user_details.html:500
+#: .\viewer\templates\company_user_details.html:587
+#: .\viewer\templates\user_dashboard.html:488
+#: .\viewer\templates\user_dashboard.html:557
 #: .\viewer\templates\vacation_notification.html:158
 msgid "Approved"
 msgstr "Schválené"
 
-#: .\viewer\templates\company_dashboard.html:446
-#: .\viewer\templates\company_dashboard.html:516
-#: .\viewer\templates\company_user_details.html:498
-#: .\viewer\templates\company_user_details.html:585
-#: .\viewer\templates\user_dashboard.html:486
-#: .\viewer\templates\user_dashboard.html:555
+#: .\viewer\templates\company_dashboard.html:453
+#: .\viewer\templates\company_dashboard.html:523
+#: .\viewer\templates\company_user_details.html:502
+#: .\viewer\templates\company_user_details.html:589
+#: .\viewer\templates\user_dashboard.html:490
+#: .\viewer\templates\user_dashboard.html:559
 msgid "Pending"
 msgstr "Čaká na schválenie"
 
-#: .\viewer\templates\company_dashboard.html:452
+#: .\viewer\templates\company_dashboard.html:459
 msgid "Last modified:"
 msgstr "Naposledy upravené:"
 
-#: .\viewer\templates\company_dashboard.html:453
+#: .\viewer\templates\company_dashboard.html:460
 msgid "Edited"
 msgstr "Upravené"
 
-#: .\viewer\templates\company_dashboard.html:477
-#: .\viewer\templates\company_dashboard.html:538
+#: .\viewer\templates\company_dashboard.html:484
+#: .\viewer\templates\company_dashboard.html:545
 #: .\viewer\templates\company_user_details.html:46
-#: .\viewer\templates\company_user_details.html:526
-#: .\viewer\templates\company_user_details.html:604
+#: .\viewer\templates\company_user_details.html:530
+#: .\viewer\templates\company_user_details.html:608
 msgid "Generate PDF"
 msgstr "Generovať PDF"
 
-#: .\viewer\templates\company_dashboard.html:485
-#: .\viewer\templates\company_dashboard.html:547
-#: .\viewer\templates\user_dashboard.html:504
-#: .\viewer\templates\user_dashboard.html:571
+#: .\viewer\templates\company_dashboard.html:492
+#: .\viewer\templates\company_dashboard.html:554
+#: .\viewer\templates\user_dashboard.html:508
+#: .\viewer\templates\user_dashboard.html:575
 msgid "No absences found"
 msgstr "Žiadne absencie nenájdené"
 
-#: .\viewer\templates\company_dashboard.html:520
-#: .\viewer\templates\company_user_details.html:553
-#: .\viewer\templates\user_dashboard.html:523
+#: .\viewer\templates\company_dashboard.html:527
+#: .\viewer\templates\company_user_details.html:557
+#: .\viewer\templates\user_dashboard.html:527
 msgid "From:"
 msgstr "Od:"
 
-#: .\viewer\templates\company_dashboard.html:523
-#: .\viewer\templates\company_user_details.html:557
-#: .\viewer\templates\user_dashboard.html:527
+#: .\viewer\templates\company_dashboard.html:530
+#: .\viewer\templates\company_user_details.html:561
+#: .\viewer\templates\user_dashboard.html:531
 msgid "To:"
 msgstr "Do:"
 
-#: .\viewer\templates\company_dashboard.html:564
+#: .\viewer\templates\company_dashboard.html:571
 msgid "Create New QR Code"
 msgstr "Vytvoriť nový QR kód"
 
-#: .\viewer\templates\company_dashboard.html:579
+#: .\viewer\templates\company_dashboard.html:586
 #: .\viewer\templates\translations_js.html:19
 msgid "Additional Info (Optional)"
 msgstr "Doplňujúce informácie (voliteľné)"
 
-#: .\viewer\templates\company_dashboard.html:585
-#: .\viewer\templates\company_dashboard.html:618
-#: .\viewer\templates\company_dashboard.html:652
-#: .\viewer\templates\company_settings.html:137
+#: .\viewer\templates\company_dashboard.html:592
+#: .\viewer\templates\company_dashboard.html:625
+#: .\viewer\templates\company_dashboard.html:659
+#: .\viewer\templates\company_settings.html:258
 #: .\viewer\templates\magazine_dashboard.html:113
 #: .\viewer\templates\magazine_editor.html:338
 #: .\viewer\templates\translations_js.html:8
 msgid "Cancel"
 msgstr "Zrušiť"
 
-#: .\viewer\templates\company_dashboard.html:597
+#: .\viewer\templates\company_dashboard.html:604
 msgid "Register New Employee"
 msgstr "Registrovať nového zamestnanca"
 
-#: .\viewer\templates\company_dashboard.html:612
+#: .\viewer\templates\company_dashboard.html:619
 #: .\viewer\templates\company_login.html:33
-#: .\viewer\templates\company_register.html:39
-#: .\viewer\templates\company_settings.html:151
+#: .\viewer\templates\company_register.html:47
+#: .\viewer\templates\company_settings.html:272
 #: .\viewer\templates\translations_js.html:41
 #: .\viewer\templates\user_login.html:33
 msgid "Password"
 msgstr "Heslo"
 
-#: .\viewer\templates\company_dashboard.html:619
-#: .\viewer\templates\company_register.html:93
+#: .\viewer\templates\company_dashboard.html:626
+#: .\viewer\templates\company_register.html:181
 #: .\viewer\templates\translations_js.html:43
 msgid "Register"
 msgstr "Registrovať"
 
-#: .\viewer\templates\company_dashboard.html:646
+#: .\viewer\templates\company_dashboard.html:653
 msgid "Password (leave blank to keep current)"
 msgstr "Heslo (nechajte prázdne pre ponechanie súčasného)"
 
@@ -2382,37 +2400,110 @@ msgstr "Zaregistrujte svoju firmu"
 msgid "Create an account to start managing QR codes"
 msgstr "Vytvorte si účet a začnite spravovať QR kódy"
 
-#: .\viewer\templates\company_register.html:27
+#: .\viewer\templates\company_register.html:30
+msgid "Required Information"
+msgstr "Požadované informácie"
+
+#: .\viewer\templates\company_register.html:35
 #: .\viewer\templates\company_settings.html:48
 msgid "Company Name"
 msgstr "Názov firmy"
 
-#: .\viewer\templates\company_register.html:48
+#: .\viewer\templates\company_register.html:56
 #: .\viewer\templates\company_reset_password.html:67
 #: .\viewer\templates\translations_js.html:42
 msgid "Confirm Password"
 msgstr "Potvrdiť heslo"
 
-#: .\viewer\templates\company_register.html:59
+#: .\viewer\templates\company_register.html:70
+msgid "Company Details"
+msgstr "Detaily spoločnosti"
+
+#: .\viewer\templates\company_register.html:71
+#: .\viewer\templates\company_settings.html:74
+#: .\viewer\templates\company_settings.html:87
+#: .\viewer\templates\company_settings.html:103
+#: .\viewer\templates\company_settings.html:119
+#: .\viewer\templates\company_settings.html:132
+#: .\viewer\templates\company_settings.html:148
+#: .\viewer\templates\company_settings.html:161
+#: .\viewer\templates\company_settings.html:177
+msgid "Optional"
+msgstr "Voliteľné"
+
+#: .\viewer\templates\company_register.html:77
+#: .\viewer\templates\company_settings.html:66
+msgid "Company ID"
+msgstr "IČO"
+
+#: .\viewer\templates\company_register.html:83
+#: .\viewer\templates\company_settings.html:79
+msgid "VAT Number"
+msgstr "DIČ"
+
+#: .\viewer\templates\company_register.html:90
+#: .\viewer\templates\company_settings.html:95
+#: .\viewer\templates\translations_js.html:24
+msgid "Phone"
+msgstr "Telefón"
+
+#: .\viewer\templates\company_register.html:97
+#: .\viewer\templates\company_settings.html:111
+msgid "Street"
+msgstr "Ulica"
+
+#: .\viewer\templates\company_register.html:103
+#: .\viewer\templates\company_settings.html:124
+msgid "Number"
+msgstr "Číslo"
+
+#: .\viewer\templates\company_register.html:111
+#: .\viewer\templates\company_settings.html:140
+msgid "ZIP Code"
+msgstr "PSČ"
+
+#: .\viewer\templates\company_register.html:117
+#: .\viewer\templates\company_settings.html:153
+msgid "City"
+msgstr "Mesto"
+
+#: .\viewer\templates\company_register.html:124
+#: .\viewer\templates\company_settings.html:169
+msgid "State"
+msgstr "Štát"
+
+#: .\viewer\templates\company_register.html:135
+#: .\viewer\templates\magazine_editor.html:38 .\viewer\templates\navbar.html:34
+#: .\viewer\templates\navbar.html:322
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: .\viewer\templates\company_register.html:142
 msgid "Automatic lunch breaks"
 msgstr "Automatické obedobvé prestávky"
 
-#: .\viewer\templates\company_register.html:67
+#: .\viewer\templates\company_register.html:146
+msgid ""
+"Automatically deduct lunch break time from work hours if employee doesn't "
+"scan a break QR code"
+msgstr ""
+
+#: .\viewer\templates\company_register.html:153
 #: .\viewer\templates\translations_js.html:54
 msgid "Enable notifications"
 msgstr "Povoliť notifikácie"
 
-#: .\viewer\templates\company_register.html:86
-#: .\viewer\templates\company_settings.html:123
+#: .\viewer\templates\company_register.html:172
+#: .\viewer\templates\company_settings.html:244
 #: .\viewer\templates\translations_js.html:69
 msgid "Vacation/Absence"
-msgstr "Dovolenka/Neprítomnosť"
+msgstr "Dovolenka/Absencia"
 
-#: .\viewer\templates\company_register.html:99
+#: .\viewer\templates\company_register.html:187
 msgid "Already have an account?"
 msgstr "Už máte účet?"
 
-#: .\viewer\templates\company_register.html:101
+#: .\viewer\templates\company_register.html:189
 msgid "Login Here"
 msgstr "Prihláste sa tu"
 
@@ -2452,11 +2543,6 @@ msgstr "Nové heslo"
 msgid "Back to Login"
 msgstr "Späť na prihlásenie"
 
-#: .\viewer\templates\company_settings.html:5
-#: .\viewer\templates\company_settings.html:15
-msgid "Company Settings"
-msgstr "Nastavenia spoločnosti"
-
 #: .\viewer\templates\company_settings.html:21
 msgid "Company Profile"
 msgstr "Profil spoločnosti"
@@ -2477,46 +2563,46 @@ msgstr ""
 msgid "Basic Information"
 msgstr "Základné informácie"
 
-#: .\viewer\templates\company_settings.html:64
+#: .\viewer\templates\company_settings.html:185
 #: .\viewer\templates\company_user_details.html:71
 #: .\viewer\templates\translations_js.html:66
 #: .\viewer\templates\user_dashboard.html:61
 msgid "Work Settings"
 msgstr "Pracovné nastavenia"
 
-#: .\viewer\templates\company_settings.html:69
+#: .\viewer\templates\company_settings.html:190
 msgid "Automatic Lunch Breaks"
 msgstr "Automatické obedové prestávky"
 
-#: .\viewer\templates\company_settings.html:73
+#: .\viewer\templates\company_settings.html:194
 msgid "Enabled"
 msgstr "Zapnuté"
 
-#: .\viewer\templates\company_settings.html:76
+#: .\viewer\templates\company_settings.html:197
 #: .\viewer\templates\company_user_details.html:94
 #: .\viewer\templates\user_dashboard.html:84
 msgid "Disabled"
 msgstr "Vypnuté"
 
-#: .\viewer\templates\company_settings.html:85
+#: .\viewer\templates\company_settings.html:206
 #: .\viewer\templates\landing.html:160
 msgid "Email Notifications"
 msgstr "Emailové notifikácie"
 
-#: .\viewer\templates\company_settings.html:133
+#: .\viewer\templates\company_settings.html:254
 msgid "Save Changes"
 msgstr "Uložiť zmeny"
 
-#: .\viewer\templates\company_settings.html:147
+#: .\viewer\templates\company_settings.html:268
 #: .\viewer\templates\translations_js.html:65
 msgid "Security"
 msgstr "Bezpečnosť"
 
-#: .\viewer\templates\company_settings.html:154
+#: .\viewer\templates\company_settings.html:275
 msgid "Reset your password by receiving a secure link via email"
 msgstr "Obnovte svoje heslo prijaním bezpečného odkazu cez email"
 
-#: .\viewer\templates\company_settings.html:159
+#: .\viewer\templates\company_settings.html:280
 msgid "Request Password Reset"
 msgstr "Požiadať o obnovenie hesla"
 
@@ -2559,7 +2645,7 @@ msgstr "Obedová prestávka"
 #: .\viewer\templates\company_user_details.html:105
 #: .\viewer\templates\user_dashboard.html:95
 msgid "Absences in"
-msgstr "Neprítomnosti v"
+msgstr "Absencie v"
 
 #: .\viewer\templates\company_user_details.html:135
 #: .\viewer\templates\translations_js.html:67
@@ -2580,7 +2666,7 @@ msgstr "Upraviť QR kódy"
 #: .\viewer\templates\company_user_details.html:176
 #: .\viewer\templates\user_dashboard.html:166
 msgid "Edit Absences"
-msgstr "Upraviť neprítomnosti"
+msgstr "Upraviť absenciu"
 
 #: .\viewer\templates\company_user_details.html:194
 #: .\viewer\templates\user_dashboard.html:184
@@ -2592,49 +2678,49 @@ msgstr "Poloha"
 msgid "Hide Details"
 msgstr "Skryť detaily"
 
-#: .\viewer\templates\company_user_details.html:342
-#: .\viewer\templates\company_user_details.html:389
+#: .\viewer\templates\company_user_details.html:344
+#: .\viewer\templates\company_user_details.html:393
 #: .\viewer\templates\qr_scans.html:104 .\viewer\templates\qr_scans.html:151
-#: .\viewer\templates\user_dashboard.html:331
-#: .\viewer\templates\user_dashboard.html:378
+#: .\viewer\templates\user_dashboard.html:333
+#: .\viewer\templates\user_dashboard.html:382
 #: .\viewer\templates\user_scan_qr.html:41
 msgid "Break Start"
 msgstr "Začiatok prestávky"
 
-#: .\viewer\templates\company_user_details.html:344
-#: .\viewer\templates\company_user_details.html:391
+#: .\viewer\templates\company_user_details.html:346
+#: .\viewer\templates\company_user_details.html:395
 #: .\viewer\templates\qr_scans.html:106 .\viewer\templates\qr_scans.html:153
-#: .\viewer\templates\user_dashboard.html:333
-#: .\viewer\templates\user_dashboard.html:380
+#: .\viewer\templates\user_dashboard.html:335
+#: .\viewer\templates\user_dashboard.html:384
 #: .\viewer\templates\user_scan_qr.html:47
 msgid "Break End"
 msgstr "Koniec prestávky"
 
-#: .\viewer\templates\company_user_details.html:363
-#: .\viewer\templates\company_user_details.html:418
+#: .\viewer\templates\company_user_details.html:365
+#: .\viewer\templates\company_user_details.html:422
 #: .\viewer\templates\qr_scans.html:125 .\viewer\templates\qr_scans.html:180
-#: .\viewer\templates\user_dashboard.html:352
-#: .\viewer\templates\user_dashboard.html:407
+#: .\viewer\templates\user_dashboard.html:354
+#: .\viewer\templates\user_dashboard.html:411
 msgid "No scans found"
 msgstr "Zatiaľ žiadne skenovania"
 
-#: .\viewer\templates\company_user_details.html:534
-#: .\viewer\templates\company_user_details.html:614
+#: .\viewer\templates\company_user_details.html:538
+#: .\viewer\templates\company_user_details.html:618
 msgid "No vacations found"
 msgstr "Žiadne absencie nenájdené"
 
-#: .\viewer\templates\company_user_details.html:561
-#: .\viewer\templates\user_dashboard.html:531
+#: .\viewer\templates\company_user_details.html:565
+#: .\viewer\templates\user_dashboard.html:535
 msgid "Days:"
 msgstr "Dni:"
 
-#: .\viewer\templates\company_user_details.html:565
-#: .\viewer\templates\user_dashboard.html:535
+#: .\viewer\templates\company_user_details.html:569
+#: .\viewer\templates\user_dashboard.html:539
 msgid "Type:"
 msgstr "Typ:"
 
-#: .\viewer\templates\company_user_details.html:581
-#: .\viewer\templates\user_dashboard.html:551
+#: .\viewer\templates\company_user_details.html:585
+#: .\viewer\templates\user_dashboard.html:555
 msgid "Status:"
 msgstr "Stav práce"
 
@@ -2870,7 +2956,7 @@ msgid ""
 "management, QR codes, and absence approvals."
 msgstr ""
 "Detailný systém oprávnení pre manažérov. Kontrola prístupu k správe "
-"zamestnancov, QR kódom a schvaľovaniu neprítomností."
+"zamestnancov, QR kódom a schvaľovaniu absencií."
 
 #: .\viewer\templates\landing.html:197
 msgid "Employee management permissions"
@@ -2882,7 +2968,7 @@ msgstr "Práva na vytváranie a úpravu QR kódov"
 
 #: .\viewer\templates\landing.html:199
 msgid "Absence approval authorization"
-msgstr "Autorizácia schvaľovania neprítomností"
+msgstr "Autorizácia schvaľovania absencií"
 
 #: .\viewer\templates\landing.html:200
 msgid "Company settings modification control"
@@ -3082,11 +3168,6 @@ msgstr "Chyba pri odstraňovaní magazínu"
 #: .\viewer\templates\magazine_editor.html:5
 msgid "Editor"
 msgstr "Editor"
-
-#: .\viewer\templates\magazine_editor.html:38 .\viewer\templates\navbar.html:34
-#: .\viewer\templates\navbar.html:322
-msgid "Settings"
-msgstr "Nastavenia"
 
 #: .\viewer\templates\magazine_editor.html:44
 #: .\viewer\templates\translations_js.html:145
@@ -3443,7 +3524,7 @@ msgid "scans"
 msgstr "skenovaní"
 
 #: .\viewer\templates\password_reset_email.html:7
-#: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1627
+#: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1657
 msgid "Password Reset Request"
 msgstr "Žiadosť o obnovenie hesla"
 
@@ -3583,11 +3664,7 @@ msgstr "Poloha QR kódu"
 
 #: .\viewer\templates\translations_js.html:23
 msgid "Personal ID"
-msgstr "Rodné číslo"
-
-#: .\viewer\templates\translations_js.html:24
-msgid "Phone"
-msgstr "Telefón"
+msgstr "Osobné číslo"
 
 #: .\viewer\templates\translations_js.html:25
 msgid "Birth Date"
@@ -3667,7 +3744,7 @@ msgstr "Môže upravovať QR kódy"
 
 #: .\viewer\templates\translations_js.html:53
 msgid "Can edit absences"
-msgstr "Môže upravovať neprítomnosti"
+msgstr "Môže upravovať absencie"
 
 #: .\viewer\templates\translations_js.html:57
 msgid "Lunch break start"
@@ -3777,7 +3854,7 @@ msgstr "Naskenovať ďalší"
 msgid "Scanned At"
 msgstr "Naskenované o"
 
-#: .\viewer\templates\translations_js.html:105 .\viewer\views.py:565
+#: .\viewer\templates\translations_js.html:105 .\viewer\views.py:572
 msgid "Scan recorded successfully!"
 msgstr "Skenovanie úspešne zaznamenané!"
 
@@ -3785,89 +3862,88 @@ msgstr "Skenovanie úspešne zaznamenané!"
 msgid "Scan Recorded"
 msgstr "Skenovanie zaznamenané"
 
-#: .\viewer\templates\translations_js.html:107
-#: .\viewer\templates\user_scan_qr.html:84
-msgid "Home Office Scan"
-msgstr "Skenovanie z domu"
-
-#: .\viewer\templates\translations_js.html:108 .\viewer\views.py:521
-msgid "Home office scan recorded successfully!"
-msgstr "Skenovanie z domu bolo úspešne zaznamenané!"
-
-#: .\viewer\templates\translations_js.html:111
+#: .\viewer\templates\translations_js.html:109
 msgid "Camera permission denied"
 msgstr "Povolenie pre kameru zamietnuté"
 
-#: .\viewer\templates\translations_js.html:112
+#: .\viewer\templates\translations_js.html:110
 msgid "Camera not supported"
 msgstr "Kamera nie je podporovaná"
 
-#: .\viewer\templates\translations_js.html:113
+#: .\viewer\templates\translations_js.html:111
 msgid "Permissions Granted"
 msgstr "Povolenia udelené"
 
-#: .\viewer\templates\translations_js.html:114
+#: .\viewer\templates\translations_js.html:112
 msgid "You can now scan QR codes"
 msgstr "Teraz môžete skenovať QR kódy"
 
-#: .\viewer\templates\translations_js.html:115
+#: .\viewer\templates\translations_js.html:113
 msgid "Permission Error"
 msgstr "Chyba povolenia"
 
-#: .\viewer\templates\translations_js.html:116
-#: .\viewer\templates\user_scan_qr.html:106
+#: .\viewer\templates\translations_js.html:114
+#: .\viewer\templates\user_scan_qr.html:112
 msgid "Grant Permissions"
 msgstr "Udeliť povolenia"
 
-#: .\viewer\templates\translations_js.html:117
+#: .\viewer\templates\translations_js.html:115
 msgid "Requesting permissions..."
 msgstr "Žiadam o povolenia..."
 
-#: .\viewer\templates\translations_js.html:118
+#: .\viewer\templates\translations_js.html:116
 #: .\viewer\templates\user_scan_qr.html:78
 msgid "Start Scanner"
 msgstr "Spustiť skener"
 
-#: .\viewer\templates\translations_js.html:119
-#: .\viewer\templates\user_scan_qr.html:115
+#: .\viewer\templates\translations_js.html:117
+#: .\viewer\templates\user_scan_qr.html:121
 msgid "Processing scan..."
 msgstr "Spracuvávam sken..."
 
-#: .\viewer\templates\translations_js.html:120
+#: .\viewer\templates\translations_js.html:118
 msgid "Initializing scanner..."
 msgstr "Inicializujem skener..."
 
-#: .\viewer\templates\translations_js.html:121
+#: .\viewer\templates\translations_js.html:119
 msgid "Preparing..."
 msgstr "Pripravujem..."
 
-#: .\viewer\templates\translations_js.html:122
+#: .\viewer\templates\translations_js.html:120
 msgid "Please enable location"
 msgstr "Prosím povoľte polohu"
 
-#: .\viewer\templates\translations_js.html:123
+#: .\viewer\templates\translations_js.html:121
 msgid "Confirm Home Office"
-msgstr "Potvrdiť prácu z domu"
+msgstr "Potvrďte prácu z domu"
 
-#: .\viewer\templates\translations_js.html:124
+#: .\viewer\templates\translations_js.html:122
 msgid "Are you sure you want to scan from home office?"
 msgstr "Naozaj chcete naskenovať z domu?"
 
+#: .\viewer\templates\translations_js.html:123
+msgid "Confirm Business Trip"
+msgstr "Potvrdiť pracovnú cestu"
+
+#: .\viewer\templates\translations_js.html:124
+msgid "Are you sure you want to scan from business trip?"
+msgstr "Naozaj chcete naskenovať z pracovnej cesty?"
+
 #: .\viewer\templates\translations_js.html:129
 msgid "Adding absence..."
-msgstr "Pridávam neprítomnosť..."
+msgstr "Pridávam absenciu..."
 
 #: .\viewer\templates\translations_js.html:130
 msgid "Updating absence..."
-msgstr "Aktualizujem neprítomnosť..."
+msgstr "Aktualizujem absenciu..."
 
 #: .\viewer\templates\translations_js.html:131
 msgid "Deleting absence..."
-msgstr "Mažem neprítomnosť..."
+msgstr "Mažem absenciu..."
 
 #: .\viewer\templates\translations_js.html:132
 msgid "Approving absence..."
-msgstr "Schvaľujem neprítomnosť..."
+msgstr "Schvaľujem absenciu..."
 
 #: .\viewer\templates\translations_js.html:135
 msgid "GPS Coordinates"
@@ -4013,9 +4089,9 @@ msgstr "Chyba pri odstraňovaní obrázka"
 msgid "OK"
 msgstr "OK"
 
-#: .\viewer\templates\user_dashboard.html:562
+#: .\viewer\templates\user_dashboard.html:566
 msgid "Delete Absence"
-msgstr "Zmazať neprítomnosť"
+msgstr "Zmazať absenciu"
 
 #: .\viewer\templates\user_login.html:20
 msgid "Access your company's QR codes"
@@ -4045,15 +4121,23 @@ msgstr "Prosím vyberte typ skenovania"
 msgid "Align QR code within the frame"
 msgstr "Zarovnajte QR kód do rámca"
 
-#: .\viewer\templates\user_scan_qr.html:91
+#: .\viewer\templates\user_scan_qr.html:84
+msgid "Home Office Scan"
+msgstr "Skenovanie z domu"
+
+#: .\viewer\templates\user_scan_qr.html:90
+msgid "Business Trip Scan"
+msgstr ""
+
+#: .\viewer\templates\user_scan_qr.html:97
 msgid "Stop Scanner"
 msgstr "Zastaviť skener"
 
-#: .\viewer\templates\user_scan_qr.html:101
+#: .\viewer\templates\user_scan_qr.html:107
 msgid "Camera & Location Required"
 msgstr "Kamera a poloha sú povinné"
 
-#: .\viewer\templates\user_scan_qr.html:103
+#: .\viewer\templates\user_scan_qr.html:109
 msgid ""
 "To scan QR codes and record your location, we need permission to access your "
 "camera and location."
@@ -4088,7 +4172,7 @@ msgstr "Žiadosť o prácu z domu pre %(name)s bola zrušená."
 #: .\viewer\templates\vacation_notification.html:57
 #, python-format
 msgid "The absence request for %(name)s has been cancelled."
-msgstr "Žiadosť o neprítomnosť pre %(name)s bola zrušená."
+msgstr "Žiadosť o absenciu pre %(name)s bola zrušená."
 
 #: .\viewer\templates\vacation_notification.html:62
 #, python-format
@@ -4113,7 +4197,7 @@ msgstr "Žiadosť o prácu z domu pre %(name)s bola schválená."
 #: .\viewer\templates\vacation_notification.html:70
 #, python-format
 msgid "The absence request for %(name)s has been approved."
-msgstr "Žiadosť o neprítomnosť pre %(name)s bola schválená."
+msgstr "Žiadosť o absenciu pre %(name)s bola schválená."
 
 #: .\viewer\templates\vacation_notification.html:75
 #, python-format
@@ -4165,78 +4249,85 @@ msgid ""
 "You received this email because you have vacation notifications enabled."
 msgstr "Obdržali ste tento email pretože máte zapnuté notifikácie dovoleniek."
 
-#: .\viewer\views.py:36 .\viewer\views.py:959
+#: .\viewer\views.py:36 .\viewer\views.py:966
 msgid "Please login as a company or manager"
 msgstr "Prosím prihláste sa ako firma"
 
-#: .\viewer\views.py:326 .\viewer\views.py:484
+#: .\viewer\views.py:326 .\viewer\views.py:485
 msgid "Please login as a user"
 msgstr "Prosím prihláste sa ako používateľ"
 
-#: .\viewer\views.py:528 .\viewer\views.py:572
+#: .\viewer\views.py:527
+msgid "{} scan recorded successfully!"
+msgstr "{} skenovanie úspešne zaznamenané!"
+
+#: .\viewer\views.py:534 .\viewer\views.py:579
 msgid "Address not available"
 msgstr "Adresa nie je dostupná"
 
-#: .\viewer\views.py:538
+#: .\viewer\views.py:544
 msgid "QR code not found or inactive"
 msgstr "QR kód nebol nájdený alebo je neaktívny"
 
-#: .\viewer\views.py:544
+#: .\viewer\views.py:550
 msgid "This QR code does not belong to your company"
 msgstr "Tento QR kód nepatrí vašej firme"
 
-#: .\viewer\views.py:744
+#: .\viewer\views.py:751
 msgid "User not found or inactive"
 msgstr "QR kód nebol nájdený alebo je neaktívny"
 
-#: .\viewer\views.py:1402
+#: .\viewer\views.py:1414
 msgid "Invalid chart type"
 msgstr "Neplatný typ grafu"
 
-#: .\viewer\views.py:1410
+#: .\viewer\views.py:1422
 msgid "Please login to access this page"
 msgstr "Prosím prihláste sa pre prístup na túto stránku"
 
-#: .\viewer\views.py:1544
+#: .\viewer\views.py:1566
 msgid "Company name is required"
 msgstr "Názov spoločnosti je povinný"
 
-#: .\viewer\views.py:1567
+#: .\viewer\views.py:1597
 msgid "Settings saved successfully"
 msgstr "Nastavenia úspešne uložené"
 
-#: .\viewer\views.py:1572
+#: .\viewer\views.py:1602
 msgid "An error occurred while saving settings"
 msgstr "Vyskytla sa chyba pri ukladaní nastavení"
 
-#: .\viewer\views.py:1647
+#: .\viewer\views.py:1677
 msgid "Password reset link has been sent to your email"
 msgstr "Odkaz na obnovenie hesla bol odoslaný na váš email"
 
-#: .\viewer\views.py:1653
+#: .\viewer\views.py:1683
 msgid "Failed to send password reset email"
 msgstr "Nepodarilo sa zaznamenať skenovanie"
 
-#: .\viewer\views.py:1666
+#: .\viewer\views.py:1696
 msgid "This password reset link has expired or is invalid"
 msgstr "Tento odkaz na obnovenie hesla vypršal alebo je neplatný"
 
-#: .\viewer\views.py:1677
+#: .\viewer\views.py:1707
 msgid "Both password fields are required"
 msgstr "Obe polia hesla sú povinné"
 
-#: .\viewer\views.py:1691
+#: .\viewer\views.py:1721
 msgid "Password must be at least 6 characters long"
 msgstr "Heslo musí mať aspoň 6 znakov"
 
-#: .\viewer\views.py:1715
+#: .\viewer\views.py:1745
 msgid ""
 "Password has been reset successfully. Please login with your new password."
 msgstr "Heslo bolo úspešne obnovené. Prosím prihláste sa s novým heslom."
 
-#: .\viewer\views.py:1724
+#: .\viewer\views.py:1754
 msgid "Invalid password reset link"
 msgstr "Neplatný odkaz na obnovenie hesla"
+
+#~ msgid "All fields are required"
+#~ msgstr "Všetky polia sú povinné"
 
 #~ msgid "Yes, cancel"
 #~ msgstr "Áno, zrušiť"

@@ -165,10 +165,29 @@ def generate_dovolenka_pdf_response(
     rc_y = 340
     rc_font_size = 10
     
-    # Department (company)
+    # Department (company) - format: "Company Name, Street Number, IČO" if available
     utvar_x = 68
     utvar_y = 308
-    utvar_font_size = 10
+    utvar_font_size = 9
+    
+    # Build company info string
+    company_parts = []
+    if user.company:
+        company_parts.append(user.company.name)
+        
+        # Add address if street and street_number exist
+        if user.company.street and user.company.street_number:
+            company_parts.append(f"{user.company.street} {user.company.street_number}")
+        
+        # Add ZIP code if exists
+        if user.company.zip_code:
+            company_parts.append(user.company.zip_code)
+        
+        # Add state if exists
+        if user.company.state:
+            company_parts.append(user.company.state)
+    
+    company_info = ", ".join(company_parts) if company_parts else ""
     
     # Calendar year
     year_x = 326
@@ -207,7 +226,7 @@ def generate_dovolenka_pdf_response(
         c.drawString(rc_x, rc_y, user.rc)
     
     c.setFont(font_bold, utvar_font_size)
-    c.drawString(utvar_x, utvar_y, user.company.name if user.company else "")
+    c.drawString(utvar_x, utvar_y, company_info)
     
     c.setFont(font_bold, year_font_size)
     c.drawString(year_x, year_y, str(d_from.year))

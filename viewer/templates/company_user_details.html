@@ -329,6 +329,8 @@
                             <td>
                                 {% if scan.is_home_office %}
                                     <strong><i class="fas fa-home me-1 text-success"></i>{% trans "Home Office" %}</strong>
+                                {% elif scan.is_business_trip %}
+                                    <strong><i class="fas fa-briefcase me-1 text-info"></i>{% trans "Business Trip" %}</strong>
                                 {% else %}
                                     <strong>{{ scan.qr_code.name }}</strong>
                                 {% endif %}
@@ -370,12 +372,14 @@
             
             <!-- Mobile View -->
             <div class="mobile-scan-list d-lg-none">
-                {% for scan in scans_page %}
+                {% for scan in page_obj %}
                 <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% elif scan.scan_type == 'departure' %}departure{% elif scan.scan_type == 'lunch_break_start' %}lunch-start{% else %}lunch-end{% endif %}">
                     <div class="mobile-scan-header">
                         <div class="mobile-scan-title">
                             {% if scan.is_home_office %}
                                 <i class="fas fa-home me-1 text-success"></i>{% trans "Home Office" %}
+                            {% elif scan.is_business_trip %}
+                                <i class="fas fa-briefcase me-1 text-info"></i>{% trans "Business Trip" %}
                             {% else %}
                                 {{ scan.qr_code.name }}
                             {% endif %}
