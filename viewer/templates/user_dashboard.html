@@ -325,8 +325,12 @@
                             <td>
                                 {% if scan.scan_type == 'arrival' %}
                                     <span class="badge bg-success"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}</span>
-                                {% else %}
+                                {% elif scan.scan_type == 'departure' %}
                                     <span class="badge bg-danger"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}</span>
+                                {% elif scan.scan_type == 'lunch_break_start' %}
+                                    <span class="badge bg-warning"><i class="fas fa-utensils me-1"></i>{% trans "Break Start" %}</span>
+                                {% elif scan.scan_type == 'lunch_break_end' %}
+                                    <span class="badge bg-info"><i class="fas fa-coffee me-1"></i>{% trans "Break End" %}</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -356,7 +360,7 @@
             <!-- Mobile View -->
             <div class="mobile-scan-list d-lg-none">
                 {% for scan in page_obj %}
-                <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
+                <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% elif scan.scan_type == 'departure' %}departure{% elif scan.scan_type == 'lunch_break_start' %}lunch-start{% else %}lunch-end{% endif %}">
                     <div class="mobile-scan-header">
                         <div class="mobile-scan-title">
                             {% if scan.is_home_office %}
@@ -365,9 +369,16 @@
                                 {{ scan.qr_code.name }}
                             {% endif %}
                         </div>
-                        <div class="mobile-scan-type {% if scan.scan_type == 'arrival' %}arrival{% else %}departure{% endif %}">
-                            <i class="fas fa-{% if scan.scan_type == 'arrival' %}sign-in-alt{% else %}sign-out-alt{% endif %} me-1"></i>
-                            {% if scan.scan_type == 'arrival' %}{% trans "Arrival" %}{% else %}{% trans "Departure" %}{% endif %}
+                        <div class="mobile-scan-type {% if scan.scan_type == 'arrival' %}arrival{% elif scan.scan_type == 'departure' %}departure{% elif scan.scan_type == 'lunch_break_start' %}lunch-start{% else %}lunch-end{% endif %}">
+                            {% if scan.scan_type == 'arrival' %}
+                                <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
+                            {% elif scan.scan_type == 'departure' %}
+                                <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
+                            {% elif scan.scan_type == 'lunch_break_start' %}
+                                <i class="fas fa-utensils me-1"></i>{% trans "Break Start" %}
+                            {% elif scan.scan_type == 'lunch_break_end' %}
+                                <i class="fas fa-coffee me-1"></i>{% trans "Break End" %}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="mobile-scan-info">

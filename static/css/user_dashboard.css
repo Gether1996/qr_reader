@@ -161,6 +161,14 @@ body {
     border-left-color: #ef4444;
 }
 
+.mobile-scan-card.lunch-start {
+    border-left-color: #f59e0b;
+}
+
+.mobile-scan-card.lunch-end {
+    border-left-color: #8b5cf6;
+}
+
 .mobile-scan-header {
     display: flex;
     justify-content: space-between;
@@ -194,6 +202,16 @@ body {
 .mobile-scan-type.departure {
     background: #fee2e2;
     color: #991b1b;
+}
+
+.mobile-scan-type.lunch-start {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.mobile-scan-type.lunch-end {
+    background: #ddd6fe;
+    color: #5b21b6;
 }
 
 .mobile-scan-info {

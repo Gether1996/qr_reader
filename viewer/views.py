@@ -183,7 +183,8 @@ def company_dashboard(request):
         ).order_by('-timestamp').first()
         
         if last_scan:
-            user.is_at_work = last_scan.scan_type == 'arrival'
+            # User is at work if last scan was arrival or lunch_break_end
+            user.is_at_work = last_scan.scan_type in ['arrival', 'lunch_break_end']
             user.work_location = last_scan.address if last_scan.address else f"{last_scan.latitude}, {last_scan.longitude}"
         else:
             user.is_at_work = False
@@ -1066,7 +1067,8 @@ def company_analytics(request):
             Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company)
         ).order_by('-timestamp').first()
         
-        if last_scan and last_scan.scan_type == 'arrival':
+        # User is at work if last scan was arrival or lunch_break_end
+        if last_scan and last_scan.scan_type in ['arrival', 'lunch_break_end']:
             location = _('Home Office') if last_scan.is_home_office else last_scan.qr_code.name
             currently_in_office.append({
                 'user': user,
@@ -1104,14 +1106,27 @@ def company_analytics(request):
         
         total_hours = 0
         arrival_time = None
+        lunch_start_time = None
         
         for scan in scans:
             if scan.scan_type == 'arrival':
                 arrival_time = scan.timestamp
+            elif scan.scan_type == 'lunch_break_start' and arrival_time:
+                lunch_start_time = scan.timestamp
+            elif scan.scan_type == 'lunch_break_end' and lunch_start_time:
+                lunch_start_time = None  # Reset lunch break
             elif scan.scan_type == 'departure' and arrival_time:
-                work_duration = (scan.timestamp - arrival_time).total_seconds() / 3600
+                departure_time = scan.timestamp
+                work_duration = (departure_time - arrival_time).total_seconds() / 3600
+                
+                # Subtract lunch break duration if applicable
+                if lunch_start_time:
+                    lunch_duration = (departure_time - lunch_start_time).total_seconds() / 3600
+                    work_duration -= lunch_duration
+                
                 total_hours += work_duration
                 arrival_time = None
+                lunch_start_time = None
         
         if total_hours > 0:  # Only include users with hours
             expected_hours = round(user.working_hours * months_fraction, 1)
@@ -1136,14 +1151,27 @@ def company_analytics(request):
         
         total_hours = 0
         arrival_time = None
+        lunch_start_time = None
         
         for scan in scans:
             if scan.scan_type == 'arrival':
                 arrival_time = scan.timestamp
+            elif scan.scan_type == 'lunch_break_start' and arrival_time:
+                lunch_start_time = scan.timestamp
+            elif scan.scan_type == 'lunch_break_end' and lunch_start_time:
+                lunch_start_time = None  # Reset lunch break
             elif scan.scan_type == 'departure' and arrival_time:
-                work_duration = (scan.timestamp - arrival_time).total_seconds() / 3600
+                departure_time = scan.timestamp
+                work_duration = (departure_time - arrival_time).total_seconds() / 3600
+                
+                # Subtract lunch break duration if applicable
+                if lunch_start_time:
+                    lunch_duration = (departure_time - lunch_start_time).total_seconds() / 3600
+                    work_duration -= lunch_duration
+                
                 total_hours += work_duration
                 arrival_time = None
+                lunch_start_time = None
         
         if total_hours > 0:  # Only include users with hours
             current_month_work_hours.append({
@@ -1166,14 +1194,27 @@ def company_analytics(request):
         
         total_hours = 0
         arrival_time = None
+        lunch_start_time = None
         
         for scan in scans:
             if scan.scan_type == 'arrival':
                 arrival_time = scan.timestamp
+            elif scan.scan_type == 'lunch_break_start' and arrival_time:
+                lunch_start_time = scan.timestamp
+            elif scan.scan_type == 'lunch_break_end' and lunch_start_time:
+                lunch_start_time = None  # Reset lunch break
             elif scan.scan_type == 'departure' and arrival_time:
-                work_duration = (scan.timestamp - arrival_time).total_seconds() / 3600
+                departure_time = scan.timestamp
+                work_duration = (departure_time - arrival_time).total_seconds() / 3600
+                
+                # Subtract lunch break duration if applicable
+                if lunch_start_time:
+                    lunch_duration = (departure_time - lunch_start_time).total_seconds() / 3600
+                    work_duration -= lunch_duration
+                
                 total_hours += work_duration
                 arrival_time = None
+                lunch_start_time = None
         
         if total_hours > 0:  # Only include users with hours
             prev_month_work_hours.append({
