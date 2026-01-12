@@ -515,7 +515,7 @@
                                             {% endif %}
                                             {% if can_edit_absences %}
                                             <button type="button" class="action-icon-btn action-btn-edit" 
-                                                    onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}')" title="{% trans 'Edit' %}">
+                                                    onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}', '{{ vacation.time_from|time:'H:i'|default_if_none:'' }}', '{{ vacation.time_to|time:'H:i'|default_if_none:'' }}')" title="{% trans 'Edit' %}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button type="button" class="action-icon-btn action-btn-delete" 
@@ -598,7 +598,7 @@
                                 </button>
                                 {% endif %}
                                 {% if can_edit_absences %}
-                                <button type="button" class="btn btn-sm flex-fill btn-edit-vacation" onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}')">
+                                <button type="button" class="btn btn-sm flex-fill btn-edit-vacation" onclick="editVacationSimple({{ vacation.id }}, {{ user.id }}, '{{ user.name }}', '{{ vacation.date_from|date:'Y-m-d' }}', '{{ vacation.date_to|date:'Y-m-d' }}', '{{ vacation.type|default:'vacation' }}', '{{ vacation.time_from|time:'H:i'|default_if_none:'' }}', '{{ vacation.time_to|time:'H:i'|default_if_none:'' }}')">
                                     <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                                 </button>
                                 <button type="button" class="btn btn-sm btn-danger flex-fill" onclick="deleteVacation({{ vacation.id }}, '{{ user.name }}')">

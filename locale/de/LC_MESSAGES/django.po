@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 20:34+0100\n"
+"POT-Creation-Date: 2026-01-12 08:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Email already registered"
 msgstr "E-Mail ist bereits registriert"
 
 #: .\qr_reader_django\crud.py:69 .\qr_reader_django\crud.py:130
-#: .\viewer\templates\translations_js.html:74
+#: .\viewer\templates\translations_js.html:75
 msgid "Email already exists"
 msgstr "E-Mail existiert bereits"
 
@@ -52,7 +52,7 @@ msgstr "QR-Code nicht gefunden"
 #: .\viewer\templates\company_user_details.html:389
 #: .\viewer\templates\filters_card.html:75 .\viewer\templates\qr_scans.html:100
 #: .\viewer\templates\qr_scans.html:147
-#: .\viewer\templates\translations_js.html:55
+#: .\viewer\templates\translations_js.html:56
 #: .\viewer\templates\user_dashboard.html:190
 #: .\viewer\templates\user_dashboard.html:329
 #: .\viewer\templates\user_dashboard.html:378
@@ -69,7 +69,7 @@ msgstr "Ankunft"
 #: .\viewer\templates\company_user_details.html:391
 #: .\viewer\templates\filters_card.html:76 .\viewer\templates\qr_scans.html:102
 #: .\viewer\templates\qr_scans.html:149
-#: .\viewer\templates\translations_js.html:56
+#: .\viewer\templates\translations_js.html:57
 #: .\viewer\templates\user_dashboard.html:203
 #: .\viewer\templates\user_dashboard.html:331
 #: .\viewer\templates\user_dashboard.html:380
@@ -221,7 +221,7 @@ msgid "QR code deactivated successfully"
 msgstr "QR-Code erfolgreich deaktiviert"
 
 #: .\qr_reader_django\crud_qr_code.py:113
-#: .\viewer\templates\translations_js.html:86
+#: .\viewer\templates\translations_js.html:87
 msgid "Failed to deactivate QR code"
 msgstr "QR-Code konnte nicht deaktiviert werden"
 
@@ -230,7 +230,7 @@ msgid "User created successfully"
 msgstr "Benutzer erfolgreich erstellt"
 
 #: .\qr_reader_django\crud_user.py:149
-#: .\viewer\templates\translations_js.html:32
+#: .\viewer\templates\translations_js.html:33
 msgid "User updated successfully"
 msgstr "Benutzer erfolgreich aktualisiert"
 
@@ -497,7 +497,7 @@ msgstr ""
 
 #: .\qr_reader_django\login_register_logout.py:38
 #: .\viewer\templates\company_reset_password.html:127
-#: .\viewer\templates\translations_js.html:73 .\viewer\views.py:1714
+#: .\viewer\templates\translations_js.html:74 .\viewer\views.py:1714
 msgid "Passwords do not match"
 msgstr "Passwörter stimmen nicht überein"
 
@@ -1222,13 +1222,13 @@ msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:867
 #: .\viewer\templates\company_dashboard.html:274
-#: .\viewer\templates\translations_js.html:125
+#: .\viewer\templates\translations_js.html:126
 msgid "Yes"
 msgstr ""
 
 #: .\venv\Lib\site-packages\django\forms\widgets.py:868
 #: .\viewer\templates\company_dashboard.html:279
-#: .\viewer\templates\translations_js.html:126
+#: .\viewer\templates\translations_js.html:127
 msgid "No"
 msgstr ""
 
@@ -1885,7 +1885,7 @@ msgstr "Benutzer"
 #: .\viewer\templates\audit_logs.html:172
 #: .\viewer\templates\audit_logs.html:218
 #: .\viewer\templates\company_dashboard.html:593
-#: .\viewer\templates\translations_js.html:20
+#: .\viewer\templates\translations_js.html:21
 msgid "Create"
 msgstr "Erstellen"
 
@@ -1912,9 +1912,9 @@ msgid "Login"
 msgstr "Anmelden"
 
 #: .\viewer\templates\audit_logs.html:182
-#: .\viewer\templates\audit_logs.html:228 .\viewer\templates\navbar.html:50
-#: .\viewer\templates\navbar.html:133 .\viewer\templates\navbar.html:360
-#: .\viewer\templates\navbar.html:421
+#: .\viewer\templates\audit_logs.html:228 .\viewer\templates\navbar.html:52
+#: .\viewer\templates\navbar.html:137 .\viewer\templates\navbar.html:364
+#: .\viewer\templates\navbar.html:425
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -1924,7 +1924,7 @@ msgid "No logs found"
 msgstr "Keine Protokolle gefunden"
 
 #: .\viewer\templates\company_analytics.html:5
-#: .\viewer\templates\navbar.html:30 .\viewer\templates\navbar.html:311
+#: .\viewer\templates\navbar.html:32 .\viewer\templates\navbar.html:315
 msgid "Analytics"
 msgstr "Analytik"
 
@@ -2031,14 +2031,14 @@ msgstr "Arbeitsstunden"
 #: .\viewer\templates\company_user_details.html:147
 #: .\viewer\templates\qr_scans.html:35 .\viewer\templates\qr_scans.html:64
 #: .\viewer\templates\scan_notification.html:51
-#: .\viewer\templates\translations_js.html:48
+#: .\viewer\templates\translations_js.html:49
 #: .\viewer\templates\user_dashboard.html:137
 #: .\viewer\templates\vacation_notification.html:95
 msgid "Employee"
 msgstr "Mitarbeiter"
 
 #: .\viewer\templates\company_dashboard.html:5
-#: .\viewer\templates\navbar.html:123 .\viewer\templates\navbar.html:396
+#: .\viewer\templates\navbar.html:127 .\viewer\templates\navbar.html:400
 msgid "Company Dashboard"
 msgstr "Unternehmens-Dashboard"
 
@@ -2054,7 +2054,7 @@ msgid "Create QR Code"
 msgstr "QR-Code erstellen"
 
 #: .\viewer\templates\company_dashboard.html:47
-#: .\viewer\templates\translations_js.html:26
+#: .\viewer\templates\translations_js.html:27
 msgid "Register Employee"
 msgstr "Mitarbeiter registrieren"
 
@@ -2110,7 +2110,7 @@ msgstr "Name"
 #: .\viewer\templates\company_user_details.html:320
 #: .\viewer\templates\qr_scans.html:82
 #: .\viewer\templates\scan_notification.html:67
-#: .\viewer\templates\translations_js.html:18
+#: .\viewer\templates\translations_js.html:19
 #: .\viewer\templates\user_dashboard.html:309
 msgid "Location"
 msgstr "Standort"
@@ -2162,7 +2162,7 @@ msgstr "Anzeigen"
 #: .\viewer\templates\company_login.html:27
 #: .\viewer\templates\company_register.html:41
 #: .\viewer\templates\password_reset_email.html:79
-#: .\viewer\templates\translations_js.html:40
+#: .\viewer\templates\translations_js.html:41
 #: .\viewer\templates\user_login.html:27
 msgid "Email"
 msgstr "E-Mail"
@@ -2175,7 +2175,7 @@ msgstr "Bei der Arbeit"
 
 #: .\viewer\templates\company_dashboard.html:263
 #: .\viewer\templates\company_user_details.html:140
-#: .\viewer\templates\translations_js.html:47
+#: .\viewer\templates\translations_js.html:48
 #: .\viewer\templates\user_dashboard.html:130
 msgid "Role"
 msgstr "Rolle"
@@ -2183,7 +2183,7 @@ msgstr "Rolle"
 #: .\viewer\templates\company_dashboard.html:284
 #: .\viewer\templates\company_dashboard.html:327
 #: .\viewer\templates\company_user_details.html:144
-#: .\viewer\templates\translations_js.html:49
+#: .\viewer\templates\translations_js.html:50
 #: .\viewer\templates\user_dashboard.html:134
 msgid "Manager"
 msgstr "Manager"
@@ -2195,7 +2195,7 @@ msgstr "Details anzeigen"
 #: .\viewer\templates\company_dashboard.html:296
 #: .\viewer\templates\company_dashboard.html:637
 #: .\viewer\templates\company_user_details.html:38
-#: .\viewer\templates\translations_js.html:77
+#: .\viewer\templates\translations_js.html:78
 msgid "Edit Employee"
 msgstr "Mitarbeiter bearbeiten"
 
@@ -2334,7 +2334,7 @@ msgid "Create New QR Code"
 msgstr "Neuen QR-Code erstellen"
 
 #: .\viewer\templates\company_dashboard.html:586
-#: .\viewer\templates\translations_js.html:19
+#: .\viewer\templates\translations_js.html:20
 msgid "Additional Info (Optional)"
 msgstr "Zusätzliche Informationen (Optional)"
 
@@ -2356,14 +2356,14 @@ msgstr "Neuen Mitarbeiter registrieren"
 #: .\viewer\templates\company_login.html:33
 #: .\viewer\templates\company_register.html:47
 #: .\viewer\templates\company_settings.html:272
-#: .\viewer\templates\translations_js.html:41
+#: .\viewer\templates\translations_js.html:42
 #: .\viewer\templates\user_login.html:33
 msgid "Password"
 msgstr "Passwort"
 
 #: .\viewer\templates\company_dashboard.html:626
 #: .\viewer\templates\company_register.html:181
-#: .\viewer\templates\translations_js.html:43
+#: .\viewer\templates\translations_js.html:44
 msgid "Register"
 msgstr "Registrieren"
 
@@ -2372,8 +2372,8 @@ msgid "Password (leave blank to keep current)"
 msgstr "Passwort (leer lassen, um aktuelles zu behalten)"
 
 #: .\viewer\templates\company_login.html:5
-#: .\viewer\templates\company_login.html:19 .\viewer\templates\navbar.html:241
-#: .\viewer\templates\navbar.html:447
+#: .\viewer\templates\company_login.html:19 .\viewer\templates\navbar.html:245
+#: .\viewer\templates\navbar.html:451
 msgid "Company Login"
 msgstr "Firmen-Anmeldung"
 
@@ -2409,7 +2409,7 @@ msgstr "Firmenname"
 
 #: .\viewer\templates\company_register.html:56
 #: .\viewer\templates\company_reset_password.html:67
-#: .\viewer\templates\translations_js.html:42
+#: .\viewer\templates\translations_js.html:43
 msgid "Confirm Password"
 msgstr "Passwort bestätigen"
 
@@ -2441,7 +2441,7 @@ msgstr "USt-IdNr."
 
 #: .\viewer\templates\company_register.html:90
 #: .\viewer\templates\company_settings.html:95
-#: .\viewer\templates\translations_js.html:24
+#: .\viewer\templates\translations_js.html:25
 msgid "Phone"
 msgstr "Telefon"
 
@@ -2471,8 +2471,8 @@ msgid "State"
 msgstr "Bundesland"
 
 #: .\viewer\templates\company_register.html:135
-#: .\viewer\templates\magazine_editor.html:38 .\viewer\templates\navbar.html:34
-#: .\viewer\templates\navbar.html:322
+#: .\viewer\templates\magazine_editor.html:38 .\viewer\templates\navbar.html:36
+#: .\viewer\templates\navbar.html:326
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -2487,13 +2487,13 @@ msgid ""
 msgstr ""
 
 #: .\viewer\templates\company_register.html:153
-#: .\viewer\templates\translations_js.html:54
+#: .\viewer\templates\translations_js.html:55
 msgid "Enable notifications"
 msgstr "Benachrichtigungen aktivieren"
 
 #: .\viewer\templates\company_register.html:172
 #: .\viewer\templates\company_settings.html:244
-#: .\viewer\templates\translations_js.html:69
+#: .\viewer\templates\translations_js.html:70
 msgid "Vacation/Absence"
 msgstr "Urlaub/Abwesenheit"
 
@@ -2509,7 +2509,7 @@ msgstr "Hier anmelden"
 #: .\viewer\templates\company_reset_password.html:18
 #: .\viewer\templates\company_reset_password.html:80
 #: .\viewer\templates\password_reset_email.html:40
-#: .\viewer\templates\translations_js.html:155
+#: .\viewer\templates\translations_js.html:156
 msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
@@ -2557,13 +2557,13 @@ msgstr ""
 "wenn Sie sie aktualisieren müssen."
 
 #: .\viewer\templates\company_settings.html:43
-#: .\viewer\templates\translations_js.html:64
+#: .\viewer\templates\translations_js.html:65
 msgid "Basic Information"
 msgstr "Grundinformationen"
 
 #: .\viewer\templates\company_settings.html:185
 #: .\viewer\templates\company_user_details.html:71
-#: .\viewer\templates\translations_js.html:66
+#: .\viewer\templates\translations_js.html:67
 #: .\viewer\templates\user_dashboard.html:61
 msgid "Work Settings"
 msgstr "Arbeitseinstellungen"
@@ -2592,7 +2592,7 @@ msgid "Save Changes"
 msgstr "Änderungen speichern"
 
 #: .\viewer\templates\company_settings.html:268
-#: .\viewer\templates\translations_js.html:65
+#: .\viewer\templates\translations_js.html:66
 msgid "Security"
 msgstr "Sicherheit"
 
@@ -2637,7 +2637,7 @@ msgid "Holidays Per Year"
 msgstr "Feiertage pro Jahr"
 
 #: .\viewer\templates\company_user_details.html:86
-#: .\viewer\templates\translations_js.html:60
+#: .\viewer\templates\translations_js.html:61
 #: .\viewer\templates\user_dashboard.html:76
 msgid "Lunch Break"
 msgstr "Mittagspause"
@@ -2648,7 +2648,7 @@ msgid "Absences in"
 msgstr "Abwesenheiten in"
 
 #: .\viewer\templates\company_user_details.html:135
-#: .\viewer\templates\translations_js.html:67
+#: .\viewer\templates\translations_js.html:68
 #: .\viewer\templates\user_dashboard.html:125
 msgid "Role & Permissions"
 msgstr "Rolle & Berechtigungen"
@@ -2778,8 +2778,8 @@ msgstr ""
 "Sehen Sie die QR-Codes Ihres Unternehmens und greifen Sie auf Scan-Historie "
 "und Analytik zu"
 
-#: .\viewer\templates\landing.html:58 .\viewer\templates\navbar.html:245
-#: .\viewer\templates\navbar.html:458 .\viewer\templates\user_login.html:5
+#: .\viewer\templates\landing.html:58 .\viewer\templates\navbar.html:249
+#: .\viewer\templates\navbar.html:462 .\viewer\templates\user_login.html:5
 #: .\viewer\templates\user_login.html:19
 msgid "User Login"
 msgstr "Benutzer-Anmeldung"
@@ -3173,7 +3173,7 @@ msgid "Editor"
 msgstr "Editor"
 
 #: .\viewer\templates\magazine_editor.html:44
-#: .\viewer\templates\translations_js.html:145
+#: .\viewer\templates\translations_js.html:146
 msgid "Print"
 msgstr "Drucken"
 
@@ -3391,91 +3391,91 @@ msgstr "Inhalt"
 msgid "Page"
 msgstr "Seite"
 
-#: .\viewer\templates\navbar.html:26 .\viewer\templates\navbar.html:114
-#: .\viewer\templates\navbar.html:300 .\viewer\templates\navbar.html:373
+#: .\viewer\templates\navbar.html:20 .\viewer\templates\navbar.html:110
+#: .\viewer\templates\navbar.html:304 .\viewer\templates\navbar.html:377
 #: .\viewer\templates\user_dashboard.html:5
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: .\viewer\templates\navbar.html:45 .\viewer\templates\navbar.html:128
-#: .\viewer\templates\navbar.html:347 .\viewer\templates\navbar.html:408
+#: .\viewer\templates\navbar.html:47 .\viewer\templates\navbar.html:132
+#: .\viewer\templates\navbar.html:351 .\viewer\templates\navbar.html:412
 msgid "Logging"
 msgstr "Protokollierung"
 
-#: .\viewer\templates\navbar.html:118
+#: .\viewer\templates\navbar.html:122
 msgid "Scan QR"
 msgstr "QR scannen"
 
-#: .\viewer\templates\navbar.html:301
+#: .\viewer\templates\navbar.html:305
 msgid "Overview & Statistics"
 msgstr "Übersicht & Statistiken"
 
-#: .\viewer\templates\navbar.html:312
+#: .\viewer\templates\navbar.html:316
 msgid "Charts & Reports"
 msgstr "Diagramme & Berichte"
 
-#: .\viewer\templates\navbar.html:323
+#: .\viewer\templates\navbar.html:327
 msgid "Company Profile & Preferences"
 msgstr "Firmenprofil & Einstellungen"
 
-#: .\viewer\templates\navbar.html:348 .\viewer\templates\navbar.html:409
+#: .\viewer\templates\navbar.html:352 .\viewer\templates\navbar.html:413
 msgid "Activity Logs"
 msgstr "Aktivitätsprotokolle"
 
-#: .\viewer\templates\navbar.html:361 .\viewer\templates\navbar.html:422
+#: .\viewer\templates\navbar.html:365 .\viewer\templates\navbar.html:426
 msgid "Sign out from account"
 msgstr "Vom Konto abmelden"
 
-#: .\viewer\templates\navbar.html:374
+#: .\viewer\templates\navbar.html:378
 msgid "Your QR Codes"
 msgstr "Ihre QR-Codes"
 
-#: .\viewer\templates\navbar.html:384 .\viewer\templates\user_dashboard.html:40
+#: .\viewer\templates\navbar.html:388 .\viewer\templates\user_dashboard.html:40
 #: .\viewer\templates\user_scan_qr.html:5
 msgid "Scan QR Code"
 msgstr "QR-Code scannen"
 
-#: .\viewer\templates\navbar.html:385
+#: .\viewer\templates\navbar.html:389
 msgid "Scan to record location"
 msgstr "Scannen, um Standort aufzuzeichnen"
 
-#: .\viewer\templates\navbar.html:397
+#: .\viewer\templates\navbar.html:401
 msgid "Manage employees & QR codes"
 msgstr "Mitarbeiter & QR-Codes verwalten"
 
-#: .\viewer\templates\navbar.html:434
+#: .\viewer\templates\navbar.html:438
 msgid "Home"
 msgstr "Startseite"
 
-#: .\viewer\templates\navbar.html:435
+#: .\viewer\templates\navbar.html:439
 msgid "Back to homepage"
 msgstr "Zurück zur Startseite"
 
-#: .\viewer\templates\navbar.html:448
+#: .\viewer\templates\navbar.html:452
 msgid "For organizations"
 msgstr "Für Organisationen"
 
-#: .\viewer\templates\navbar.html:459
+#: .\viewer\templates\navbar.html:463
 msgid "For individuals"
 msgstr "Für Einzelpersonen"
 
-#: .\viewer\templates\navbar.html:474
+#: .\viewer\templates\navbar.html:478
 msgid "Dark Mode"
 msgstr "Dunkler Modus"
 
-#: .\viewer\templates\navbar.html:474
+#: .\viewer\templates\navbar.html:478
 msgid "Light Mode"
 msgstr "Heller Modus"
 
-#: .\viewer\templates\navbar.html:475
+#: .\viewer\templates\navbar.html:479
 msgid "Switch to dark theme"
 msgstr "Zu dunklem Thema wechseln"
 
-#: .\viewer\templates\navbar.html:475
+#: .\viewer\templates\navbar.html:479
 msgid "Switch to light theme"
 msgstr "Zu hellem Thema wechseln"
 
-#: .\viewer\templates\navbar.html:486
+#: .\viewer\templates\navbar.html:490
 msgid "Language"
 msgstr "Sprache"
 
@@ -3622,7 +3622,7 @@ msgid "%(name)s has left work."
 msgstr "%(name)s hat die Arbeit verlassen."
 
 #: .\viewer\templates\scan_notification.html:76
-#: .\viewer\templates\translations_js.html:136
+#: .\viewer\templates\translations_js.html:137
 msgid "Address"
 msgstr "Adresse"
 
@@ -3670,103 +3670,107 @@ msgstr "QR-Code konnte nicht erstellt werden"
 msgid "QR Location"
 msgstr "QR-Standort"
 
-#: .\viewer\templates\translations_js.html:23
+#: .\viewer\templates\translations_js.html:18
+msgid "Code Name"
+msgstr "QR-Code Name"
+
+#: .\viewer\templates\translations_js.html:24
 msgid "Personal ID"
 msgstr "Personalausweisnummer"
 
-#: .\viewer\templates\translations_js.html:25
+#: .\viewer\templates\translations_js.html:26
 msgid "Birth Date"
 msgstr "Geburtsdatum"
 
-#: .\viewer\templates\translations_js.html:27
+#: .\viewer\templates\translations_js.html:28
 msgid "Registering user..."
 msgstr "Benutzer wird registriert..."
 
-#: .\viewer\templates\translations_js.html:28
+#: .\viewer\templates\translations_js.html:29
 msgid "Updating user..."
 msgstr "Benutzer wird aktualisiert..."
 
-#: .\viewer\templates\translations_js.html:29
+#: .\viewer\templates\translations_js.html:30
 msgid "Deleting user..."
 msgstr "Benutzer wird gelöscht..."
 
-#: .\viewer\templates\translations_js.html:30
+#: .\viewer\templates\translations_js.html:31
 msgid "User registered successfully"
 msgstr "Benutzer erfolgreich registriert"
 
-#: .\viewer\templates\translations_js.html:31
+#: .\viewer\templates\translations_js.html:32
 msgid "Failed to register user"
 msgstr "Benutzer konnte nicht registriert werden"
 
-#: .\viewer\templates\translations_js.html:33
+#: .\viewer\templates\translations_js.html:34
 msgid "Failed to update user"
 msgstr "Benutzer konnte nicht aktualisiert werden"
 
-#: .\viewer\templates\translations_js.html:34
+#: .\viewer\templates\translations_js.html:35
 msgid "User has been deactivated"
 msgstr "Benutzer wurde deaktiviert"
 
-#: .\viewer\templates\translations_js.html:35
+#: .\viewer\templates\translations_js.html:36
 msgid "Failed to deactivate user"
 msgstr "Benutzer konnte nicht deaktiviert werden"
 
-#: .\viewer\templates\translations_js.html:36
+#: .\viewer\templates\translations_js.html:37
 msgid "Deactivate User?"
 msgstr "Benutzer deaktivieren?"
 
-#: .\viewer\templates\translations_js.html:37
+#: .\viewer\templates\translations_js.html:38
 msgid "Are you sure you want to deactivate"
 msgstr "Möchten Sie wirklich deaktivieren"
 
-#: .\viewer\templates\translations_js.html:38
+#: .\viewer\templates\translations_js.html:39
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: .\viewer\templates\translations_js.html:39
+#: .\viewer\templates\translations_js.html:40
 msgid "Yes, deactivate!"
 msgstr "Ja, deaktivieren!"
 
-#: .\viewer\templates\translations_js.html:44
+#: .\viewer\templates\translations_js.html:45
 msgid "Please fill all fields"
 msgstr "Bitte füllen Sie alle Felder aus"
 
-#: .\viewer\templates\translations_js.html:45
+#: .\viewer\templates\translations_js.html:46
 msgid "Basic Work Hours (per month)"
 msgstr "Grund-Arbeitsstunden (pro Monat)"
 
-#: .\viewer\templates\translations_js.html:46
+#: .\viewer\templates\translations_js.html:47
 msgid "Holidays Per Year (days)"
 msgstr "Urlaubstage pro Jahr (Tage)"
 
-#: .\viewer\templates\translations_js.html:50
+#: .\viewer\templates\translations_js.html:51
 msgid "Permissions"
 msgstr "Berechtigungen"
 
-#: .\viewer\templates\translations_js.html:51
+#: .\viewer\templates\translations_js.html:52
 msgid "Can edit employees"
 msgstr "Kann Mitarbeiter bearbeiten"
 
-#: .\viewer\templates\translations_js.html:52
+#: .\viewer\templates\translations_js.html:53
 msgid "Can edit QR codes"
 msgstr "Kann QR-Codes bearbeiten"
 
-#: .\viewer\templates\translations_js.html:53
+#: .\viewer\templates\translations_js.html:54
 msgid "Can edit absences"
 msgstr "Kann Abwesenheiten bearbeiten"
 
-#: .\viewer\templates\translations_js.html:57
+#: .\viewer\templates\translations_js.html:58
 msgid "Lunch break start"
 msgstr "Mittagspause Beginn"
 
-#: .\viewer\templates\translations_js.html:58
+#: .\viewer\templates\translations_js.html:59
 msgid "Lunch break end"
 msgstr "Mittagspause Ende"
 
-#: .\viewer\templates\translations_js.html:59
+#: .\viewer\templates\translations_js.html:60
 msgid "Lunch Break Duration"
 msgstr "Mittagspausendauer"
 
-#: .\viewer\templates\translations_js.html:61
+#: .\viewer\templates\translations_js.html:62
 msgid ""
 "Used only if employee does not scan a break QR code and if Automatic Lunch "
 "Breaks are enabled in company settings."
@@ -3774,245 +3778,245 @@ msgstr ""
 "Wird nur verwendet, wenn der Mitarbeiter keinen Pausen-QR-Code scannt und "
 "automatische Mittagspausen in den Unternehmenseinstellungen aktiviert sind."
 
-#: .\viewer\templates\translations_js.html:68
+#: .\viewer\templates\translations_js.html:69
 msgid "optional"
 msgstr "optional"
 
-#: .\viewer\templates\translations_js.html:72
+#: .\viewer\templates\translations_js.html:73
 msgid "Password must be at least 8 characters"
 msgstr "Passwort muss mindestens 8 Zeichen lang sein"
 
-#: .\viewer\templates\translations_js.html:78
+#: .\viewer\templates\translations_js.html:79
 msgid "New Password (leave empty to keep current)"
 msgstr "Neues Passwort (leer lassen, um aktuelles zu behalten)"
 
-#: .\viewer\templates\translations_js.html:79
+#: .\viewer\templates\translations_js.html:80
 msgid "Save"
 msgstr "Speichern"
 
-#: .\viewer\templates\translations_js.html:82
+#: .\viewer\templates\translations_js.html:83
 msgid "Deactivate QR Code?"
 msgstr "QR-Code deaktivieren?"
 
-#: .\viewer\templates\translations_js.html:83
+#: .\viewer\templates\translations_js.html:84
 msgid "Are you sure you want to deactivate this QR code?"
 msgstr "Möchten Sie wirklich diesen QR-Code deaktivieren?"
 
-#: .\viewer\templates\translations_js.html:84
+#: .\viewer\templates\translations_js.html:85
 msgid "Deleting QR code..."
 msgstr "QR-Code wird gelöscht..."
 
-#: .\viewer\templates\translations_js.html:85
+#: .\viewer\templates\translations_js.html:86
 msgid "QR code has been deactivated"
 msgstr "QR-Code wurde deaktiviert"
 
-#: .\viewer\templates\translations_js.html:89
+#: .\viewer\templates\translations_js.html:90
 msgid "Location Required"
 msgstr "Standort erforderlich"
 
-#: .\viewer\templates\translations_js.html:90
+#: .\viewer\templates\translations_js.html:91
 msgid "Location not available"
 msgstr "Standort nicht verfügbar"
 
-#: .\viewer\templates\translations_js.html:91
+#: .\viewer\templates\translations_js.html:92
 msgid "Geolocation not supported"
 msgstr "Geolokalisierung nicht unterstützt"
 
-#: .\viewer\templates\translations_js.html:92
+#: .\viewer\templates\translations_js.html:93
 msgid "Unable to get your location."
 msgstr "Ihr Standort konnte nicht ermittelt werden."
 
-#: .\viewer\templates\translations_js.html:93
+#: .\viewer\templates\translations_js.html:94
 msgid "Please allow location access in your browser settings."
 msgstr "Bitte erlauben Sie Standortzugriff in Ihren Browser-Einstellungen."
 
-#: .\viewer\templates\translations_js.html:94
+#: .\viewer\templates\translations_js.html:95
 msgid "Location information is unavailable."
 msgstr "Standortinformationen sind nicht verfügbar."
 
-#: .\viewer\templates\translations_js.html:95
+#: .\viewer\templates\translations_js.html:96
 msgid "Location request timed out."
 msgstr "Standortanfrage ist abgelaufen."
 
-#: .\viewer\templates\translations_js.html:98
+#: .\viewer\templates\translations_js.html:99
 msgid "Scanner Error"
 msgstr "Scanner-Fehler"
 
-#: .\viewer\templates\translations_js.html:99
+#: .\viewer\templates\translations_js.html:100
 msgid "UUID Required"
 msgstr "UUID erforderlich"
 
-#: .\viewer\templates\translations_js.html:100
+#: .\viewer\templates\translations_js.html:101
 msgid "Scan Successful!"
 msgstr "Scan erfolgreich!"
 
-#: .\viewer\templates\translations_js.html:101
+#: .\viewer\templates\translations_js.html:102
 msgid "Scan Failed"
 msgstr "Scan fehlgeschlagen"
 
-#: .\viewer\templates\translations_js.html:102
+#: .\viewer\templates\translations_js.html:103
 msgid "Try Again"
 msgstr "Erneut versuchen"
 
-#: .\viewer\templates\translations_js.html:103
+#: .\viewer\templates\translations_js.html:104
 msgid "Scan Another"
 msgstr "Weiteren scannen"
 
-#: .\viewer\templates\translations_js.html:104
+#: .\viewer\templates\translations_js.html:105
 msgid "Scanned At"
 msgstr "Gescannt um"
 
-#: .\viewer\templates\translations_js.html:105 .\viewer\views.py:572
+#: .\viewer\templates\translations_js.html:106 .\viewer\views.py:572
 msgid "Scan recorded successfully!"
 msgstr "Scan erfolgreich aufgezeichnet!"
 
-#: .\viewer\templates\translations_js.html:106
+#: .\viewer\templates\translations_js.html:107
 msgid "Scan Recorded"
 msgstr "Scan aufgezeichnet"
 
-#: .\viewer\templates\translations_js.html:109
+#: .\viewer\templates\translations_js.html:110
 msgid "Camera permission denied"
 msgstr "Kameraberechtigung verweigert"
 
-#: .\viewer\templates\translations_js.html:110
+#: .\viewer\templates\translations_js.html:111
 msgid "Camera not supported"
 msgstr "Kamera nicht unterstützt"
 
-#: .\viewer\templates\translations_js.html:111
+#: .\viewer\templates\translations_js.html:112
 msgid "Permissions Granted"
 msgstr "Berechtigungen erteilt"
 
-#: .\viewer\templates\translations_js.html:112
+#: .\viewer\templates\translations_js.html:113
 msgid "You can now scan QR codes"
 msgstr "Sie können jetzt QR-Codes scannen"
 
-#: .\viewer\templates\translations_js.html:113
+#: .\viewer\templates\translations_js.html:114
 msgid "Permission Error"
 msgstr "Berechtigungsfehler"
 
-#: .\viewer\templates\translations_js.html:114
-#: .\viewer\templates\user_scan_qr.html:112
+#: .\viewer\templates\translations_js.html:115
+#: .\viewer\templates\user_scan_qr.html:116
 msgid "Grant Permissions"
 msgstr "Berechtigungen erteilen"
 
-#: .\viewer\templates\translations_js.html:115
+#: .\viewer\templates\translations_js.html:116
 msgid "Requesting permissions..."
 msgstr "Berechtigungen werden angefordert..."
 
-#: .\viewer\templates\translations_js.html:116
+#: .\viewer\templates\translations_js.html:117
 #: .\viewer\templates\user_scan_qr.html:78
 msgid "Start Scanner"
 msgstr "Scanner starten"
 
-#: .\viewer\templates\translations_js.html:117
-#: .\viewer\templates\user_scan_qr.html:121
+#: .\viewer\templates\translations_js.html:118
+#: .\viewer\templates\user_scan_qr.html:125
 msgid "Processing scan..."
 msgstr "Scan wird verarbeitet..."
 
-#: .\viewer\templates\translations_js.html:118
+#: .\viewer\templates\translations_js.html:119
 msgid "Initializing scanner..."
 msgstr "Scanner wird initialisiert..."
 
-#: .\viewer\templates\translations_js.html:119
+#: .\viewer\templates\translations_js.html:120
 msgid "Preparing..."
 msgstr "Vorbereitung..."
 
-#: .\viewer\templates\translations_js.html:120
+#: .\viewer\templates\translations_js.html:121
 msgid "Please enable location"
 msgstr "Bitte aktivieren Sie den Standort"
 
-#: .\viewer\templates\translations_js.html:121
+#: .\viewer\templates\translations_js.html:122
 msgid "Confirm Home Office"
 msgstr "Homeoffice bestätigen"
 
-#: .\viewer\templates\translations_js.html:122
+#: .\viewer\templates\translations_js.html:123
 msgid "Are you sure you want to scan from home office?"
 msgstr "Möchten Sie wirklich vom Homeoffice scannen?"
 
-#: .\viewer\templates\translations_js.html:123
+#: .\viewer\templates\translations_js.html:124
 msgid "Confirm Business Trip"
 msgstr "Geschäftsreise bestätigen"
 
-#: .\viewer\templates\translations_js.html:124
+#: .\viewer\templates\translations_js.html:125
 msgid "Are you sure you want to scan from business trip?"
 msgstr "Möchten Sie wirklich von einer Geschäftsreise scannen?"
 
-#: .\viewer\templates\translations_js.html:129
+#: .\viewer\templates\translations_js.html:130
 msgid "Adding absence..."
 msgstr "Abwesenheit wird hinzugefügt..."
 
-#: .\viewer\templates\translations_js.html:130
+#: .\viewer\templates\translations_js.html:131
 msgid "Updating absence..."
 msgstr "Abwesenheit wird aktualisiert..."
 
-#: .\viewer\templates\translations_js.html:131
+#: .\viewer\templates\translations_js.html:132
 msgid "Deleting absence..."
 msgstr "Abwesenheit wird gelöscht..."
 
-#: .\viewer\templates\translations_js.html:132
+#: .\viewer\templates\translations_js.html:133
 msgid "Approving absence..."
 msgstr "Abwesenheit wird genehmigt..."
 
-#: .\viewer\templates\translations_js.html:135
+#: .\viewer\templates\translations_js.html:136
 msgid "GPS Coordinates"
 msgstr "GPS-Koordinaten"
 
-#: .\viewer\templates\translations_js.html:137
+#: .\viewer\templates\translations_js.html:138
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
-#: .\viewer\templates\translations_js.html:138
+#: .\viewer\templates\translations_js.html:139
 msgid "Failed to process scan"
 msgstr "Scan konnte nicht verarbeitet werden"
 
-#: .\viewer\templates\translations_js.html:139
+#: .\viewer\templates\translations_js.html:140
 msgid "Failed to start scanner"
 msgstr "Scanner konnte nicht gestartet werden"
 
-#: .\viewer\templates\translations_js.html:140
+#: .\viewer\templates\translations_js.html:141
 msgid "Failed to record scan"
 msgstr "Scan konnte nicht aufgezeichnet werden"
 
-#: .\viewer\templates\translations_js.html:141
+#: .\viewer\templates\translations_js.html:142
 msgid "Please enter a QR code UUID"
 msgstr "Bitte geben Sie eine QR-Code UUID ein"
 
-#: .\viewer\templates\translations_js.html:142
+#: .\viewer\templates\translations_js.html:143
 msgid "Please select a date range first!"
 msgstr "Bitte wählen Sie zuerst einen Datumsbereich aus!"
 
-#: .\viewer\templates\translations_js.html:146
+#: .\viewer\templates\translations_js.html:147
 msgid "Close"
 msgstr "Schließen"
 
-#: .\viewer\templates\translations_js.html:149
+#: .\viewer\templates\translations_js.html:150
 msgid "Saving..."
 msgstr "Wird gespeichert..."
 
-#: .\viewer\templates\translations_js.html:150
+#: .\viewer\templates\translations_js.html:151
 msgid "Settings have been saved successfully."
 msgstr "Einstellungen wurden erfolgreich gespeichert."
 
-#: .\viewer\templates\translations_js.html:151
+#: .\viewer\templates\translations_js.html:152
 msgid "Failed to save settings. Please try again."
 msgstr ""
 "Fehler beim Speichern der Einstellungen. Bitte versuchen Sie es erneut."
 
-#: .\viewer\templates\translations_js.html:152
+#: .\viewer\templates\translations_js.html:153
 msgid "Network error. Please check your connection and try again."
 msgstr ""
 "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es "
 "erneut."
 
-#: .\viewer\templates\translations_js.html:153
+#: .\viewer\templates\translations_js.html:154
 msgid "Cancel Changes?"
 msgstr "Änderungen verwerfen?"
 
-#: .\viewer\templates\translations_js.html:154
+#: .\viewer\templates\translations_js.html:155
 msgid "All unsaved changes will be lost."
 msgstr "Alle nicht gespeicherten Änderungen gehen verloren."
 
-#: .\viewer\templates\translations_js.html:156
+#: .\viewer\templates\translations_js.html:157
 msgid ""
 "A password reset link will be sent to your email address.<br><br>Do you want "
 "to continue?"
@@ -4020,23 +4024,23 @@ msgstr ""
 "Ein Link zum Zurücksetzen des Passworts wird an Ihre E-Mail-Adresse gesendet."
 "<br><br>Möchten Sie fortfahren?"
 
-#: .\viewer\templates\translations_js.html:157
+#: .\viewer\templates\translations_js.html:158
 msgid "Send Reset Link"
 msgstr "Reset-Link senden"
 
-#: .\viewer\templates\translations_js.html:158
+#: .\viewer\templates\translations_js.html:159
 msgid "Sending..."
 msgstr "Wird gesendet..."
 
-#: .\viewer\templates\translations_js.html:159
+#: .\viewer\templates\translations_js.html:160
 msgid "Please wait while we send the reset link."
 msgstr "Bitte warten Sie, während wir den Link zum Zurücksetzen senden."
 
-#: .\viewer\templates\translations_js.html:160
+#: .\viewer\templates\translations_js.html:161
 msgid "Email Sent!"
 msgstr "E-Mail gesendet!"
 
-#: .\viewer\templates\translations_js.html:161
+#: .\viewer\templates\translations_js.html:162
 msgid ""
 "A password reset link has been sent to your email address.<br><br>Please "
 "check your inbox and follow the instructions."
@@ -4045,61 +4049,61 @@ msgstr ""
 "gesendet.<br><br>Bitte überprüfen Sie Ihren Posteingang und folgen Sie den "
 "Anweisungen."
 
-#: .\viewer\templates\translations_js.html:162
+#: .\viewer\templates\translations_js.html:163
 msgid "Failed to send reset email. Please try again."
 msgstr ""
 "Fehler beim Senden der E-Mail zum Zurücksetzen. Bitte versuchen Sie es "
 "erneut."
 
-#: .\viewer\templates\translations_js.html:163
+#: .\viewer\templates\translations_js.html:164
 msgid "Validation Error"
 msgstr "Validierungsfehler"
 
-#: .\viewer\templates\translations_js.html:164
+#: .\viewer\templates\translations_js.html:165
 msgid "Company name is required."
 msgstr "Firmenname ist erforderlich."
 
-#: .\viewer\templates\translations_js.html:167
+#: .\viewer\templates\translations_js.html:168
 msgid "Error creating article"
 msgstr "Fehler beim Erstellen des Artikels"
 
-#: .\viewer\templates\translations_js.html:168
+#: .\viewer\templates\translations_js.html:169
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: .\viewer\templates\translations_js.html:169
+#: .\viewer\templates\translations_js.html:170
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
-#: .\viewer\templates\translations_js.html:170
+#: .\viewer\templates\translations_js.html:171
 msgid "Delete this content block?"
 msgstr "Diesen Inhaltsblock löschen?"
 
-#: .\viewer\templates\translations_js.html:171
+#: .\viewer\templates\translations_js.html:172
 msgid "Error saving article"
 msgstr "Fehler beim Speichern des Artikels"
 
-#: .\viewer\templates\translations_js.html:172
+#: .\viewer\templates\translations_js.html:173
 msgid "Delete this article?"
 msgstr "Diesen Artikel löschen?"
 
-#: .\viewer\templates\translations_js.html:173
+#: .\viewer\templates\translations_js.html:174
 msgid "Error deleting article"
 msgstr "Fehler beim Löschen des Artikels"
 
-#: .\viewer\templates\translations_js.html:174
+#: .\viewer\templates\translations_js.html:175
 msgid "Settings saved successfully!"
 msgstr "Einstellungen erfolgreich gespeichert!"
 
-#: .\viewer\templates\translations_js.html:175
+#: .\viewer\templates\translations_js.html:176
 msgid "Error saving settings"
 msgstr "Fehler beim Speichern der Einstellungen"
 
-#: .\viewer\templates\translations_js.html:176
+#: .\viewer\templates\translations_js.html:177
 msgid "Error removing image"
 msgstr "Fehler beim Entfernen des Bildes"
 
-#: .\viewer\templates\translations_js.html:177
+#: .\viewer\templates\translations_js.html:178
 msgid "OK"
 msgstr "OK"
 
@@ -4135,23 +4139,23 @@ msgstr "Bitte wählen Sie den Scantyp aus"
 msgid "Align QR code within the frame"
 msgstr "QR-Code im Rahmen ausrichten"
 
-#: .\viewer\templates\user_scan_qr.html:84
+#: .\viewer\templates\user_scan_qr.html:86
 msgid "Home Office Scan"
 msgstr "Homeoffice-Scan"
 
-#: .\viewer\templates\user_scan_qr.html:90
+#: .\viewer\templates\user_scan_qr.html:92
 msgid "Business Trip Scan"
 msgstr "Geschäftsreise-Scan"
 
-#: .\viewer\templates\user_scan_qr.html:97
+#: .\viewer\templates\user_scan_qr.html:101
 msgid "Stop Scanner"
 msgstr "Scanner stoppen"
 
-#: .\viewer\templates\user_scan_qr.html:107
+#: .\viewer\templates\user_scan_qr.html:111
 msgid "Camera & Location Required"
 msgstr "Kamera & Standort erforderlich"
 
-#: .\viewer\templates\user_scan_qr.html:109
+#: .\viewer\templates\user_scan_qr.html:113
 msgid ""
 "To scan QR codes and record your location, we need permission to access your "
 "camera and location."

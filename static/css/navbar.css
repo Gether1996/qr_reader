@@ -251,6 +251,46 @@ body.mobile-menu-open {
     text-overflow: ellipsis;
 }
 
+/* Direct navigation link (Dashboard link) */
+.nav-link-direct {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    color: #1e40af;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #93c5fd;
+}
+
+:root[data-theme="dark"] .nav-link-direct {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-color: #475569;
+    color: #60a5fa;
+}
+
+.nav-link-direct:hover {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+}
+
+:root[data-theme="dark"] .nav-link-direct:hover {
+    background: linear-gradient(135deg, #334155, #475569);
+    color: #93c5fd;
+    box-shadow: 0 4px 8px rgba(96, 165, 250, 0.2);
+}
+
+.nav-link-direct i {
+    font-size: 1rem;
+}
+
 .dropdown-wrapper {
     position: relative;
 }

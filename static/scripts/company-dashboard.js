@@ -7,7 +7,7 @@ function createQRCode() {
             <div class="container-fluid px-0">
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.name}</label>
+                        <label class="form-label fw-semibold mb-2">${translations.nameQr}</label>
                         <input type="text" id="swal-qr-name" class="form-control form-control-lg" required>
                     </div>
                     <div class="col-12">
