@@ -438,8 +438,8 @@ def user_dashboard(request):
     has_active_filters = any([qr_code_filter, scan_type_filter, vacation_type_filter, date_from, date_to])
     
     # Calculate year-to-date statistics
-    from django.utils import timezone
-    current_year = timezone.now().year
+    from datetime import datetime
+    current_year = datetime.now().year
     
     # Get approved absences for current year
     year_absences = Vacation.objects.filter(
@@ -816,8 +816,8 @@ def view_user_details(request, user_id):
         vacations_count = Vacation.objects.filter(user=user, is_active=True).count()
         
         # Calculate year-to-date statistics
-        from django.utils import timezone
-        current_year = timezone.now().year
+        from datetime import datetime as dt
+        current_year = dt.now().year
         year_start = datetime.date(current_year, 1, 1)
         
         # Get approved absences for current year
@@ -913,8 +913,8 @@ def view_user_details(request, user_id):
         vacations_count = Vacation.objects.filter(user=user, is_active=True).count()
         
         # Calculate year-to-date statistics
-        from django.utils import timezone
-        current_year = timezone.now().year
+        from datetime import datetime as dt
+        current_year = dt.now().year
         year_start = datetime.date(current_year, 1, 1)
         
         # Get approved absences for current year

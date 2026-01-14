@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, activate
 from django.conf import settings
 from qr_reader_django import crud
 import json
@@ -353,7 +353,6 @@ def approve_vacation(request, vacation_id):
         }
         
         # Activate language for translations
-        from django.utils.translation import activate, gettext as _
         activate(language_code)
         
         # Render email HTML

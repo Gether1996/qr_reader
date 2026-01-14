@@ -1,11 +1,10 @@
-from django.utils.translation import gettext_lazy as _, get_language
+from django.utils.translation import gettext_lazy as _, get_language, activate
 from viewer.models import Company, User, QRCodeProfile, ScanEvent, Vacation
 from datetime import datetime
 from qr_reader_django.audit import log_action
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
 
 # ============= COMPANY CRUD =============
 
@@ -434,7 +433,6 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
                 }
                 
                 # Activate language for translations
-                from django.utils.translation import activate, gettext as _
                 activate(language_code)
                 
                 # Render email HTML (pass request context for proper translation loading)
@@ -579,7 +577,6 @@ def create_vacation(user, date_from, date_to, time_from=None, time_to=None, vaca
             }
             
             # Activate language for translations
-            from django.utils.translation import activate, gettext as _
             activate(language_code)
             
             # Render email HTML
@@ -740,7 +737,6 @@ def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, act
                 }
                 
                 # Activate language for translations
-                from django.utils.translation import activate, gettext as _
                 activate(language_code)
                 
                 # Render email HTML
