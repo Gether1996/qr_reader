@@ -31,7 +31,7 @@ services:
       - n8n
 
   n8n:
-    image: n8nio/n8n:2.3.5
+    image: n8nio/n8n:2.3.4
     expose:
       - "5678"
     volumes:
