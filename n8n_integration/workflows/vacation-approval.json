@@ -1,0 +1,134 @@
+{
+  "name": "Vacation Approval Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vacation-request",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-1",
+      "name": "Vacation Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "vacation-request"
+    },
+    {
+      "parameters": {
+        "sendTo": "{{$json.data.manager_email}}",
+        "subject": "Žiadosť o dovolenku - {{$json.data.user_name}}",
+        "message": "=Dobrý deň,\n\n{{$json.data.user_name}} žiada o dovolenku:\n\nOd: {{$json.data.start_date}}\nDo: {{$json.data.end_date}}\nTyp: {{$json.data.vacation_type}}\n\nSchváliť: http://yourapp.com/n8n/webhook/vacation-approve/?id={{$json.data.vacation_id}}&token={{$json.data.token}}\n\nZamietnuť: http://yourapp.com/n8n/webhook/vacation-reject/?id={{$json.data.vacation_id}}&token={{$json.data.token}}\n\nĎakujeme",
+        "options": {}
+      },
+      "id": "gmail-1",
+      "name": "Email Manager",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vacation-approve",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-2",
+      "name": "Approval Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [650, 200],
+      "webhookId": "vacation-approve"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://web:8000/api/vacation/{{$json.query.id}}/approve/",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "http-1",
+      "name": "Update Django",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "sendTo": "{{$json.data.user_email}}",
+        "subject": "Dovolenka schválená",
+        "message": "Vaša žiadosť o dovolenku bola schválená.\n\nOd: {{$json.data.start_date}}\nDo: {{$json.data.end_date}}",
+        "options": {}
+      },
+      "id": "gmail-2",
+      "name": "Email Employee",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Dovolenka bola schválená!"
+      },
+      "id": "respond-1",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    }
+  ],
+  "connections": {
+    "Vacation Request": {
+      "main": [
+        [
+          {
+            "node": "Email Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Webhook": {
+      "main": [
+        [
+          {
+            "node": "Update Django",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Django": {
+      "main": [
+        [
+          {
+            "node": "Email Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Employee": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "pinData": {},
+  "versionId": "1"
+}

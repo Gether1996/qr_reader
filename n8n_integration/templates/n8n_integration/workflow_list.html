@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}n8n Workflows{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-project-diagram"></i> n8n Workflows</h2>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'n8n_integration:execution_logs' %}" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Execution Logs
+            </a>
+        </div>
+    </div>
+
+    {% if workflows %}
+    <div class="row">
+        {% for workflow in workflows %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ workflow.name }}
+                        {% if workflow.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text text-muted">
+                        <small>ID: {{ workflow.workflow_id }}</small>
+                    </p>
+                    {% if workflow.description %}
+                    <p class="card-text">{{ workflow.description|truncatewords:20 }}</p>
+                    {% endif %}
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            Vytvorené: {{ workflow.created_at|date:"d.m.Y H:i" }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'n8n_integration:workflow_detail' workflow.workflow_id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-eye"></i> Detail
+                    </a>
+                    {% if workflow.webhook_url %}
+                    <button class="btn btn-sm btn-success trigger-workflow" data-workflow-id="{{ workflow.workflow_id }}">
+                        <i class="fas fa-play"></i> Spustiť
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> Žiadne workflows zatiaľ nie sú nakonfigurované.
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.trigger-workflow').forEach(button => {
+        button.addEventListener('click', function() {
+            const workflowId = this.dataset.workflowId;
+            
+            if (confirm('Naozaj chcete spustiť tento workflow?')) {
+                fetch(`/n8n/trigger/${workflowId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Workflow bol úspešne spustený!');
+                    } else {
+                        alert('Chyba: ' + (data.error || 'Neznáma chyba'));
+                    }
+                })
+                .catch(error => {
+                    alert('Chyba pri spúšťaní workflow: ' + error);
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

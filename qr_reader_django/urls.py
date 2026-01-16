@@ -90,6 +90,9 @@ urlpatterns += i18n_patterns(
     path('magazine/block/<int:block_id>/update/', api_content_block_update, name='api_content_block_update'),
     path('magazine/block/<int:block_id>/delete/', api_content_block_delete, name='api_content_block_delete'),
     
+    # n8n Integration
+    path('n8n/', include('n8n_integration.urls')),
+    
     path('admin/', admin.site.urls),
 )
 

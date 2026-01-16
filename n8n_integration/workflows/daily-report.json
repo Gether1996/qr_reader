@@ -1,0 +1,100 @@
+{
+  "name": "Daily Attendance Report",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 17 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "schedule-1",
+      "name": "Every Day 5 PM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://web:8000/api/scans/today/",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "http-1",
+      "name": "Get Today Scans",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const scans = $input.all()[0].json.scans;\nlet html = '<h2>Dochádzka za dnes</h2><table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">';\nhtml += '<tr><th>Meno</th><th>Akcia</th><th>Čas</th><th>Lokácia</th></tr>';\n\nscans.forEach(scan => {\n  html += `<tr>\n    <td>${scan.employee}</td>\n    <td>${scan.type}</td>\n    <td>${scan.time}</td>\n    <td>${scan.location}</td>\n  </tr>`;\n});\n\nhtml += '</table>';\n\nreturn [{ \n  json: { \n    html,\n    count: scans.length,\n    date: $input.all()[0].json.date\n  } \n}];"
+      },
+      "id": "code-1",
+      "name": "Format HTML Table",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "manager@company.com",
+        "subject": "Dochádzka za {{$json.date}}",
+        "message": "=<html><body>{{$json.html}}<p>Celkový počet záznamov: {{$json.count}}</p></body></html>",
+        "options": {
+          "contentType": "html"
+        }
+      },
+      "id": "gmail-1",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Every Day 5 PM": {
+      "main": [
+        [
+          {
+            "node": "Get Today Scans",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Today Scans": {
+      "main": [
+        [
+          {
+            "node": "Format HTML Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format HTML Table": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "pinData": {},
+  "versionId": "1"
+}
