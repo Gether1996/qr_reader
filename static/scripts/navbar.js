@@ -4,6 +4,25 @@
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
+    function setDesktopDropdownState(wrapper, isOpen) {
+        if (!wrapper) {
+            return;
+        }
+
+        const trigger = wrapper.querySelector('.dropdown-trigger');
+        wrapper.classList.toggle('active', isOpen);
+
+        if (trigger) {
+            trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+    }
+
+    function closeAllDesktopDropdowns() {
+        document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(wrapper => {
+            setDesktopDropdownState(wrapper, false);
+        });
+    }
+
     // Desktop dropdown functionality
     const desktopDropdowns = document.querySelectorAll('.desktop-navbar .dropdown-trigger');
     desktopDropdowns.forEach(trigger => {
@@ -13,13 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const wasActive = parent.classList.contains('active');
             
             // Close all dropdowns
-            document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(d => {
-                d.classList.remove('active');
-            });
+            closeAllDesktopDropdowns();
             
             // Toggle current
             if (!wasActive) {
-                parent.classList.add('active');
+                setDesktopDropdownState(parent, true);
             }
         });
     });
@@ -27,9 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close desktop dropdowns on outside click
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.desktop-navbar .dropdown-wrapper')) {
-            document.querySelectorAll('.desktop-navbar .dropdown-wrapper').forEach(d => {
-                d.classList.remove('active');
-            });
+            closeAllDesktopDropdowns();
         }
     });
     
@@ -38,18 +53,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMegaMenu = document.getElementById('mobileMegaMenu');
     const mobileMegaMenuClose = document.getElementById('mobileMegaMenuClose');
     const body = document.body;
+    let lastFocusedElement = null;
     
     function openMobileMenu() {
+        lastFocusedElement = document.activeElement;
         mobileMegaMenu.classList.add('active');
         body.classList.add('mobile-menu-open');
+        if (mobileMegaMenuBtn) {
+            mobileMegaMenuBtn.setAttribute('aria-expanded', 'true');
+        }
+        if (mobileMegaMenuClose) {
+            mobileMegaMenuClose.focus();
+        }
     }
     
     function closeMobileMenu() {
         mobileMegaMenu.classList.remove('active');
         body.classList.remove('mobile-menu-open');
+        if (mobileMegaMenuBtn) {
+            mobileMegaMenuBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+            lastFocusedElement.focus();
+        }
     }
     
     if (mobileMegaMenuBtn) {
+        mobileMegaMenuBtn.setAttribute('aria-expanded', 'false');
         mobileMegaMenuBtn.addEventListener('click', openMobileMenu);
     }
     
@@ -73,6 +103,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllDesktopDropdowns();
+            closeMobileMenu();
+        }
+    });
     
     // Theme Toggle Functionality
     const themeToggle = document.getElementById('themeToggle');

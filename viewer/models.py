@@ -1,10 +1,13 @@
 import qrcode
 from io import BytesIO
+import logging
 from django.core.files import File
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 import requests
 import uuid as uuid_lib
+
+logger = logging.getLogger(__name__)
 
 class Company(models.Model):
     """Company model for company authentication and QR code management"""
@@ -212,7 +215,7 @@ class ScanEvent(models.Model):
                 return ', '.join(address_components) if address_components else None
                 
         except Exception as e:
-            print(f"Geocoding error: {e}")
+            logger.warning("Geocoding error: %s", e)
             return None
 
 
@@ -258,6 +261,23 @@ class PasswordResetToken(models.Model):
     def __str__(self):
         return f"Reset token for {self.company.name}"
     
+    def is_valid(self):
+        """Check if token is still valid"""
+        from datetime import datetime
+        return not self.is_used and datetime.now() < self.expires_at.replace(tzinfo=None)
+
+
+class UserPasswordSetupToken(models.Model):
+    """Password setup tokens for employee onboarding"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_setup_tokens')
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Password setup token for {self.user.email}"
+
     def is_valid(self):
         """Check if token is still valid"""
         from datetime import datetime

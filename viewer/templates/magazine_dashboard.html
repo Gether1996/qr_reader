@@ -140,17 +140,27 @@
                 }
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert('{% trans "Error deleting magazine" %}');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('{% trans "Error deleting magazine" %}');
-            });
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        appUI.alert({
+                            icon: 'error',
+                            title: '{% trans "Error" %}',
+                            text: '{% trans "Error deleting magazine" %}',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    appUI.alert({
+                        icon: 'error',
+                        title: '{% trans "Error" %}',
+                        text: '{% trans "Error deleting magazine" %}',
+                        confirmButtonText: 'OK'
+                    });
+                });
         }
     });
 </script>

@@ -15,23 +15,23 @@
             <div class="nav-menu-desktop">
                 {% if request.session.user_type == 'company' %}
                     <!-- Direct Dashboard Link -->
-                    <a href="{% url 'company_dashboard' %}" class="nav-item nav-link-direct">
+                    <a href="{% url 'company_dashboard' %}" class="nav-link-direct {% if request.resolver_match.url_name == 'company_dashboard' %}is-active{% endif %}">
                         <i class="fas fa-home"></i>
                         <span>{% trans "Dashboard" %}</span>
                     </a>
                     
-                    <div class="nav-item dropdown-wrapper">
-                        <button class="dropdown-trigger" type="button">
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" type="button" aria-expanded="false">
                             <i class="fas fa-building"></i>
-                            <span>{{ current_company.name }}</span>
+                            <span class="dropdown-label">{{ current_company.name }}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
-                            <a href="{% url 'company_analytics' %}" class="dropdown-link">
+                            <a href="{% url 'company_analytics' %}" class="dropdown-link {% if request.resolver_match.url_name == 'company_analytics' %}active{% endif %}">
                                 <i class="fas fa-chart-line"></i>
                                 <span>{% trans "Analytics" %}</span>
                             </a>
-                            <a href="{% url 'company_settings' %}" class="dropdown-link">
+                            <a href="{% url 'company_settings' %}" class="dropdown-link {% if request.resolver_match.url_name == 'company_settings' %}active{% endif %}">
                                 <i class="fas fa-cog"></i>
                                 <span>{% trans "Settings" %}</span>
                             </a>
@@ -41,7 +41,7 @@
                                 <span>{% trans "Magazine Creator" %}</span>
                             </a>
                             {% endcomment %}
-                            <a href="{% url 'audit_logs' %}" class="dropdown-link">
+                            <a href="{% url 'audit_logs' %}" class="dropdown-link {% if request.resolver_match.url_name == 'audit_logs' %}active{% endif %}">
                                 <i class="fas fa-clipboard-list"></i>
                                 <span>{% trans "Logging" %}</span>
                             </a>
@@ -54,8 +54,8 @@
                     </div>
                     
                     <!-- Language Switcher -->
-                    <div class="nav-item dropdown-wrapper language-switcher">
-                        <button class="dropdown-trigger" type="button">
+                    <div class="dropdown-wrapper language-switcher">
+                        <button class="dropdown-trigger" type="button" aria-expanded="false">
                             {% if LANGUAGE_CODE == 'sk' %}
                                 <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                             {% elif LANGUAGE_CODE == 'en' %}
@@ -65,13 +65,13 @@
                             {% elif LANGUAGE_CODE == 'de' %}
                                 <span class="fi fi-de flag-icon"></span>
                             {% endif %}
-                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <span class="dropdown-label dropdown-label-code">{{ LANGUAGE_CODE|upper }}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
                             <form action="{% url 'set_language' %}" method="post" class="language-form">
                                 {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}">
                                 <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
                                     <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                                     <span>Slovenčina</span>
@@ -104,29 +104,29 @@
                     
                 {% elif request.session.user_type == 'user' %}
                     <!-- Direct Dashboard Link -->
-                    <a href="{% url 'user_dashboard' %}" class="nav-item nav-link-direct">
+                    <a href="{% url 'user_dashboard' %}" class="nav-link-direct {% if request.resolver_match.url_name == 'user_dashboard' %}is-active{% endif %}">
                         <i class="fas fa-home"></i>
                         <span>{% trans "Dashboard" %}</span>
                     </a>
                     
-                    <div class="nav-item dropdown-wrapper">
-                        <button class="dropdown-trigger" type="button">
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" type="button" aria-expanded="false">
                             <i class="fas fa-user-circle"></i>
-                            <span>{{ current_user.name }}</span>
+                            <span class="dropdown-label">{{ current_user.name }}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
-                            <a href="{% url 'user_scan_qr' %}" class="dropdown-link" style="color: #10b981;">
+                            <a href="{% url 'user_scan_qr' %}" class="dropdown-link {% if request.resolver_match.url_name == 'user_scan_qr' %}active{% endif %}" style="color: #10b981;">
                                 <i class="fas fa-camera"></i>
                                 <span>{% trans "Scan QR" %}</span>
                             </a>
                             {% if current_user.is_manager %}
-                            <a href="{% url 'company_dashboard' %}" class="dropdown-link">
+                            <a href="{% url 'company_dashboard' %}" class="dropdown-link {% if request.resolver_match.url_name == 'company_dashboard' %}active{% endif %}">
                                 <i class="fas fa-users"></i>
                                 <span>{% trans "Company Dashboard" %}</span>
                             </a>
                             {% endif %}
-                            <a href="{% url 'audit_logs' %}" class="dropdown-link">
+                            <a href="{% url 'audit_logs' %}" class="dropdown-link {% if request.resolver_match.url_name == 'audit_logs' %}active{% endif %}">
                                 <i class="fas fa-clipboard-list"></i>
                                 <span>{% trans "Logging" %}</span>
                             </a>
@@ -139,8 +139,8 @@
                     </div>
                     
                     <!-- Language Switcher -->
-                    <div class="nav-item dropdown-wrapper language-switcher">
-                        <button class="dropdown-trigger" type="button">
+                    <div class="dropdown-wrapper language-switcher">
+                        <button class="dropdown-trigger" type="button" aria-expanded="false">
                             {% if LANGUAGE_CODE == 'sk' %}
                                 <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                             {% elif LANGUAGE_CODE == 'en' %}
@@ -150,13 +150,13 @@
                             {% elif LANGUAGE_CODE == 'de' %}
                                 <span class="fi fi-de flag-icon"></span>
                             {% endif %}
-                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <span class="dropdown-label dropdown-label-code">{{ LANGUAGE_CODE|upper }}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
                             <form action="{% url 'set_language' %}" method="post" class="language-form">
                                 {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}">
                                 <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
                                     <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                                     <span>Slovenčina</span>
@@ -190,8 +190,8 @@
                 {% else %}
                 
                     <!-- Language Switcher -->
-                    <div class="nav-item dropdown-wrapper language-switcher">
-                        <button class="dropdown-trigger" type="button">
+                    <div class="dropdown-wrapper language-switcher">
+                        <button class="dropdown-trigger" type="button" aria-expanded="false">
                             {% if LANGUAGE_CODE == 'sk' %}
                                 <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                             {% elif LANGUAGE_CODE == 'en' %}
@@ -201,13 +201,13 @@
                             {% elif LANGUAGE_CODE == 'de' %}
                                 <span class="fi fi-de flag-icon"></span>
                             {% endif %}
-                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <span class="dropdown-label dropdown-label-code">{{ LANGUAGE_CODE|upper }}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
                             <form action="{% url 'set_language' %}" method="post" class="language-form">
                                 {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}">
                                 <button type="submit" name="language" value="sk" class="dropdown-link {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
                                     <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                                     <span>Slovenčina</span>
@@ -266,8 +266,8 @@
                     <span class="brand-text">QR</span>
                 </a>
                 
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <button class="mobile-menu-btn" id="mobileMegaMenuBtn" type="button">
+                <div class="mobile-navbar-actions">
+                    <button class="mobile-menu-btn" id="mobileMegaMenuBtn" type="button" aria-label="{% trans 'Open menu' %}">
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
@@ -277,22 +277,23 @@
     
     <!-- Mobile Mega Menu Overlay -->
     <div class="mobile-mega-menu" id="mobileMegaMenu">
-        <div class="mobile-mega-menu-header">
-            <h3>
-                {% if request.session.user_type == 'company' %}
-                    <i class="fas fa-building"></i> {{ current_company.name }}
-                {% elif request.session.user_type == 'user' %}
-                    <i class="fas fa-user"></i> {{ current_user.name }}
-                {% else %}
-                    <i class="fas fa-qrcode"></i> QR Reader
-                {% endif %}
-            </h3>
-            <button class="mobile-menu-close" id="mobileMegaMenuClose" type="button">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="mobile-mega-menu-content">
+        <div class="mobile-mega-menu-panel">
+            <div class="mobile-mega-menu-header">
+                <h3>
+                    {% if request.session.user_type == 'company' %}
+                        <i class="fas fa-building"></i> {{ current_company.name }}
+                    {% elif request.session.user_type == 'user' %}
+                        <i class="fas fa-user"></i> {{ current_user.name }}
+                    {% else %}
+                        <i class="fas fa-qrcode"></i> QR Reader
+                    {% endif %}
+                </h3>
+                <button class="mobile-menu-close" id="mobileMegaMenuClose" type="button" aria-label="{% trans 'Close menu' %}">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mobile-mega-menu-content">
             {% if request.session.user_type == 'company' %}
                 <!-- Company Mobile Menu -->
                 <a href="{% url 'company_dashboard' %}" class="mobile-menu-item">
@@ -489,7 +490,7 @@
                 </div>
                 <form action="{% url 'set_language' %}" method="post" class="mobile-language-grid">
                     {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.path }}">
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
                     <button type="submit" name="language" value="sk" class="mobile-language-btn {% if LANGUAGE_CODE == 'sk' %}active{% endif %}">
                         <img src="{% static 'images/sk_vlajka.jpg' %}" class="flag-icon" alt="SK">
                         <span>SK</span>
@@ -511,6 +512,7 @@
                         {% if LANGUAGE_CODE == 'de' %}<i class="fas fa-check"></i>{% endif %}
                     </button>
                 </form>
+            </div>
             </div>
         </div>
     </div>

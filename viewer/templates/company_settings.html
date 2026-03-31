@@ -197,6 +197,18 @@
                                     {% trans "Disabled" %}
                                 </option>
                             </select>
+                            <div class="settings-field-help">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {% if LANGUAGE_CODE == 'sk' %}
+                                    Ak je nastavenie zapnuté, systém automaticky odpočíta nastavenú obedovú prestávku z odpracovaného času, ak si ju zamestnanec manuálne nenaskenuje. Ak si prestávku naskenuje, použijú sa reálne naskenované časy.
+                                {% elif LANGUAGE_CODE == 'de' %}
+                                    Wenn diese Option aktiviert ist, zieht das System die eingestellte Mittagspause automatisch von der Arbeitszeit ab, wenn der Mitarbeiter die Pause nicht manuell scannt. Wenn die Pause gescannt wird, werden die tatsächlich gescannten Zeiten verwendet.
+                                {% elif LANGUAGE_CODE == 'es' %}
+                                    Si esta opción está activada, el sistema descuenta automáticamente la pausa de almuerzo configurada del tiempo trabajado cuando el empleado no la escanea manualmente. Si la pausa se escanea, se usan los tiempos realmente escaneados.
+                                {% else %}
+                                    If enabled, the system automatically deducts the employee's configured lunch break from worked time when they do not scan a lunch break manually. If they scan the break, the scanned times are used instead.
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

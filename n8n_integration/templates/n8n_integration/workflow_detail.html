@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}{{ workflow.name }} - Detail{% endblock %}
@@ -19,7 +19,7 @@
         </div>
         <div class="col-auto">
             <a href="{% url 'n8n_integration:workflow_list' %}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Späť
+                <i class="fas fa-arrow-left"></i> SpÃ¤Å¥
             </a>
         </div>
     </div>
@@ -56,11 +56,11 @@
                     <h5 class="card-title">Akcie</h5>
                     {% if workflow.webhook_url %}
                     <button class="btn btn-success w-100 mb-2" id="triggerBtn">
-                        <i class="fas fa-play"></i> Spustiť Workflow
+                        <i class="fas fa-play"></i> SpustiÅ¥ Workflow
                     </button>
                     {% endif %}
                     <a href="{% url 'admin:n8n_integration_n8nworkflow_change' workflow.id %}" class="btn btn-primary w-100">
-                        <i class="fas fa-edit"></i> Upraviť
+                        <i class="fas fa-edit"></i> UpraviÅ¥
                     </a>
                 </div>
             </div>
@@ -69,7 +69,7 @@
 
     <div class="row">
         <div class="col">
-            <h4>História Executions</h4>
+            <h4>HistÃ³ria Executions</h4>
             {% if executions %}
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -77,8 +77,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Stav</th>
-                            <th>Používateľ</th>
-                            <th>Začaté</th>
+                            <th>PouÅ¾Ã­vateÄ¾</th>
+                            <th>ZaÄatÃ©</th>
                             <th>Trvanie</th>
                             <th>Akcie</th>
                         </tr>
@@ -89,11 +89,11 @@
                             <td>{{ execution.id }}</td>
                             <td>
                                 {% if execution.status == 'success' %}
-                                <span class="badge bg-success">Úspešné</span>
+                                <span class="badge bg-success">ÃšspeÅ¡nÃ©</span>
                                 {% elif execution.status == 'error' %}
                                 <span class="badge bg-danger">Chyba</span>
                                 {% elif execution.status == 'running' %}
-                                <span class="badge bg-warning">Bežiace</span>
+                                <span class="badge bg-warning">BeÅ¾iace</span>
                                 {% else %}
                                 <span class="badge bg-secondary">{{ execution.get_status_display }}</span>
                                 {% endif %}
@@ -119,7 +119,7 @@
             </div>
             {% else %}
             <div class="alert alert-info">
-                Žiadne executions zatiaľ neboli spustené.
+                Å½iadne executions zatiaÄ¾ neboli spustenÃ©.
             </div>
             {% endif %}
         </div>
@@ -128,7 +128,17 @@
 
 <script>
 document.getElementById('triggerBtn')?.addEventListener('click', function() {
-    if (confirm('Naozaj chcete spustiť tento workflow?')) {
+    appUI.confirm({
+        title: 'Spustiť workflow',
+        text: 'Naozaj chcete spustiť tento workflow?',
+        confirmButtonText: 'Spustiť',
+        cancelButtonText: 'Zrušiť',
+        reverseButtons: true
+    }).then(function(result) {
+        if (!result.isConfirmed) {
+            return;
+        }
+
         fetch('{% url "n8n_integration:trigger_workflow" workflow.workflow_id %}', {
             method: 'POST',
             headers: {
@@ -140,16 +150,32 @@ document.getElementById('triggerBtn')?.addEventListener('click', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Workflow bol úspešne spustený!');
-                location.reload();
+                appUI.alert({
+                    icon: 'success',
+                    title: 'Workflow spustený',
+                    text: 'Workflow bol úspešne spustený!',
+                    confirmButtonText: 'OK'
+                }).then(function() {
+                    location.reload();
+                });
             } else {
-                alert('Chyba: ' + (data.error || 'Neznáma chyba'));
+                appUI.alert({
+                    icon: 'error',
+                    title: 'Chyba',
+                    text: data.error || 'Neznáma chyba',
+                    confirmButtonText: 'OK'
+                });
             }
         })
         .catch(error => {
-            alert('Chyba pri spúšťaní workflow: ' + error);
+            appUI.alert({
+                icon: 'error',
+                title: 'Chyba',
+                text: 'Chyba pri spúšťaní workflow: ' + error,
+                confirmButtonText: 'OK'
+            });
         });
-    }
+    });
 });
 </script>
 {% endblock %}

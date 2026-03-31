@@ -5,11 +5,49 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from qr_reader_django import crud
 import json
-from viewer.models import ScanEvent, Vacation
+from viewer.models import ScanEvent, Vacation, PasswordResetToken, UserPasswordSetupToken
+from viewer.account_texts import get_user_password_setup_texts
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.paginator import Paginator
 from django.db.models import Q, F
 import datetime
+
+VALID_SCAN_TYPES = {'arrival', 'departure', 'lunch_break_start', 'lunch_break_end'}
+
+
+def _get_page_size(request, default=20):
+    raw_value = request.GET.get('per_page') or request.GET.get('items_per_page') or default
+    try:
+        value = int(raw_value)
+        if value not in [10, 20, 25, 50, 100]:
+            return default
+        return value
+    except (TypeError, ValueError):
+        return default
+
+
+def _get_enabled_scan_buttons(user):
+    today = datetime.date.today()
+    yesterday = today - datetime.timedelta(days=1)
+
+    recent_scans = ScanEvent.objects.filter(
+        scanned_by=user,
+        timestamp__date__gte=yesterday
+    ).order_by('timestamp')
+
+    enabled_buttons = ['arrival']
+    if recent_scans.exists():
+        last_scan = recent_scans.last()
+        if last_scan.scan_type == 'arrival':
+            enabled_buttons = ['departure', 'lunch_break_start']
+        elif last_scan.scan_type == 'lunch_break_start':
+            enabled_buttons = ['lunch_break_end']
+        elif last_scan.scan_type == 'lunch_break_end':
+            enabled_buttons = ['departure', 'lunch_break_start']
+        elif last_scan.scan_type == 'departure':
+            enabled_buttons = ['arrival']
+
+    return enabled_buttons
 
 # ============= PUBLIC VIEWS =============
 
@@ -71,14 +109,14 @@ def company_dashboard(request):
     
     # Set default tab if not specified or not permitted
     if not requested_tab:
-        if can_edit_qr_codes:
-            active_tab = 'qr-codes'
-        elif can_edit_employees:
+        if can_edit_employees:
             active_tab = 'users'
         elif can_edit_absences:
             active_tab = 'absences'
+        elif can_edit_qr_codes:
+            active_tab = 'qr-codes'
         else:
-            active_tab = 'qr-codes'  # fallback
+            active_tab = 'users'  # fallback
     else:
         active_tab = requested_tab
     
@@ -107,7 +145,7 @@ def company_dashboard(request):
     # Validate items per page
     try:
         items_per_page = int(items_per_page)
-        if items_per_page not in [10, 25, 50, 100]:
+        if items_per_page not in [10, 20, 25, 50, 100]:
             items_per_page = 25
     except (ValueError, TypeError):
         items_per_page = 25
@@ -318,6 +356,14 @@ def company_dashboard(request):
         'qr_codes_count': len(qr_codes_list),
         'users_count': len(users_list),
         'absences_count': absences.count(),
+        'at_work_count': sum(1 for user in users_list if getattr(user, 'is_at_work', False)),
+        'manager_count': sum(1 for user in users_list if getattr(user, 'is_manager', False)),
+        'pending_absences_count': Vacation.objects.filter(
+            user__company=company,
+            user__is_active=True,
+            is_active=True,
+            approved=False,
+        ).count(),
     }
     return render(request, 'company_dashboard.html', context)
 
@@ -343,14 +389,7 @@ def user_dashboard(request):
     date_to = request.GET.get('date_to', '')
     sort_by = request.GET.get('sort', '-timestamp' if active_tab == 'scans' else '-date_from')
     page_number = request.GET.get('page', 1)
-    per_page = request.GET.get('per_page', 20)
-    
-    try:
-        per_page = int(per_page)
-        if per_page not in [10, 20, 50, 100]:
-            per_page = 20
-    except:
-        per_page = 20
+    per_page = _get_page_size(request, default=20)
     
     # ===== SCANS TAB =====
     # Include both regular QR code scans and home office scans
@@ -452,6 +491,9 @@ def user_dashboard(request):
     vacation_days_ytd = sum(v.days_count for v in year_absences.filter(type='vacation'))
     sick_leave_days_ytd = sum(v.days_count for v in year_absences.filter(type='sick_leave'))
     doctor_days_ytd = sum(v.days_count for v in year_absences.filter(type='doctor'))
+    remaining_vacation_days = max(user.holidays_per_year - vacation_days_ytd, 0)
+    pending_absences_count = Vacation.objects.filter(user=user, is_active=True, approved=False).count()
+    last_scan = scans.order_by('-timestamp').first()
 
     context = {
         'user': user,
@@ -466,6 +508,10 @@ def user_dashboard(request):
         'vacation_days_ytd': vacation_days_ytd,
         'sick_leave_days_ytd': sick_leave_days_ytd,
         'doctor_days_ytd': doctor_days_ytd,
+        'remaining_vacation_days': remaining_vacation_days,
+        'pending_absences_count': pending_absences_count,
+        'approved_absences_count': year_absences.count(),
+        'last_scan': last_scan,
         'current_year': current_year,
         'current_filters': {
             'qr_code': qr_code_filter,
@@ -475,6 +521,7 @@ def user_dashboard(request):
             'date_to': date_to,
             'sort': sort_by,
             'per_page': per_page,
+            'items_per_page': str(per_page),
         }
     }
     return render(request, 'user_dashboard.html', context)
@@ -492,13 +539,59 @@ def user_scan_qr(request):
     
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            uuid = data.get('uuid')
+            data = json.loads(request.body or '{}')
+            uuid = (data.get('uuid') or '').strip()
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             scan_type = data.get('scan_type', 'arrival')
             is_home_office = data.get('is_home_office', False)
             is_business_trip = data.get('is_business_trip', False)
+
+            if scan_type not in VALID_SCAN_TYPES:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('Invalid scan type'))
+                }, status=400)
+
+            if is_home_office and is_business_trip:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('Choose either home office or business trip, not both'))
+                }, status=400)
+
+            if latitude in (None, '') or longitude in (None, ''):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('Location is required'))
+                }, status=400)
+
+            try:
+                latitude = float(latitude)
+                longitude = float(longitude)
+            except (TypeError, ValueError):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('Invalid location coordinates'))
+                }, status=400)
+
+            if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('Location coordinates are out of range'))
+                }, status=400)
+
+            if not is_home_office and not is_business_trip and not uuid:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('UUID is required'))
+                }, status=400)
+
+            enabled_buttons = _get_enabled_scan_buttons(user)
+            if scan_type not in enabled_buttons:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('This scan type is not available right now'))
+                }, status=409)
             
             # For home office or business trip scans, we don't need a QR code
             if is_home_office or is_business_trip:
@@ -579,43 +672,18 @@ def user_scan_qr(request):
                     'scan_address': address or str(_('Address not available'))
                 }
             })
-            
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(_('Invalid request payload'))
+            }, status=400)
         except Exception as e:
             return JsonResponse({
                 'status': 'error',
                 'message': str(e)
             }, status=400)
     
-    # Determine which buttons should be enabled based on recent scans (last 2 days for night shifts)
-    from datetime import date, timedelta
-    
-    today = date.today()
-    yesterday = today - timedelta(days=1)
-    
-    # Get scans from last 2 days to handle night shifts (e.g., 22:00-06:00)
-    recent_scans = ScanEvent.objects.filter(
-        scanned_by=user,
-        timestamp__date__gte=yesterday
-    ).order_by('timestamp')
-    
-    # Default: only arrival enabled
-    enabled_buttons = ['arrival']
-    
-    if recent_scans.exists():
-        last_scan = recent_scans.last()
-        
-        if last_scan.scan_type == 'arrival':
-            # After arrival: can depart or start lunch break
-            enabled_buttons = ['departure', 'lunch_break_start']
-        elif last_scan.scan_type == 'lunch_break_start':
-            # During lunch break: can only end lunch break
-            enabled_buttons = ['lunch_break_end']
-        elif last_scan.scan_type == 'lunch_break_end':
-            # After lunch break: can depart or start another lunch break
-            enabled_buttons = ['departure', 'lunch_break_start']
-        elif last_scan.scan_type == 'departure':
-            # After departure: can arrive again (new shift)
-            enabled_buttons = ['arrival']
+    enabled_buttons = _get_enabled_scan_buttons(user)
     
     context = {
         'user': user,
@@ -685,14 +753,7 @@ def view_qr_scans(request, qr_id):
     
     # Pagination
     page_number = request.GET.get('page', 1)
-    per_page = request.GET.get('per_page', 20)
-    
-    try:
-        per_page = int(per_page)
-        if per_page not in [10, 20, 50, 100]:
-            per_page = 20
-    except:
-        per_page = 20
+    per_page = _get_page_size(request, default=20)
     
     paginator = Paginator(scans, per_page)
     page_obj = paginator.get_page(page_number)
@@ -717,6 +778,7 @@ def view_qr_scans(request, qr_id):
             'date_to': date_to,
             'sort': sort_by,
             'per_page': per_page,
+            'items_per_page': str(per_page),
         }
     }
     return render(request, 'qr_scans.html', context)
@@ -760,14 +822,7 @@ def view_user_details(request, user_id):
     
     # Pagination
     page_number = request.GET.get('page', 1)
-    per_page = request.GET.get('per_page', 20)
-    
-    try:
-        per_page = int(per_page)
-        if per_page not in [10, 20, 50, 100]:
-            per_page = 20
-    except:
-        per_page = 20
+    per_page = _get_page_size(request, default=20)
     
     if active_tab == 'vacations':
         # Get all vacations by this user
@@ -854,6 +909,7 @@ def view_user_details(request, user_id):
                 'vacation_type': vacation_type_filter,
                 'sort': sort_by,
                 'per_page': per_page,
+                'items_per_page': str(per_page),
             }
         }
     else:
@@ -953,6 +1009,7 @@ def view_user_details(request, user_id):
                 'date_to': date_to,
                 'sort': sort_by,
                 'per_page': per_page,
+                'items_per_page': str(per_page),
             }
         }
     return render(request, 'company_user_details.html', context)
@@ -1686,8 +1743,6 @@ def company_request_password_reset(request):
 
 def company_reset_password(request, token):
     """Handle password reset with token"""
-    from viewer.models import PasswordResetToken
-    
     try:
         reset_token = PasswordResetToken.objects.get(token=token)
         
@@ -1753,3 +1808,60 @@ def company_reset_password(request, token):
     except PasswordResetToken.DoesNotExist:
         messages.error(request, _('Invalid password reset link'))
         return redirect('company_login')
+
+
+def user_set_password(request, token):
+    """Allow a newly invited employee to set their password"""
+    copy = get_user_password_setup_texts(getattr(request, 'LANGUAGE_CODE', 'en'))
+
+    try:
+        setup_token = UserPasswordSetupToken.objects.select_related('user__company').get(token=token)
+    except UserPasswordSetupToken.DoesNotExist:
+        messages.error(request, copy['invalid_link'])
+        return redirect('user_login')
+
+    if not setup_token.is_valid():
+        messages.error(request, copy['invalid_link'])
+        return redirect('user_login')
+
+    user = setup_token.user
+    company = user.company
+
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password', '').strip()
+        confirm_password = request.POST.get('confirm_password', '').strip()
+
+        if not new_password or not confirm_password:
+            messages.error(request, copy['required_fields'])
+        elif new_password != confirm_password:
+            messages.error(request, copy['passwords_mismatch'])
+        elif len(new_password) < 10:
+            messages.error(request, copy['password_length_error'])
+        elif not any(char.isupper() for char in new_password):
+            messages.error(request, copy['password_uppercase_error'])
+        else:
+            user.set_password(new_password)
+            user.save(update_fields=['password'])
+
+            setup_token.is_used = True
+            setup_token.save(update_fields=['is_used'])
+            UserPasswordSetupToken.objects.filter(user=user, is_used=False).exclude(pk=setup_token.pk).update(is_used=True)
+
+            log_action(
+                actor_type='user',
+                actor_email=user.email,
+                actor_name=user.name,
+                action='update',
+                message=f'User "{user.name}" completed account password setup',
+                ip_address=get_client_ip(request)
+            )
+
+            messages.success(request, copy['success_message'])
+            return redirect('user_login')
+
+    return render(request, 'user_password_setup.html', {
+        'token': token,
+        'user': user,
+        'company': company,
+        'copy': copy,
+    })

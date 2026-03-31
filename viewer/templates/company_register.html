@@ -9,11 +9,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body p-5">
+<div class="container auth-page-container">
+    <div class="row justify-content-center auth-page-row">
+        <div class="col-12 auth-shell auth-shell-register">
+            <div class="card auth-card">
+                <div class="card-body auth-card-body">
                     <div class="auth-header">
                         <i class="fas fa-building auth-icon text-primary"></i>
                         <h3>{% trans "Register Your Company" %}</h3>
@@ -136,44 +136,45 @@
                             </div>
                             <div class="section-content">
                                 <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="auto_lunch_breaks" name="auto_lunch_breaks" style="cursor: pointer;">
-                                        <label class="form-check-label" for="auto_lunch_breaks" style="cursor: pointer;">
+                                    <div class="form-check auth-check">
+                                        <input class="form-check-input" type="checkbox" id="auto_lunch_breaks" name="auto_lunch_breaks">
+                                        <label class="form-check-label" for="auto_lunch_breaks">
                                             <i class="fas fa-utensils me-1"></i>{% trans "Automatic lunch breaks" %}
                                         </label>
                                     </div>
-                                    <div class="form-text" style="margin-left: 1.5rem; margin-top: 0.25rem;">
+                                    <div class="form-text auth-section-note">
                                         {% trans "Automatically deduct lunch break time from work hours if employee doesn't scan a break QR code" %}
                                     </div>
                                 </div>
                                 <div class="mb-0">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="enable_notifications" name="enable_notifications" checked style="cursor: pointer;">
-                                <label class="form-check-label" for="enable_notifications" style="cursor: pointer;">
-                                    <i class="fas fa-bell me-1"></i>{% trans "Enable notifications" %}
-                                </label>
+                                    <div class="form-check auth-check">
+                                        <input class="form-check-input" type="checkbox" id="enable_notifications" name="enable_notifications" checked>
+                                        <label class="form-check-label" for="enable_notifications">
+                                            <i class="fas fa-bell me-1"></i>{% trans "Enable notifications" %}
+                                        </label>
+                                    </div>
+                                    <div id="notification_options" class="auth-check-grid">
+                                        <div class="form-check auth-check">
+                                            <input class="form-check-input" type="checkbox" id="notify_arrival" name="notify_arrival" checked>
+                                            <label class="form-check-label" for="notify_arrival">
+                                                <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
+                                            </label>
+                                        </div>
+                                        <div class="form-check auth-check">
+                                            <input class="form-check-input" type="checkbox" id="notify_departure" name="notify_departure" checked>
+                                            <label class="form-check-label" for="notify_departure">
+                                                <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
+                                            </label>
+                                        </div>
+                                        <div class="form-check auth-check">
+                                            <input class="form-check-input" type="checkbox" id="notify_vacation" name="notify_vacation" checked>
+                                            <label class="form-check-label" for="notify_vacation">
+                                                <i class="fas fa-calendar-times me-1"></i>{% trans "Vacation/Absence" %}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div id="notification_options" class="ms-4 mt-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="notify_arrival" name="notify_arrival" checked style="cursor: pointer;">
-                                    <label class="form-check-label" for="notify_arrival" style="cursor: pointer;">
-                                        <i class="fas fa-sign-in-alt me-1"></i>{% trans "Arrival" %}
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="notify_departure" name="notify_departure" checked style="cursor: pointer;">
-                                    <label class="form-check-label" for="notify_departure" style="cursor: pointer;">
-                                        <i class="fas fa-sign-out-alt me-1"></i>{% trans "Departure" %}
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="notify_vacation" name="notify_vacation" checked style="cursor: pointer;">
-                                    <label class="form-check-label" for="notify_vacation" style="cursor: pointer;">
-                                        <i class="fas fa-calendar-times me-1"></i>{% trans "Vacation/Absence" %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
                         </div>
                         
                         <div class="d-grid mt-4">

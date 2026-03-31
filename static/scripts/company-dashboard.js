@@ -1,22 +1,37 @@
 // Company Dashboard JavaScript Functions
 
 function createQRCode() {
-    Swal.fire({
+    appUI.fire({
         title: translations.createQRCode,
         html: `
-            <div class="container-fluid px-0">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.nameQr}</label>
-                        <input type="text" id="swal-qr-name" class="form-control form-control-lg" required>
+            <div class="swal-form-layout">
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </span>
+                        <span>${translations.createQRCode}</span>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.location}</label>
-                        <input type="text" id="swal-qr-location" class="form-control form-control-lg" required>
+                    <div class="swal-form-stack">
+                        <div class="swal-form-field">
+                            <label class="form-label swal-form-required" for="swal-qr-name">${translations.nameQr}</label>
+                            <input type="text" id="swal-qr-name" class="form-control" placeholder="${translations.nameQr}" required autocomplete="off">
+                        </div>
+                        <div class="swal-form-field">
+                            <label class="form-label swal-form-required" for="swal-qr-location">${translations.location}</label>
+                            <input type="text" id="swal-qr-location" class="form-control" placeholder="${translations.location}" required autocomplete="off">
+                        </div>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label fw-semibold mb-2">${translations.additionalInfo}</label>
-                        <textarea id="swal-qr-info" class="form-control form-control-lg" rows="3"></textarea>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon">
+                            <i class="fas fa-align-left"></i>
+                        </span>
+                        <span>${translations.additionalInfo}</span>
+                    </div>
+                    <div class="swal-form-field">
+                        <textarea id="swal-qr-info" class="form-control" placeholder="${translations.additionalInfo}" rows="4"></textarea>
                     </div>
                 </div>
             </div>
@@ -31,13 +46,16 @@ function createQRCode() {
             popup: 'swal-popup-rounded'
         },
         buttonsStyling: false,
+        didOpen: () => {
+            document.getElementById('swal-qr-name').focus();
+        },
         preConfirm: () => {
-            const name = document.getElementById('swal-qr-name').value;
-            const location = document.getElementById('swal-qr-location').value;
-            const additionalInfo = document.getElementById('swal-qr-info').value;
+            const name = document.getElementById('swal-qr-name').value.trim();
+            const location = document.getElementById('swal-qr-location').value.trim();
+            const additionalInfo = document.getElementById('swal-qr-info').value.trim();
             
             if (!name || !location) {
-                Swal.showValidationMessage(translations.fillAllFields);
+                appUI.showValidationMessage(translations.fillAllFields);
                 return false;
             }
 
@@ -50,13 +68,13 @@ function createQRCode() {
             const createUrl = `/${langCode}/qr/create/`;
 
             // Show loading spinner
-            Swal.fire({
+            appUI.fire({
                 title: translations.pleaseWait || 'Please wait...',
                 html: translations.creatingQRCode || 'Creating QR code...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
-                    Swal.showLoading();
+                    appUI.showLoading();
                 }
             });
 
@@ -71,7 +89,7 @@ function createQRCode() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    Swal.fire({
+                    appUI.fire({
                         icon: 'success',
                         title: translations.success,
                         text: translations.qrCodeCreated,
@@ -84,7 +102,7 @@ function createQRCode() {
                         location.reload();
                     });
                 } else {
-                    Swal.fire({
+                    appUI.fire({
                         icon: 'error',
                         title: translations.error,
                         text: data.message || translations.qrCodeCreateFailed,
@@ -97,7 +115,7 @@ function createQRCode() {
                 }
             })
             .catch(error => {
-                Swal.fire({
+                appUI.fire({
                     icon: 'error',
                     title: translations.error,
                     text: translations.qrCodeCreateFailed,
@@ -111,74 +129,10 @@ function createQRCode() {
         }
     });
 }
-
 function createUser() {
-    Swal.fire({
+    appUI.fire({
         title: translations.registerEmployee,
         html: `
-            <style>
-                .swal-section { 
-                    background: rgba(0,0,0,0.02); 
-                    border-radius: 8px; 
-                    padding: 15px; 
-                    margin-bottom: 16px;
-                }
-                @media (prefers-color-scheme: dark) {
-                    .swal-section { background: rgba(255,255,255,0.05); }
-                    .swal-section-title { color: #e0e0e0 !important; }
-                    .swal-checkbox-label { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.1) !important; }
-                    .swal-checkbox-label:hover { background: rgba(255,255,255,0.08) !important; }
-                }
-                .swal-section-title { 
-                    font-size: 0.95rem; 
-                    font-weight: 600; 
-                    color: #495057; 
-                    margin-bottom: 14px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-                .swal-checkbox-label {
-                    display: flex;
-                    align-items: center;
-                    padding: 12px 14px;
-                    border: 1px solid #dee2e6;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    background: white;
-                    min-height: 44px;
-                }
-                .swal-checkbox-label:hover { background: #f8f9fa; border-color: #adb5bd; }
-                .swal-checkbox-label input { 
-                    margin: 0 10px 0 0; 
-                    width: 18px;
-                    height: 18px;
-                    cursor: pointer;
-                }
-                .swal-checkbox-label span { font-size: 0.9rem; }
-                
-                .required-field::after {
-                    content: ' *';
-                    color: #dc3545;
-                    font-weight: bold;
-                }
-                .field-error {
-                    border-color: #dc3545 !important;
-                    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-                }
-                
-                /* Mobile optimizations */
-                @media (max-width: 576px) {
-                    .swal2-popup { padding: 15px !important; }
-                    .swal-section { padding: 12px; margin-bottom: 12px; }
-                    .swal-section-title { font-size: 0.9rem; margin-bottom: 10px; }
-                    .swal-checkbox-label { padding: 10px 12px; font-size: 0.875rem; }
-                    .form-control, .form-select { font-size: 16px !important; min-height: 44px; }
-                    .input-group-text { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
-                    .form-label { font-size: 0.875rem !important; }
-                }
-            </style>
             <div class="container-fluid px-0">
                 <!-- Basic Information -->
                 <div class="swal-section">
@@ -208,14 +162,19 @@ function createUser() {
                 <!-- Security -->
                 <div class="swal-section">
                     <div class="swal-section-title">
-                        <i class="fas fa-lock"></i>${translations.security || 'Security'}
+                        <i class="fas fa-lock"></i>${translations.security || 'Security'} <span class="swal-optional-note">(${translations.optional || 'optional'})</span>
                     </div>
                     <div class="row g-2">
                         <div class="col-md-6 col-12">
-                            <input type="password" id="swal-user-password" class="form-control required-field" placeholder="${translations.password} *" required autocomplete="new-password">
+                            <input type="password" id="swal-user-password" class="form-control" placeholder="${translations.passwordOptionalInvite || translations.password}" autocomplete="new-password">
                         </div>
                         <div class="col-md-6 col-12">
-                            <input type="password" id="swal-user-password-confirm" class="form-control required-field" placeholder="${translations.confirmPassword} *" required autocomplete="new-password">
+                            <input type="password" id="swal-user-password-confirm" class="form-control" placeholder="${translations.confirmPasswordOptional || translations.confirmPassword}" autocomplete="new-password">
+                        </div>
+                        <div class="col-12">
+                            <div class="swal-helper-note">
+                                <i class="fas fa-envelope me-1"></i>${translations.employeeInviteHint || 'Leave both password fields empty to send the employee an email with a password setup link valid for 24 hours.'}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -253,7 +212,7 @@ function createUser() {
                                 <input type="number" id="swal-user-lunch-break" class="form-control required-field" value="30" required min="0" step="1">
                                 <span class="input-group-text">min</span>
                             </div>
-                            <div class="text-muted small mt-2" style="font-size: 0.8rem; line-height: 1.4;">
+                            <div class="swal-helper-note">
                                 <i class="fas fa-info-circle me-1"></i>${translations.lunchBreakInfo || 'Used only if employee does not scan a break QR code and if Automatic Lunch Breaks are enabled in company settings.'}
                             </div>
                         </div>
@@ -288,21 +247,21 @@ function createUser() {
                         
                         <label class="swal-checkbox-label mb-3">
                             <input class="form-check-input" type="checkbox" id="manager-enable-notifications" checked>
-                            <span><i class="fas fa-bell text-info me-1"></i>${translations.enableNotifications}</span>
-                        </label>
+                                <span><i class="fas fa-bell text-info me-1"></i>${translations.enableNotifications}</span>
+                            </label>
                         
                         <div id="manager-notification-options" class="ps-3">
                             <div class="d-flex flex-column gap-2">
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-arrival" checked style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="swal-inline-check-option">
+                                    <input class="form-check-input" type="checkbox" id="manager-notify-arrival" checked>
                                     <span><i class="fas fa-sign-in-alt me-1"></i>${translations.arrival}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-departure" checked style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="swal-inline-check-option">
+                                    <input class="form-check-input" type="checkbox" id="manager-notify-departure" checked>
                                     <span><i class="fas fa-sign-out-alt me-1"></i>${translations.departure}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="manager-notify-vacation" checked style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="swal-inline-check-option">
+                                    <input class="form-check-input" type="checkbox" id="manager-notify-vacation" checked>
                                     <span><i class="fas fa-calendar-times me-1"></i>${translations.vacation || 'Vacation/Absence'}</span>
                                 </label>
                             </div>
@@ -311,35 +270,8 @@ function createUser() {
                 </div>
             </div>
         `,
-        width: '100%',
-        customClass: {
-            popup: 'swal-mobile-optimized',
-            confirmButton: 'swal-btn-gradient-green',
-            cancelButton: 'swal-btn-gradient-gray'
-        },
+        width: '760px',
         didOpen: () => {
-            // Add mobile responsive styles
-            const style = document.createElement('style');
-            style.textContent = `
-                .swal-mobile-optimized {
-                    max-width: 600px !important;
-                    width: calc(100% - 20px) !important;
-                    margin: 10px;
-                }
-                @media (max-width: 576px) {
-                    .swal-mobile-optimized {
-                        max-height: calc(100vh - 20px) !important;
-                        margin: 10px;
-                    }
-                    .swal2-html-container {
-                        max-height: calc(100vh - 200px) !important;
-                        overflow-y: auto !important;
-                        padding: 0 5px;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-            
             const hasLunchBreakCheckbox = document.getElementById('swal-user-has-lunch-break');
             const lunchBreakContainer = document.getElementById('lunch-break-duration-container');
             
@@ -394,8 +326,6 @@ function createUser() {
             const requiredFields = [
                 { id: 'swal-user-name', value: name },
                 { id: 'swal-user-email', value: email },
-                { id: 'swal-user-password', value: password },
-                { id: 'swal-user-password-confirm', value: passwordConfirm },
                 { id: 'swal-user-work-hours', value: workHours },
                 { id: 'swal-user-holidays', value: holidays }
             ];
@@ -409,20 +339,33 @@ function createUser() {
                 emptyFields.forEach(field => {
                     document.getElementById(field.id).classList.add('field-error');
                 });
-                Swal.showValidationMessage(translations.fillAllFields);
+                appUI.showValidationMessage(translations.fillAllFields);
                 return false;
             }
             
-            if (password.length < 8) {
-                document.getElementById('swal-user-password').classList.add('field-error');
-                Swal.showValidationMessage(translations.passwordMinLength);
-                return false;
-            }
-            
-            if (password !== passwordConfirm) {
+            if ((password && !passwordConfirm) || (!password && passwordConfirm)) {
                 document.getElementById('swal-user-password').classList.add('field-error');
                 document.getElementById('swal-user-password-confirm').classList.add('field-error');
-                Swal.showValidationMessage(translations.passwordsDontMatch);
+                appUI.showValidationMessage(translations.passwordBothOrInvite);
+                return false;
+            }
+
+            if (password && password.length < 10) {
+                document.getElementById('swal-user-password').classList.add('field-error');
+                appUI.showValidationMessage(translations.passwordMinLengthStrong || translations.passwordMinLength);
+                return false;
+            }
+
+            if (password && !/[A-Z]/.test(password)) {
+                document.getElementById('swal-user-password').classList.add('field-error');
+                appUI.showValidationMessage(translations.passwordUppercaseRequired);
+                return false;
+            }
+
+            if (password && password !== passwordConfirm) {
+                document.getElementById('swal-user-password').classList.add('field-error');
+                document.getElementById('swal-user-password-confirm').classList.add('field-error');
+                appUI.showValidationMessage(translations.passwordsDontMatch);
                 return false;
             }
 
@@ -432,12 +375,16 @@ function createUser() {
                 rc, 
                 phone, 
                 birth_date: birthDate,
-                password, 
                 basic_work_hours: parseInt(workHours), 
                 holidays_per_year: parseInt(holidays), 
                 lunch_break_duration: parseInt(lunchBreak), 
                 is_manager: role === 'manager' 
             };
+
+            if (password) {
+                data.password = password;
+                data.password_confirm = passwordConfirm;
+            }
             
             if (role === 'manager') {
                 data.can_edit_employees = document.getElementById('perm-edit-employees').checked;
@@ -466,18 +413,18 @@ function createUser() {
             .then(response => response.json())
             .then(result => {
                 if (result.exists) {
-                    Swal.showValidationMessage(result.message || translations.emailAlreadyExists || 'Email already exists');
+                    appUI.showValidationMessage(result.message || translations.emailAlreadyExists || 'Email already exists');
                     return false;
                 }
                 
                 // If email is available, submit the user creation
-                Swal.fire({
+                appUI.fire({
                     title: translations.pleaseWait || 'Please wait...',
                     html: translations.registeringUser || 'Registering user...',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     didOpen: () => {
-                        Swal.showLoading();
+                        appUI.showLoading();
                     }
                 });
                 
@@ -495,22 +442,22 @@ function createUser() {
                     if (data.status === 'success') {
                         return data;
                     } else {
-                        Swal.showValidationMessage(data.message || translations.userRegisterFailed);
+                        appUI.showValidationMessage(data.message || translations.userRegisterFailed);
                         return false;
                     }
                 });
             })
             .catch(error => {
-                Swal.showValidationMessage(error.message || translations.userRegisterFailed);
+                appUI.showValidationMessage(error.message || translations.userRegisterFailed);
                 return false;
             });
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
+            appUI.fire({
                 icon: 'success',
                 title: translations.success,
-                text: translations.userRegistered,
+                text: (result.value && result.value.message) || translations.userRegistered,
                 customClass: {
                     confirmButton: 'swal-btn-gradient-green',
                     popup: 'swal-popup-rounded'
@@ -527,72 +474,9 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
     // Determine if notifications are enabled (any notification is checked)
     const notificationsEnabled = notifyArrival || notifyDeparture || notifyVacation;
     
-    Swal.fire({
+    appUI.fire({
         title: translations.editEmployee,
         html: `
-            <style>
-                .swal-section { 
-                    background: rgba(0,0,0,0.02); 
-                    border-radius: 8px; 
-                    padding: 15px; 
-                    margin-bottom: 16px;
-                }
-                @media (prefers-color-scheme: dark) {
-                    .swal-section { background: rgba(255,255,255,0.05); }
-                    .swal-section-title { color: #e0e0e0 !important; }
-                    .swal-checkbox-label { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.1) !important; }
-                    .swal-checkbox-label:hover { background: rgba(255,255,255,0.08) !important; }
-                }
-                .swal-section-title { 
-                    font-size: 0.95rem; 
-                    font-weight: 600; 
-                    color: #495057; 
-                    margin-bottom: 14px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-                .swal-checkbox-label {
-                    display: flex;
-                    align-items: center;
-                    padding: 12px 14px;
-                    border: 1px solid #dee2e6;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    background: white;
-                    min-height: 44px;
-                }
-                .swal-checkbox-label:hover { background: #f8f9fa; border-color: #adb5bd; }
-                .swal-checkbox-label input { 
-                    margin: 0 10px 0 0; 
-                    width: 18px;
-                    height: 18px;
-                    cursor: pointer;
-                }
-                .swal-checkbox-label span { font-size: 0.9rem; }
-                
-                .required-field::after {
-                    content: ' *';
-                    color: #dc3545;
-                    font-weight: bold;
-                }
-                .field-error {
-                    border-color: #dc3545 !important;
-                    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-                }
-                
-                /* Mobile optimizations */
-                @media (max-width: 576px) {
-                    .swal2-popup { padding: 15px !important; }
-                    .swal-section { padding: 12px; margin-bottom: 12px; }
-                    .swal-section-title { font-size: 0.9rem; margin-bottom: 10px; }
-                    .swal-checkbox-label { padding: 10px 12px; font-size: 0.875rem; }
-                    .form-control, .form-select { font-size: 16px !important; min-height: 44px; }
-                    .input-group-text { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
-                    .form-label { font-size: 0.875rem !important; }
-                }
-            </style>
             <div class="container-fluid px-0">
                 <!-- Basic Information -->
                 <div class="swal-section">
@@ -622,7 +506,7 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 <!-- Security -->
                 <div class="swal-section">
                     <div class="swal-section-title">
-                        <i class="fas fa-lock"></i>${translations.security || 'Security'} <span style="font-size: 0.75rem; color: #6c757d; font-weight: 400;">(${translations.optional || 'optional'})</span>
+                        <i class="fas fa-lock"></i>${translations.security || 'Security'} <span class="swal-optional-note">(${translations.optional || 'optional'})</span>
                     </div>
                     <div class="row g-2">
                         <div class="col-md-6 col-12">
@@ -667,7 +551,7 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                                 <input type="number" id="swal-edit-user-lunch-break" class="form-control" value="${lunchBreakDuration || 30}" required min="0" step="1">
                                 <span class="input-group-text">min</span>
                             </div>
-                            <div class="text-muted small mt-2" style="font-size: 0.8rem; line-height: 1.4;">
+                            <div class="swal-helper-note">
                                 <i class="fas fa-info-circle me-1"></i>${translations.lunchBreakInfo || 'Used only if employee does not scan a break QR code and if Automatic Lunch Breaks are enabled in company settings.'}
                             </div>
                         </div>
@@ -702,21 +586,21 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                         
                         <label class="swal-checkbox-label mb-3">
                             <input class="form-check-input" type="checkbox" id="edit-manager-enable-notifications" ${notificationsEnabled ? 'checked' : ''}>
-                            <span><i class="fas fa-bell text-info me-1"></i>${translations.enableNotifications}</span>
-                        </label>
+                                <span><i class="fas fa-bell text-info me-1"></i>${translations.enableNotifications}</span>
+                            </label>
                         
                         <div id="edit-manager-notification-options" class="ps-3" style="display: ${notificationsEnabled ? 'block' : 'none'};">
                             <div class="d-flex flex-column gap-2">
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-arrival" ${notifyArrival ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="swal-inline-check-option">
+                                    <input class="form-check-input" type="checkbox" id="edit-manager-notify-arrival" ${notifyArrival ? 'checked' : ''}>
                                     <span><i class="fas fa-sign-in-alt me-1"></i>${translations.arrival}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-departure" ${notifyDeparture ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="swal-inline-check-option">
+                                    <input class="form-check-input" type="checkbox" id="edit-manager-notify-departure" ${notifyDeparture ? 'checked' : ''}>
                                     <span><i class="fas fa-sign-out-alt me-1"></i>${translations.departure}</span>
                                 </label>
-                                <label class="d-flex align-items-center" style="cursor: pointer; font-size: 0.9rem; padding: 6px 0; min-height: 36px;">
-                                    <input class="form-check-input m-0 me-2" type="checkbox" id="edit-manager-notify-vacation" ${notifyVacation ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="swal-inline-check-option">
+                                    <input class="form-check-input" type="checkbox" id="edit-manager-notify-vacation" ${notifyVacation ? 'checked' : ''}>
                                     <span><i class="fas fa-calendar-times me-1"></i>${translations.vacation || 'Vacation/Absence'}</span>
                                 </label>
                             </div>
@@ -725,35 +609,8 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 </div>
             </div>
         `,
-        width: '100%',
-        customClass: {
-            popup: 'swal-mobile-optimized',
-            confirmButton: 'swal-btn-gradient-green',
-            cancelButton: 'swal-btn-gradient-gray'
-        },
+        width: '760px',
         didOpen: () => {
-            // Add mobile responsive styles
-            const style = document.createElement('style');
-            style.textContent = `
-                .swal-mobile-optimized {
-                    max-width: 600px !important;
-                    width: calc(100% - 20px) !important;
-                    margin: 10px;
-                }
-                @media (max-width: 576px) {
-                    .swal-mobile-optimized {
-                        max-height: calc(100vh - 20px) !important;
-                        margin: 10px;
-                    }
-                    .swal2-html-container {
-                        max-height: calc(100vh - 200px) !important;
-                        overflow-y: auto !important;
-                        padding: 0 5px;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-            
             const hasLunchBreakCheckbox = document.getElementById('swal-edit-user-has-lunch-break');
             const lunchBreakContainer = document.getElementById('edit-lunch-break-duration-container');
             
@@ -821,7 +678,7 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 emptyFields.forEach(field => {
                     document.getElementById(field.id).classList.add('field-error');
                 });
-                Swal.showValidationMessage(translations.fillAllFields);
+                appUI.showValidationMessage(translations.fillAllFields);
                 return false;
             }
             
@@ -829,14 +686,14 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
             if (password || passwordConfirm) {
                 if (password.length < 8) {
                     document.getElementById('swal-edit-user-password').classList.add('field-error');
-                    Swal.showValidationMessage(translations.passwordMinLength);
+                    appUI.showValidationMessage(translations.passwordMinLength);
                     return false;
                 }
                 
                 if (password !== passwordConfirm) {
                     document.getElementById('swal-edit-user-password').classList.add('field-error');
                     document.getElementById('swal-edit-user-password-confirm').classList.add('field-error');
-                    Swal.showValidationMessage(translations.passwordsDontMatch);
+                    appUI.showValidationMessage(translations.passwordsDontMatch);
                     return false;
                 }
             }
@@ -891,18 +748,18 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                 .then(response => response.json())
                 .then(result => {
                     if (result.exists) {
-                        Swal.showValidationMessage(result.message || translations.emailAlreadyExists || 'Email already exists');
+                        appUI.showValidationMessage(result.message || translations.emailAlreadyExists || 'Email already exists');
                         return false;
                     }
                     
                     // If email is available, submit the update
-                    Swal.fire({
+                    appUI.fire({
                         title: translations.pleaseWait || 'Please wait...',
                         html: translations.updatingUser || 'Updating user...',
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         didOpen: () => {
-                            Swal.showLoading();
+                            appUI.showLoading();
                         }
                     });
                     
@@ -919,24 +776,24 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                         if (data.status === 'success') {
                             return data;
                         } else {
-                            Swal.showValidationMessage(data.message || translations.userUpdateFailed);
+                            appUI.showValidationMessage(data.message || translations.userUpdateFailed);
                             return false;
                         }
                     });
                 })
                 .catch(error => {
-                    Swal.showValidationMessage(error.message || translations.userUpdateFailed);
+                    appUI.showValidationMessage(error.message || translations.userUpdateFailed);
                     return false;
                 });
             } else {
                 // Email not changed, just submit
-                Swal.fire({
+                appUI.fire({
                     title: translations.pleaseWait || 'Please wait...',
                     html: translations.updatingUser || 'Updating user...',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     didOpen: () => {
-                        Swal.showLoading();
+                        appUI.showLoading();
                     }
                 });
                 
@@ -953,19 +810,19 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                     if (data.status === 'success') {
                         return data;
                     } else {
-                        Swal.showValidationMessage(data.message || translations.userUpdateFailed);
+                        appUI.showValidationMessage(data.message || translations.userUpdateFailed);
                         return false;
                     }
                 })
                 .catch(error => {
-                    Swal.showValidationMessage(error.message || translations.userUpdateFailed);
+                    appUI.showValidationMessage(error.message || translations.userUpdateFailed);
                     return false;
                 });
             }
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
+            appUI.fire({
                 icon: 'success',
                 title: translations.success,
                 text: translations.userUpdated,
@@ -992,13 +849,13 @@ function deleteUser(userId, userName) {
             console.log('CSRF Token:', csrfToken);
             
             // Show loading spinner
-            Swal.fire({
+            appUI.fire({
                 title: translations.pleaseWait || 'Please wait...',
                 html: translations.deletingUser || 'Deleting user...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
-                    Swal.showLoading();
+                    appUI.showLoading();
                 }
             });
             
@@ -1035,13 +892,13 @@ function deleteQRCode(qrId, qrName) {
             console.log('Delete URL:', deleteUrl);
             
             // Show loading spinner
-            Swal.fire({
+            appUI.fire({
                 title: translations.pleaseWait || 'Please wait...',
                 html: translations.deletingQRCode || 'Deleting QR code...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
-                    Swal.showLoading();
+                    appUI.showLoading();
                 }
             });
             
@@ -1072,7 +929,7 @@ function showQRPrintModal(qrCodeUrl, qrCodeName, qrCodeId) {
     const langCode = window.location.pathname.split('/')[1];
     const printUrl = `/${langCode}/qr/${qrCodeId}/pdf/`;
     
-    Swal.fire({
+    appUI.fire({
         title: qrCodeName,
         html: `
             <div class="text-center">

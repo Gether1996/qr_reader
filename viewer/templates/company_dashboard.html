@@ -24,7 +24,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 <h4 class="mb-1 fw-bold">{{ company.name }}</h4>
                                 {% if request.session.user_type == 'company' %}
-                                <a href="{% url 'company_settings' %}" class="btn btn-sm btn-primary" title="{% trans 'Company Settings' %}" style="padding: 0.25rem 0.5rem;">
+                                <a href="{% url 'company_settings' %}" class="company-settings-link" title="{% trans 'Company Settings' %}">
                                     <i class="fas fa-cog"></i>
                                 </a>
                                 {% endif %}
@@ -58,6 +58,45 @@
         </div>
     </div>
 
+    <div class="dashboard-summary-grid mb-4">
+        <div class="summary-stat-card summary-stat-primary">
+            <div class="summary-stat-icon">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "QR Codes" %}</div>
+                <div class="summary-stat-value">{{ qr_codes_count }}</div>
+            </div>
+        </div>
+        <div class="summary-stat-card summary-stat-success">
+            <div class="summary-stat-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "At Work" %}</div>
+                <div class="summary-stat-value">{{ at_work_count }}</div>
+            </div>
+        </div>
+        <div class="summary-stat-card summary-stat-warning">
+            <div class="summary-stat-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "Manager" %}</div>
+                <div class="summary-stat-value">{{ manager_count }}</div>
+            </div>
+        </div>
+        <div class="summary-stat-card summary-stat-danger">
+            <div class="summary-stat-icon">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "Pending" %}</div>
+                <div class="summary-stat-value">{{ pending_absences_count }}</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Filters for each tab -->
     {% if active_tab == 'qr-codes' %}
         {% include 'filters_card.html' with form_action=request.path clear_url=request.path hide_date_range=True show_first_filter=True first_filter_label=_("QR Code Name") first_filter_name="qr_name" first_filter_value=current_filters.qr_name datalist_items=all_qr_codes has_active_filters=current_filters.qr_name active_tab='qr-codes' %}
@@ -72,22 +111,22 @@
         <!-- Tabs Navigation replacing header -->
         <div class="card-header p-0 tab-header">
             <div class="d-flex">
-                {% if can_edit_qr_codes %}
-                <button class="flex-fill text-center tab-btn tab-btn-left{% if active_tab == 'qr-codes' %} active{% endif %}" onclick="window.location.href='?tab=qr-codes&sort=name'">
-                    <i class="fas fa-qrcode me-2"></i>{% trans "QR Codes" %}
-                    <span class="badge {% if active_tab == 'qr-codes' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ qr_codes_count }}</span>
-                </button>
-                {% endif %}
                 {% if can_edit_employees %}
-                <button class="flex-fill text-center tab-btn {% if not can_edit_qr_codes %}tab-btn-left{% elif not can_edit_absences %}tab-btn-right{% else %}tab-btn-middle{% endif %}{% if active_tab == 'users' %} active{% endif %}" onclick="window.location.href='?tab=users&sort=name'">
+                <button class="flex-fill text-center tab-btn {% if not can_edit_absences and not can_edit_qr_codes %}tab-btn-left{% elif can_edit_absences or can_edit_qr_codes %}tab-btn-left{% endif %}{% if active_tab == 'users' %} active{% endif %}" onclick="window.location.href='?tab=users&sort=name'">
                     <i class="fas fa-users me-2"></i>{% trans "Employees" %}
-                    <span class="badge {% if active_tab == 'users' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ users_count }}</span>
+                    <span class="tab-count-badge{% if active_tab == 'users' %} is-active{% endif %} ms-2">{{ users_count }}</span>
                 </button>
                 {% endif %}
                 {% if can_edit_absences %}
-                <button class="flex-fill text-center tab-btn {% if not can_edit_qr_codes and not can_edit_employees %}tab-btn-left{% else %}tab-btn-right{% endif %}{% if active_tab == 'absences' %} active{% endif %}" onclick="window.location.href='?tab=absences&sort=-date_from'">
+                <button class="flex-fill text-center tab-btn {% if can_edit_employees and can_edit_qr_codes %}tab-btn-middle{% elif can_edit_employees and not can_edit_qr_codes %}tab-btn-right{% elif not can_edit_employees and can_edit_qr_codes %}tab-btn-left{% else %}tab-btn-left{% endif %}{% if active_tab == 'absences' %} active{% endif %}" onclick="window.location.href='?tab=absences&sort=-date_from'">
                     <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absences" %}
-                    <span class="badge {% if active_tab == 'absences' %}bg-white text-success{% else %}bg-secondary{% endif %} ms-2">{{ absences_count }}</span>
+                    <span class="tab-count-badge{% if active_tab == 'absences' %} is-active{% endif %} ms-2">{{ absences_count }}</span>
+                </button>
+                {% endif %}
+                {% if can_edit_qr_codes %}
+                <button class="flex-fill text-center tab-btn {% if not can_edit_employees and not can_edit_absences %}tab-btn-left{% else %}tab-btn-right{% endif %}{% if active_tab == 'qr-codes' %} active{% endif %}" onclick="window.location.href='?tab=qr-codes&sort=name'">
+                    <i class="fas fa-qrcode me-2"></i>{% trans "QR Codes" %}
+                    <span class="tab-count-badge{% if active_tab == 'qr-codes' %} is-active{% endif %} ms-2">{{ qr_codes_count }}</span>
                 </button>
                 {% endif %}
             </div>

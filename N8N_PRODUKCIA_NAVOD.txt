@@ -1,0 +1,258 @@
+===============================================================================
+n8n na Produkčnom Serveri - Návod na Použitie
+===============================================================================
+
+PRÍSTUP K n8n
+===============================================================================
+
+URL: https://dqr.314.sk/n8n/
+
+Po otvorení tejto URL sa ti zobrazí prihlasovacie okno n8n.
+
+-------------------------------------------------------------------------------
+1. PRVÉ PRIHLÁSENIE (Admin)
+-------------------------------------------------------------------------------
+
+Pri prvom spustení n8n si musel vytvoriť účet s emailom a heslom. 
+Použi tieto údaje na prihlásenie.
+
+Ak si zabudol heslo:
+1. Klikni na "Forgot password?"
+2. Zadaj email
+3. Príde ti recovery link (ak máš nakonfigurovaný email v n8n)
+
+-------------------------------------------------------------------------------
+2. VYTVORENIE PRVÉHO WORKFLOW
+-------------------------------------------------------------------------------
+
+KROK 1: Nový Workflow
+1. Po prihlásení klikni na "+ Create Workflow"
+2. Otvorí sa prázdny canvas
+
+KROK 2: Pridaj Webhook Trigger
+1. Klikni na "+" na canvase
+2. Vyhľadaj "Webhook"
+3. Vyber "Webhook" node
+4. Nastav:
+   - HTTP Method: POST
+   - Path: scan-notification (alebo ľubovoľný názov)
+5. Klikni "Listen for Test Event"
+6. Skopíruj Production URL 
+   (bude vyzerať ako: https://dqr.314.sk/n8n/webhook/scan-notification)
+
+KROK 3: Pridaj Akciu (napr. Email)
+1. Klikni na "+" za webhook node
+2. Vyhľadaj akciu, napr.:
+   - Gmail - poslať email
+   - Slack - správa do Slacku
+   - HTTP Request - volať API
+   - Set - len zapísať do logu
+3. Nakonfiguruj akciu podľa potreby
+
+KROK 4: Ulož a Aktivuj
+1. Vpravo hore klikni "Save"
+2. Prepni prepínač na "Active" (vpravo hore)
+3. Workflow je teraz spustený!
+
+-------------------------------------------------------------------------------
+3. REGISTRÁCIA WORKFLOW V DJANGO ADMIN
+-------------------------------------------------------------------------------
+
+KROK 1: Prihlás sa do Django Admin
+URL: https://dqr.314.sk/admin/
+
+KROK 2: Choď do n8n Integration
+1. V ľavom menu nájdi "n8n Integration"
+2. Klikni na "N8n Workflows"
+
+KROK 3: Vytvor Nový Workflow
+1. Klikni "Add N8n Workflow" (vpravo hore)
+2. Vyplň:
+   - Name: Scan Notification (alebo ľubovoľný názov)
+   - Workflow ID: scan-notification (unikátny identifikátor)
+   - Webhook URL: https://dqr.314.sk/n8n/webhook/scan-notification (URL z n8n)
+   - Description: Pošle notifikáciu pri QR scane
+   - Is Active: [x] (zaškrtni)
+3. Klikni "Save"
+
+KROK 4: Vytvor Automatický Trigger (voliteľné)
+1. V admin paneli choď do "N8n Triggers"
+2. Klikni "Add N8n Trigger"
+3. Vyplň:
+   - Name: QR Scan Auto Trigger
+   - Trigger Type: Scan (vyber z dropdown)
+   - Workflow: Vyber workflow čo si vytvoril
+   - Is Active: [x]
+4. Klikni "Save"
+
+HOTOVO! Teraz sa workflow automaticky spustí pri každom QR scane.
+
+-------------------------------------------------------------------------------
+4. TEST WORKFLOW
+-------------------------------------------------------------------------------
+
+MANUÁLNY TEST Z DJANGO:
+1. Otvor: https://dqr.314.sk/n8n/workflows/
+2. Nájdi svoj workflow
+3. Klikni "Spustiť"
+4. Workflow sa spustí okamžite
+
+TEST CEZ QR SCAN:
+1. Otvor mobilnú appku
+2. Naskenuj QR kód
+3. Workflow by sa mal automaticky spustiť
+4. Skontroluj execution logs: https://dqr.314.sk/n8n/executions/
+
+-------------------------------------------------------------------------------
+5. MONITOROVANIE A DEBUGGING
+-------------------------------------------------------------------------------
+
+EXECUTION LOGS V DJANGO:
+URL: https://dqr.314.sk/n8n/executions/
+
+Tu vidíš:
+- Úspešné spustenia
+- Chyby
+- Request/Response data
+- Trvanie každého execution
+
+EXECUTION HISTORY V n8n:
+1. V n8n klikni na "Executions" (ľavé menu)
+2. Vidíš históriu všetkých spustení workflow
+3. Klikni na konkrétne execution pre detail
+4. Vidíš presne čo prešlo každým nodom
+
+-------------------------------------------------------------------------------
+6. NAJČASTEJŠIE USE CASES
+-------------------------------------------------------------------------------
+
+USE CASE 1: Email pri QR Scane
+n8n Workflow: Webhook → Filter (len arrivals) → Gmail → Respond
+Použitie: Pri príchode zamestnanca ti príde email s časom a lokáciou.
+
+USE CASE 2: Slack Notifikácia
+n8n Workflow: Webhook → Set (formatuj správu) → Slack → Respond
+Použitie: Každý scan sa automaticky zapíše do Slack kanála #attendance.
+
+USE CASE 3: Denný Report
+n8n Workflow: Schedule (17:00) → HTTP Request (Django API) → Gmail
+Použitie: Každý deň o 17:00 dostaneš email so zhrnutím dochádzky.
+
+USE CASE 4: Dovolenka - Schvaľovanie
+n8n Workflow: Webhook → Gmail (s approve/reject linkami) → Wait → 
+              HTTP Request (update Django)
+Použitie: Pri žiadosti o dovolenku dostane manažér email s linkami 
+          na schválenie/zamietnutie.
+
+-------------------------------------------------------------------------------
+7. PRIDANIE ĎALŠÍCH POUŽÍVATEĽOV
+-------------------------------------------------------------------------------
+
+V n8n:
+1. Klikni na Settings (ikona vľavo dole)
+2. Vyber "Users"
+3. Klikni "Invite User"
+4. Zadaj email
+5. Použi rolu:
+   - Owner - plný prístup
+   - Admin - spravovanie workflows
+   - Member - len spúšťanie workflows
+
+-------------------------------------------------------------------------------
+8. BEZPEČNOSŤ
+-------------------------------------------------------------------------------
+
+WEBHOOK SECURITY:
+Pri vytváraní webhooku v Django admin môžeš nastaviť Secret Key:
+1. V admin → N8n Webhooks
+2. Nastav secret_key (napr. náhodný reťazec)
+3. n8n musí v requeste posielať tento key ako X-N8N-Signature
+
+HTTPS:
+Produkčný server by mal mať SSL certifikát (https://). 
+Všetky komunikácie medzi n8n a Django sú potom šifrované.
+
+-------------------------------------------------------------------------------
+9. RIEŠENIE PROBLÉMOV
+-------------------------------------------------------------------------------
+
+WORKFLOW SA NESPÚŠŤA:
+- Je workflow Active v n8n?
+- Je workflow Is Active v Django admin?
+- Je trigger Is Active v Django admin?
+- Je Webhook URL správna?
+
+VIDÍM CHYBY V EXECUTION LOGS:
+1. Otvor https://dqr.314.sk/n8n/executions/
+2. Klikni na chybné execution
+3. Pozri Error Message
+4. Skontroluj Request Data - boli správne data poslané?
+
+n8n JE POMALÉ:
+1. Skontroluj Docker containers: docker ps
+2. Pozri logy: docker logs qrreader-n8n-1
+3. Reštartuj: docker-compose restart n8n
+
+-------------------------------------------------------------------------------
+10. POKROČILÉ FUNKCIE
+-------------------------------------------------------------------------------
+
+CREDENTIALS V n8n:
+Pre Gmail, Slack, API keys:
+1. Settings → Credentials
+2. Add Credential
+3. Vyber službu (Gmail, Slack, atď.)
+4. Autorizuj prístup
+
+VARIABLES V n8n:
+Pre citlivé údaje (API keys):
+1. Settings → Variables
+2. Add Variable
+3. Použi v workflow ako {{$vars.nazov}}
+
+ERROR HANDLING:
+Pridaj Error Trigger node:
+1. Zachytí chyby vo workflow
+2. Pošle notifikáciu pri chybe
+3. Loguje do súboru
+
+-------------------------------------------------------------------------------
+ĎALŠIE RESOURCES
+-------------------------------------------------------------------------------
+
+- n8n Dokumentácia: https://docs.n8n.io/
+- n8n Community: https://community.n8n.io/
+- Workflow Templates: https://n8n.io/workflows/
+- Django n8n Integration README: Na serveri v /app/n8n_integration/README.md
+
+-------------------------------------------------------------------------------
+TIPY
+-------------------------------------------------------------------------------
+
+1. Začni jednoducho - Najprv vytvor jednoduchý workflow (napr. len log)
+2. Testuj v n8n - Použij "Execute Workflow" pre manual testing
+3. Monitoruj executions - Pravidelne kontroluj execution logs
+4. Používaj Error Handling - Pridaj Error Trigger do každého workflow
+5. Dokumentuj workflows - Pridaj poznámky a popis do každého workflow
+
+-------------------------------------------------------------------------------
+QUICK CHECKLIST
+-------------------------------------------------------------------------------
+
+[ ] Prihlásiť sa do n8n: https://dqr.314.sk/n8n/
+[ ] Vytvoriť prvý workflow
+[ ] Aktivovať workflow v n8n
+[ ] Zaregistrovať workflow v Django admin
+[ ] Vytvoriť trigger (voliteľné)
+[ ] Otestovať manuálne
+[ ] Otestovať automaticky (scan QR)
+[ ] Skontrolovať execution logs
+[ ] Profit!
+
+===============================================================================
+
+AK NIEČO NEFUNGUJE:
+Skontroluj execution logs na https://dqr.314.sk/n8n/executions/
+Tam vidíš presne čo sa stalo a kde je problém!
+
+===============================================================================

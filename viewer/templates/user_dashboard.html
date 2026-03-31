@@ -177,7 +177,7 @@
                     </div>
                     
                     <!-- Notifications (if manager) -->
-                    {% if user.is_manager and user.notifications %}
+                    {% if user.is_manager %}
                     <div class="col-12">
                         <hr class="my-2">
                         <h6 class="fw-bold mb-3">
@@ -225,6 +225,51 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-summary-grid mb-4">
+        <div class="summary-stat-card summary-stat-primary">
+            <div class="summary-stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "Approved" %}</div>
+                <div class="summary-stat-value">{{ approved_absences_count }}</div>
+            </div>
+        </div>
+        <div class="summary-stat-card summary-stat-success">
+            <div class="summary-stat-icon">
+                <i class="fas fa-umbrella-beach"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "Vacation" %}</div>
+                <div class="summary-stat-value">{{ remaining_vacation_days }}</div>
+            </div>
+        </div>
+        <div class="summary-stat-card summary-stat-warning">
+            <div class="summary-stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "Pending" %}</div>
+                <div class="summary-stat-value">{{ pending_absences_count }}</div>
+            </div>
+        </div>
+        <div class="summary-stat-card summary-stat-secondary">
+            <div class="summary-stat-icon">
+                <i class="fas fa-location-dot"></i>
+            </div>
+            <div>
+                <div class="summary-stat-label">{% trans "Scanned At" %}</div>
+                <div class="summary-stat-value summary-stat-text">
+                    {% if last_scan %}
+                        {{ last_scan.timestamp|date:"d.m.Y H:i" }}
+                    {% else %}
+                        {% trans "No scans yet" %}
                     {% endif %}
                 </div>
             </div>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}n8n Workflows{% endblock %}
@@ -39,7 +39,7 @@
                     
                     <div class="mt-3">
                         <small class="text-muted">
-                            Vytvorené: {{ workflow.created_at|date:"d.m.Y H:i" }}
+                            VytvorenÃ©: {{ workflow.created_at|date:"d.m.Y H:i" }}
                         </small>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     </a>
                     {% if workflow.webhook_url %}
                     <button class="btn btn-sm btn-success trigger-workflow" data-workflow-id="{{ workflow.workflow_id }}">
-                        <i class="fas fa-play"></i> Spustiť
+                        <i class="fas fa-play"></i> SpustiÅ¥
                     </button>
                     {% endif %}
                 </div>
@@ -59,7 +59,7 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="fas fa-info-circle"></i> Žiadne workflows zatiaľ nie sú nakonfigurované.
+        <i class="fas fa-info-circle"></i> Å½iadne workflows zatiaÄ¾ nie sÃº nakonfigurovanÃ©.
     </div>
     {% endif %}
 </div>
@@ -69,8 +69,18 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.trigger-workflow').forEach(button => {
         button.addEventListener('click', function() {
             const workflowId = this.dataset.workflowId;
-            
-            if (confirm('Naozaj chcete spustiť tento workflow?')) {
+
+            appUI.confirm({
+                title: 'Spustiť workflow',
+                text: 'Naozaj chcete spustiť tento workflow?',
+                confirmButtonText: 'Spustiť',
+                cancelButtonText: 'Zrušiť',
+                reverseButtons: true
+            }).then(function(result) {
+                if (!result.isConfirmed) {
+                    return;
+                }
+
                 fetch(`/n8n/trigger/${workflowId}/`, {
                     method: 'POST',
                     headers: {
@@ -82,15 +92,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Workflow bol úspešne spustený!');
+                        appUI.alert({
+                            icon: 'success',
+                            title: 'Workflow spustený',
+                            text: 'Workflow bol úspešne spustený!',
+                            confirmButtonText: 'OK'
+                        });
                     } else {
-                        alert('Chyba: ' + (data.error || 'Neznáma chyba'));
+                        appUI.alert({
+                            icon: 'error',
+                            title: 'Chyba',
+                            text: data.error || 'Neznáma chyba',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 })
                 .catch(error => {
-                    alert('Chyba pri spúšťaní workflow: ' + error);
+                    appUI.alert({
+                        icon: 'error',
+                        title: 'Chyba',
+                        text: 'Chyba pri spúšťaní workflow: ' + error,
+                        confirmButtonText: 'OK'
+                    });
                 });
-            }
+            });
         });
     });
 });

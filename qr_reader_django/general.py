@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
-from qr_reader_django import crud
+from viewer.models import Company, User
 import json
 
 def check_email(request):
@@ -13,9 +13,9 @@ def check_email(request):
             if not email:
                 return JsonResponse({'exists': False})
             
-            # Check if email exists in User or Company model
-            user_exists = crud.get_user_by_email(email) is not None
-            company_exists = crud.get_company_by_email(email) is not None
+            # Match the database unique constraints, including inactive records.
+            user_exists = User.objects.filter(email=email).exists()
+            company_exists = Company.objects.filter(email=email).exists()
             
             if user_exists or company_exists:
                 return JsonResponse({
@@ -28,4 +28,4 @@ def check_email(request):
         except Exception as e:
             return JsonResponse({'exists': False, 'error': str(e)})
     
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid request method'))}, status=400)

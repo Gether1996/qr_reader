@@ -1,6 +1,7 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 import json
 
 
@@ -86,7 +87,7 @@ class N8nExecutionLog(models.Model):
     user_agent = models.CharField(max_length=500, blank=True, verbose_name="User Agent")
     
     # Timestamps
-    started_at = models.DateTimeField(default=timezone.now, verbose_name="Začaté")
+    started_at = models.DateTimeField(default=datetime.now, verbose_name="Začaté")
     finished_at = models.DateTimeField(null=True, blank=True, verbose_name="Skončené")
     duration_ms = models.IntegerField(null=True, blank=True, verbose_name="Trvanie (ms)")
     
@@ -109,7 +110,7 @@ class N8nExecutionLog(models.Model):
     def mark_success(self, response_data=None):
         """Označí execution ako úspešný"""
         self.status = 'success'
-        self.finished_at = timezone.now()
+        self.finished_at = datetime.now()
         if self.started_at:
             delta = self.finished_at - self.started_at
             self.duration_ms = int(delta.total_seconds() * 1000)
@@ -120,7 +121,7 @@ class N8nExecutionLog(models.Model):
     def mark_error(self, error_message):
         """Označí execution ako chybný"""
         self.status = 'error'
-        self.finished_at = timezone.now()
+        self.finished_at = datetime.now()
         if self.started_at:
             delta = self.finished_at - self.started_at
             self.duration_ms = int(delta.total_seconds() * 1000)
@@ -166,5 +167,5 @@ class N8nTrigger(models.Model):
     def increment_count(self):
         """Zvýši počítadlo spustení"""
         self.trigger_count += 1
-        self.last_triggered_at = timezone.now()
+        self.last_triggered_at = datetime.now()
         self.save(update_fields=['trigger_count', 'last_triggered_at'])

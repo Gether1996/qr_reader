@@ -1,9 +1,10 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 from django.conf import settings
 from django.db import models
 import json
@@ -86,7 +87,7 @@ def webhook_receiver(request, endpoint):
             'status': 'success',
             'message': 'Webhook received',
             'execution_id': execution_log.id,
-            'timestamp': timezone.now().isoformat()
+            'timestamp': datetime.now().isoformat()
         }
         
         execution_log.mark_success(response_data)
@@ -122,7 +123,7 @@ def trigger_workflow(request, workflow_id):
     data['_metadata'] = {
         'user_id': request.user.id,
         'username': request.user.username,
-        'triggered_at': timezone.now().isoformat(),
+        'triggered_at': datetime.now().isoformat(),
         'source': 'django_app'
     }
     
@@ -282,7 +283,7 @@ def trigger_n8n_event(trigger_type, data, user=None):
             '_metadata': {
                 'trigger_id': trigger.id,
                 'trigger_name': trigger.name,
-                'triggered_at': timezone.now().isoformat(),
+                'triggered_at': datetime.now().isoformat(),
                 'user_id': user.id if user else None,
             }
         }

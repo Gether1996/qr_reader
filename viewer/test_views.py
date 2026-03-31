@@ -3,15 +3,16 @@ Comprehensive test suite for Views and HTTP endpoints
 Tests authentication, permissions, form handling, and web layer functionality
 """
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
+from django.core import mail
 from datetime import datetime, date, timedelta
 import json
 from unittest.mock import patch, Mock
 
 from viewer.models import (
     Company, User, QRCodeProfile, ScanEvent, Vacation,
-    PasswordResetToken, AuditLog
+    PasswordResetToken, UserPasswordSetupToken, AuditLog
 )
 
 
@@ -247,7 +248,54 @@ class CompanyDashboardTests(TestCase):
         
         # Should show error
         self.assertEqual(User.objects.filter(email='user1@test.sk').count(), 1)
-    
+
+    @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
+    def test_create_user_without_password_sends_setup_email(self):
+        """Creating a user without password should send an onboarding email"""
+        response = self.client.post(
+            reverse('create_user'),
+            data=json.dumps({
+                'name': 'Invited User',
+                'email': 'invited@test.sk',
+                'basic_work_hours': 160,
+                'holidays_per_year': 20,
+                'has_lunch_break': True,
+                'lunch_break_duration': 30,
+                'is_manager': False,
+            }),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload['status'], 'success')
+        self.assertTrue(payload['invite_sent'])
+        self.assertTrue(User.objects.filter(email='invited@test.sk').exists())
+
+        invited_user = User.objects.get(email='invited@test.sk')
+        token = UserPasswordSetupToken.objects.get(user=invited_user)
+        self.assertTrue(token.is_valid())
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(token.token, mail.outbox[0].body)
+
+    def test_create_user_with_weak_password_is_rejected(self):
+        """Creating a user with a weak password should fail"""
+        response = self.client.post(
+            reverse('create_user'),
+            data=json.dumps({
+                'name': 'Weak Password User',
+                'email': 'weak@test.sk',
+                'password': 'weakpass12',
+                'password_confirm': 'weakpass12',
+                'basic_work_hours': 160,
+                'holidays_per_year': 20,
+            }),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(email='weak@test.sk').exists())
+
     def test_edit_user_success(self):
         """Test editing user information"""
         response = self.client.post(reverse('edit_user', args=[self.user1.id]), {
@@ -446,13 +494,149 @@ class QRCodeScanningViewTests(TestCase):
         session['user_id'] = self.user.id
         session['user_type'] = 'user'
         session.save()
+
+    def post_scan(self, payload):
+        return self.client.post(
+            reverse('user_scan_qr'),
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
     
     def test_scan_qr_page_accessible(self):
         """Test QR scan page is accessible"""
         response = self.client.get(reverse('user_scan_qr'), follow=True)
         
         self.assertIn(response.status_code, [200, 302])
-    
+
+    def test_scan_endpoint_rejects_invalid_scan_type(self):
+        """Test scan endpoint rejects unknown scan types"""
+        response = self.post_scan({
+            'uuid': self.qr_code.uuid,
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'invalid_type',
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
+
+    def test_scan_endpoint_requires_location(self):
+        """Test scan endpoint requires coordinates"""
+        response = self.post_scan({
+            'uuid': self.qr_code.uuid,
+            'scan_type': 'arrival',
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
+        self.assertIn('message', response.json())
+
+    def test_scan_endpoint_rejects_out_of_range_location(self):
+        """Test scan endpoint rejects impossible coordinates"""
+        response = self.post_scan({
+            'uuid': self.qr_code.uuid,
+            'latitude': 148.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
+        self.assertIn('message', response.json())
+
+    def test_regular_scan_requires_uuid(self):
+        """Test normal QR scans need a UUID"""
+        response = self.post_scan({
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
+        self.assertIn('message', response.json())
+
+    def test_scan_endpoint_rejects_conflicting_mobile_modes(self):
+        """Test scan endpoint rejects home office and business trip together"""
+        response = self.post_scan({
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+            'is_home_office': True,
+            'is_business_trip': True,
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
+
+    def test_scan_endpoint_rejects_invalid_sequence(self):
+        """Test departure cannot happen before arrival"""
+        response = self.post_scan({
+            'uuid': self.qr_code.uuid,
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'departure',
+        })
+
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()['status'], 'error')
+
+    def test_scan_endpoint_rejects_foreign_company_qr(self):
+        """Test users cannot scan QR codes from another company"""
+        other_company = Company.objects.create(
+            name='Other Company',
+            email='other@test.sk',
+            password='pass'
+        )
+        foreign_qr = QRCodeProfile.objects.create(
+            company=other_company,
+            name='Foreign QR',
+            location='Other Building'
+        )
+
+        response = self.post_scan({
+            'uuid': foreign_qr.uuid,
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+        })
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()['status'], 'error')
+
+    def test_home_office_scan_post_succeeds_without_uuid(self):
+        """Test mobile-only home office scan path"""
+        response = self.post_scan({
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+            'is_home_office': True,
+            'is_business_trip': False,
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertTrue(
+            ScanEvent.objects.filter(
+                scanned_by=self.user,
+                scan_type='arrival',
+                is_home_office=True,
+                qr_code__isnull=True
+            ).exists()
+        )
+
+    def test_invalid_json_payload_returns_error(self):
+        """Test malformed JSON returns a safe validation error"""
+        response = self.client.post(
+            reverse('user_scan_qr'),
+            data='{',
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
+        self.assertIn('message', response.json())
+
     @patch('viewer.models.ScanEvent.get_address_from_coordinates')
     def test_scan_qr_arrival_success(self, mock_geocoding):
         """Test successful arrival scan"""
@@ -469,6 +653,25 @@ class QRCodeScanningViewTests(TestCase):
         )
         
         # Check scan was created
+        self.assertTrue(
+            ScanEvent.objects.filter(
+                qr_code=self.qr_code,
+                scanned_by=self.user,
+                scan_type='arrival'
+            ).exists()
+        )
+
+    def test_scan_endpoint_arrival_success(self):
+        """Test arrival scan through the HTTP endpoint"""
+        response = self.post_scan({
+            'uuid': self.qr_code.uuid,
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
         self.assertTrue(
             ScanEvent.objects.filter(
                 qr_code=self.qr_code,
@@ -962,6 +1165,77 @@ class PasswordResetTests(TestCase):
         
         # Verify token is expired
         self.assertFalse(token.is_valid())
+
+
+class UserPasswordSetupViewTests(TestCase):
+    """Test employee password setup via email token"""
+
+    def setUp(self):
+        self.client = Client()
+        self.company = Company.objects.create(
+            name='Test Company',
+            email='company@test.sk',
+            password='temp'
+        )
+        self.user = User.objects.create(
+            company=self.company,
+            name='Invited User',
+            email='invited@test.sk',
+            password='temp'
+        )
+
+    def test_user_set_password_with_valid_token(self):
+        token = UserPasswordSetupToken.objects.create(
+            user=self.user,
+            token='valid_user_setup_token',
+            expires_at=datetime.now() + timedelta(hours=24)
+        )
+
+        response = self.client.post(
+            reverse('user_set_password', args=[token.token]),
+            {
+                'new_password': 'StrongPass123',
+                'confirm_password': 'StrongPass123',
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        token.refresh_from_db()
+        self.assertTrue(self.user.check_password('StrongPass123'))
+        self.assertTrue(token.is_used)
+
+    def test_user_set_password_rejects_missing_uppercase(self):
+        token = UserPasswordSetupToken.objects.create(
+            user=self.user,
+            token='missing_uppercase_token',
+            expires_at=datetime.now() + timedelta(hours=24)
+        )
+
+        response = self.client.post(
+            reverse('user_set_password', args=[token.token]),
+            {
+                'new_password': 'lowercase123',
+                'confirm_password': 'lowercase123',
+            },
+            follow=True
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password('lowercase123'))
+
+    def test_user_set_password_with_expired_token_redirects(self):
+        token = UserPasswordSetupToken.objects.create(
+            user=self.user,
+            token='expired_user_setup_token',
+            expires_at=datetime.now() - timedelta(hours=1)
+        )
+
+        response = self.client.get(reverse('user_set_password', args=[token.token]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('user_login'), response.url)
 
 
 # ============================================================================

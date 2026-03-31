@@ -1,41 +1,39 @@
 {% load i18n %}
-{% if not filter_id %}
-    {% if active_tab %}
-        {% with filter_id=active_tab %}
-        {% endwith %}
-    {% else %}
-        {% with filter_id="main" %}
-        {% endwith %}
-    {% endif %}
-{% endif %}
-<!-- Filters Card -->
 <div class="card filters-card mb-3">
-    <div class="card-header d-flex align-items-center gap-3">
+    <div class="card-header">
         <h6 class="mb-0">
-            <i class="fas fa-filter me-2"></i>{% trans "Filters" %}
+            <i class="fas fa-filter"></i>{% trans "Filters" %}
         </h6>
         {% if has_active_filters %}
-            <button class="btn btn-sm" type="button" onclick="clearFilters()" title="{% trans 'Clear all filters' %}" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-weight: 600; padding: 0.25rem 0.75rem;">
-                <i class="fas fa-filter-circle-xmark me-1"></i>{% trans "Clear" %}
+            <button class="btn btn-sm filter-clear-btn" type="button" onclick="clearFilters()" title="{% trans 'Clear all filters' %}">
+                <i class="fas fa-filter-circle-xmark"></i>{% trans "Clear" %}
             </button>
         {% endif %}
     </div>
     <div class="card-body">
         <form method="get" action="{{ form_action }}" id="filterForm-{{ active_tab|default:'main' }}" data-clear-url="{{ clear_url }}">
-            <div class="row g-2">
+            <div class="filters-form-grid">
                 {% if not hide_date_range %}
-                <div class="col-lg-4 col-md-6 col-6 filter-input-group">
-                    <label class="form-label" style="font-weight: 700; color: #2563eb; font-size: 1rem;">
-                        <i class="fas fa-calendar-alt me-1"></i>{% trans "Date Range" %}
+                <div class="filter-input-group filter-field-wide">
+                    <label class="form-label" for="dateRangePicker-{{ active_tab|default:'main' }}">
+                        <i class="fas fa-calendar-alt"></i>{% trans "Date Range" %}
                     </label>
                     <input type="text" id="dateRangePicker-{{ active_tab|default:'main' }}" class="form-control date-range-display" readonly placeholder="{% trans 'Select' %}">
                     <input type="hidden" name="date_from" id="date_from-{{ active_tab|default:'main' }}" value="{{ current_filters.date_from }}">
                     <input type="hidden" name="date_to" id="date_to-{{ active_tab|default:'main' }}" value="{{ current_filters.date_to }}">
                 </div>
                 {% endif %}
+
                 {% if show_first_filter %}
-                <div class="col-lg-3 col-md-6 col-6 filter-input-group">
-                    <label class="form-label">{{ first_filter_label }}</label>
+                <div class="filter-input-group filter-field-wide">
+                    <label class="form-label" for="{{ first_filter_name }}_input">
+                        {% if first_filter_name == 'qr_name' %}
+                            <i class="fas fa-qrcode"></i>
+                        {% else %}
+                            <i class="fas fa-search"></i>
+                        {% endif %}
+                        {{ first_filter_label }}
+                    </label>
                     <input type="text" name="{{ first_filter_name }}" id="{{ first_filter_name }}_input" class="form-control" placeholder="{% trans 'Search' %}" value="{{ first_filter_value }}" list="{{ first_filter_name }}_list" autocomplete="off">
                     {% if datalist_items %}
                     <datalist id="{{ first_filter_name }}_list">
@@ -44,43 +42,51 @@
                         {% endfor %}
                     </datalist>
                     <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const input = document.getElementById('{{ first_filter_name }}_input');
-                            const datalist = document.getElementById('{{ first_filter_name }}_list');
-                            
-                            if (input && datalist) {
-                                input.addEventListener('input', function() {
-                                    const options = datalist.querySelectorAll('option');
-                                    for (let option of options) {
-                                        if (option.value === this.value) {
-                                            // Value matches a datalist option, submit form
-                                            setTimeout(() => {
-                                                document.getElementById('filterForm-{{ active_tab|default:'main' }}').submit();
-                                            }, 100);
-                                            break;
-                                        }
-                                    }
-                                });
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const input = document.getElementById("{{ first_filter_name }}_input");
+                            const datalist = document.getElementById("{{ first_filter_name }}_list");
+                            const form = document.getElementById("filterForm-{{ active_tab|default:'main' }}");
+
+                            if (!input || !datalist || !form) {
+                                return;
                             }
+
+                            input.addEventListener("input", function() {
+                                const options = datalist.querySelectorAll("option");
+                                for (const option of options) {
+                                    if (option.value === this.value) {
+                                        window.setTimeout(function() {
+                                            form.submit();
+                                        }, 100);
+                                        break;
+                                    }
+                                }
+                            });
                         });
                     </script>
                     {% endif %}
                 </div>
                 {% endif %}
+
                 {% if show_scan_type %}
-                <div class="col-lg-2 col-md-3 col-6 filter-input-group">
-                    <label class="form-label">{% trans "Type" %}</label>
-                    <select name="scan_type" class="form-select" style="cursor: pointer;">
+                <div class="filter-input-group filter-field-medium">
+                    <label class="form-label" for="scan_type_{{ active_tab|default:'main' }}">
+                        <i class="fas fa-shuffle"></i>{% trans "Type" %}
+                    </label>
+                    <select name="scan_type" id="scan_type_{{ active_tab|default:'main' }}" class="form-select">
                         <option value="">{% trans "All" %}</option>
                         <option value="arrival" {% if current_filters.scan_type == 'arrival' %}selected{% endif %}>{% trans "Arrival" %}</option>
                         <option value="departure" {% if current_filters.scan_type == 'departure' %}selected{% endif %}>{% trans "Departure" %}</option>
                     </select>
                 </div>
                 {% endif %}
+
                 {% if show_vacation_type %}
-                <div class="col-lg-2 col-md-3 col-6 filter-input-group">
-                    <label class="form-label">{% trans "Type" %}</label>
-                    <select name="vacation_type" class="form-select" style="cursor: pointer;">
+                <div class="filter-input-group filter-field-medium">
+                    <label class="form-label" for="vacation_type_{{ active_tab|default:'main' }}">
+                        <i class="fas fa-briefcase-medical"></i>{% trans "Type" %}
+                    </label>
+                    <select name="vacation_type" id="vacation_type_{{ active_tab|default:'main' }}" class="form-select">
                         <option value="">{% trans "All" %}</option>
                         <option value="vacation" {% if current_filters.vacation_type == 'vacation' %}selected{% endif %}>{% trans "Vacation" %}</option>
                         <option value="sick_leave" {% if current_filters.vacation_type == 'sick_leave' %}selected{% endif %}>{% trans "Sick Leave" %}</option>
@@ -89,27 +95,35 @@
                     </select>
                 </div>
                 {% endif %}
+
                 {% if show_work_status %}
-                <div class="col-lg-2 col-md-3 col-6 filter-input-group">
-                    <label class="form-label">{% trans "Work Status" %}</label>
-                    <select name="work_status" class="form-select" style="cursor: pointer;">
+                <div class="filter-input-group filter-field-medium">
+                    <label class="form-label" for="work_status_{{ active_tab|default:'main' }}">
+                        <i class="fas fa-user-check"></i>{% trans "Work Status" %}
+                    </label>
+                    <select name="work_status" id="work_status_{{ active_tab|default:'main' }}" class="form-select">
                         <option value="">{% trans "All" %}</option>
                         <option value="at_work" {% if current_filters.work_status == 'at_work' %}selected{% endif %}>{% trans "At Work" %}</option>
                         <option value="not_at_work" {% if current_filters.work_status == 'not_at_work' %}selected{% endif %}>{% trans "Not At Work" %}</option>
                     </select>
                 </div>
                 {% endif %}
-                <div class="col-lg-1 col-md-3 col-6 filter-input-group">
-                    <label class="form-label" style="white-space: nowrap;">{% trans "Per Page" %}</label>
-                    <select name="items_per_page" class="form-select" style="cursor: pointer;">
-                        <option value="10" {% if current_filters.items_per_page == '10' %}selected{% endif %}>10</option>
-                        <option value="25" {% if current_filters.items_per_page == '25' %}selected{% endif %}>25</option>
-                        <option value="50" {% if current_filters.items_per_page == '50' %}selected{% endif %}>50</option>
-                        <option value="100" {% if current_filters.items_per_page == '100' %}selected{% endif %}>100</option>
+
+                <div class="filter-input-group filter-field-small">
+                    <label class="form-label" for="per_page_{{ active_tab|default:'main' }}">
+                        <i class="fas fa-list-ol"></i>{% trans "Per Page" %}
+                    </label>
+                    <select name="{{ page_size_name|default:'items_per_page' }}" id="per_page_{{ active_tab|default:'main' }}" class="form-select">
+                        <option value="10" {% if current_filters.items_per_page == '10' or current_filters.per_page == 10 %}selected{% endif %}>10</option>
+                        <option value="20" {% if current_filters.items_per_page == '20' or current_filters.per_page == 20 %}selected{% endif %}>20</option>
+                        <option value="25" {% if current_filters.items_per_page == '25' or current_filters.per_page == 25 %}selected{% endif %}>25</option>
+                        <option value="50" {% if current_filters.items_per_page == '50' or current_filters.per_page == 50 %}selected{% endif %}>50</option>
+                        <option value="100" {% if current_filters.items_per_page == '100' or current_filters.per_page == 100 %}selected{% endif %}>100</option>
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-12 col-12 filter-input-group filter-mobile-full d-flex align-items-end">
-                    <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; font-weight: 600;">
+
+                <div class="filter-input-group filter-submit-group">
+                    <button type="submit" class="btn btn-primary w-100 filter-submit-btn">
                         <i class="fas fa-search me-1"></i>{% trans "Apply" %}
                     </button>
                 </div>

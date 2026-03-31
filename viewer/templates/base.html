@@ -1,6 +1,7 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,22 +12,44 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/inline-helpers.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app_ui.css' %}">
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     {% include 'navbar.html' %}
 
+    <div class="toast-container position-fixed top-0 end-0 p-3 app-toast-container" id="appToastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="modal fade app-dialog-modal" id="appDialogModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered app-dialog-dialog">
+            <div class="modal-content app-dialog-content">
+                <div class="modal-header app-dialog-header">
+                    <div class="app-dialog-heading">
+                        <span class="app-dialog-icon-badge d-none" id="appDialogIconBadge"></span>
+                        <h5 class="modal-title app-dialog-title" id="appDialogTitle"></h5>
+                    </div>
+                    <button type="button" class="btn-close app-dialog-close" id="appDialogCloseBtn" aria-label="{% trans 'Close' %}"></button>
+                </div>
+                <div class="modal-body app-dialog-body" id="appDialogBody"></div>
+                <div class="app-dialog-validation alert alert-danger d-none mx-4 mb-0" id="appDialogValidation" role="alert"></div>
+                <div class="modal-footer app-dialog-footer" id="appDialogFooter">
+                    <button type="button" class="btn btn-outline-secondary app-dialog-cancel" id="appDialogCancelBtn"></button>
+                    <button type="button" class="btn btn-primary app-dialog-confirm" id="appDialogConfirmBtn"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Django Messages -->
     {% if messages %}
         {% for message in messages %}
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
+                    appUI.fire({
                         icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" %}error{% elif message.tags == "warning" %}warning{% else %}info{% endif %}',
                         text: '{{ message|escapejs }}',
                         timer: 1500,
@@ -64,7 +87,6 @@
     </script>
     <script src="{% static 'scripts/libraries/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'scripts/libraries/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'scripts/libraries/sweetalert2@11.js' %}"></script>
     <script src="{% static 'scripts/libraries/moment.min.js' %}"></script>
     <script src="{% static 'scripts/libraries/daterangepicker.js' %}"></script>
     <script src="{% static 'scripts/daterangepicker-locale/daterangepicker-locale-sk.js' %}"></script>

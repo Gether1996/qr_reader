@@ -6,6 +6,25 @@ let currentMagazineId = null;
 let currentArticleData = null;
 let contentBlocks = [];
 
+function showEditorAlert(message, icon = 'error') {
+    return appUI.alert({
+        icon: icon,
+        title: icon === 'success' ? (translations.success || 'Success') : (translations.error || 'Error'),
+        text: message,
+        confirmButtonText: translations.ok || 'OK'
+    });
+}
+
+function confirmEditorAction(message) {
+    return appUI.confirm({
+        title: translations.confirm || 'Confirm',
+        text: message,
+        confirmButtonText: translations.yes || 'Yes',
+        cancelButtonText: translations.cancel || 'Cancel',
+        reverseButtons: true
+    }).then(result => result.isConfirmed);
+}
+
 // Stub functions to prevent "not defined" errors when inline handlers fire before script loads
 if (typeof saveArticle === 'undefined') {
     window.saveArticle = function() {
@@ -32,10 +51,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Create new article
-function createArticle() {
+async function createArticle() {
     if (!currentMagazineId) return;
-    
-    const title = prompt('Enter article title:');
+
+    const result = await appUI.prompt({
+        title: translations.createArticle || 'Create Article',
+        inputPlaceholder: translations.articleTitle || 'Enter article title',
+        confirmButtonText: translations.create || 'Create',
+        cancelButtonText: translations.cancel || 'Cancel'
+    });
+    const title = (result && result.isConfirmed && result.value ? result.value.trim() : '');
     if (!title) return;
     
     fetch(`${languagePrefix}/magazine/${currentMagazineId}/article/create/`, {
@@ -53,12 +78,12 @@ function createArticle() {
         if (data.success) {
             window.location.reload();
         } else {
-            alert(translations.errorCreatingArticle + ': ' + (data.error || translations.magazineUnknownError));
+            showEditorAlert(translations.errorCreatingArticle + ': ' + (data.error || translations.magazineUnknownError));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(translations.errorCreatingArticle);
+        showEditorAlert(translations.errorCreatingArticle);
     });
 }
 
@@ -302,11 +327,11 @@ function addImageBlock() {
                     }
                 }, 300);
             } else {
-                alert(translations.errorUploadingImage + ': ' + (data.error || translations.magazineUnknownError));
+                showEditorAlert(translations.errorUploadingImage + ': ' + (data.error || translations.magazineUnknownError));
             }
         } catch (error) {
             console.error('Error:', error);
-            alert(translations.errorUploadingImage);
+            showEditorAlert(translations.errorUploadingImage);
         } finally {
             loadingMsg.remove();
         }
@@ -359,23 +384,27 @@ function updateBlock(blockId) {
 
 // Delete block
 function deleteBlock(blockId) {
-    if (!confirm(translations.deleteContentBlock)) return;
-    
-    fetch(`${languagePrefix}/magazine/block/${blockId}/delete/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrfToken,
-            'Content-Type': 'application/json'
+    confirmEditorAction(translations.deleteContentBlock).then(isConfirmed => {
+        if (!isConfirmed) {
+            return;
         }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            loadArticle(currentArticleId);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
+
+        fetch(`${languagePrefix}/magazine/block/${blockId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadArticle(currentArticleId);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     });
 }
 
@@ -475,39 +504,43 @@ window.saveArticle = function saveArticle() {
             // Update live preview
             updateLivePreview();
         } else {
-            alert(translations.errorSavingArticle + ': ' + (data.error || translations.magazineUnknownError));
+            showEditorAlert(translations.errorSavingArticle + ': ' + (data.error || translations.magazineUnknownError));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(translations.errorSavingArticle);
+        showEditorAlert(translations.errorSavingArticle);
     });
 };
 
 // Delete article
 function deleteArticle(articleId, event) {
     event.stopPropagation();
-    
-    if (!confirm(translations.deleteArticle)) return;
-    
-    fetch(`${languagePrefix}/magazine/article/${articleId}/delete/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrfToken,
-            'Content-Type': 'application/json'
+
+    confirmEditorAction(translations.deleteArticle).then(isConfirmed => {
+        if (!isConfirmed) {
+            return;
         }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.reload();
-        } else {
-            alert(translations.errorDeletingArticle);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert(translations.errorDeletingArticle);
+
+        fetch(`${languagePrefix}/magazine/article/${articleId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                showEditorAlert(translations.errorDeletingArticle);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showEditorAlert(translations.errorDeletingArticle);
+        });
     });
 }
 
@@ -679,15 +712,15 @@ function saveMagazineConfig() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(translations.settingsSavedSuccess);
+            showEditorAlert(translations.settingsSavedSuccess, 'success');
             window.location.reload();
         } else {
-            alert(translations.errorSavingSettings);
+            showEditorAlert(translations.errorSavingSettings);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(translations.errorSavingSettings);
+        showEditorAlert(translations.errorSavingSettings);
     });
 }
 
@@ -1043,13 +1076,13 @@ window.uploadHeaderImage = function uploadHeaderImage() {
             fileInput.value = '';
             updateLivePreview();
         } else {
-            alert(translations.errorUploadingImage + ': ' + (data.error || translations.magazineUnknownError));
+            showEditorAlert(translations.errorUploadingImage + ': ' + (data.error || translations.magazineUnknownError));
             previewDiv.innerHTML = '';
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(translations.errorUploadingImage);
+        showEditorAlert(translations.errorUploadingImage);
         previewDiv.innerHTML = '';
     });
 };
@@ -1071,12 +1104,12 @@ window.removeHeaderImage = function removeHeaderImage() {
             document.getElementById('headerImagePreview').innerHTML = '';
             updateLivePreview();
         } else {
-            alert(translations.errorRemovingImage);
+            showEditorAlert(translations.errorRemovingImage);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(translations.errorRemovingImage);
+        showEditorAlert(translations.errorRemovingImage);
     });
 };
 

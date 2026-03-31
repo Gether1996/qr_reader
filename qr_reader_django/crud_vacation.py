@@ -7,6 +7,8 @@ from viewer.models import Vacation
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.urls import reverse
+from urllib.parse import urlencode
 
 def create_vacation(request):
     """Create a new vacation (company, manager, or user for themselves)"""
@@ -251,6 +253,8 @@ def delete_vacation(request, vacation_id):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
+
 
 def approve_vacation(request, vacation_id):
     """Approve vacation (company or manager with can_edit_absences permission)"""
@@ -315,9 +319,13 @@ def approve_vacation(request, vacation_id):
         if request.method == 'GET':
             from django.shortcuts import redirect
             from django.contrib import messages
-            from urllib.parse import quote
             messages.info(request, str(_('This vacation request has already been approved.')))
-            return redirect(f'/company/dashboard/?tab=absences&name={quote(vacation.user.name)}')
+            dashboard_url = reverse('company_dashboard')
+            query = urlencode({
+                'tab': 'absences',
+                'absence_employee_name': vacation.user.name,
+            })
+            return redirect(f'{dashboard_url}?{query}')
         return JsonResponse({'status': 'success', 'message': str(_('Vacation already approved'))})
 
     # Set approved to True
@@ -388,9 +396,13 @@ def approve_vacation(request, vacation_id):
     if request.method == 'GET':
         from django.shortcuts import redirect
         from django.contrib import messages
-        from urllib.parse import quote
         messages.success(request, str(_('Vacation approved successfully')))
-        return redirect(f'/company/dashboard/?tab=absences&name={quote(vacation.user.name)}')
+        dashboard_url = reverse('company_dashboard')
+        query = urlencode({
+            'tab': 'absences',
+            'absence_employee_name': vacation.user.name,
+        })
+        return redirect(f'{dashboard_url}?{query}')
     else:  # POST
         return JsonResponse({
             'status': 'success',

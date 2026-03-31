@@ -7,12 +7,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+
+def _split_env_list(value, default):
+    if not value:
+        return default
+    return [item.strip() for item in value.split(',') if item.strip()]
+
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['dqr.314.sk', 'localhost', '127.0.0.1', '*']
-CSRF_TRUSTED_ORIGINS = ['http://dqr.314.sk', 'https://dqr.314.sk']
+ALLOWED_HOSTS = _split_env_list(
+    os.getenv('ALLOWED_HOSTS'),
+    ['dqr.314.sk', 'localhost', '127.0.0.1', '*']
+)
+CSRF_TRUSTED_ORIGINS = _split_env_list(
+    os.getenv('CSRF_TRUSTED_ORIGINS'),
+    [
+        'http://dqr.314.sk',
+        'https://dqr.314.sk',
+        'http://localhost:9005',
+        'http://127.0.0.1:9005',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -118,7 +137,7 @@ LANGUAGES = [
 
 TIME_ZONE = 'Europe/Bratislava'
 USE_I18N = True
-USE_TZ = False  # Bez timezone awareness
+USE_TZ = False  # Pouzivame iba standardne datetime
 
 # Base URL for QR code generation
 BASE_URL = 'https://dqr.314.sk'
@@ -131,7 +150,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = "/app/staticfiles"
+STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(BASE_DIR, 'staticfiles'))
+os.makedirs(STATIC_ROOT, exist_ok=True)
 
 # Storage configuration - use simple storage for tests and debug mode
 if 'test' in sys.argv or DEBUG:

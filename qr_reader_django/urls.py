@@ -40,6 +40,7 @@ urlpatterns += i18n_patterns(
     path('user/logout/', user_logout, name='user_logout'),
     path('user/dashboard/', views.user_dashboard, name='user_dashboard'),
     path('user/scan/', views.user_scan_qr, name='user_scan_qr'),
+    path('user/set-password/<str:token>/', views.user_set_password, name='user_set_password'),
     
     # QR Code management (company actions)
     path('qr/create/', create_qr_code, name='create_qr_code'),

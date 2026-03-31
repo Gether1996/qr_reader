@@ -10,96 +10,125 @@
 
 {% block content %}
 <div class="mobile-scan-container">
-    <!-- Header -->
-    <div class="scan-header">
-        <a href="{% url 'user_dashboard' %}" class="back-link">
-            <i class="fas fa-arrow-left me-2"></i>{% trans "Back" %}
-        </a>
-    </div>
-
-    <!-- Scan Type Selection -->
-    <div class="scan-type-selector">
-        <h5 class="mb-3 text-center scan-type-title">
-            <i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}
-        </h5>
-        <div class="row g-3">
-            <div class="col-6">
-                <button type="button" class="scan-type-btn-mobile arrival w-100" data-type="arrival" {% if 'arrival' not in enabled_buttons %}disabled{% endif %}>
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>{% trans "Arrival" %}</span>
-                </button>
-            </div>
-            <div class="col-6">
-                <button type="button" class="scan-type-btn-mobile departure w-100" data-type="departure" {% if 'departure' not in enabled_buttons %}disabled{% endif %}>
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>{% trans "Departure" %}</span>
-                </button>
-            </div>
-            <div class="col-6">
-                <button type="button" class="scan-type-btn-mobile lunch-start w-100" data-type="lunch_break_start" {% if 'lunch_break_start' not in enabled_buttons %}disabled{% endif %}>
-                    <i class="fas fa-utensils"></i>
-                    <span>{% trans "Break Start" %}</span>
-                </button>
-            </div>
-            <div class="col-6">
-                <button type="button" class="scan-type-btn-mobile lunch-end w-100" data-type="lunch_break_end" {% if 'lunch_break_end' not in enabled_buttons %}disabled{% endif %}>
-                    <i class="fas fa-coffee"></i>
-                    <span>{% trans "Break End" %}</span>
-                </button>
+    <div class="scan-shell">
+        <!-- Header -->
+        <div class="scan-header">
+            <a href="{% url 'user_dashboard' %}" class="back-link">
+                <i class="fas fa-arrow-left me-2"></i>{% trans "Back" %}
+            </a>
+            <div class="scan-hero-card">
+                <div class="scan-hero-copy">
+                    <span class="scan-kicker">{% trans "Mobile Scanner" %}</span>
+                    <h1 class="scan-page-title">{% trans "Scan QR Code" %}</h1>
+                    <p class="scan-page-subtitle">
+                        {% trans "Pick the next valid action, then scan a workplace QR code or use a special mobile scan." %}
+                    </p>
+                </div>
+                <div class="scan-status-grid">
+                    <div class="scan-status-card">
+                        <span class="scan-status-label">{% trans "Selected Action" %}</span>
+                        <strong id="selectedScanTypeText">{% trans "No scan type selected" %}</strong>
+                    </div>
+                    <div class="scan-status-card">
+                        <span class="scan-status-label">{% trans "Permissions" %}</span>
+                        <strong id="permissionStatusText">{% trans "Permission required" %}</strong>
+                    </div>
+                    <div class="scan-status-card">
+                        <span class="scan-status-label">{% trans "Location" %}</span>
+                        <strong id="locationStatusText">{% trans "Will refresh before scan" %}</strong>
+                    </div>
+                </div>
+                <div class="scan-flow-note" id="scanFlowNote" role="status" aria-live="polite">
+                    <i class="fas fa-circle-info me-2"></i>{% trans "Only the next valid actions are enabled based on your latest scan." %}
+                </div>
             </div>
         </div>
-        <div id="scan-type-warning" class="alert alert-warning mt-3 mb-0 d-none">
-            <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select scan type" %}
-        </div>
-    </div>
 
-    <!-- Camera Container -->
-    <div class="camera-container d-none" id="camera-container">
-        <div id="qr-reader"></div>
-        <div class="qr-overlay">
-            <div class="qr-frame">
-                <div class="qr-corner top-left"></div>
-                <div class="qr-corner top-right"></div>
-                <div class="qr-corner bottom-left"></div>
-                <div class="qr-corner bottom-right"></div>
-                <div class="scan-line"></div>
+        <!-- Scan Type Selection -->
+        <div class="scan-type-selector">
+            <h5 class="mb-3 text-center scan-type-title">
+                <i class="fas fa-clipboard-check me-2"></i>{% trans "Select scan type" %}
+            </h5>
+            <div class="row g-3">
+                <div class="col-6">
+                    <button type="button" class="scan-type-btn-mobile arrival w-100" data-type="arrival" {% if 'arrival' not in enabled_buttons %}disabled{% endif %}>
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>{% trans "Arrival" %}</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="scan-type-btn-mobile departure w-100" data-type="departure" {% if 'departure' not in enabled_buttons %}disabled{% endif %}>
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>{% trans "Departure" %}</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="scan-type-btn-mobile lunch-start w-100" data-type="lunch_break_start" {% if 'lunch_break_start' not in enabled_buttons %}disabled{% endif %}>
+                        <i class="fas fa-utensils"></i>
+                        <span>{% trans "Break Start" %}</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="scan-type-btn-mobile lunch-end w-100" data-type="lunch_break_end" {% if 'lunch_break_end' not in enabled_buttons %}disabled{% endif %}>
+                        <i class="fas fa-coffee"></i>
+                        <span>{% trans "Break End" %}</span>
+                    </button>
+                </div>
             </div>
-            <div class="scan-instructions">
-                <i class="fas fa-qrcode me-2"></i>{% trans "Align QR code within the frame" %}
+            <div class="scan-next-step">
+                <i class="fas fa-mobile-screen-button me-2"></i>{% trans "After selecting an action, you can scan a workplace QR code or use a mobile-only work mode." %}
+            </div>
+            <div id="scan-type-warning" class="alert alert-warning mt-3 mb-0 d-none">
+                <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Please select scan type" %}
             </div>
         </div>
-    </div>
 
-    <!-- Action Buttons Container -->
-    <div class="action-buttons-container d-none" id="action-buttons-container">
-        <!-- Start Button - Full Width -->
-        <button id="startScanBtn" class="btn btn-primary action-button-mobile w-100 mb-3">
-            <i class="fas fa-camera"></i>
-            <span>{% trans "Start Scanner" %}</span>
+        <!-- Camera Container -->
+        <div class="camera-container d-none" id="camera-container">
+            <div id="qr-reader"></div>
+            <div class="qr-overlay">
+                <div class="qr-frame">
+                    <div class="qr-corner top-left"></div>
+                    <div class="qr-corner top-right"></div>
+                    <div class="qr-corner bottom-left"></div>
+                    <div class="qr-corner bottom-right"></div>
+                    <div class="scan-line"></div>
+                </div>
+                <div class="scan-instructions" role="status" aria-live="polite">
+                    <i class="fas fa-qrcode me-2"></i>{% trans "Align QR code within the frame" %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons Container -->
+        <div class="action-buttons-container d-none" id="action-buttons-container">
+            <button id="startScanBtn" type="button" class="btn btn-primary action-button-mobile action-button-primary w-100">
+                <i class="fas fa-camera"></i>
+                <span>{% trans "Start Scanner" %}</span>
+            </button>
+
+            <div class="row g-2 action-grid">
+                <div class="col-6">
+                    <button id="homeOfficeBtn" type="button" class="btn btn-success action-button-mobile w-100">
+                        <i class="fas fa-home"></i>
+                        <span>{% trans "Home Office Scan" %}</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button id="businessTripBtn" type="button" class="btn btn-info action-button-mobile w-100">
+                        <i class="fas fa-briefcase"></i>
+                        <span>{% trans "Business Trip Scan" %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stop Button -->
+        <button id="stopScanBtn" type="button" class="btn btn-danger action-button-mobile-single d-none">
+            <i class="fas fa-stop"></i>
+            <span>{% trans "Stop Scanner" %}</span>
         </button>
-
-        <!-- Home Office and Business Trip Buttons - Side by Side -->
-        <div class="row g-2">
-            <div class="col-6">
-                <button id="homeOfficeBtn" class="btn btn-success action-button-mobile w-100">
-                    <i class="fas fa-home"></i>
-                    <span>{% trans "Home Office Scan" %}</span>
-                </button>
-            </div>
-            <div class="col-6">
-                <button id="businessTripBtn" class="btn btn-info action-button-mobile w-100">
-                    <i class="fas fa-briefcase"></i>
-                    <span>{% trans "Business Trip Scan" %}</span>
-                </button>
-            </div>
-        </div>
     </div>
-
-    <!-- Stop Button -->
-    <button id="stopScanBtn" class="btn btn-danger action-button-mobile-single d-none">
-        <i class="fas fa-stop"></i>
-        <span>{% trans "Stop Scanner" %}</span>
-    </button>
 </div>
 
 <!-- Permission Screen -->
@@ -112,7 +141,7 @@
         <p class="mb-4 permission-text">
             {% trans "To scan QR codes and record your location, we need permission to access your camera and location." %}
         </p>
-        <button id="grant-permission-btn" class="btn btn-primary w-100 permission-button">
+        <button id="grant-permission-btn" type="button" class="btn btn-primary w-100 permission-button">
             <i class="fas fa-shield-alt me-2"></i>{% trans "Grant Permissions" %}
         </button>
     </div>
@@ -121,7 +150,7 @@
 <!-- Loading Overlay -->
 <div class="loading-overlay-mobile d-none" id="loading-overlay">
     <div class="loading-spinner"></div>
-    <div class="mt-4 text-white loading-text">
+    <div class="mt-4 text-white loading-text" role="status" aria-live="polite">
         <i class="fas fa-sync fa-spin me-2"></i>{% trans "Processing scan..." %}
     </div>
 </div>

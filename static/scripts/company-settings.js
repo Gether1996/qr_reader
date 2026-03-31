@@ -16,7 +16,7 @@ function initializeSettingsPage() {
     if (cancelBtn) {
         cancelBtn.addEventListener('click', function() {
             if (hasFormChanged(form, originalValues)) {
-                Swal.fire({
+                appUI.fire({
                     title: translations.confirmCancel || 'Cancel Changes?',
                     text: translations.confirmCancelText || 'All unsaved changes will be lost.',
                     icon: 'warning',
@@ -60,7 +60,6 @@ function initializeSettingsPage() {
         });
     }
 }
-
 function hasFormChanged(form, originalValues) {
     const currentValues = new FormData(form);
     
@@ -84,7 +83,7 @@ function saveSettings() {
     if (!companyName.value.trim()) {
         companyName.style.borderColor = '#dc3545';
         companyName.focus();
-        Swal.fire({
+        appUI.fire({
             title: translations.error || 'Error!',
             text: translations.companyNameRequired || 'Company name is required',
             icon: 'error',
@@ -110,7 +109,7 @@ function saveSettings() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            Swal.fire({
+            appUI.fire({
                 title: translations.success || 'Success!',
                 text: data.message || translations.settingsSaved || 'Settings have been saved successfully.',
                 icon: 'success',
@@ -121,7 +120,7 @@ function saveSettings() {
                 window.location.reload();
             });
         } else {
-            Swal.fire({
+            appUI.fire({
                 title: translations.error || 'Error',
                 text: data.message || translations.saveFailed || 'Failed to save settings. Please try again.',
                 icon: 'error',
@@ -132,7 +131,7 @@ function saveSettings() {
     })
     .catch(error => {
         console.error('Error:', error);
-        Swal.fire({
+        appUI.fire({
             title: translations.error || 'Error',
             text: translations.networkError || 'Network error. Please check your connection and try again.',
             icon: 'error',
@@ -148,7 +147,7 @@ function saveSettings() {
 }
 
 function requestPasswordReset() {
-    Swal.fire({
+    appUI.fire({
         title: translations.resetPassword || 'Reset Password',
         html: translations.resetPasswordText || 'A password reset link will be sent to your email address.<br><br>Do you want to continue?',
         icon: 'question',
@@ -160,7 +159,7 @@ function requestPasswordReset() {
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading state
-            Swal.fire({
+            appUI.fire({
                 title: translations.sending || 'Sending...',
                 text: translations.pleaseWait || 'Please wait while we send the reset link.',
                 icon: 'info',
@@ -168,7 +167,7 @@ function requestPasswordReset() {
                 allowEscapeKey: false,
                 showConfirmButton: false,
                 willOpen: () => {
-                    Swal.showLoading();
+                    appUI.showLoading();
                 }
             });
 
@@ -184,7 +183,7 @@ function requestPasswordReset() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    Swal.fire({
+                    appUI.fire({
                         title: translations.emailSent || 'Email Sent!',
                         html: data.message || translations.emailSentText || 'A password reset link has been sent to your email address.<br><br>Please check your inbox and follow the instructions.',
                         icon: 'success',
@@ -192,7 +191,7 @@ function requestPasswordReset() {
                         confirmButtonColor: '#10b981'
                     });
                 } else {
-                    Swal.fire({
+                    appUI.fire({
                         title: translations.error || 'Error',
                         text: data.message || translations.sendFailed || 'Failed to send reset email. Please try again.',
                         icon: 'error',
@@ -203,7 +202,7 @@ function requestPasswordReset() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                Swal.fire({
+                appUI.fire({
                     title: translations.error || 'Error',
                     text: translations.networkError || 'Network error. Please check your connection and try again.',
                     icon: 'error',
@@ -236,7 +235,7 @@ function validateForm(form) {
     const companyName = form.elements['company_name'];
     
     if (!companyName || !companyName.value.trim()) {
-        Swal.fire({
+        appUI.fire({
             title: translations.validationError || 'Validation Error',
             text: translations.companyNameRequired || 'Company name is required.',
             icon: 'warning',
