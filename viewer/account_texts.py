@@ -214,7 +214,7 @@ def get_scan_mode_texts(language_code):
             'en': 'Home Office',
         }),
         'business_trip': _get_text(language_code, {
-            'sk': 'Pracovna cesta',
+            'sk': 'Pracovná cesta',
             'de': 'Dienstreise',
             'es': 'Viaje de negocios',
             'en': 'Business Trip',

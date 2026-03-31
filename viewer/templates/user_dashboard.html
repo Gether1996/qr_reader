@@ -366,7 +366,7 @@
                                 {% elif scan.is_business_trip %}
                                     <strong><i class="fas fa-briefcase me-1 text-info"></i>{% trans "Business Trip" %}</strong>
                                 {% elif scan.is_no_qr %}
-                                    <strong><i class="fas fa-location-dot me-1 text-secondary"></i>{% if LANGUAGE_CODE == 'sk' %}Bez QR{% elif LANGUAGE_CODE == 'de' %}Ohne QR{% elif LANGUAGE_CODE == 'es' %}Sin QR{% else %}No QR{% endif %}</strong>
+                                    <strong><i class="fas fa-location-dot me-1 text-secondary"></i>{% trans "No QR" %}</strong>
                                 {% else %}
                                     <strong>{{ scan.qr_code.name }}</strong>
                                 {% endif %}
@@ -417,7 +417,7 @@
                             {% elif scan.is_business_trip %}
                                 <i class="fas fa-briefcase me-1 text-info"></i>{% trans "Business Trip" %}
                             {% elif scan.is_no_qr %}
-                                <i class="fas fa-location-dot me-1 text-secondary"></i>{% if LANGUAGE_CODE == 'sk' %}Bez QR{% elif LANGUAGE_CODE == 'de' %}Ohne QR{% elif LANGUAGE_CODE == 'es' %}Sin QR{% else %}No QR{% endif %}
+                                <i class="fas fa-location-dot me-1 text-secondary"></i>{% trans "No QR" %}
                             {% else %}
                                 {{ scan.qr_code.name }}
                             {% endif %}

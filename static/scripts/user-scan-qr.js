@@ -637,7 +637,9 @@ function runManualScan(mode) {
         return;
     }
 
-    if (!permissionsGranted) {
+    // Manual scans (no camera needed) only require location permission
+    var needsFullPermissions = mode !== "home_office" && mode !== "business_trip" && mode !== "no_qr";
+    if (needsFullPermissions ? !permissionsGranted : !locationPermission) {
         showPermissionScreen();
         updateStatusPanel();
         return;

@@ -399,7 +399,8 @@ def user_dashboard(request):
     ).filter(
         Q(qr_code__company=user.company, qr_code__is_active=True) | 
         Q(is_home_office=True, scanned_by__company=user.company) |
-        Q(is_business_trip=True, scanned_by__company=user.company)
+        Q(is_business_trip=True, scanned_by__company=user.company) |
+        Q(is_no_qr=True, scanned_by__company=user.company)
     ).select_related('qr_code', 'scanned_by')
     
     # Scans-specific filters
@@ -1098,7 +1099,7 @@ def company_analytics(request):
     today_scans = ScanEvent.objects.filter(
         timestamp__date=today
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
     )
     today_arrivals = today_scans.filter(scan_type='arrival').count()
     today_departures = today_scans.filter(scan_type='departure').count()
@@ -1108,7 +1109,7 @@ def company_analytics(request):
         timestamp__date__gte=date_from,
         timestamp__date__lte=date_to
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
     )
     range_arrivals = range_scans.filter(scan_type='arrival').count()
     range_departures = range_scans.filter(scan_type='departure').count()
@@ -1118,7 +1119,7 @@ def company_analytics(request):
     week_scans = ScanEvent.objects.filter(
         timestamp__date__gte=week_ago
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
     ).count()
     
     # Current month statistics
@@ -1126,7 +1127,7 @@ def company_analytics(request):
         timestamp__date__gte=current_month_start,
         timestamp__date__lte=today
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
     ).count()
     
     # Previous month statistics
@@ -1134,7 +1135,7 @@ def company_analytics(request):
         timestamp__date__gte=prev_month_start,
         timestamp__date__lte=prev_month_end
     ).filter(
-        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+        Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
     ).count()
     
     # Currently in office (last scan was arrival)
@@ -1144,7 +1145,7 @@ def company_analytics(request):
         last_scan = ScanEvent.objects.filter(
             scanned_by=user
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
         ).order_by('-timestamp').first()
         
         # User is at work if last scan was arrival or lunch_break_end
@@ -1153,6 +1154,8 @@ def company_analytics(request):
                 location = _('Home Office')
             elif last_scan.is_business_trip:
                 location = _('Business Trip')
+            elif last_scan.is_no_qr:
+                location = _('No QR')
             else:
                 location = last_scan.qr_code.name
             currently_in_office.append({
@@ -1186,7 +1189,7 @@ def company_analytics(request):
             timestamp__date__gte=date_from,
             timestamp__date__lte=date_to
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1231,7 +1234,7 @@ def company_analytics(request):
             timestamp__date__gte=current_month_start,
             timestamp__date__lte=today
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1274,7 +1277,7 @@ def company_analytics(request):
             timestamp__date__gte=prev_month_start,
             timestamp__date__lte=prev_month_end
         ).filter(
-            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+            Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
         ).order_by('timestamp')
         
         total_hours = 0
@@ -1397,7 +1400,7 @@ def analytics_chart_data(request):
             day_scans = ScanEvent.objects.filter(
                 timestamp__date=date
             ).filter(
-                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
             )
             
             arrivals = day_scans.filter(scan_type='arrival').count()
@@ -1469,7 +1472,7 @@ def analytics_chart_data(request):
                 timestamp__date=today,
                 timestamp__hour=hour
             ).filter(
-                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company)
+                Q(qr_code__company=company) | Q(is_home_office=True, scanned_by__company=company) | Q(is_business_trip=True, scanned_by__company=company) | Q(is_no_qr=True, scanned_by__company=company)
             ).count()
             data.append(count)
         
