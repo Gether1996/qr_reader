@@ -45,6 +45,10 @@
                                 <i class="fas fa-clipboard-list"></i>
                                 <span>{% trans "Logging" %}</span>
                             </a>
+                            <a href="{% url 'download_android_apk' %}" class="dropdown-link download-app-android" id="downloadAppBtnCompany" style="display:none;">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>{% trans "Download Android App" %}</span>
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'company_logout' %}" class="dropdown-link logout">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -129,6 +133,10 @@
                             <a href="{% url 'audit_logs' %}" class="dropdown-link {% if request.resolver_match.url_name == 'audit_logs' %}active{% endif %}">
                                 <i class="fas fa-clipboard-list"></i>
                                 <span>{% trans "Logging" %}</span>
+                            </a>
+                            <a href="{% url 'download_android_apk' %}" class="dropdown-link download-app-android" id="downloadAppBtnUser" style="display:none;">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>{% trans "Download Android App" %}</span>
                             </a>
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'user_logout' %}" class="dropdown-link logout">
@@ -353,6 +361,17 @@
                     <i class="fas fa-chevron-right"></i>
                 </a>
                 
+                <a href="{% url 'download_android_apk' %}" class="mobile-menu-item download-app-android" id="downloadAppBtnMobileCompany" style="display:none;">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Download Android App" %}</span>
+                        <span class="subtitle">{% trans "Get it on Android" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
                 <div class="mobile-menu-divider"></div>
                 
                 <a href="{% url 'company_logout' %}" class="mobile-menu-item danger">
@@ -410,6 +429,17 @@
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Logging" %}</span>
                         <span class="subtitle">{% trans "Activity Logs" %}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                
+                <a href="{% url 'download_android_apk' %}" class="mobile-menu-item download-app-android" id="downloadAppBtnMobileUser" style="display:none;">
+                    <div class="mobile-menu-item-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="mobile-menu-item-text">
+                        <span class="title">{% trans "Download Android App" %}</span>
+                        <span class="subtitle">{% trans "Get it on Android" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
@@ -517,3 +547,14 @@
         </div>
     </div>
 </nav>
+
+<script>
+(function () {
+    var isAndroid = /Android/i.test(navigator.userAgent);
+    if (isAndroid) {
+        document.querySelectorAll('.download-app-android').forEach(function (el) {
+            el.style.display = '';
+        });
+    }
+})();
+</script>

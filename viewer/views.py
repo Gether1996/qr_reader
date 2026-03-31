@@ -52,6 +52,17 @@ def _get_enabled_scan_buttons(user):
 
 # ============= PUBLIC VIEWS =============
 
+def download_android_apk(request):
+    """Serve Android APK for direct download (sideloading without Google Play)."""
+    import os
+    from django.http import FileResponse, Http404
+    apk_path = os.path.join(settings.MEDIA_ROOT, 'apk', 'qr-reader.apk')
+    if not os.path.exists(apk_path):
+        raise Http404("APK not yet available.")
+    response = FileResponse(open(apk_path, 'rb'), content_type='application/vnd.android.package-archive')
+    response['Content-Disposition'] = 'attachment; filename="qr-reader.apk"'
+    return response
+
 def service_worker(request):
     """Serve PWA service worker at root scope (/sw.js).
     Must be outside i18n_patterns so it has global scope over the entire origin."""

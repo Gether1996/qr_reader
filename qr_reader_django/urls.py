@@ -17,6 +17,8 @@ from qr_reader_django.magazine import magazine_dashboard, magazine_editor, magaz
 urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     path('i18n/', include('django.conf.urls.i18n')),
+    # Android APK direct download (sideload without Google Play)
+    path('download/android/', views.download_android_apk, name='download_android_apk'),
     # PWA Service Worker — must be at root scope (not inside i18n_patterns)
     path('sw.js', views.service_worker, name='service_worker'),
 ]
