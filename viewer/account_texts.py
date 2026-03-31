@@ -203,3 +203,32 @@ def get_user_password_setup_texts(language_code):
             'en': 'Password must contain at least one uppercase letter.',
         }),
     }
+
+
+def get_scan_mode_texts(language_code):
+    return {
+        'home_office': _get_text(language_code, {
+            'sk': 'Home Office',
+            'de': 'Homeoffice',
+            'es': 'Trabajo desde casa',
+            'en': 'Home Office',
+        }),
+        'business_trip': _get_text(language_code, {
+            'sk': 'Pracovna cesta',
+            'de': 'Dienstreise',
+            'es': 'Viaje de negocios',
+            'en': 'Business Trip',
+        }),
+        'no_qr': _get_text(language_code, {
+            'sk': 'Bez QR',
+            'de': 'Ohne QR',
+            'es': 'Sin QR',
+            'en': 'No QR',
+        }),
+        'choose_one_mobile_mode': _get_text(language_code, {
+            'sk': 'Vyberte naraz iba jeden mobilny pracovny rezim.',
+            'de': 'Waehlen Sie jeweils nur einen mobilen Arbeitsmodus aus.',
+            'es': 'Elige solo un modo de trabajo movil a la vez.',
+            'en': 'Choose only one mobile work mode at a time.',
+        }),
+    }

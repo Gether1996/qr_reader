@@ -6,9 +6,8 @@
 .app-toast {
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 1rem;
-    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
     overflow: hidden;
-    backdrop-filter: blur(14px);
 }
 
 .app-toast.toast-success {

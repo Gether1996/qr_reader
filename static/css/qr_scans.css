@@ -5,12 +5,11 @@
 
 /* Global Background */
 body {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #dbeafe 100%);
-    background-attachment: fixed;
+    background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
 }
 
 :root[data-theme="dark"] body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%);
 }
 
 .container {
@@ -104,19 +103,13 @@ body {
 
 /* Filter Apply Button */
 .filters-card button[type="submit"] {
-    transition: all 0.3s ease;
+    transition: opacity 0.15s ease;
     cursor: pointer;
 }
 
 .filters-card button[type="submit"]:hover {
     background: linear-gradient(135deg, #1e40af, #1e3a8a) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-}
-
-.filters-card button[type="submit"]:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    opacity: 0.9;
 }
 
 /* Mobile Scan List Container */

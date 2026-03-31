@@ -145,6 +145,7 @@ class ScanEvent(models.Model):
     scan_type = models.CharField(max_length=20, choices=SCAN_TYPE_CHOICES, default='arrival')
     is_home_office = models.BooleanField(default=False, help_text="Indicates if this is a home office scan")
     is_business_trip = models.BooleanField(default=False, help_text="Indicates if this is a business trip scan")
+    is_no_qr = models.BooleanField(default=False, help_text="Indicates if this scan was recorded without a QR code")
     latitude = models.FloatField()
     longitude = models.FloatField()
     address = models.CharField(max_length=500, blank=True, null=True, help_text="Human-readable address")
@@ -159,6 +160,8 @@ class ScanEvent(models.Model):
             return f"Home Office scan at {self.timestamp}"
         if self.is_business_trip:
             return f"Business Trip scan at {self.timestamp}"
+        if self.is_no_qr:
+            return f"No QR scan at {self.timestamp}"
         return f"{self.qr_code.name if self.qr_code else 'Unknown'} scanned at {self.timestamp}"
     
     def get_address_from_coordinates(self):

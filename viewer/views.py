@@ -6,7 +6,7 @@ from django.conf import settings
 from qr_reader_django import crud
 import json
 from viewer.models import ScanEvent, Vacation, PasswordResetToken, UserPasswordSetupToken
-from viewer.account_texts import get_user_password_setup_texts
+from viewer.account_texts import get_user_password_setup_texts, get_scan_mode_texts
 from viewer.email_utils import get_email_language_code, render_localized_email
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.paginator import Paginator
@@ -541,12 +541,14 @@ def user_scan_qr(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body or '{}')
+            scan_texts = get_scan_mode_texts(getattr(request, 'LANGUAGE_CODE', 'en'))
             uuid = (data.get('uuid') or '').strip()
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             scan_type = data.get('scan_type', 'arrival')
             is_home_office = data.get('is_home_office', False)
             is_business_trip = data.get('is_business_trip', False)
+            is_no_qr = data.get('is_no_qr', False)
 
             if scan_type not in VALID_SCAN_TYPES:
                 return JsonResponse({
@@ -554,10 +556,16 @@ def user_scan_qr(request):
                     'message': str(_('Invalid scan type'))
                 }, status=400)
 
-            if is_home_office and is_business_trip:
+            manual_mode_count = sum([
+                bool(is_home_office),
+                bool(is_business_trip),
+                bool(is_no_qr),
+            ])
+
+            if manual_mode_count > 1:
                 return JsonResponse({
                     'status': 'error',
-                    'message': str(_('Choose either home office or business trip, not both'))
+                    'message': scan_texts['choose_one_mobile_mode']
                 }, status=400)
 
             if latitude in (None, '') or longitude in (None, ''):
@@ -581,7 +589,7 @@ def user_scan_qr(request):
                     'message': str(_('Location coordinates are out of range'))
                 }, status=400)
 
-            if not is_home_office and not is_business_trip and not uuid:
+            if not is_home_office and not is_business_trip and not is_no_qr and not uuid:
                 return JsonResponse({
                     'status': 'error',
                     'message': str(_('UUID is required'))
@@ -594,10 +602,15 @@ def user_scan_qr(request):
                     'message': str(_('This scan type is not available right now'))
                 }, status=409)
             
-            # For home office or business trip scans, we don't need a QR code
-            if is_home_office or is_business_trip:
+            # For mobile-only scan modes, we don't need a QR code
+            if is_home_office or is_business_trip or is_no_qr:
                 # Determine the label for this scan type
-                scan_label = _('Home Office') if is_home_office else _('Business Trip')
+                if is_home_office:
+                    scan_label = scan_texts['home_office']
+                elif is_business_trip:
+                    scan_label = scan_texts['business_trip']
+                else:
+                    scan_label = scan_texts['no_qr']
                 
                 # Record the scan without QR code
                 scan, address = crud.create_scan_event(
@@ -609,6 +622,7 @@ def user_scan_qr(request):
                     device_info=request.META.get('HTTP_USER_AGENT', ''),
                     is_home_office=is_home_office,
                     is_business_trip=is_business_trip,
+                    is_no_qr=is_no_qr,
                     actor_type='user',
                     actor_email=user.email,
                     actor_name=user.name,
@@ -654,6 +668,7 @@ def user_scan_qr(request):
                 device_info=request.META.get('HTTP_USER_AGENT', ''),
                 is_home_office=False,
                 is_business_trip=False,
+                is_no_qr=False,
                 actor_type='user',
                 actor_email=user.email,
                 actor_name=user.name,

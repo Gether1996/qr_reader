@@ -41,6 +41,7 @@ function getActionButtons() {
         start: document.getElementById("startScanBtn"),
         homeOffice: document.getElementById("homeOfficeBtn"),
         businessTrip: document.getElementById("businessTripBtn"),
+        noQr: document.getElementById("noQrBtn"),
         stop: document.getElementById("stopScanBtn"),
     };
 }
@@ -109,6 +110,7 @@ function setControlsDisabled(disabled) {
     buttons.start.disabled = disabled;
     buttons.homeOffice.disabled = disabled;
     buttons.businessTrip.disabled = disabled;
+    buttons.noQr.disabled = disabled;
     buttons.stop.disabled = disabled;
 }
 
@@ -122,62 +124,7 @@ function setStartButtonLabel() {
 }
 
 function updateStatusPanel() {
-    var selectedScanTypeText = document.getElementById("selectedScanTypeText");
-    var permissionStatusText = document.getElementById("permissionStatusText");
-    var locationStatusText = document.getElementById("locationStatusText");
-    var scanFlowNote = document.getElementById("scanFlowNote");
-    var locationAgeMs = Date.now() - userLocationTimestamp;
-
-    selectedScanTypeText.textContent = selectedScanType
-        ? getScanTypeLabel(selectedScanType)
-        : getText("noScanTypeSelected", "No scan type selected");
-
-    permissionStatusText.textContent = permissionsGranted
-        ? getText("permissionsGranted", "Permissions Granted")
-        : getText("permissionRequired", "Permission required");
-
-    if (userLocation && userLocationTimestamp && locationAgeMs < LOCATION_FRESH_MS) {
-        var ageSeconds = Math.max(Math.floor(locationAgeMs / 1000), 0);
-        locationStatusText.textContent =
-            getText("locationReady", "Location ready") + " (" + ageSeconds + "s)";
-    } else {
-        locationStatusText.textContent = getText(
-            "locationRefreshing",
-            "Will refresh before scan"
-        );
-    }
-
-    if (isSubmitting) {
-        scanFlowNote.innerHTML =
-            '<i class="fas fa-hourglass-half me-2"></i>' +
-            getText("processingScan", "Processing scan...");
-    } else if (isStartingScanner) {
-        scanFlowNote.innerHTML =
-            '<i class="fas fa-camera me-2"></i>' +
-            getText("initializingScanner", "Initializing scanner...");
-    } else if (isScannerActive) {
-        scanFlowNote.innerHTML =
-            '<i class="fas fa-qrcode me-2"></i>' +
-            getText("alignQrCode", "Align QR code within the frame");
-    } else if (!selectedScanType) {
-        scanFlowNote.innerHTML =
-            '<i class="fas fa-circle-info me-2"></i>' +
-            getText("chooseActionToContinue", "Choose the next valid action to continue.");
-    } else if (!permissionsGranted) {
-        scanFlowNote.innerHTML =
-            '<i class="fas fa-shield-alt me-2"></i>' +
-            getText(
-                "grantPermissionsToContinue",
-                "Grant camera and location access to continue."
-            );
-    } else {
-        scanFlowNote.innerHTML =
-            '<i class="fas fa-circle-info me-2"></i>' +
-            getText(
-                "readyForScanFlow",
-                "Scan a workplace QR code or use Home Office or Business Trip."
-            );
-    }
+    // Status panel elements were removed from the UI
 }
 
 function updateActionArea() {
@@ -536,6 +483,7 @@ function processScan(decodedText) {
                     scan_type: selectedScanType,
                     is_home_office: false,
                     is_business_trip: false,
+                    is_no_qr: false,
                 },
                 { alreadyLocked: true }
             );
@@ -679,7 +627,7 @@ function initScanTypeButtons() {
     });
 }
 
-function runManualScan(isHomeOffice, isBusinessTrip) {
+function runManualScan(mode) {
     if (isInteractionLocked() || isScannerActive) {
         return;
     }
@@ -701,6 +649,10 @@ function runManualScan(isHomeOffice, isBusinessTrip) {
 
     ensureFreshLocation(true)
         .then(function(location) {
+            var isHomeOffice = mode === "home_office";
+            var isBusinessTrip = mode === "business_trip";
+            var isNoQr = mode === "no_qr";
+
             return submitScan(
                 {
                     latitude: location.latitude,
@@ -708,6 +660,7 @@ function runManualScan(isHomeOffice, isBusinessTrip) {
                     scan_type: selectedScanType,
                     is_home_office: isHomeOffice,
                     is_business_trip: isBusinessTrip,
+                    is_no_qr: isNoQr,
                 },
                 { alreadyLocked: true }
             );
@@ -791,7 +744,7 @@ function initHomeOfficeButton() {
             buttonsStyling: false,
         }).then(function(result) {
             if (result.isConfirmed) {
-                runManualScan(true, false);
+                runManualScan("home_office");
             }
         });
     });
@@ -826,7 +779,42 @@ function initBusinessTripButton() {
             buttonsStyling: false,
         }).then(function(result) {
             if (result.isConfirmed) {
-                runManualScan(false, true);
+                runManualScan("business_trip");
+            }
+        });
+    });
+}
+
+function initNoQrButton() {
+    document.getElementById("noQrBtn").addEventListener("click", function() {
+        if (isInteractionLocked() || isScannerActive) {
+            return;
+        }
+
+        if (!selectedScanType) {
+            document.getElementById("scan-type-warning").classList.remove("d-none");
+            return;
+        }
+
+        appUI.fire({
+            title: getText("confirmNoQr", "Confirm No QR"),
+            text: getText(
+                "confirmNoQrText",
+                "Are you sure you want to record a scan without a QR code?"
+            ),
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: getText("yes", "Yes"),
+            cancelButtonText: getText("no", "No"),
+            customClass: {
+                confirmButton: "swal-btn-gradient-green",
+                cancelButton: "swal-btn-gradient-red",
+                popup: "swal-popup-rounded",
+            },
+            buttonsStyling: false,
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                runManualScan("no_qr");
             }
         });
     });
@@ -853,6 +841,7 @@ function initUserScanQR() {
     initStopScanButton();
     initHomeOfficeButton();
     initBusinessTripButton();
+    initNoQrButton();
     initLifecycleHandlers();
     checkExistingPermissions();
     updateActionArea();

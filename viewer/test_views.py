@@ -580,13 +580,14 @@ class QRCodeScanningViewTests(TestCase):
         self.assertIn('message', response.json())
 
     def test_scan_endpoint_rejects_conflicting_mobile_modes(self):
-        """Test scan endpoint rejects home office and business trip together"""
+        """Test scan endpoint rejects multiple mobile-only modes together"""
         response = self.post_scan({
             'latitude': 48.1486,
             'longitude': 17.1077,
             'scan_type': 'arrival',
             'is_home_office': True,
             'is_business_trip': True,
+            'is_no_qr': True,
         })
 
         self.assertEqual(response.status_code, 400)
@@ -644,6 +645,26 @@ class QRCodeScanningViewTests(TestCase):
                 scanned_by=self.user,
                 scan_type='arrival',
                 is_home_office=True,
+                qr_code__isnull=True
+            ).exists()
+        )
+
+    def test_no_qr_scan_post_succeeds_without_uuid(self):
+        """Test mobile-only no-QR scan path"""
+        response = self.post_scan({
+            'latitude': 48.1486,
+            'longitude': 17.1077,
+            'scan_type': 'arrival',
+            'is_no_qr': True,
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertTrue(
+            ScanEvent.objects.filter(
+                scanned_by=self.user,
+                scan_type='arrival',
+                is_no_qr=True,
                 qr_code__isnull=True
             ).exists()
         )

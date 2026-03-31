@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _, override
 from viewer.models import Company, User, QRCodeProfile, ScanEvent, Vacation
+from viewer.account_texts import get_scan_mode_texts
 from viewer.email_utils import get_email_language_code, render_localized_email
 from datetime import datetime
 from qr_reader_django.audit import log_action
@@ -353,7 +354,7 @@ def get_user_scans(user):
 
 # ============= SCAN EVENT CRUD =============
 
-def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info='', is_home_office=False, is_business_trip=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
+def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned_by=None, device_info='', is_home_office=False, is_business_trip=False, is_no_qr=False, actor_type=None, actor_email=None, actor_name=None, ip_address=None, request=None):
     """Create a new scan event"""
     scan = ScanEvent.objects.create(
         qr_code=qr_code,
@@ -363,7 +364,8 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
         longitude=longitude,
         device_info=device_info,
         is_home_office=is_home_office,
-        is_business_trip=is_business_trip
+        is_business_trip=is_business_trip,
+        is_no_qr=is_no_qr,
     )
     
     # Get address from coordinates
@@ -377,6 +379,8 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
             scan_location = "Home Office"
         elif is_business_trip:
             scan_location = "Business Trip"
+        elif is_no_qr:
+            scan_location = "No QR"
         else:
             scan_location = f'QR Code "{qr_code.name}"'
         log_action(
@@ -390,7 +394,7 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
     
     # Send notifications based on company and manager settings
     # For home office and business trip scans, get company from scanned_by user
-    company = scanned_by.company if (is_home_office or is_business_trip) else qr_code.company
+    company = scanned_by.company if (is_home_office or is_business_trip or is_no_qr) else qr_code.company
     
     # Check which notification field to check based on scan type
     # Only arrival and departure have notification fields in models
@@ -427,13 +431,22 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
                 dashboard_url = f"{settings.SITE_URL}/company/dashboard/" if hasattr(settings, 'SITE_URL') else '#'
                 
                 language_code = get_email_language_code(request=request, fallback='sk')
+                scan_mode_texts = get_scan_mode_texts(language_code)
                 
                 # Prepare email context
                 email_context = {
                     'scan_type': scan_type,
                     'user_name': scanned_by.name,
                     'timestamp': scan.timestamp,
-                    'qr_name': 'Business Trip' if is_business_trip else ('Home Office' if is_home_office else qr_code.name),
+                    'qr_name': (
+                        scan_mode_texts['business_trip']
+                        if is_business_trip
+                        else scan_mode_texts['home_office']
+                        if is_home_office
+                        else scan_mode_texts['no_qr']
+                        if is_no_qr
+                        else qr_code.name
+                    ),
                     'address': address or '',
                     'company_name': company.name,
                     'dashboard_url': dashboard_url,

@@ -1,10 +1,9 @@
 /* Global Styles */
 body {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #dbeafe 100%);
-    background-attachment: fixed;
+    background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
 }
 :root[data-theme="dark"] body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%);
 }
 
 .container {
@@ -16,16 +15,12 @@ body {
     background: white;
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     margin-bottom: 2rem;
-    transition: box-shadow 0.3s ease;
 }
 :root[data-theme="dark"] .analytics-header {
     background: var(--bg-primary);
     color: var(--text-primary);
-}
-.analytics-header:hover {
-    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
 }
 :root[data-theme="dark"] .analytics-header h2 {
     color: var(--text-primary);
@@ -36,16 +31,12 @@ body {
     background: white;
     border-radius: 16px;
     padding: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     margin-bottom: 2rem;
-    transition: box-shadow 0.3s ease;
 }
 :root[data-theme="dark"] .date-filter-card {
     background: var(--bg-primary);
     color: var(--text-primary);
-}
-.date-filter-card:hover {
-    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
 }
 
 /* Statistics Cards */
@@ -53,11 +44,10 @@ body {
     background: white;
     border-radius: 16px;
     padding: 1.75rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     border: none;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
     height: 100%;
 }
 :root[data-theme="dark"] .stat-card {
@@ -71,13 +61,6 @@ body {
     left: 0;
     width: 4px;
     height: 100%;
-    transition: width 0.3s ease;
-}
-.stat-card:hover {
-    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
-}
-.stat-card:hover::before {
-    width: 8px;
 }
 .stat-card.primary::before { background: linear-gradient(180deg, #2563eb, #1e40af); }
 .stat-card.success::before { background: linear-gradient(180deg, #10b981, #059669); }
@@ -126,11 +109,6 @@ body {
 .stat-icon {
     font-size: 2.5rem;
     opacity: 0.15;
-    transition: all 0.3s ease;
-}
-.stat-card:hover .stat-icon {
-    opacity: 0.25;
-    transform: scale(1.1) rotate(5deg);
 }
 
 /* Chart Containers */
@@ -138,9 +116,8 @@ body {
     background: white;
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     margin-bottom: 0;
-    transition: all 0.3s ease;
     height: 100%;
 }
 :root[data-theme="dark"] .chart-container {
@@ -148,8 +125,7 @@ body {
     color: var(--text-primary);
 }
 .chart-container:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .chart-container h5 {
     font-weight: 700;
@@ -176,20 +152,12 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
     color: white;
-    transition: all 0.3s ease;
 }
 :root[data-theme="dark"] .period-stats {
     background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
-    box-shadow: 0 10px 30px rgba(76, 29, 149, 0.5);
-}
-.period-stats:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-}
-:root[data-theme="dark"] .period-stats:hover {
-    box-shadow: 0 15px 40px rgba(76, 29, 149, 0.6);
+    box-shadow: 0 4px 12px rgba(76, 29, 149, 0.4);
 }
 .period-stats h6 {
     color: rgba(255,255,255,0.9);
@@ -197,7 +165,6 @@ body {
 }
 .period-stats .badge {
     background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
     font-weight: 600;
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
