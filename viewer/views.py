@@ -56,7 +56,7 @@ def download_android_apk(request):
     """Serve Android APK for direct download (sideloading without Google Play)."""
     import os
     from django.http import FileResponse, Http404
-    apk_path = os.path.join(settings.MEDIA_ROOT, 'apk', 'qr-reader.apk')
+    apk_path = os.path.join(settings.BASE_DIR, 'static', 'apk', 'qr-reader.apk')
     if not os.path.exists(apk_path):
         raise Http404("APK not yet available.")
     response = FileResponse(open(apk_path, 'rb'), content_type='application/vnd.android.package-archive')

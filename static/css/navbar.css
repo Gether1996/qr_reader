@@ -498,6 +498,7 @@ body.mobile-menu-open {
 .mobile-mega-menu-panel {
     width: min(100%, 25rem);
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     background: #ffffff;
@@ -568,7 +569,9 @@ body.mobile-menu-open {
 .mobile-mega-menu-content {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
     background: #ffffff;
 }
 
