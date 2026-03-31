@@ -4586,6 +4586,27 @@ msgstr "Neplatný odkaz na obnovenie hesla"
 msgid "No QR Scan"
 msgstr "Sken bez QR"
 
+msgid "Failed to save scan offline."
+msgstr "Nepodarilo sa uložiť sken offline."
+
+msgid "Scan Saved Offline"
+msgstr "Sken uložený offline"
+
+msgid "You are offline. Your scan is saved and will upload automatically when you reconnect."
+msgstr "Ste offline. Váš sken je uložený a automaticky sa odošle po obnovení pripojenia."
+
+msgid "1 scan waiting to sync"
+msgstr "1 sken čaká na synchronizáciu"
+
+msgid "{n} scans waiting to sync"
+msgstr "{n} skenov čaká na synchronizáciu"
+
+msgid "Synced!"
+msgstr "Synchronizované!"
+
+msgid "scan(s) uploaded to server"
+msgstr "sken(y) odoslaný na server"
+
 msgid "Confirm No QR"
 msgstr "Potvrdiť bez QR"
 

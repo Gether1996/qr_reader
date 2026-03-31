@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils.translation import gettext_lazy as _, override
 from django.conf import settings
 from qr_reader_django import crud
@@ -51,6 +51,22 @@ def _get_enabled_scan_buttons(user):
     return enabled_buttons
 
 # ============= PUBLIC VIEWS =============
+
+def service_worker(request):
+    """Serve PWA service worker at root scope (/sw.js).
+    Must be outside i18n_patterns so it has global scope over the entire origin."""
+    import os
+    sw_path = os.path.join(settings.BASE_DIR, 'static', 'sw.js')
+    try:
+        with open(sw_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except FileNotFoundError:
+        content = '// Service Worker not found'
+    response = HttpResponse(content, content_type='application/javascript; charset=utf-8')
+    response['Service-Worker-Allowed'] = '/'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
+
 
 def landing_page(request):
     """Landing page with links to company and user login"""

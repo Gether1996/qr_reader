@@ -1,0 +1,46 @@
+{
+  "appId": "sk.qrreader.app",
+  "appName": "QR Reader",
+  "webDir": "www",
+  "server": {
+    "url": "https://dqr.314.sk",
+    "cleartext": false,
+    "androidScheme": "https",
+    "allowNavigation": [
+      "your-domain.sk"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "contentInset": "always",
+    "scrollEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "launchAutoHide": true,
+      "backgroundColor": "#2563eb",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": true,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "large",
+      "spinnerColor": "#ffffff",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#2563eb"
+    },
+    "Geolocation": {
+      "permissions": {
+        "location": "always"
+      }
+    }
+  }
+}

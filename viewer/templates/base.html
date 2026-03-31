@@ -9,6 +9,16 @@
     <title>{% block title %}QR Reader System{% endblock %}</title>
     
     <link rel="icon" type="image/x-icon" href="{% static 'images/icon.png' %}">
+
+    <!-- PWA / Mobile App -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="QR Reader">
+    <link rel="apple-touch-icon" href="{% static 'images/icon.png' %}">
+
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
@@ -97,5 +107,17 @@
     <script src="{% static 'scripts/general.js' %}"></script>
     <script src="{% static 'scripts/navbar.js' %}"></script>
     {% block extra_js %}{% endblock %}
+
+    <!-- PWA Service Worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .catch(function () {
+                        // SW registration failed silently — app still works
+                    });
+            });
+        }
+    </script>
 </body>
 </html>

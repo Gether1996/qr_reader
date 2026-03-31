@@ -415,6 +415,33 @@ function submitScan(payload, options) {
             );
         })
         .catch(function(error) {
+            // Network failure (fetch threw) → queue the scan for later upload
+            var isNetworkError = !navigator.onLine ||
+                (error instanceof TypeError &&
+                    (error.message.indexOf('fetch') !== -1 ||
+                     error.message.indexOf('network') !== -1 ||
+                     error.message.indexOf('Failed') !== -1));
+
+            if (isNetworkError && window.scanQueue) {
+                return window.scanQueue
+                    .add(payload, getScanUrl(), csrfToken)
+                    .then(function () {
+                        resetIdleState();
+                        window.scanQueue.refreshBadge();
+                        return showSuccessAlert(
+                            getText("scanQueued", "Scan Saved Offline"),
+                            getText("scanQueuedText", "You are offline. Your scan is saved and will upload automatically when you reconnect.")
+                        );
+                    })
+                    .catch(function () {
+                        resetIdleState();
+                        return showErrorAlert(
+                            getText("error", "Error!"),
+                            getText("failedToQueue", "Failed to save scan offline.")
+                        );
+                    });
+            }
+
             resetIdleState();
             return showErrorAlert(
                 getText("error", "Error!"),
