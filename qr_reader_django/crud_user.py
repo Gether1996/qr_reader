@@ -1,11 +1,11 @@
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.conf import settings
 from django.db import transaction
 from qr_reader_django import crud
 from viewer.account_texts import get_employee_invite_texts, get_user_password_setup_texts
+from viewer.email_utils import get_email_language_code, render_localized_email
 from viewer.models import UserPasswordSetupToken
 import json
 import secrets
@@ -20,7 +20,7 @@ def _password_has_required_policy(password):
 def _build_user_setup_url(request, token):
     scheme = request.scheme
     host = request.get_host()
-    language_code = getattr(request, 'LANGUAGE_CODE', 'en')
+    language_code = get_email_language_code(request=request)
     return f"{scheme}://{host}/{language_code}/user/set-password/{token}/"
 
 
@@ -47,8 +47,9 @@ def create_user(request):
             data = json.loads(request.body)
             password = (data.get('password') or '').strip()
             password_confirm = (data.get('password_confirm') or '').strip()
-            invite_texts = get_employee_invite_texts(getattr(request, 'LANGUAGE_CODE', 'en'))
-            setup_texts = get_user_password_setup_texts(getattr(request, 'LANGUAGE_CODE', 'en'))
+            language_code = get_email_language_code(request=request)
+            invite_texts = get_employee_invite_texts(language_code)
+            setup_texts = get_user_password_setup_texts(language_code)
             is_invite_flow = not password and not password_confirm
 
             if (password and not password_confirm) or (password_confirm and not password):
@@ -130,16 +131,15 @@ def create_user(request):
                     )
 
                     setup_url = _build_user_setup_url(request, setup_token)
-                    email_html = render_to_string('user_password_setup_email.html', {
+                    email_html, _render_language = render_localized_email('user_password_setup_email.html', {
                         'company_name': company.name,
                         'company_email': company.email,
                         'user_name': user.name,
                         'user_email': user.email,
                         'setup_url': setup_url,
                         'request_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'LANGUAGE_CODE': getattr(request, 'LANGUAGE_CODE', 'en'),
                         'copy': invite_texts,
-                    }, request=request)
+                    }, language_code=language_code, request=request)
 
                     send_mail(
                         subject=invite_texts['subject'],

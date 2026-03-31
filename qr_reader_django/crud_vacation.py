@@ -1,12 +1,12 @@
 from django.http import JsonResponse
-from django.utils.translation import gettext_lazy as _, activate
+from django.utils.translation import gettext_lazy as _, override
 from django.conf import settings
 from qr_reader_django import crud
 import json
 from viewer.models import Vacation
+from viewer.email_utils import get_email_language_code, render_localized_email
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.urls import reverse
 from urllib.parse import urlencode
 
@@ -340,8 +340,7 @@ def approve_vacation(request, vacation_id):
         else:
             dashboard_url = '#'
         
-        # Get language code from request
-        language_code = request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'sk'
+        language_code = get_email_language_code(request=request, fallback='sk')
         
         # Calculate days count
         days_count = (vacation.date_to - vacation.date_from).days + 1
@@ -360,11 +359,12 @@ def approve_vacation(request, vacation_id):
             'LANGUAGE_CODE': language_code
         }
         
-        # Activate language for translations
-        activate(language_code)
-        
-        # Render email HTML
-        html_message = render_to_string('vacation_notification.html', email_context, request=request)
+        html_message, language_code = render_localized_email(
+            'vacation_notification.html',
+            email_context,
+            language_code=language_code,
+            request=request,
+        )
         
         # Email subject
         subject = f'✅ {_("Vacation Request Approved")} - {vacation.date_from.strftime("%d.%m.%Y")} - {vacation.date_to.strftime("%d.%m.%Y")}'

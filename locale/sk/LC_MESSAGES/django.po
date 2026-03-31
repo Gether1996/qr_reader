@@ -2480,7 +2480,7 @@ msgstr "Nastavenia"
 
 #: .\viewer\templates\company_register.html:142
 msgid "Automatic lunch breaks"
-msgstr "Automatické obedobvé prestávky"
+msgstr "Automatické obedové prestávky"
 
 #: .\viewer\templates\company_register.html:146
 msgid ""

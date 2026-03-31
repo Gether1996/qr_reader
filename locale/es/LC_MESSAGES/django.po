@@ -3528,7 +3528,7 @@ msgstr "escaneos"
 #: .\viewer\templates\password_reset_email.html:7
 #: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1657
 msgid "Password Reset Request"
-msgstr ""
+msgstr "Solicitud de restablecimiento de contrasena"
 
 #: .\viewer\templates\password_reset_email.html:24
 #: .\viewer\templates\scan_notification.html:33

@@ -1,9 +1,9 @@
-from django.utils.translation import gettext_lazy as _, get_language, activate
+from django.utils.translation import gettext_lazy as _, override
 from viewer.models import Company, User, QRCodeProfile, ScanEvent, Vacation
+from viewer.email_utils import get_email_language_code, render_localized_email
 from datetime import datetime
 from qr_reader_django.audit import log_action
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.conf import settings
 import sys
 import secrets
@@ -426,15 +426,7 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
                 # Build dashboard URL
                 dashboard_url = f"{settings.SITE_URL}/company/dashboard/" if hasattr(settings, 'SITE_URL') else '#'
                 
-                # Get language code from request or current active language
-                language_code = 'sk'  # default fallback
-                if request and hasattr(request, 'LANGUAGE_CODE'):
-                    language_code = request.LANGUAGE_CODE
-                else:
-                    try:
-                        language_code = get_language()
-                    except:
-                        pass
+                language_code = get_email_language_code(request=request, fallback='sk')
                 
                 # Prepare email context
                 email_context = {
@@ -448,21 +440,23 @@ def create_scan_event(qr_code, latitude, longitude, scan_type='arrival', scanned
                     'LANGUAGE_CODE': language_code
                 }
                 
-                # Activate language for translations
-                activate(language_code)
-                
                 # Render email HTML (pass request context for proper translation loading)
-                html_message = render_to_string('scan_notification.html', email_context, request=request)
+                html_message, language_code = render_localized_email(
+                    'scan_notification.html',
+                    email_context,
+                    language_code=language_code,
+                    request=request,
+                )
                 
-                # Email subject based on scan type (translated)
-                subject_map = {
+                with override(language_code) as _scan_language:
+                    subject_map = {
                     'arrival': f'✅ {scanned_by.name} - {_("Arrival")}',
                     'departure': f'🚪 {scanned_by.name} - {_("Departure")}',
                     'lunch_break_start': f'🍽️ {scanned_by.name} - {_("Lunch Break Started")}',
                     'lunch_break_end': f'✅ {scanned_by.name} - {_("Lunch Break Ended")}'
-                }
+                    }
                 
-                subject = subject_map.get(scan_type, f'{scanned_by.name} - Scan')
+                    subject = subject_map.get(scan_type, f'{scanned_by.name} - Scan')
                 
                 # Send email
                 send_mail(
@@ -570,15 +564,7 @@ def create_vacation(user, date_from, date_to, time_from=None, time_to=None, vaca
                 dashboard_url = '#'
                 approval_url = '#'
             
-            # Get language code from request or current active language
-            language_code = 'sk'  # default fallback
-            if request and hasattr(request, 'LANGUAGE_CODE'):
-                language_code = request.LANGUAGE_CODE
-            else:
-                try:
-                    language_code = get_language()
-                except:
-                    pass
+            language_code = get_email_language_code(request=request, fallback='sk')
             
             # Calculate days count
             days_count = (date_to - date_from).days + 1
@@ -598,19 +584,20 @@ def create_vacation(user, date_from, date_to, time_from=None, time_to=None, vaca
                 'LANGUAGE_CODE': language_code
             }
             
-            # Activate language for translations
-            activate(language_code)
+            html_message, language_code = render_localized_email(
+                'vacation_notification.html',
+                email_context,
+                language_code=language_code,
+                request=request,
+            )
             
-            # Render email HTML
-            html_message = render_to_string('vacation_notification.html', email_context, request=request)
-            
-            # Email subject based on vacation type (translated)
-            subject_map = {
+            with override(language_code) as _vacation_language:
+                subject_map = {
                 'vacation': f'🏖️ {user.name} - {_("Vacation Request")}',
                 'sick_leave': f'🤒 {user.name} - {_("Sick Leave")}',
                 'doctor': f'🏥 {user.name} - {_("Doctor Visit")}',
                 'home_office': f'🏠 {user.name} - {_("Home Office")}'
-            }
+                }
             
             subject = subject_map.get(vacation_type, f'📅 {user.name} - {_("Absence Request")}')
             
@@ -745,15 +732,7 @@ def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, act
                 else:
                     dashboard_url = '#'
                 
-                # Get language code from request
-                language_code = 'sk'  # default fallback
-                if request and hasattr(request, 'LANGUAGE_CODE'):
-                    language_code = request.LANGUAGE_CODE
-                else:
-                    try:
-                        language_code = get_language()
-                    except:
-                        pass
+                language_code = get_email_language_code(request=request, fallback='sk')
                 
                 # Calculate days count
                 days_count = (date_to - date_from).days + 1
@@ -772,11 +751,12 @@ def delete_vacation(vacation_id, company, actor_type=None, actor_email=None, act
                     'LANGUAGE_CODE': language_code
                 }
                 
-                # Activate language for translations
-                activate(language_code)
-                
-                # Render email HTML
-                html_message = render_to_string('vacation_notification.html', email_context, request=request)
+                html_message, language_code = render_localized_email(
+                    'vacation_notification.html',
+                    email_context,
+                    language_code=language_code,
+                    request=request,
+                )
                 
                 # Email subject
                 subject = f'❌ {_("Vacation Request Cancelled")} - {date_from.strftime("%d.%m.%Y")} - {date_to.strftime("%d.%m.%Y")}'

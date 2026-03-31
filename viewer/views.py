@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, override
 from django.conf import settings
 from qr_reader_django import crud
 import json
 from viewer.models import ScanEvent, Vacation, PasswordResetToken, UserPasswordSetupToken
 from viewer.account_texts import get_user_password_setup_texts
+from viewer.email_utils import get_email_language_code, render_localized_email
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.paginator import Paginator
 from django.db.models import Q, F
@@ -1678,8 +1679,6 @@ def company_request_password_reset(request):
         import secrets
         from datetime import timedelta, datetime
         from django.core.mail import send_mail
-        from django.template.loader import render_to_string
-        from viewer.models import PasswordResetToken
         
         # Invalidate any existing tokens
         PasswordResetToken.objects.filter(company=company, is_used=False).update(is_used=True)
@@ -1695,23 +1694,27 @@ def company_request_password_reset(request):
             expires_at=expires_at
         )
         
+        language_code = get_email_language_code(request=request)
+
         # Generate reset URL based on current request
         scheme = request.scheme  # http or https
         host = request.get_host()  # localhost:9005 or dqr.314.sk
-        reset_url = f"{scheme}://{host}/{request.LANGUAGE_CODE}/company/reset-password/{token}/"
-        
+        reset_url = f"{scheme}://{host}/{language_code}/company/reset-password/{token}/"
+
         # Render email template
-        email_html = render_to_string('password_reset_email.html', {
+        email_html, language_code = render_localized_email('password_reset_email.html', {
             'company_name': company.name,
             'company_email': company.email,
             'reset_url': reset_url,
             'request_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'LANGUAGE_CODE': request.LANGUAGE_CODE
-        }, request=request)
-        
+        }, language_code=language_code, request=request)
+
+        with override(language_code):
+            subject = str(_('Password Reset Request'))
+
         # Send email
         send_mail(
-            subject=str(_('Password Reset Request')),
+            subject=subject,
             message=f'Reset your password: {reset_url}',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[company.email],

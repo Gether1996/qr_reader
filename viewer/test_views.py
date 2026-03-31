@@ -278,6 +278,29 @@ class CompanyDashboardTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(token.token, mail.outbox[0].body)
 
+    @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
+    def test_create_user_invite_email_respects_selected_language(self):
+        """Invite email should use the currently selected UI language"""
+        response = self.client.post(
+            '/de/user/create/',
+            data=json.dumps({
+                'name': 'Eingeladener Benutzer',
+                'email': 'eingeladen@test.sk',
+                'basic_work_hours': 160,
+                'holidays_per_year': 20,
+            }),
+            content_type='application/json',
+            HTTP_ACCEPT_LANGUAGE='de'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            'Legen Sie Ihr Passwort fuer Ihr Mitarbeiterkonto fest'
+        )
+        self.assertIn('/de/user/set-password/', mail.outbox[0].body)
+
     def test_create_user_with_weak_password_is_rejected(self):
         """Creating a user with a weak password should fail"""
         response = self.client.post(
@@ -1165,6 +1188,25 @@ class PasswordResetTests(TestCase):
         
         # Verify token is expired
         self.assertFalse(token.is_valid())
+
+    @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
+    def test_request_password_reset_email_respects_selected_language(self):
+        """Password reset email should use the current language selection"""
+        session = self.client.session
+        session['company_id'] = self.company.id
+        session['user_type'] = 'company'
+        session.save()
+
+        response = self.client.post(
+            '/es/company/request-password-reset/',
+            HTTP_ACCEPT_LANGUAGE='es'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['success'])
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Solicitud de restablecimiento de contrasena')
+        self.assertIn('/es/company/reset-password/', mail.outbox[0].body)
 
 
 class UserPasswordSetupViewTests(TestCase):
