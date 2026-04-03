@@ -12,12 +12,12 @@
 {% block content %}
 <div class="container py-4">
     <!-- QR Code Info Card -->
-    <div class="card mb-4" style="border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);">
+    <div class="card mb-4 qr-info-card">
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-12">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #2563eb, #1e40af);">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 qr-info-icon">
                             <i class="fas fa-qrcode fa-2x text-white"></i>
                         </div>
                         <div>
@@ -131,7 +131,7 @@
             </div>
             
             <!-- Mobile View -->
-            <div class="mobile-scan-list d-lg-none" style="padding: 1rem;">
+            <div class="mobile-scan-list d-lg-none">
                 {% for scan in page_obj %}
                 <div class="mobile-scan-card {% if scan.scan_type == 'arrival' %}arrival{% elif scan.scan_type == 'departure' %}departure{% elif scan.scan_type == 'lunch_break_start' %}lunch-start{% else %}lunch-end{% endif %}">
                     <div class="mobile-scan-header">

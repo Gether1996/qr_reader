@@ -1,5 +1,5 @@
 /**
- * QR Reader — Service Worker
+ * Trakero — Service Worker
  * Caches static assets for fast loading. HTML pages always fetched from network.
  */
 
@@ -32,7 +32,7 @@ const OFFLINE_HTML = `<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#2563eb">
-    <title>QR Reader — Offline</title>
+    <title>Trakero — Offline</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -256,4 +256,3 @@ self.addEventListener('sync', (event) => {
         )
     );
 });
-

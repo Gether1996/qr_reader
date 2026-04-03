@@ -1,6 +1,6 @@
 {
   "appId": "sk.qrreader.app",
-  "appName": "QR Reader",
+  "appName": "Trakero",
   "webDir": "www",
   "server": {
     "url": "https://dqr.314.sk",

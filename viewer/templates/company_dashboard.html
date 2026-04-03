@@ -476,7 +476,7 @@
                                 {% if absence.type == 'sick_leave' %}
                                     <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
                                 {% elif absence.type == 'doctor' %}
-                                    <span class="badge" style="background-color: #9333ea;"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
+                                    <span class="badge badge-doctor"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
                                 {% elif absence.type == 'vacation' %}
                                     <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
                                 {% elif absence.type == 'home_office' %}
@@ -487,9 +487,9 @@
                             </td>
                             <td style="text-align: center;">
                                 {% if absence.approved %}
-                                    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;" title="{% trans 'Approved' %}"></i>
+                                    <i class="fas fa-check-circle status-icon-approved" title="{% trans 'Approved' %}"></i>
                                 {% else %}
-                                    <i class="fas fa-clock" style="color: #f59e0b; font-size: 1.2rem;" title="{% trans 'Pending' %}"></i>
+                                    <i class="fas fa-clock status-icon-pending" title="{% trans 'Pending' %}"></i>
                                 {% endif %}
                             </td>
                             <td>
@@ -547,7 +547,7 @@
                         {% if absence.type == 'sick_leave' %}
                             <span class="badge bg-warning"><i class="fas fa-notes-medical me-1"></i>{% trans "Sick Leave" %}</span>
                         {% elif absence.type == 'doctor' %}
-                            <span class="badge" style="background-color: #9333ea;"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
+                            <span class="badge badge-doctor"><i class="fas fa-user-doctor me-1"></i>{% trans "Doctor" %}</span>
                         {% elif absence.type == 'vacation' %}
                             <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>{% trans "Vacation" %}</span>
                         {% elif absence.type == 'home_office' %}
@@ -696,7 +696,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                <button type="button" class="btn" onclick="updateUser()" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white; font-weight: 600;">{% trans "Update" %}</button>
+                <button type="button" class="btn btn-primary" onclick="updateUser()">{% trans "Update" %}</button>
             </div>
         </div>
     </div>

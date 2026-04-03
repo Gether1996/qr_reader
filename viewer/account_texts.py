@@ -42,10 +42,10 @@ def get_employee_invite_texts(language_code):
             'en': 'Welcome',
         }),
         'intro': _get_text(language_code, {
-            'sk': 'Vasa firma vam vytvorila ucet v QR Attendance System.',
-            'de': 'Ihr Unternehmen hat ein Konto fuer Sie im QR Attendance System erstellt.',
-            'es': 'Tu empresa ha creado una cuenta para ti en el QR Attendance System.',
-            'en': 'Your company created an account for you in the QR Attendance System.',
+            'sk': 'Vasa firma vam vytvorila ucet v Trakero.',
+            'de': 'Ihr Unternehmen hat ein Konto fuer Sie in Trakero erstellt.',
+            'es': 'Tu empresa ha creado una cuenta para ti en Trakero.',
+            'en': 'Your company created an account for you in Trakero.',
         }),
         'cta_text': _get_text(language_code, {
             'sk': 'Ak chcete aktivovat pristup, kliknite na tlacidlo nizsie a nastavte si svoje heslo.',
@@ -108,10 +108,10 @@ def get_employee_invite_texts(language_code):
             'en': 'Sent at',
         }),
         'footer_text': _get_text(language_code, {
-            'sk': 'Toto je automaticka sprava z QR Attendance System. Na tento email neodpovedajte.',
-            'de': 'Dies ist eine automatische Nachricht des QR Attendance System. Bitte antworten Sie nicht auf diese E-Mail.',
-            'es': 'Este es un mensaje automatico del QR Attendance System. No respondas a este correo.',
-            'en': 'This is an automated message from your QR Attendance System. Please do not reply to this email.',
+            'sk': 'Toto je automaticka sprava z Trakero. Na tento email neodpovedajte.',
+            'de': 'Dies ist eine automatische Nachricht von Trakero. Bitte antworten Sie nicht auf diese E-Mail.',
+            'es': 'Este es un mensaje automatico de Trakero. No respondas a este correo.',
+            'en': 'This is an automated message from Trakero. Please do not reply to this email.',
         }),
     }
 

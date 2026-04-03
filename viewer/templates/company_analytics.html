@@ -43,7 +43,7 @@
     <!-- Statistics Cards Row -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
-            <div class="stat-card primary" style="min-height: 120px;">
+            <div class="stat-card primary stat-card-min-height">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">{% trans "Today Arrivals" %}</div>
@@ -55,7 +55,7 @@
         </div>
         
         <div class="col-md-3 mb-3">
-            <div class="stat-card danger" style="min-height: 120px;">
+            <div class="stat-card danger stat-card-min-height">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">{% trans "Today Departures" %}</div>
@@ -67,7 +67,7 @@
         </div>
         
         <div class="col-md-3 mb-3">
-            <div class="stat-card success" style="min-height: 120px;">
+            <div class="stat-card success stat-card-min-height">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">{% trans "Currently in Office" %}</div>
@@ -79,7 +79,7 @@
         </div>
         
         <div class="col-md-3 mb-3">
-            <div class="stat-card warning" style="min-height: 120px;">
+            <div class="stat-card warning stat-card-min-height">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">{% trans "Period Scans" %}</div>
@@ -185,7 +185,7 @@
         <div class="col-lg-6 mb-4">
             <div class="chart-container">
                 <h5 class="mb-4">
-                    <i class="fas fa-trophy me-2" style="color: #f59e0b;"></i>
+                    <i class="fas fa-trophy me-2 analytics-section-icon-highlight"></i>
                     {% trans "Most Used QR Codes" %}
                 </h5>
                 {% if top_qr_codes %}
@@ -208,7 +208,7 @@
         <div class="col-lg-6 mb-4">
             <div class="chart-container">
                 <h5 class="mb-4">
-                    <i class="fas fa-business-time me-2" style="color: #06b6d4;"></i>
+                    <i class="fas fa-business-time me-2 analytics-section-icon-accent"></i>
                     {% trans "Working Hours" %}
                 </h5>
                 <p class="text-muted small mb-3"><i class="fas fa-calendar me-2"></i>{{ date_range_display }}</p>

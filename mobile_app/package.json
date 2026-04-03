@@ -1,7 +1,7 @@
 {
   "name": "qr-reader-mobile",
   "version": "1.0.0",
-  "description": "QR Reader Mobile App — Capacitor wrapper for Android & iOS",
+  "description": "Trakero Mobile App - Capacitor wrapper for Android & iOS",
   "private": true,
   "scripts": {
     "sync": "npx cap sync",

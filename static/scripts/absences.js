@@ -42,6 +42,35 @@ const t = {
     deletingAbsence: translations.deletingAbsence || "Deleting absence...",
     approvingAbsence: translations.approvingAbsence || "Approving absence..."
 };
+// Build custom type picker HTML (replaces native <select> for absence type)
+function buildTypePickerHTML(idSuffix, selectedValue) {
+    const types = [
+        { value: 'vacation',    icon: 'fas fa-umbrella-beach', cls: 'type-vacation',    label: () => t.vacation },
+        { value: 'sick_leave',  icon: 'fas fa-notes-medical',  cls: 'type-sick_leave',  label: () => t.sickLeave },
+        { value: 'doctor',      icon: 'fas fa-user-doctor',    cls: 'type-doctor',      label: () => t.doctor },
+        { value: 'home_office', icon: 'fas fa-home',           cls: 'type-home_office', label: () => t.homeOffice || 'Home Office' }
+    ];
+    const buttons = types.map(tp =>
+        `<button type="button" class="swal-type-btn ${tp.cls}${selectedValue === tp.value ? ' selected' : ''}" data-type="${tp.value}">
+            <i class="${tp.icon} swal-type-icon"></i>
+            <span class="swal-type-label">${tp.label()}</span>
+        </button>`
+    ).join('');
+    return `<input type="hidden" id="swal-type-${idSuffix}" value="${selectedValue || ''}">
+        <div class="swal-type-grid">${buttons}</div>`;
+}
+
+function initTypePicker(idSuffix) {
+    const hidden = document.getElementById(`swal-type-${idSuffix}`);
+    document.querySelectorAll('.swal-type-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.swal-type-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            hidden.value = btn.dataset.type;
+        });
+    });
+}
+
 // Initialize daterangepicker for modal (uses global daterangepickerLocale from base.html)
 function initModalDateRangePicker(inputId, callback) {
     const locale = daterangepickerLocale[langCode] || daterangepickerLocale.sk;
@@ -97,18 +126,12 @@ function addVacation(users) {
                 <div class="swal-form-section">
                     <div class="swal-form-section-title">
                         <span class="swal-form-section-icon">
-                            <i class="fas fa-briefcase-medical"></i>
+                            <i class="fas fa-tag"></i>
                         </span>
                         <span>${t.type}</span>
                     </div>
                     <div class="swal-form-field">
-                        <select id="swal-type" class="form-select" style="cursor: pointer;">
-                            <option value="" disabled selected>${t.selectType}</option>
-                            <option value="vacation">${t.vacation}</option>
-                            <option value="sick_leave">${t.sickLeave}</option>
-                            <option value="doctor">${t.doctor}</option>
-                            <option value="home_office">${t.homeOffice || 'Home Office'}</option>
-                        </select>
+                        ${buildTypePickerHTML('main', '')}
                     </div>
                 </div>
                     
@@ -155,22 +178,14 @@ function addVacation(users) {
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
         customClass: {
-            confirmButton: 'swal-btn-gradient-green',
-            cancelButton: 'swal-btn-gradient-gray',
+            confirmButton: 'swal-btn-primary',
+            cancelButton: 'swal-btn-secondary',
             popup: 'swal-popup-rounded'
         },
         buttonsStyling: false,
         didOpen: () => {
-            const employeeSelect = document.getElementById('swal-employee');
-            const typeSelect = document.getElementById('swal-type');
-
-            employeeSelect.focus();
-            if (typeSelect?.options?.length >= 5) {
-                typeSelect.options[1].text = t.vacation;
-                typeSelect.options[2].text = t.sickLeave;
-                typeSelect.options[3].text = t.doctor;
-                typeSelect.options[4].text = t.homeOffice || 'Home Office';
-            }
+            document.getElementById('swal-employee').focus();
+            initTypePicker('main');
 
             initModalDateRangePicker('swal-daterange', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
@@ -196,7 +211,7 @@ function addVacation(users) {
         },
         preConfirm: () => {
             selectedUserId = document.getElementById('swal-employee').value;
-            const selectedType = document.getElementById('swal-type').value;
+            const selectedType = document.getElementById('swal-type-main').value;
             const timeFrom = document.getElementById('swal-time-from').value;
             const timeTo = document.getElementById('swal-time-to').value;
             
@@ -326,85 +341,66 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
         icon: 'info',
         title: t.editAbsence,
         html: `
-            <div class="px-2">
-                <div class="row g-3">
-                    <!-- Employee Selection -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-user text-info"></i>
-                            </span>
-                            <select id="swal-employee" class="form-select border-start-0" style="cursor: pointer;">
-                                ${employeeOptions}
-                            </select>
-                        </div>
+            <div class="swal-form-layout">
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-user"></i></span>
+                        <span>${t.employee}</span>
                     </div>
-                    
-                    <!-- Absence Type -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-tags text-info"></i>
-                            </span>
-                            <select id="swal-type" class="form-select border-start-0" style="cursor: pointer;">
-                                <option value="" disabled>${t.selectType}</option>
-                                <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
-                                <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
-                                <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
-                                <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>${t.homeOffice || 'Home Office'}</option>
-                            </select>
-                        </div>
+                    <div class="swal-form-field">
+                        <select id="swal-employee" class="form-select" style="cursor:pointer;">
+                            ${employeeOptions}
+                        </select>
                     </div>
-                    
-                    <!-- Date Range -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-calendar-alt text-info"></i>
-                            </span>
-                            <input type="text" id="swal-daterange" class="form-control border-start-0" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; background-color: white;">
-                        </div>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-tag"></i></span>
+                        <span>${t.type}</span>
                     </div>
-                    
-                    <!-- Time Fields (shown only for single day) -->
-                    <div class="col-12" id="time-fields-edit" style="display: ${isSingleDay ? 'block' : 'none'}; opacity: ${isSingleDay ? '1' : '0'}; transition: opacity 0.3s ease;">
-                        <div class="card border-info bg-light bg-opacity-10">
-                            <div class="card-body p-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-clock text-info me-2"></i>
-                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
-                                </div>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label small mb-1">
-                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
-                                        </label>
-                                        <input type="time" id="swal-time-from-edit" class="form-control form-control-lg" value="${currentTimeFrom || ''}">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label small mb-1">
-                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
-                                        </label>
-                                        <input type="time" id="swal-time-to-edit" class="form-control form-control-lg" value="${currentTimeTo || ''}">
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="swal-form-field">
+                        ${buildTypePickerHTML('edit', currentType)}
+                    </div>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-calendar-alt"></i></span>
+                        <span>${t.dateRange}</span>
+                    </div>
+                    <div class="swal-form-field">
+                        <input type="text" id="swal-daterange" class="form-control" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor:pointer;">
+                    </div>
+                </div>
+                <div class="swal-form-section swal-form-transition" id="time-fields-edit" style="display:${isSingleDay ? 'block' : 'none'}; opacity:${isSingleDay ? '1' : '0'};">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-clock"></i></span>
+                        <span>${t.timeOptional}</span>
+                    </div>
+                    <div class="swal-form-inline">
+                        <div class="swal-form-field">
+                            <label class="form-label" for="swal-time-from-edit">${t.timeFrom}</label>
+                            <input type="time" id="swal-time-from-edit" class="form-control" value="${currentTimeFrom || ''}">
+                        </div>
+                        <div class="swal-form-field">
+                            <label class="form-label" for="swal-time-to-edit">${t.timeTo}</label>
+                            <input type="time" id="swal-time-to-edit" class="form-control" value="${currentTimeTo || ''}">
                         </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '550px',
+        width: '560px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
         customClass: {
-            confirmButton: 'swal-btn-gradient-blue',
-            cancelButton: 'swal-btn-gradient-gray',
+            confirmButton: 'swal-btn-primary',
+            cancelButton: 'swal-btn-secondary',
             popup: 'swal-popup-rounded'
         },
         buttonsStyling: false,
         didOpen: () => {
+            initTypePicker('edit');
             initModalDateRangePicker('swal-daterange', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
@@ -429,7 +425,7 @@ function editVacation(vacationId, currentUserId, currentUserName, currentDateFro
         },
         preConfirm: () => {
             selectedUserId = document.getElementById('swal-employee').value;
-            const selectedType = document.getElementById('swal-type').value;
+            const selectedType = document.getElementById('swal-type-edit').value;
             const timeFrom = document.getElementById('swal-time-from-edit').value;
             const timeTo = document.getElementById('swal-time-to-edit').value;
             
@@ -534,83 +530,64 @@ function addVacationForUser(userId, userName) {
         icon: 'info',
         title: t.addAbsence,
         html: `
-            <div class="container-fluid px-0">
-                <div class="row g-3">
-                    <!-- Employee (Read-only) -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-user text-primary"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0 bg-light" value="${userName}" readonly disabled>
-                        </div>
+            <div class="swal-form-layout">
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-user"></i></span>
+                        <span>${t.employee}</span>
                     </div>
-                    
-                    <!-- Absence Type -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-tags text-primary"></i>
-                            </span>
-                            <select id="swal-type" class="form-select border-start-0" style="cursor: pointer;">
-                                <option value="" disabled selected>${t.selectType}</option>
-                                <option value="vacation">${t.vacation}</option>
-                                <option value="sick_leave">${t.sickLeave}</option>
-                                <option value="doctor">${t.doctor}</option>
-                                <option value="home_office">${t.homeOffice || 'Home Office'}</option>
-                            </select>
-                        </div>
+                    <div class="swal-form-field">
+                        <input type="text" class="form-control" value="${userName}" readonly disabled>
                     </div>
-                    
-                    <!-- Date Range -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-calendar-alt text-primary"></i>
-                            </span>
-                            <input type="text" id="swal-daterange-user" class="form-control border-start-0" readonly placeholder="${t.selectDates}" style="cursor: pointer; background-color: white;">
-                        </div>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-tag"></i></span>
+                        <span>${t.type}</span>
                     </div>
-                    
-                    <!-- Time Fields (shown only for single day) -->
-                    <div class="col-12" id="time-fields-user" style="display: none; opacity: 0; transition: opacity 0.3s ease;">
-                        <div class="card border-primary bg-light bg-opacity-10">
-                            <div class="card-body p-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-clock text-primary me-2"></i>
-                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
-                                </div>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label small mb-1">
-                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
-                                        </label>
-                                        <input type="time" id="swal-time-from-user" class="form-control form-control-lg">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label small mb-1">
-                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
-                                        </label>
-                                        <input type="time" id="swal-time-to-user" class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="swal-form-field">
+                        ${buildTypePickerHTML('user', '')}
+                    </div>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-calendar-alt"></i></span>
+                        <span>${t.dateRange}</span>
+                    </div>
+                    <div class="swal-form-field">
+                        <input type="text" id="swal-daterange-user" class="form-control" readonly placeholder="${t.selectDates}" style="cursor:pointer;">
+                    </div>
+                </div>
+                <div class="swal-form-section swal-form-transition" id="time-fields-user" style="display:none; opacity:0;">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-clock"></i></span>
+                        <span>${t.timeOptional}</span>
+                    </div>
+                    <div class="swal-form-inline">
+                        <div class="swal-form-field">
+                            <label class="form-label" for="swal-time-from-user">${t.timeFrom}</label>
+                            <input type="time" id="swal-time-from-user" class="form-control">
+                        </div>
+                        <div class="swal-form-field">
+                            <label class="form-label" for="swal-time-to-user">${t.timeTo}</label>
+                            <input type="time" id="swal-time-to-user" class="form-control">
                         </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '650px',
+        width: '560px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
         customClass: {
-            confirmButton: 'swal-btn-gradient-green',
-            cancelButton: 'swal-btn-gradient-gray',
+            confirmButton: 'swal-btn-primary',
+            cancelButton: 'swal-btn-secondary',
             popup: 'swal-popup-rounded'
         },
         buttonsStyling: false,
         didOpen: () => {
+            initTypePicker('user');
             initModalDateRangePicker('swal-daterange-user', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
@@ -634,7 +611,7 @@ function addVacationForUser(userId, userName) {
             });
         },
         preConfirm: () => {
-            const selectedType = document.getElementById('swal-type').value;
+            const selectedType = document.getElementById('swal-type-user').value;
             const timeFrom = document.getElementById('swal-time-from-user').value;
             const timeTo = document.getElementById('swal-time-to-user').value;
             
@@ -750,83 +727,64 @@ function editVacationSimple(vacationId, userId, userName, currentDateFrom, curre
         icon: 'info',
         title: t.editAbsence,
         html: `
-            <div class="px-2">
-                <div class="row g-3">
-                    <!-- Employee (Read-only) -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-user text-info"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0 bg-light" value="${userName}" readonly disabled>
-                        </div>
+            <div class="swal-form-layout">
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-user"></i></span>
+                        <span>${t.employee}</span>
                     </div>
-                    
-                    <!-- Absence Type -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-tags text-info"></i>
-                            </span>
-                            <select id="swal-type-simple" class="form-select border-start-0" style="cursor: pointer;">
-                                <option value="" disabled>${t.selectType}</option>
-                                <option value="vacation" ${currentType === 'vacation' ? 'selected' : ''}>${t.vacation}</option>
-                                <option value="sick_leave" ${currentType === 'sick_leave' ? 'selected' : ''}>${t.sickLeave}</option>
-                                <option value="doctor" ${currentType === 'doctor' ? 'selected' : ''}>${t.doctor}</option>
-                                <option value="home_office" ${currentType === 'home_office' ? 'selected' : ''}>${t.homeOffice || 'Home Office'}</option>
-                            </select>
-                        </div>
+                    <div class="swal-form-field">
+                        <input type="text" class="form-control" value="${userName}" readonly disabled>
                     </div>
-                    
-                    <!-- Date Range -->
-                    <div class="col-12">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-calendar-alt text-info"></i>
-                            </span>
-                            <input type="text" id="swal-daterange-simple" class="form-control border-start-0" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor: pointer; background-color: white;">
-                        </div>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-tag"></i></span>
+                        <span>${t.type}</span>
                     </div>
-                    
-                    <!-- Time Fields (shown only for single day) -->
-                    <div class="col-12" id="time-fields-simple" style="display: ${isSingleDay ? 'block' : 'none'}; opacity: ${isSingleDay ? '1' : '0'}; transition: opacity 0.3s ease;">
-                        <div class="card border-info bg-light bg-opacity-10">
-                            <div class="card-body p-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-clock text-info me-2"></i>
-                                    <small class="text-muted fw-semibold">${t.timeOptional}</small>
-                                </div>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label small mb-1">
-                                            <i class="fas fa-sign-in-alt me-1"></i>${t.timeFrom}
-                                        </label>
-                                        <input type="time" id="swal-time-from-simple" class="form-control form-control-lg" value="${currentTimeFrom || ''}">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label small mb-1">
-                                            <i class="fas fa-sign-out-alt me-1"></i>${t.timeTo}
-                                        </label>
-                                        <input type="time" id="swal-time-to-simple" class="form-control form-control-lg" value="${currentTimeTo || ''}">
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="swal-form-field">
+                        ${buildTypePickerHTML('simple', currentType)}
+                    </div>
+                </div>
+                <div class="swal-form-section">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-calendar-alt"></i></span>
+                        <span>${t.dateRange}</span>
+                    </div>
+                    <div class="swal-form-field">
+                        <input type="text" id="swal-daterange-simple" class="form-control" readonly placeholder="${t.selectDates}" value="${displayRange}" style="cursor:pointer;">
+                    </div>
+                </div>
+                <div class="swal-form-section swal-form-transition" id="time-fields-simple" style="display:${isSingleDay ? 'block' : 'none'}; opacity:${isSingleDay ? '1' : '0'};">
+                    <div class="swal-form-section-title">
+                        <span class="swal-form-section-icon"><i class="fas fa-clock"></i></span>
+                        <span>${t.timeOptional}</span>
+                    </div>
+                    <div class="swal-form-inline">
+                        <div class="swal-form-field">
+                            <label class="form-label" for="swal-time-from-simple">${t.timeFrom}</label>
+                            <input type="time" id="swal-time-from-simple" class="form-control" value="${currentTimeFrom || ''}">
+                        </div>
+                        <div class="swal-form-field">
+                            <label class="form-label" for="swal-time-to-simple">${t.timeTo}</label>
+                            <input type="time" id="swal-time-to-simple" class="form-control" value="${currentTimeTo || ''}">
                         </div>
                     </div>
                 </div>
             </div>
         `,
-        width: '550px',
+        width: '560px',
         showCancelButton: true,
         confirmButtonText: t.save,
         cancelButtonText: t.cancel,
         customClass: {
-            confirmButton: 'swal-btn-gradient-blue',
-            cancelButton: 'swal-btn-gradient-gray',
+            confirmButton: 'swal-btn-primary',
+            cancelButton: 'swal-btn-secondary',
             popup: 'swal-popup-rounded'
         },
         buttonsStyling: false,
         didOpen: () => {
+            initTypePicker('simple');
             initModalDateRangePicker('swal-daterange-simple', (start, end) => {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');

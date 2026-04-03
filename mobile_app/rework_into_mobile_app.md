@@ -1,172 +1,172 @@
-# Mobile App Strategy — QR Reader Django Project
+﻿# Mobile App Strategy - Trakero Django Project
 
-## Analýza projektu
+## AnalÃ½za projektu
 
-### Čo máš teraz
-- Django backend (Python) so session-based autentifikáciou
-- Server-side rendered HTML šablóny (Jinja2 / Django templates)
-- 2 typy používateľov: **Company** (admin) a **User** (zamestnanec)
-- Kľúčové funkcie:
+### ÄŒo mÃ¡Å¡ teraz
+- Django backend (Python) so session-based autentifikÃ¡ciou
+- Server-side rendered HTML Å¡ablÃ³ny (Jinja2 / Django templates)
+- 2 typy pouÅ¾Ã­vateÄ¾ov: **Company** (admin) a **User** (zamestnanec)
+- KÄ¾ÃºÄovÃ© funkcie:
   - QR skenovanie (kamera) + GPS poloha
   - Home Office / Business Trip / No QR skeny
   - Absencia / dovolenky
-  - Firemný dashboard, analytika, dochádzka
-  - Magazín (editor článkov)
-  - Notifikácie (email), audit logy
+  - FiremnÃ½ dashboard, analytika, dochÃ¡dzka
+  - MagazÃ­n (editor ÄlÃ¡nkov)
+  - NotifikÃ¡cie (email), audit logy
   - PDF/Excel export
   - i18n: SK / DE / ES / EN
 
 ---
 
-## Možnosti (od najjednoduchšej po najkomplexnejšiu)
+## MoÅ¾nosti (od najjednoduchÅ¡ej po najkomplexnejÅ¡iu)
 
 ---
 
-### MOŽNOSŤ 1 — WebView wrapper (PWA alebo natívny WebView)
+### MOÅ½NOSÅ¤ 1 â€” WebView wrapper (PWA alebo natÃ­vny WebView)
 
-**Princíp:** Zabalíš existujúcu webovú aplikáciu do natívneho shell-u, ktorý otvorí tvoj web v zabudovanom prehliadači.
+**PrincÃ­p:** ZabalÃ­Å¡ existujÃºcu webovÃº aplikÃ¡ciu do natÃ­vneho shell-u, ktorÃ½ otvorÃ­ tvoj web v zabudovanom prehliadaÄi.
 
-#### 1A — PWA (Progressive Web App) — **najrýchlejšie, 0 nového kódu**
-- Pridáš `manifest.json` a Service Worker do Django
-- Používatelia si nainštalujú appku priamo z prehliadača (Chrome / Safari)
-- Funguje offline (čiastočne), má ikonu na ploche, fullscreen mód
-- **Nevýhody:** iOS má obmedzenia (Safari WebKit, push notifikácie slabšie), nie je v App Store / Play Store
+#### 1A â€” PWA (Progressive Web App) â€” **najrÃ½chlejÅ¡ie, 0 novÃ©ho kÃ³du**
+- PridÃ¡Å¡ `manifest.json` a Service Worker do Django
+- PouÅ¾Ã­vatelia si nainÅ¡talujÃº appku priamo z prehliadaÄa (Chrome / Safari)
+- Funguje offline (ÄiastoÄne), mÃ¡ ikonu na ploche, fullscreen mÃ³d
+- **NevÃ½hody:** iOS mÃ¡ obmedzenia (Safari WebKit, push notifikÃ¡cie slabÅ¡ie), nie je v App Store / Play Store
 
-**Čo treba spraviť:**
+**ÄŒo treba spraviÅ¥:**
 ```
-1. Pridať /static/manifest.json (ikona, názov, theme_color, display: standalone)
-2. Pridať Service Worker (cache statické súbory)
-3. Pridať <link rel="manifest"> do base.html
+1. PridaÅ¥ /static/manifest.json (ikona, nÃ¡zov, theme_color, display: standalone)
+2. PridaÅ¥ Service Worker (cache statickÃ© sÃºbory)
+3. PridaÅ¥ <link rel="manifest"> do base.html
 4. Meta tagy pre iOS (apple-touch-icon, apple-mobile-web-app-capable)
-5. Optimalizovať mobilné CSS (už máš mobile-first na scan stránke)
+5. OptimalizovaÅ¥ mobilnÃ© CSS (uÅ¾ mÃ¡Å¡ mobile-first na scan strÃ¡nke)
 ```
 
-**Odhad práce:** 1–2 dni  
-**Výsledok:** Inštalovateľná appka, funguje bez App Store
+**Odhad prÃ¡ce:** 1â€“2 dni  
+**VÃ½sledok:** InÅ¡talovateÄ¾nÃ¡ appka, funguje bez App Store
 
 ---
 
-#### 1B — Capacitor (Ionic) WebView wrapper — **App Store + Play Store**
-- Capacitor zabalí tvoju existujúcu web URL do natívneho Android / iOS appa
+#### 1B â€” Capacitor (Ionic) WebView wrapper â€” **App Store + Play Store**
+- Capacitor zabalÃ­ tvoju existujÃºcu web URL do natÃ­vneho Android / iOS appa
 - Appka sa distribuuje cez Google Play a Apple App Store
-- Natívny prístup ku kamere, GPS, notifikáciám cez Capacitor pluginy
-- **Tvoj Django backend ostáva 100% nezmenený**
-- UI ostáva presne rovnaké ako web
+- NatÃ­vny prÃ­stup ku kamere, GPS, notifikÃ¡ciÃ¡m cez Capacitor pluginy
+- **Tvoj Django backend ostÃ¡va 100% nezmenenÃ½**
+- UI ostÃ¡va presne rovnakÃ© ako web
 
-**Čo treba spraviť:**
+**ÄŒo treba spraviÅ¥:**
 ```
 1. npm init + npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios
-2. Nakonfigurovať capacitor.config.ts (server URL = https://tvoja-domena.sk)
+2. NakonfigurovaÅ¥ capacitor.config.ts (server URL = https://tvoja-domena.sk)
 3. npx cap add android + npx cap add ios
-4. Otvoriť Android Studio / Xcode a publishnúť
-5. Voliteľne: Capacitor Camera plugin pre natívnejší QR scanner
+4. OtvoriÅ¥ Android Studio / Xcode a publishnÃºÅ¥
+5. VoliteÄ¾ne: Capacitor Camera plugin pre natÃ­vnejÅ¡Ã­ QR scanner
 ```
 
-**Odhad práce:** 2–5 dní (+ čas App Store review)  
-**Výsledok:** Plnohodnotná appka v oboch obchodoch, UI = tvoj web  
-**Nevýhoda:** Django musí byť na verejnej HTTPS doméne (nie localhost)
+**Odhad prÃ¡ce:** 2â€“5 dnÃ­ (+ Äas App Store review)  
+**VÃ½sledok:** PlnohodnotnÃ¡ appka v oboch obchodoch, UI = tvoj web  
+**NevÃ½hoda:** Django musÃ­ byÅ¥ na verejnej HTTPS domÃ©ne (nie localhost)
 
 ---
 
-#### 1C — React Native WebView
-- Jednoduchá React Native appka s `<WebView url="https://tvoj-server.sk" />`
-- Takmer rovnaké ako Capacitor, ale vyžaduje React Native setup
-- **Menej výhodné ako Capacitor** pre tento use case
+#### 1C â€” React Native WebView
+- JednoduchÃ¡ React Native appka s `<WebView url="https://tvoj-server.sk" />`
+- Takmer rovnakÃ© ako Capacitor, ale vyÅ¾aduje React Native setup
+- **Menej vÃ½hodnÃ© ako Capacitor** pre tento use case
 
 ---
 
-### MOŽNOSŤ 2 — Hybrid: Django REST API + mobilný frontend
+### MOÅ½NOSÅ¤ 2 â€” Hybrid: Django REST API + mobilnÃ½ frontend
 
-**Princíp:** Zo session-based Django urobíš REST API (token auth), a napíšeš nový mobilný frontend.
+**PrincÃ­p:** Zo session-based Django urobÃ­Å¡ REST API (token auth), a napÃ­Å¡eÅ¡ novÃ½ mobilnÃ½ frontend.
 
-#### 2A — React Native (Expo) — **odporúčané ak chceš natívny feel**
-- Django: Pridáš `djangorestframework` + `rest_framework.authtoken` alebo JWT
-- Konvertuješ hlavné endpointy na API (scan, dashboard, absencia)
-- Frontend: nová React Native appka (Expo = jednoduchší setup)
-- **Výhody:** Skutočne natívne komponenty, najlepší výkon, najlepšia UX
-- **Nevýhody:** Musíš prepísať celý UI, je to veľa práce
+#### 2A â€” React Native (Expo) â€” **odporÃºÄanÃ© ak chceÅ¡ natÃ­vny feel**
+- Django: PridÃ¡Å¡ `djangorestframework` + `rest_framework.authtoken` alebo JWT
+- KonvertujeÅ¡ hlavnÃ© endpointy na API (scan, dashboard, absencia)
+- Frontend: novÃ¡ React Native appka (Expo = jednoduchÅ¡Ã­ setup)
+- **VÃ½hody:** SkutoÄne natÃ­vne komponenty, najlepÅ¡Ã­ vÃ½kon, najlepÅ¡ia UX
+- **NevÃ½hody:** MusÃ­Å¡ prepÃ­saÅ¥ celÃ½ UI, je to veÄ¾a prÃ¡ce
 
-**Odhadovaná práca:** 4–8 týždňov (full rewrite UI)
+**OdhadovanÃ¡ prÃ¡ca:** 4â€“8 tÃ½Å¾dÅˆov (full rewrite UI)
 
 ---
 
-#### 2B — Flutter — **ak chceš jedno codebase pre Android + iOS**
-- Dart + Flutter = jeden kód, build pre oba OS
+#### 2B â€” Flutter â€” **ak chceÅ¡ jedno codebase pre Android + iOS**
+- Dart + Flutter = jeden kÃ³d, build pre oba OS
 - Django ostane ako API backend
-- Výborne vyzerá, skvelý výkon
-- **Nevýhody:** Nový jazyk (Dart), full rewrite UI
+- VÃ½borne vyzerÃ¡, skvelÃ½ vÃ½kon
+- **NevÃ½hody:** NovÃ½ jazyk (Dart), full rewrite UI
 
-**Odhadovaná práca:** 4–8 týždňov
-
----
-
-### MOŽNOSŤ 3 — Expo DOM Components (React Native + Web hybrid)
-
-- Relatívne nová možnosť (2024+): React Native s DOM komponentmi
-- Môžeš repoužiť časti HTML/CSS zo svojich Django šablón
-- Menej praktické pre Django projekt
+**OdhadovanÃ¡ prÃ¡ca:** 4â€“8 tÃ½Å¾dÅˆov
 
 ---
 
-## Porovnávacia tabuľka
+### MOÅ½NOSÅ¤ 3 â€” Expo DOM Components (React Native + Web hybrid)
+
+- RelatÃ­vne novÃ¡ moÅ¾nosÅ¥ (2024+): React Native s DOM komponentmi
+- MÃ´Å¾eÅ¡ repouÅ¾iÅ¥ Äasti HTML/CSS zo svojich Django Å¡ablÃ³n
+- Menej praktickÃ© pre Django projekt
+
+---
+
+## PorovnÃ¡vacia tabuÄ¾ka
 
 | | PWA | Capacitor wrapper | React Native | Flutter |
 |---|---|---|---|---|
-| **Práca** | 1–2 dni | 3–5 dní | 4–8 týždňov | 4–8 týždňov |
-| **UI zmeny** | Žiadne | Žiadne / minimálne | Kompletný rewrite | Kompletný rewrite |
-| **Backend zmeny** | Žiadne | Žiadne | REST API | REST API |
-| **App Store** | ❌ (len browser) | ✅ | ✅ | ✅ |
-| **Natívna kamera** | Čiastočne | ✅ (plugin) | ✅ | ✅ |
-| **GPS** | ✅ | ✅ | ✅ | ✅ |
-| **Push notifikácie** | Obmedzené | ✅ | ✅ | ✅ |
-| **Offline** | Čiastočne | Čiastočne | ✅ | ✅ |
-| **iOS App Store** | ❌ | ✅ | ✅ | ✅ |
-| **Výkon** | Web | Web | Natívny | Natívny |
+| **PrÃ¡ca** | 1â€“2 dni | 3â€“5 dnÃ­ | 4â€“8 tÃ½Å¾dÅˆov | 4â€“8 tÃ½Å¾dÅˆov |
+| **UI zmeny** | Å½iadne | Å½iadne / minimÃ¡lne | KompletnÃ½ rewrite | KompletnÃ½ rewrite |
+| **Backend zmeny** | Å½iadne | Å½iadne | REST API | REST API |
+| **App Store** | âŒ (len browser) | âœ… | âœ… | âœ… |
+| **NatÃ­vna kamera** | ÄŒiastoÄne | âœ… (plugin) | âœ… | âœ… |
+| **GPS** | âœ… | âœ… | âœ… | âœ… |
+| **Push notifikÃ¡cie** | ObmedzenÃ© | âœ… | âœ… | âœ… |
+| **Offline** | ÄŒiastoÄne | ÄŒiastoÄne | âœ… | âœ… |
+| **iOS App Store** | âŒ | âœ… | âœ… | âœ… |
+| **VÃ½kon** | Web | Web | NatÃ­vny | NatÃ­vny |
 
 ---
 
-## Moje odporúčanie pre tento projekt
+## Moje odporÃºÄanie pre tento projekt
 
 ### Krok 1 (teraz): PWA
-- 1–2 dni práce, nulové riziko
-- Používatelia si môžu nainštalovať appku na telefón
-- Funguje okamžite aj s existujúcim localhost setupom
+- 1â€“2 dni prÃ¡ce, nulovÃ© riziko
+- PouÅ¾Ã­vatelia si mÃ´Å¾u nainÅ¡talovaÅ¥ appku na telefÃ³n
+- Funguje okamÅ¾ite aj s existujÃºcim localhost setupom
 
 ### Krok 2 (ak treba App Store): Capacitor
-- Tvoj Django web ostáva nezmenený
-- Capacitor ho zabalí do natívnej appky
-- Scan stránka (`/user/scan/`) už je mobile-first optimalizovaná
-- html5-qrcode knižnica funguje v Capacitor WebView
-- **Toto je najčistejšia cesta** — minimálna práca, maximálny výsledok
+- Tvoj Django web ostÃ¡va nezmenenÃ½
+- Capacitor ho zabalÃ­ do natÃ­vnej appky
+- Scan strÃ¡nka (`/user/scan/`) uÅ¾ je mobile-first optimalizovanÃ¡
+- html5-qrcode kniÅ¾nica funguje v Capacitor WebView
+- **Toto je najÄistejÅ¡ia cesta** â€” minimÃ¡lna prÃ¡ca, maximÃ¡lny vÃ½sledok
 
-### Krok 3 (dlhodobé riešenie ak chceš top UX): React Native + DRF
-- Pridáš Django REST Framework
-- Napíšeš novú Expo appku len pre **User** rolu (scan, dashboard, absencia)
-- **Company dashboard** ostane ako web (tam je komplexná analytika, PDF export atď.)
+### Krok 3 (dlhodobÃ© rieÅ¡enie ak chceÅ¡ top UX): React Native + DRF
+- PridÃ¡Å¡ Django REST Framework
+- NapÃ­Å¡eÅ¡ novÃº Expo appku len pre **User** rolu (scan, dashboard, absencia)
+- **Company dashboard** ostane ako web (tam je komplexnÃ¡ analytika, PDF export atÄ.)
 
 ---
 
-## Konkrétne: čo treba pre Capacitor
+## KonkrÃ©tne: Äo treba pre Capacitor
 
 ### Predpoklady
-- Tvoj server musí byť na verejnej HTTPS URL (nie localhost)
-- Doménové meno (napr. `qrreader.firma.sk`)
+- Tvoj server musÃ­ byÅ¥ na verejnej HTTPS URL (nie localhost)
+- DomÃ©novÃ© meno (napr. `qrreader.firma.sk`)
 
-### Technický postup
+### TechnickÃ½ postup
 ```bash
-# 1. Inštalácia
+# 1. InÅ¡talÃ¡cia
 npm install -g @capacitor/cli
 mkdir mobile_app && cd mobile_app
 npm init -y
 npm install @capacitor/core @capacitor/android @capacitor/ios
 
 # 2. Init
-npx cap init "QR Reader" "sk.firma.qrreader" --web-dir=www
+npx cap init "Trakero" "sk.firma.qrreader" --web-dir=www
 
 # 3. Config (capacitor.config.json)
 {
   "appId": "sk.firma.qrreader",
-  "appName": "QR Reader",
+  "appName": "Trakero",
   "server": {
     "url": "https://qrreader.firma.sk",
     "cleartext": false
@@ -182,26 +182,26 @@ npx cap open android  # Android Studio
 npx cap open ios      # Xcode (len na Mac)
 ```
 
-### Výsledok
-- Appka otvorí tvoj web v natívnom WebView
-- Kamera a GPS fungujú (rovnaké permisie ako v prehliadači, ale natívne dialógy)
-- UI je 100% identické s webom
-- Môžeš publikovať do Google Play a App Store
+### VÃ½sledok
+- Appka otvorÃ­ tvoj web v natÃ­vnom WebView
+- Kamera a GPS fungujÃº (rovnakÃ© permisie ako v prehliadaÄi, ale natÃ­vne dialÃ³gy)
+- UI je 100% identickÃ© s webom
+- MÃ´Å¾eÅ¡ publikovaÅ¥ do Google Play a App Store
 
 ---
 
-## Konkrétne: čo treba pre PWA
+## KonkrÃ©tne: Äo treba pre PWA
 
-### Súbory na vytvorenie
+### SÃºbory na vytvorenie
 1. `/static/manifest.json`
 2. `/static/sw.js` (Service Worker)
-3. Úpravy v `base.html` (3 riadky meta tagov)
+3. Ãšpravy v `base.html` (3 riadky meta tagov)
 
-### manifest.json (príklad)
+### manifest.json (prÃ­klad)
 ```json
 {
-  "name": "QR Reader",
-  "short_name": "QR Reader",
+  "name": "Trakero",
+  "short_name": "Trakero",
   "start_url": "/sk/user/scan/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -215,10 +215,11 @@ npx cap open ios      # Xcode (len na Mac)
 
 ---
 
-## Záver — Moje poradie odporúčaní
+## ZÃ¡ver â€” Moje poradie odporÃºÄanÃ­
 
-1. **PWA** — urob to teraz, ihneď, zadarmo, bez App Store
-2. **Capacitor wrapper** — ak zákazníci chcú App Store, minimal práca (~3-5 dní)
-3. **React Native (Expo)** — ak chceš skutočne natívnu appku pre User rolu, dlhodobý projekt
+1. **PWA** â€” urob to teraz, ihneÄ, zadarmo, bez App Store
+2. **Capacitor wrapper** â€” ak zÃ¡kaznÃ­ci chcÃº App Store, minimal prÃ¡ca (~3-5 dnÃ­)
+3. **React Native (Expo)** â€” ak chceÅ¡ skutoÄne natÃ­vnu appku pre User rolu, dlhodobÃ½ projekt
 
-**Pre 90% prípadov je Capacitor wrapper optimálna voľba** — dostaneš App Store appku, UI ostáva rovnaké, backend sa nemení a nemusíš sa učiť nový framework.
+**Pre 90% prÃ­padov je Capacitor wrapper optimÃ¡lna voÄ¾ba** â€” dostaneÅ¡ App Store appku, UI ostÃ¡va rovnakÃ©, backend sa nemenÃ­ a nemusÃ­Å¡ sa uÄiÅ¥ novÃ½ framework.
+

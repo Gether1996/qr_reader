@@ -432,7 +432,8 @@ body {
 
 .pagination .page-item.active .page-link {
     border-color: transparent;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: #2563eb;
+    color: #ffffff;
 }
 
 :root[data-theme="dark"] .table thead th,

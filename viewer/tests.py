@@ -1,5 +1,5 @@
-"""
-Comprehensive test suite for QR Reader Django Application
+﻿"""
+Comprehensive test suite for Trakero Django Application
 Tests all models, relationships, and business logic to ensure production readiness.
 """
 
@@ -53,7 +53,7 @@ class CompanyModelTests(TestCase):
             ico='12345678',
             dic='2012345678',
             phone='+421901234567',
-            street='Hlavná',
+            street='HlavnÃ¡',
             street_number='123/45',
             zip_code='81101',
             city='Bratislava',
@@ -68,7 +68,7 @@ class CompanyModelTests(TestCase):
         self.assertEqual(company.ico, '12345678')
         self.assertEqual(company.dic, '2012345678')
         self.assertEqual(company.phone, '+421901234567')
-        self.assertEqual(company.street, 'Hlavná')
+        self.assertEqual(company.street, 'HlavnÃ¡')
         self.assertEqual(company.city, 'Bratislava')
         self.assertTrue(company.auto_lunch_breaks)
         self.assertTrue(company.notify_arrival)
@@ -205,7 +205,7 @@ class UserModelTests(TestCase):
         
         self.user_data = {
             'company': self.company,
-            'name': 'Ján Novák',
+            'name': 'JÃ¡n NovÃ¡k',
             'email': 'jan.novak@test.sk',
             'password': 'user_password'
         }
@@ -214,7 +214,7 @@ class UserModelTests(TestCase):
         """Test creating user with minimal required fields"""
         user = User.objects.create(**self.user_data)
         
-        self.assertEqual(user.name, 'Ján Novák')
+        self.assertEqual(user.name, 'JÃ¡n NovÃ¡k')
         self.assertEqual(user.email, 'jan.novak@test.sk')
         self.assertEqual(user.company, self.company)
         self.assertIsNotNone(user.created_at)
@@ -229,7 +229,7 @@ class UserModelTests(TestCase):
         """Test creating user with all optional fields"""
         user = User.objects.create(
             company=self.company,
-            name='Peter Veľký',
+            name='Peter VeÄ¾kÃ½',
             email='peter.velky@test.sk',
             password='password',
             rc='900101/1234',
@@ -272,7 +272,7 @@ class UserModelTests(TestCase):
     def test_user_str_representation(self):
         """Test string representation of user"""
         user = User.objects.create(**self.user_data)
-        self.assertEqual(str(user), 'Ján Novák (Test Company)')
+        self.assertEqual(str(user), 'JÃ¡n NovÃ¡k (Test Company)')
     
     def test_user_company_relationship(self):
         """Test that user is properly related to company"""
@@ -461,16 +461,16 @@ class QRCodeProfileModelTests(TestCase):
         
         self.qr_data = {
             'company': self.company,
-            'name': 'Hlavný vchod',
-            'location': 'Bratislava, Hlavná 123'
+            'name': 'HlavnÃ½ vchod',
+            'location': 'Bratislava, HlavnÃ¡ 123'
         }
     
     def test_qrcode_creation_minimal(self):
         """Test creating QR code with minimal required fields"""
         qr = QRCodeProfile.objects.create(**self.qr_data)
         
-        self.assertEqual(qr.name, 'Hlavný vchod')
-        self.assertEqual(qr.location, 'Bratislava, Hlavná 123')
+        self.assertEqual(qr.name, 'HlavnÃ½ vchod')
+        self.assertEqual(qr.location, 'Bratislava, HlavnÃ¡ 123')
         self.assertEqual(qr.company, self.company)
         self.assertIsNotNone(qr.created_at)
         self.assertTrue(qr.is_active)
@@ -481,12 +481,12 @@ class QRCodeProfileModelTests(TestCase):
         """Test creating QR code with additional info"""
         qr = QRCodeProfile.objects.create(
             company=self.company,
-            name='Zadný vchod',
-            location='Košice, Mlynská 45',
-            additional_info='Len pre zamestnancov, prístup kartou'
+            name='ZadnÃ½ vchod',
+            location='KoÅ¡ice, MlynskÃ¡ 45',
+            additional_info='Len pre zamestnancov, prÃ­stup kartou'
         )
         
-        self.assertEqual(qr.additional_info, 'Len pre zamestnancov, prístup kartou')
+        self.assertEqual(qr.additional_info, 'Len pre zamestnancov, prÃ­stup kartou')
     
     def test_qrcode_uuid_auto_generation(self):
         """Test that UUID is automatically generated on save"""
@@ -556,7 +556,7 @@ class QRCodeProfileModelTests(TestCase):
     def test_qrcode_str_representation(self):
         """Test string representation of QR code"""
         qr = QRCodeProfile.objects.create(**self.qr_data)
-        self.assertEqual(str(qr), 'Hlavný vchod - Test Company')
+        self.assertEqual(str(qr), 'HlavnÃ½ vchod - Test Company')
     
     def test_qrcode_company_relationship(self):
         """Test that QR code is properly related to company"""
@@ -736,10 +736,10 @@ class ScanEventModelTests(TestCase):
         """Test scan event with pre-filled address"""
         scan = ScanEvent.objects.create(
             **self.scan_data,
-            address='Hlavná 123, 81101 Bratislava, Slovensko'
+            address='HlavnÃ¡ 123, 81101 Bratislava, Slovensko'
         )
         
-        self.assertEqual(scan.address, 'Hlavná 123, 81101 Bratislava, Slovensko')
+        self.assertEqual(scan.address, 'HlavnÃ¡ 123, 81101 Bratislava, Slovensko')
     
     def test_scan_event_home_office(self):
         """Test home office scan event"""
@@ -944,7 +944,7 @@ class ScanEventModelTests(TestCase):
         mock_response.status_code = 200
         mock_response.json.return_value = {
             'address': {
-                'road': 'Hlavná',
+                'road': 'HlavnÃ¡',
                 'house_number': '123',
                 'postcode': '81101',
                 'city': 'Bratislava',
@@ -957,7 +957,7 @@ class ScanEventModelTests(TestCase):
         address = scan.get_address_from_coordinates()
         
         self.assertIsNotNone(address)
-        self.assertIn('Hlavná 123', address)
+        self.assertIn('HlavnÃ¡ 123', address)
         self.assertIn('81101 Bratislava', address)
         self.assertIn('Slovensko', address)
     
@@ -1252,7 +1252,7 @@ class VacationModelTests(TestCase):
     
     def test_vacation_types(self):
         """Test different vacation types"""
-        types = ['Dovolenka', 'Sick Leave', 'OČR', 'Paragraf', 'Náhradné voľno']
+        types = ['Dovolenka', 'Sick Leave', 'OÄŒR', 'Paragraf', 'NÃ¡hradnÃ© voÄ¾no']
         
         for vacation_type in types:
             vacation = Vacation.objects.create(
@@ -1591,7 +1591,7 @@ class AuditLogModelTests(TestCase):
         log = AuditLog.objects.create(
             actor_type='user',
             actor_email='user@test.sk',
-            actor_name='Ján Novák',
+            actor_name='JÃ¡n NovÃ¡k',
             action='login',
             message='User logged in',
             ip_address='192.168.1.50'
@@ -1758,7 +1758,7 @@ class AuditLogModelTests(TestCase):
     #         cover_header_position='center',
     #         language='sk',
     #         print_bleed=True,
-    #         categories='Správy,Technológie,Kultúra',
+    #         categories='SprÃ¡vy,TechnolÃ³gie,KultÃºra',
     #         is_published=True
     #     )
         
@@ -2379,7 +2379,7 @@ class IntegrationTests(TestCase):
         # Create users
         self.manager = User.objects.create(
             company=self.company,
-            name='Peter Manažér',
+            name='Peter ManaÅ¾Ã©r',
             email='peter.manazer@techcorp.sk',
             password='password',
             is_manager=True,
@@ -2392,7 +2392,7 @@ class IntegrationTests(TestCase):
         
         self.employee = User.objects.create(
             company=self.company,
-            name='Jana Zamestnancová',
+            name='Jana ZamestnancovÃ¡',
             email='jana.zamestnancova@techcorp.sk',
             password='password'
         )
@@ -2838,5 +2838,6 @@ class IntegrationTests(TestCase):
         self.assertFalse(Vacation.objects.filter(id=vacation_id).exists())
         self.assertFalse(Magazine.objects.filter(id=magazine_id).exists())
         self.assertFalse(MagazineArticle.objects.filter(id=article_id).exists())
+
 
 

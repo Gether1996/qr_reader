@@ -1,5 +1,5 @@
-/**
- * QR Reader — Offline Scan Queue
+﻿/**
+ * Trakero â€” Offline Scan Queue
  *
  * Stores pending scans in IndexedDB when the network is unavailable.
  * Syncs automatically when the connection is restored, both via the
@@ -15,7 +15,7 @@
     var DB_VERSION = 1;
     var _db = null;
 
-    /* ─── IndexedDB helpers ─────────────────────────────────────────────── */
+    /* â”€â”€â”€ IndexedDB helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     function openDB() {
         return new Promise(function (resolve, reject) {
@@ -88,7 +88,7 @@
         });
     }
 
-    /* ─── UI badge ──────────────────────────────────────────────────────── */
+    /* â”€â”€â”€ UI badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     function t(key, fallback) {
         return (typeof translations !== "undefined" && translations[key])
@@ -123,7 +123,7 @@
             .catch(function () {});
     }
 
-    /* ─── Sync logic ────────────────────────────────────────────────────── */
+    /* â”€â”€â”€ Sync logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     function postEntry(entry) {
         return fetch(entry.scan_url, {
@@ -142,7 +142,7 @@
 
     /**
      * Sends all queued scans to the server in chronological order.
-     * Sequential — stops if network drops mid-sync.
+     * Sequential â€” stops if network drops mid-sync.
      * Returns count of successfully synced scans.
      */
     function syncQueue() {
@@ -172,7 +172,7 @@
                                 return dbDelete(entry.id);
                             })
                             .catch(function () {
-                                // Network dropped mid-sync — stop, leave remaining in queue.
+                                // Network dropped mid-sync â€” stop, leave remaining in queue.
                                 aborted = true;
                             });
                     });
@@ -184,7 +184,7 @@
         });
     }
 
-    /* ─── Add a scan to the offline queue ──────────────────────────────── */
+    /* â”€â”€â”€ Add a scan to the offline queue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     function addScan(payload, scanUrl, csrfTokenValue) {
         return dbAdd({
@@ -209,7 +209,7 @@
         return dbGetAll().then(function (s) { return s.length; });
     }
 
-    /* ─── Auto-sync on reconnect ────────────────────────────────────────── */
+    /* â”€â”€â”€ Auto-sync on reconnect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     window.addEventListener("online", function () {
         syncQueue().then(function (synced) {
@@ -233,7 +233,7 @@
         refreshBadge();
     }
 
-    /* ─── Public API ────────────────────────────────────────────────────── */
+    /* â”€â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     window.scanQueue = {
         add: addScan,
@@ -242,3 +242,4 @@
         sync: syncQueue,
     };
 })();
+

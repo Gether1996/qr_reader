@@ -25,13 +25,66 @@ body {
 .user-icon-circle {
     width: 72px;
     height: 72px;
-    background: linear-gradient(135deg, #0284c7, #0f766e);
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+    background: #2563eb;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.18);
 }
 
-.scan-qr-btn {
-    min-width: 170px;
+.header-action-btn {
+    min-height: 42px;
+    border: none;
+    border-radius: 12px;
+    padding: 0.65rem 0.95rem;
     font-weight: 700;
+    transition: opacity 0.15s ease;
+}
+
+.btn-blue {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+.btn-blue:hover,
+.btn-blue:focus {
+    color: #fff;
+    background: #1e40af;
+}
+
+.details-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: none;
+    padding: 0.35rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.details-toggle-btn:hover {
+    background: rgba(100, 116, 139, 0.08);
+    color: #334155;
+}
+
+.details-toggle-icon {
+    font-size: 0.72rem;
+    transition: transform 0.25s ease;
+}
+
+.details-toggle-btn[aria-expanded="true"] .details-toggle-icon {
+    transform: rotate(180deg);
+}
+
+:root[data-theme="dark"] .details-toggle-btn {
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .details-toggle-btn:hover {
+    background: rgba(148, 163, 184, 0.1);
+    color: #cbd5e1;
 }
 
 .dashboard-summary-grid {
@@ -345,7 +398,7 @@ body {
 }
 
 .mobile-scan-card.lunch-end {
-    border-left: 4px solid #8b5cf6;
+    border-left: 4px solid #475569;
 }
 
 .mobile-scan-header {
@@ -385,8 +438,8 @@ body {
 }
 
 .mobile-scan-type.lunch-end {
-    background: #ede9fe;
-    color: #5b21b6;
+    background: #e2e8f0;
+    color: #334155;
 }
 
 .mobile-scan-info {
@@ -422,7 +475,8 @@ body {
 
 .pagination .page-item.active .page-link {
     border-color: transparent;
-    background: linear-gradient(135deg, #0284c7, #2563eb);
+    background: #2563eb;
+    color: #ffffff;
 }
 
 :root[data-theme="dark"] .summary-stat-card {
@@ -506,4 +560,110 @@ body {
     .mobile-scan-header {
         flex-direction: column;
     }
+}
+
+/* ---- Action icon buttons ---- */
+.action-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    display: inline-grid;
+    place-items: center;
+    background: #f8fafc;
+    color: #475569;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-icon-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
+}
+
+.action-btn-delete {
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
+    border-color: rgba(220, 38, 38, 0.15);
+}
+
+:root[data-theme="dark"] .action-icon-btn {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(71, 85, 105, 0.45);
+    color: #94a3b8;
+}
+
+:root[data-theme="dark"] .action-btn-delete {
+    background: rgba(220, 38, 38, 0.18);
+    color: #fca5a5;
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+/* ---- Subdued badges in data table ---- */
+.data-table-card .badge {
+    border-radius: 999px;
+    padding: 0.42rem 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.data-table-card .badge.bg-primary {
+    background: #dbeafe !important;
+    color: #1d4ed8 !important;
+}
+
+.data-table-card .badge.bg-info {
+    background: #e0f2fe !important;
+    color: #0369a1 !important;
+}
+
+.data-table-card .badge.bg-success {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+}
+
+.data-table-card .badge.bg-warning {
+    background: #fef3c7 !important;
+    color: #b45309 !important;
+}
+
+.data-table-card .badge.bg-danger {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+.data-table-card .badge.bg-secondary {
+    background: #e2e8f0 !important;
+    color: #475569 !important;
+}
+
+:root[data-theme="dark"] .data-table-card .badge.bg-primary {
+    background: rgba(37, 99, 235, 0.22) !important;
+    color: #bfdbfe !important;
+}
+
+:root[data-theme="dark"] .data-table-card .badge.bg-info {
+    background: rgba(8, 145, 178, 0.24) !important;
+    color: #a5f3fc !important;
+}
+
+:root[data-theme="dark"] .data-table-card .badge.bg-success {
+    background: rgba(5, 150, 105, 0.24) !important;
+    color: #bbf7d0 !important;
+}
+
+:root[data-theme="dark"] .data-table-card .badge.bg-warning {
+    background: rgba(180, 83, 9, 0.26) !important;
+    color: #fde68a !important;
+}
+
+:root[data-theme="dark"] .data-table-card .badge.bg-danger {
+    background: rgba(220, 38, 38, 0.22) !important;
+    color: #fecaca !important;
+}
+
+:root[data-theme="dark"] .data-table-card .badge.bg-secondary {
+    background: rgba(71, 85, 105, 0.6) !important;
+    color: #cbd5e1 !important;
 }

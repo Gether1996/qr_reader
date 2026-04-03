@@ -1,6 +1,6 @@
 {
-  "name": "QR Reader",
-  "short_name": "QR Reader",
+  "name": "Trakero",
+  "short_name": "Trakero",
   "description": "Dochádzka, QR skenovanie a absencia pre zamestnancov",
   "start_url": "/",
   "scope": "/",

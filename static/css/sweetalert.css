@@ -184,6 +184,132 @@
     transition: opacity 0.3s ease;
 }
 
+/* ---- Flat form action buttons (Save / Cancel pairs in modals) ---- */
+.swal-btn-primary {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 0.625rem 1.5rem !important;
+    font-weight: 600 !important;
+    border-radius: 0.5rem !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.swal-btn-primary:hover {
+    background: #1d4ed8 !important;
+}
+
+.swal-btn-secondary {
+    background: transparent !important;
+    color: #475569 !important;
+    border: 1.5px solid #cbd5e1 !important;
+    padding: 0.625rem 1.5rem !important;
+    font-weight: 600 !important;
+    border-radius: 0.5rem !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+}
+
+.swal-btn-secondary:hover {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+}
+
+/* ---- Custom type picker inside modals ---- */
+.swal2-html-container .swal-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.55rem;
+}
+
+.swal2-html-container .swal-type-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    padding: 0.85rem 0.5rem !important;
+    border-radius: 0.85rem !important;
+    border: 1.5px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    color: #475569 !important;
+    cursor: pointer !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    width: 100% !important;
+    transition: border-color 0.15s ease, background-color 0.15s ease !important;
+    box-shadow: none !important;
+    text-align: center !important;
+}
+
+.swal2-html-container .swal-type-btn:hover {
+    border-color: #94a3b8 !important;
+    background: #f1f5f9 !important;
+}
+
+.swal2-html-container .swal-type-icon {
+    font-size: 1.25rem !important;
+    line-height: 1 !important;
+}
+
+.swal2-html-container .swal-type-btn.selected.type-vacation {
+    border-color: #2563eb !important;
+    background: #dbeafe !important;
+    color: #1d4ed8 !important;
+}
+
+.swal2-html-container .swal-type-btn.selected.type-sick_leave {
+    border-color: #d97706 !important;
+    background: #fef3c7 !important;
+    color: #b45309 !important;
+}
+
+.swal2-html-container .swal-type-btn.selected.type-doctor {
+    border-color: #dc2626 !important;
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+.swal2-html-container .swal-type-btn.selected.type-home_office {
+    border-color: #059669 !important;
+    background: #dcfce7 !important;
+    color: #166534 !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container .swal-type-btn {
+    border-color: rgba(71, 85, 105, 0.6) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container .swal-type-btn:hover {
+    border-color: #475569 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-vacation {
+    border-color: #2563eb !important;
+    background: rgba(37, 99, 235, 0.2) !important;
+    color: #bfdbfe !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-sick_leave {
+    border-color: #d97706 !important;
+    background: rgba(217, 119, 6, 0.2) !important;
+    color: #fde68a !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-doctor {
+    border-color: #dc2626 !important;
+    background: rgba(220, 38, 38, 0.2) !important;
+    color: #fecaca !important;
+}
+
+:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-home_office {
+    border-color: #059669 !important;
+    background: rgba(5, 150, 105, 0.2) !important;
+    color: #bbf7d0 !important;
+}
+
 /* Toast notifications styling */
 .swal-toast-rounded {
     border-radius: 0.75rem !important;
@@ -192,6 +318,26 @@
 /* ============================================
    Dark Mode Support
    ============================================ */
+
+:root[data-theme="dark"] .swal-btn-primary {
+    background: #2563eb !important;
+    color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .swal-btn-primary:hover {
+    background: #1d4ed8 !important;
+}
+
+:root[data-theme="dark"] .swal-btn-secondary {
+    background: transparent !important;
+    color: #94a3b8 !important;
+    border-color: #334155 !important;
+}
+
+:root[data-theme="dark"] .swal-btn-secondary:hover {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: #475569 !important;
+}
 
 :root[data-theme="dark"] .swal2-popup {
     background: #1f2937 !important;

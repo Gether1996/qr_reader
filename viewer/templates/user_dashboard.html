@@ -32,12 +32,12 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
-                    <div class="d-flex gap-2 justify-content-lg-end justify-content-start">
-                        <button onclick="addVacationForUser({{ user.id }}, '{{ user.name }}')" class="btn btn-primary flex-fill flex-lg-grow-0">
-                            <i class="fas fa-plus me-1"></i>{% trans "Add Absence" %}
+                    <div class="d-flex gap-2 justify-content-lg-end justify-content-start flex-wrap">
+                        <button onclick="addVacationForUser({{ user.id }}, '{{ user.name }}')" class="btn header-action-btn btn-blue flex-fill flex-lg-grow-0">
+                            <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus"></i></span>{% trans "Add Absence" %}
                         </button>
-                        <a href="{% url 'user_scan_qr' %}" class="btn btn-success flex-fill flex-lg-grow-0 scan-qr-btn">
-                            <i class="fas fa-camera me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-camera me-1"></i></span>{% trans "Scan QR Code" %}
+                        <a href="{% url 'user_scan_qr' %}" class="btn header-action-btn btn-blue flex-fill flex-lg-grow-0">
+                            <i class="fas fa-camera me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-camera"></i></span>{% trans "Scan QR Code" %}
                         </a>
                     </div>
                 </div>
@@ -45,9 +45,9 @@
             
             <!-- Toggle Button -->
             <div class="mt-3 text-center">
-                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#userDetails" aria-expanded="false" aria-controls="userDetails">
-                    <i class="fas fa-chevron-down me-1" id="detailsIcon"></i>
+                <button class="details-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#userDetails" aria-expanded="false" aria-controls="userDetails">
                     <span id="detailsText">{% trans "Show Details" %}</span>
+                    <i class="fas fa-chevron-down ms-1 details-toggle-icon" id="detailsIcon"></i>
                 </button>
             </div>
             
@@ -113,7 +113,7 @@
                                 <i class="fas fa-user-doctor text-muted me-2" style="width: 20px;"></i>
                                 <span class="text-muted small">{% trans "Doctor" %}:</span>
                                 <span class="ms-auto">
-                                    <span class="badge" style="background-color: #9333ea;">{{ doctor_days_ytd }} {% trans "days" %}</span>
+                                    <span class="badge badge-doctor">{{ doctor_days_ytd }} {% trans "days" %}</span>
                                 </span>
                             </div>
                         </div>
@@ -277,16 +277,12 @@
     </div>
     
     <script>
-        // Toggle icon and text when collapsing/expanding
+        // Toggle text when collapsing/expanding (icon rotation handled by CSS)
         document.getElementById('userDetails').addEventListener('show.bs.collapse', function () {
-            document.getElementById('detailsIcon').classList.remove('fa-chevron-down');
-            document.getElementById('detailsIcon').classList.add('fa-chevron-up');
             document.getElementById('detailsText').textContent = "{% trans 'Hide Details' %}";
         });
         
         document.getElementById('userDetails').addEventListener('hide.bs.collapse', function () {
-            document.getElementById('detailsIcon').classList.remove('fa-chevron-up');
-            document.getElementById('detailsIcon').classList.add('fa-chevron-down');
             document.getElementById('detailsText').textContent = "{% trans 'Show Details' %}";
         });
     </script>
@@ -542,10 +538,11 @@
                                     <td>
                                         <i class="fas fa-clock me-1"></i>{{ absence.created_at|date:"d.m.Y H:i" }}
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         {% if not absence.approved %}
-                                            <button onclick="deleteVacation({{ absence.id }})" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-trash"></i> {% trans "Delete" %}
+                                            <button type="button" class="action-icon-btn action-btn-delete"
+                                                    onclick="deleteVacation({{ absence.id }})" title="{% trans 'Delete' %}">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -569,6 +566,12 @@
                                 <div class="mobile-scan-title">
                                     <i class="fas fa-umbrella-beach me-2"></i>{% trans "Absence" %}
                                 </div>
+                                {% if not absence.approved %}
+                                <button type="button" class="action-icon-btn action-btn-delete"
+                                        onclick="deleteVacation({{ absence.id }})" title="{% trans 'Delete' %}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                {% endif %}
                             </div>
                             <div class="mobile-scan-info">
                                 <div class="mobile-scan-info-item">
@@ -609,13 +612,6 @@
                                         {% endif %}
                                     </span>
                                 </div>
-                                {% if not absence.approved %}
-                                <div class="mobile-scan-info-item mt-2">
-                                    <button onclick="deleteVacation({{ absence.id }})" class="btn btn-sm btn-outline-danger w-100">
-                                        <i class="fas fa-trash me-1"></i>{% trans "Delete Absence" %}
-                                    </button>
-                                </div>
-                                {% endif %}
                             </div>
                         </div>
                         {% empty %}

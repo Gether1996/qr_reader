@@ -1,413 +1,414 @@
-# 📱 QR Reader - Systém pre evidenciu dochádzky
+﻿# ðŸ“± Trakero - SystÃ©m pre evidenciu dochÃ¡dzky
 
-## 🌟 Prehľad
+## ðŸŒŸ PrehÄ¾ad
 
-Pokročilý webový systém pre evidenciu dochádzky a riadenie pracovnej sily využívajúci technológiu QR kódov. Ideálny pre firmy akejkoľvek veľkosti, ktoré chcú modernizovať sledovanie pracovného času zamestnancov, správu dovoleniek a analýzu pracoviska.
+PokroÄilÃ½ webovÃ½ systÃ©m pre evidenciu dochÃ¡dzky a riadenie pracovnej sily vyuÅ¾Ã­vajÃºci technolÃ³giu QR kÃ³dov. IdeÃ¡lny pre firmy akejkoÄ¾vek veÄ¾kosti, ktorÃ© chcÃº modernizovaÅ¥ sledovanie pracovnÃ©ho Äasu zamestnancov, sprÃ¡vu dovoleniek a analÃ½zu pracoviska.
 
-## ✨ Hlavné funkcie
+## âœ¨ HlavnÃ© funkcie
 
-### 👔 Správa firiem
-- **Podpora viacerých firiem** - Každá firma má svoje vlastné izolované prostredie
-- **Firemný dashboard** - Centralizovaný ovládací panel pre všetky operácie
-- **Nastavenia firmy** - Prispôsobiteľné pracovné politiky a nastavenia notifikácií
-- **Rolovo založený prístup** - Majitelia firiem a manažéri s detailnými oprávneniami
+### ðŸ‘” SprÃ¡va firiem
+- **Podpora viacerÃ½ch firiem** - KaÅ¾dÃ¡ firma mÃ¡ svoje vlastnÃ© izolovanÃ© prostredie
+- **FiremnÃ½ dashboard** - CentralizovanÃ½ ovlÃ¡dacÃ­ panel pre vÅ¡etky operÃ¡cie
+- **Nastavenia firmy** - PrispÃ´sobiteÄ¾nÃ© pracovnÃ© politiky a nastavenia notifikÃ¡ciÃ­
+- **Rolovo zaloÅ¾enÃ½ prÃ­stup** - Majitelia firiem a manaÅ¾Ã©ri s detailnÃ½mi oprÃ¡vneniami
 
-### 👥 Správa zamestnancov
-- **Registrácia zamestnancov** - Vytváranie a správa účtov zamestnancov
-- **Roly manažérov** - Prideľovanie manažérov so špecifickými oprávneniami:
-  - `can_edit_employees` - Správa údajov zamestnancov
-  - `can_edit_qr_codes` - Správa QR kódov
-  - `can_edit_absences` - Schvaľovanie/správa požiadaviek na voľno
-- **Profily zamestnancov** - Detailné informácie vrátane:
-  - Pracovných hodín za mesiac
-  - Nastavení obednej prestávky
-  - Nároku na dovolenku (prispôsobiteľné pre každého zamestnanca)
-  - Nastavení notifikácií
-- **Hromadné operácie** - Efektívna správa viacerých zamestnancov
+### ðŸ‘¥ SprÃ¡va zamestnancov
+- **RegistrÃ¡cia zamestnancov** - VytvÃ¡ranie a sprÃ¡va ÃºÄtov zamestnancov
+- **Roly manaÅ¾Ã©rov** - PrideÄ¾ovanie manaÅ¾Ã©rov so Å¡pecifickÃ½mi oprÃ¡vneniami:
+  - `can_edit_employees` - SprÃ¡va Ãºdajov zamestnancov
+  - `can_edit_qr_codes` - SprÃ¡va QR kÃ³dov
+  - `can_edit_absences` - SchvaÄ¾ovanie/sprÃ¡va poÅ¾iadaviek na voÄ¾no
+- **Profily zamestnancov** - DetailnÃ© informÃ¡cie vrÃ¡tane:
+  - PracovnÃ½ch hodÃ­n za mesiac
+  - NastavenÃ­ obednej prestÃ¡vky
+  - NÃ¡roku na dovolenku (prispÃ´sobiteÄ¾nÃ© pre kaÅ¾dÃ©ho zamestnanca)
+  - NastavenÃ­ notifikÃ¡ciÃ­
+- **HromadnÃ© operÃ¡cie** - EfektÃ­vna sprÃ¡va viacerÃ½ch zamestnancov
 
-### 🔲 Systém QR kódov
-- **Dynamické generovanie QR** - Automatické vytvorenie unikátnych QR kódov
-- **Sledovanie lokácie** - Každý QR kód priradený ku konkrétnej pracovnej lokalite
-- **Správa QR kódov** - Vytváranie, úprava a deaktivácia QR kódov
-- **Tlačiteľné QR kódy** - Generovanie A4 PDF na tlač a umiestnenie
-- **Podpora viacerých lokalít** - Neobmedzený počet QR kódov na firmu
+### ðŸ”² SystÃ©m QR kÃ³dov
+- **DynamickÃ© generovanie QR** - AutomatickÃ© vytvorenie unikÃ¡tnych QR kÃ³dov
+- **Sledovanie lokÃ¡cie** - KaÅ¾dÃ½ QR kÃ³d priradenÃ½ ku konkrÃ©tnej pracovnej lokalite
+- **SprÃ¡va QR kÃ³dov** - VytvÃ¡ranie, Ãºprava a deaktivÃ¡cia QR kÃ³dov
+- **TlaÄiteÄ¾nÃ© QR kÃ³dy** - Generovanie A4 PDF na tlaÄ a umiestnenie
+- **Podpora viacerÃ½ch lokalÃ­t** - NeobmedzenÃ½ poÄet QR kÃ³dov na firmu
 
-### ⏰ Sledovanie času
+### â° Sledovanie Äasu
 - **4 typy skenov**:
-  - Príchod
+  - PrÃ­chod
   - Odchod
-  - Začiatok obednej prestávky
-  - Koniec obednej prestávky
-- **GPS súradnice** - Zaznamenáva presnú polohu každého skenu
-- **Reverzné geokódovanie** - Konverzia GPS na čitateľné adresy
-- **Inteligentná logika tlačidiel** - Zobrazuje len relevantné možnosti podľa posledného skenu
-- **Manuálne a automatické prestávky** - Flexibilné sledovanie prestávok
-- **Sledovanie nočných hodín** - Automatický výpočet práce medzi 22:00-06:00
-- **Monitorovanie v reálnom čase** - Vidíte, kto je práve v práci
+  - ZaÄiatok obednej prestÃ¡vky
+  - Koniec obednej prestÃ¡vky
+- **GPS sÃºradnice** - ZaznamenÃ¡va presnÃº polohu kaÅ¾dÃ©ho skenu
+- **ReverznÃ© geokÃ³dovanie** - Konverzia GPS na ÄitateÄ¾nÃ© adresy
+- **InteligentnÃ¡ logika tlaÄidiel** - Zobrazuje len relevantnÃ© moÅ¾nosti podÄ¾a poslednÃ©ho skenu
+- **ManuÃ¡lne a automatickÃ© prestÃ¡vky** - FlexibilnÃ© sledovanie prestÃ¡vok
+- **Sledovanie noÄnÃ½ch hodÃ­n** - AutomatickÃ½ vÃ½poÄet prÃ¡ce medzi 22:00-06:00
+- **Monitorovanie v reÃ¡lnom Äase** - VidÃ­te, kto je prÃ¡ve v prÃ¡ci
 
-### 📅 Správa absencií
-- **4 typy absencií**:
+### ðŸ“… SprÃ¡va absenciÃ­
+- **4 typy absenciÃ­**:
   - Dovolenka
-  - PN (Práceneschopnosť)
-  - Lekár
+  - PN (PrÃ¡ceneschopnosÅ¥)
+  - LekÃ¡r
   - Home Office
-- **Schvaľovací proces**:
-  - Zamestnanci požiadajú o voľno
-  - Emailové notifikácie pre manažérov/firmu
-  - Schválenie/zamietnutie s emailovým potvrdením
-  - Priame schvaľovacie linky v emailoch
-- **Detekcia konfliktov** - Upozorňuje na skeny počas dovolenkových dní
-- **Integrácia kalendára** - Vizuálne zobrazenie absencií
+- **SchvaÄ¾ovacÃ­ proces**:
+  - Zamestnanci poÅ¾iadajÃº o voÄ¾no
+  - EmailovÃ© notifikÃ¡cie pre manaÅ¾Ã©rov/firmu
+  - SchvÃ¡lenie/zamietnutie s emailovÃ½m potvrdenÃ­m
+  - Priame schvaÄ¾ovacie linky v emailoch
+- **Detekcia konfliktov** - UpozorÅˆuje na skeny poÄas dovolenkovÃ½ch dnÃ­
+- **IntegrÃ¡cia kalendÃ¡ra** - VizuÃ¡lne zobrazenie absenciÃ­
 
-### 📊 Analytika a reporty
+### ðŸ“Š Analytika a reporty
 
-#### Firemná analytika
-- **Štatistiky aktuálneho obdobia**:
-  - Dnešné príchody/odchody
-  - Týždenné počty skenov
-  - Mesačné porovnania
-  - Zoznam aktuálne prítomných
-- **Analýza časového obdobia** - Výber vlastného obdobia
-- **Top QR kódy** - Najpoužívanejšie lokality
-- **Rozdelenie pracovných hodín**:
-  - Hodiny s/bez prestávok
-  - Očakávané vs. skutočné hodiny
-  - Výpočty nadčasov
-  - Nočné hodiny
-  - Hodinová dovolenka
-- **Interaktívne grafy**:
-  - Graf denných príchodov/odchodov
-  - Hodinové rozdelenie (24h)
-  - Koláčový graf využitia QR kódov
+#### FiremnÃ¡ analytika
+- **Å tatistiky aktuÃ¡lneho obdobia**:
+  - DneÅ¡nÃ© prÃ­chody/odchody
+  - TÃ½Å¾dennÃ© poÄty skenov
+  - MesaÄnÃ© porovnania
+  - Zoznam aktuÃ¡lne prÃ­tomnÃ½ch
+- **AnalÃ½za ÄasovÃ©ho obdobia** - VÃ½ber vlastnÃ©ho obdobia
+- **Top QR kÃ³dy** - NajpouÅ¾Ã­vanejÅ¡ie lokality
+- **Rozdelenie pracovnÃ½ch hodÃ­n**:
+  - Hodiny s/bez prestÃ¡vok
+  - OÄakÃ¡vanÃ© vs. skutoÄnÃ© hodiny
+  - VÃ½poÄty nadÄasov
+  - NoÄnÃ© hodiny
+  - HodinovÃ¡ dovolenka
+- **InteraktÃ­vne grafy**:
+  - Graf dennÃ½ch prÃ­chodov/odchodov
+  - HodinovÃ© rozdelenie (24h)
+  - KolÃ¡ÄovÃ½ graf vyuÅ¾itia QR kÃ³dov
 
-#### PDF Reporty (na šírku A4)
-- **Tabuľka dennej dochádzky** s:
-  - Dátum, deň v týždni
-  - Časy príchodu/odchodu
-  - Pracovné hodiny (HH:MM formát)
-  - Čas prestávky (HH:MM formát)
-  - Skenovaná QR lokalita
-  - Inteligentné poznámky (sviatky, problémy, typy dovolenky)
-- **Súhrnné štatistiky**:
-  - Celkový počet pracovných dní
-  - Očakávané hodiny (podľa zmluvy)
-  - Celkové hodiny s/bez prestávok
-  - Celkový čas prestávky
-  - Nadčasové hodiny
-  - Nočné hodiny (22:00-06:00)
-  - Hodinová dovolenka
-  - Priemerné hodiny za deň
+#### PDF Reporty (na Å¡Ã­rku A4)
+- **TabuÄ¾ka dennej dochÃ¡dzky** s:
+  - DÃ¡tum, deÅˆ v tÃ½Å¾dni
+  - ÄŒasy prÃ­chodu/odchodu
+  - PracovnÃ© hodiny (HH:MM formÃ¡t)
+  - ÄŒas prestÃ¡vky (HH:MM formÃ¡t)
+  - SkenovanÃ¡ QR lokalita
+  - InteligentnÃ© poznÃ¡mky (sviatky, problÃ©my, typy dovolenky)
+- **SÃºhrnnÃ© Å¡tatistiky**:
+  - CelkovÃ½ poÄet pracovnÃ½ch dnÃ­
+  - OÄakÃ¡vanÃ© hodiny (podÄ¾a zmluvy)
+  - CelkovÃ© hodiny s/bez prestÃ¡vok
+  - CelkovÃ½ Äas prestÃ¡vky
+  - NadÄasovÃ© hodiny
+  - NoÄnÃ© hodiny (22:00-06:00)
+  - HodinovÃ¡ dovolenka
+  - PriemernÃ© hodiny za deÅˆ
   - Dovolenka/Home office dni
-  - Dni s problémami
-- **Detekcia sviatkov** - Automatické rozpoznanie štátnych sviatkov (SK, DE, ES, EN)
-- **Unicode podpora** - Perfektné vykreslenie slovenských/nemeckých/španielskych znakov
+  - Dni s problÃ©mami
+- **Detekcia sviatkov** - AutomatickÃ© rozpoznanie Å¡tÃ¡tnych sviatkov (SK, DE, ES, EN)
+- **Unicode podpora** - PerfektnÃ© vykreslenie slovenskÃ½ch/nemeckÃ½ch/Å¡panielskych znakov
 
 #### Excel Reporty (.xlsx)
-- Identické dáta ako PDF reporty
-- Formátované tabuľky s farbami
-- Jednoduché importovanie do iných systémov
-- Zoraditeľné a filtrovateľné dáta
+- IdentickÃ© dÃ¡ta ako PDF reporty
+- FormÃ¡tovanÃ© tabuÄ¾ky s farbami
+- JednoduchÃ© importovanie do inÃ½ch systÃ©mov
+- ZoraditeÄ¾nÃ© a filtrovateÄ¾nÃ© dÃ¡ta
 
-### 📧 Emailové notifikácie
+### ðŸ“§ EmailovÃ© notifikÃ¡cie
 
-#### Inteligentný notifikačný systém
-- **Notifikácie skenov** - Konfigurovateľné pre firmu a manažérov:
-  - Notifikácie príchodov
-  - Notifikácie odchodov
-- **Notifikácie dovoleniek**:
-  - Notifikácie nových požiadaviek (pre manažérov s can_edit_absences)
-  - Potvrdenia schválení (pre zamestnanca)
-  - Notifikácie zrušení (ak zrušené pred dátumom začiatku)
-  - Rôzny obsah emailu pre schválené/čakajúce/zrušené stavy
-- **Štýlované HTML emaily** - Profesionálne, brandované emailové šablóny
-- **Akčné linky** - Priame linky na schválenie/zobrazenie detailov
-- **Viacjazyčná podpora** - Emaily v jazyku užívateľa
+#### InteligentnÃ½ notifikaÄnÃ½ systÃ©m
+- **NotifikÃ¡cie skenov** - KonfigurovateÄ¾nÃ© pre firmu a manaÅ¾Ã©rov:
+  - NotifikÃ¡cie prÃ­chodov
+  - NotifikÃ¡cie odchodov
+- **NotifikÃ¡cie dovoleniek**:
+  - NotifikÃ¡cie novÃ½ch poÅ¾iadaviek (pre manaÅ¾Ã©rov s can_edit_absences)
+  - Potvrdenia schvÃ¡lenÃ­ (pre zamestnanca)
+  - NotifikÃ¡cie zruÅ¡enÃ­ (ak zruÅ¡enÃ© pred dÃ¡tumom zaÄiatku)
+  - RÃ´zny obsah emailu pre schvÃ¡lenÃ©/ÄakajÃºce/zruÅ¡enÃ© stavy
+- **Å tÃ½lovanÃ© HTML emaily** - ProfesionÃ¡lne, brandovanÃ© emailovÃ© Å¡ablÃ³ny
+- **AkÄnÃ© linky** - Priame linky na schvÃ¡lenie/zobrazenie detailov
+- **ViacjazyÄnÃ¡ podpora** - Emaily v jazyku uÅ¾Ã­vateÄ¾a
 
-### 🔍 Pokročilé filtrovanie a vyhľadávanie
-- **Date Range Picker** - Vizuálny výber v kalendári
-- **Multi-parametrické filtre**:
-  - Podľa mena zamestnanca
-  - Podľa QR lokality
-  - Podľa typu skenu
-  - Podľa typu absencie
-  - Podľa pracovného stavu (v práci/nie v práci)
-- **Vyhľadávanie v reálnom čase** - Okamžité filtrovanie s datalistami
-- **Zoraditeľné stĺpce** - Kliknite na hlavičku pre zoradenie (ASC/DESC)
-- **Stránkovanie** - Konfigurovateľný počet položiek na stránku (10/25/50/100)
-- **Perzistencia filtrov** - Zachová filtre počas navigácie
+### ðŸ” PokroÄilÃ© filtrovanie a vyhÄ¾adÃ¡vanie
+- **Date Range Picker** - VizuÃ¡lny vÃ½ber v kalendÃ¡ri
+- **Multi-parametrickÃ© filtre**:
+  - PodÄ¾a mena zamestnanca
+  - PodÄ¾a QR lokality
+  - PodÄ¾a typu skenu
+  - PodÄ¾a typu absencie
+  - PodÄ¾a pracovnÃ©ho stavu (v prÃ¡ci/nie v prÃ¡ci)
+- **VyhÄ¾adÃ¡vanie v reÃ¡lnom Äase** - OkamÅ¾itÃ© filtrovanie s datalistami
+- **ZoraditeÄ¾nÃ© stÄºpce** - Kliknite na hlaviÄku pre zoradenie (ASC/DESC)
+- **StrÃ¡nkovanie** - KonfigurovateÄ¾nÃ½ poÄet poloÅ¾iek na strÃ¡nku (10/25/50/100)
+- **Perzistencia filtrov** - ZachovÃ¡ filtre poÄas navigÃ¡cie
 
-### 🔐 Bezpečnosť a audit
+### ðŸ” BezpeÄnosÅ¥ a audit
 
-#### Systém auditných logov
-- **Kompletné sledovanie aktivít**:
-  - Všetky CRUD operácie (Create, Read, Update, Delete)
-  - Udalosti prihlásenia/odhlásenia
-  - Akcie schvaľovania
-- **Detailné zaznamenávanie**:
-  - Aktér (kto vykonal akciu)
+#### SystÃ©m auditnÃ½ch logov
+- **KompletnÃ© sledovanie aktivÃ­t**:
+  - VÅ¡etky CRUD operÃ¡cie (Create, Read, Update, Delete)
+  - Udalosti prihlÃ¡senia/odhlÃ¡senia
+  - Akcie schvaÄ¾ovania
+- **DetailnÃ© zaznamenÃ¡vanie**:
+  - AktÃ©r (kto vykonal akciu)
   - Typ akcie
-  - Časová pečiatka
-  - Správa/popis
+  - ÄŒasovÃ¡ peÄiatka
+  - SprÃ¡va/popis
   - IP adresa
-- **Filtrovateľné logy** - Vyhľadávanie podľa aktéra, akcie, časového obdobia
-- **Pohľad firmy/manažéra** - Zobrazenie všetkých firemných aktivít
-- **Pohľad užívateľa** - Zamestnanci vidia svoje vlastné logy
+- **FiltrovateÄ¾nÃ© logy** - VyhÄ¾adÃ¡vanie podÄ¾a aktÃ©ra, akcie, ÄasovÃ©ho obdobia
+- **PohÄ¾ad firmy/manaÅ¾Ã©ra** - Zobrazenie vÅ¡etkÃ½ch firemnÃ½ch aktivÃ­t
+- **PohÄ¾ad uÅ¾Ã­vateÄ¾a** - Zamestnanci vidia svoje vlastnÃ© logy
 
-#### Kontrola prístupu
-- **Session-based autentifikácia** - Samostatné sessions pre firmy a užívateľov
-- **Kontroly oprávnení** - Každá akcia validuje oprávnenia
-- **Obmedzenia manažérov** - Detailná kontrola nad tým, co môžu manažéri robiť
-- **Automatické presmerovania** - Neautorizovaní užívatelia presmerovaní vhodne
+#### Kontrola prÃ­stupu
+- **Session-based autentifikÃ¡cia** - SamostatnÃ© sessions pre firmy a uÅ¾Ã­vateÄ¾ov
+- **Kontroly oprÃ¡vnenÃ­** - KaÅ¾dÃ¡ akcia validuje oprÃ¡vnenia
+- **Obmedzenia manaÅ¾Ã©rov** - DetailnÃ¡ kontrola nad tÃ½m, co mÃ´Å¾u manaÅ¾Ã©ri robiÅ¥
+- **AutomatickÃ© presmerovania** - NeautorizovanÃ­ uÅ¾Ã­vatelia presmerovanÃ­ vhodne
 
-### 🌍 Internacionalizácia (i18n)
+### ðŸŒ InternacionalizÃ¡cia (i18n)
 - **4 jazyky**:
-  - Slovenčina (SK) - Primárny
-  - Angličtina (EN)
-  - Nemčina (DE)
-  - Španielčina (ES)
-- **Prepínač jazykov** - Zmena jazyka za behu
-- **Preložený obsah**:
+  - SlovenÄina (SK) - PrimÃ¡rny
+  - AngliÄtina (EN)
+  - NemÄina (DE)
+  - Å panielÄina (ES)
+- **PrepÃ­naÄ jazykov** - Zmena jazyka za behu
+- **PreloÅ¾enÃ½ obsah**:
   - UI elementy
-  - Emailové šablóny
+  - EmailovÃ© Å¡ablÃ³ny
   - PDF reporty
-  - Chybové hlásenia
-  - Formáty dátumov
+  - ChybovÃ© hlÃ¡senia
+  - FormÃ¡ty dÃ¡tumov
 
-### 📱 Responzívny dizajn
-- **Mobile-first** - Optimalizované pre smartfóny
-- **Desktopové zobrazenia** - Plnohodnotné tabuľky a dashboardy
-- **Podpora tabletov** - Adaptívne rozloženia
-- **Touch-friendly** - Veľké tlačidlá a touch targety
-- **QR skener** - Natívny prístup ku kamere na mobile
+### ðŸ“± ResponzÃ­vny dizajn
+- **Mobile-first** - OptimalizovanÃ© pre smartfÃ³ny
+- **DesktopovÃ© zobrazenia** - PlnohodnotnÃ© tabuÄ¾ky a dashboardy
+- **Podpora tabletov** - AdaptÃ­vne rozloÅ¾enia
+- **Touch-friendly** - VeÄ¾kÃ© tlaÄidlÃ¡ a touch targety
+- **QR skener** - NatÃ­vny prÃ­stup ku kamere na mobile
 
-### 🎨 Používateľské rozhranie
-- **Moderný dizajn** - Čisté, profesionálne Bootstrap 5 rozhranie
-- **Farebne rozlíšené** - Vizuálne indikátory pre rôzne stavy:
-  - Modrá - Info/Primárne akcie
-  - Zelená - Úspech/Schválené
-  - Oranžová - Varovania/PN
-  - Červená - Chyby/Urgentné
-  - Fialová - Návšteva lekára
-- **Ikony** - Font Awesome ikony všade
-- **Tmavé/Svetlé elementy** - Kontrast pre čitateľnosť
-- **SweetAlert2** - Krásne potvrdzovací dialógy
-- **Loading stavy** - Vizuálna spätná väzba pre všetky akcie
+### ðŸŽ¨ PouÅ¾Ã­vateÄ¾skÃ© rozhranie
+- **ModernÃ½ dizajn** - ÄŒistÃ©, profesionÃ¡lne Bootstrap 5 rozhranie
+- **Farebne rozlÃ­Å¡enÃ©** - VizuÃ¡lne indikÃ¡tory pre rÃ´zne stavy:
+  - ModrÃ¡ - Info/PrimÃ¡rne akcie
+  - ZelenÃ¡ - Ãšspech/SchvÃ¡lenÃ©
+  - OranÅ¾ovÃ¡ - Varovania/PN
+  - ÄŒervenÃ¡ - Chyby/UrgentnÃ©
+  - FialovÃ¡ - NÃ¡vÅ¡teva lekÃ¡ra
+- **Ikony** - Font Awesome ikony vÅ¡ade
+- **TmavÃ©/SvetlÃ© elementy** - Kontrast pre ÄitateÄ¾nosÅ¥
+- **SweetAlert2** - KrÃ¡sne potvrdzovacÃ­ dialÃ³gy
+- **Loading stavy** - VizuÃ¡lna spÃ¤tnÃ¡ vÃ¤zba pre vÅ¡etky akcie
 
-### 🔄 Dodatočné funkcie
-- **Reset hesla** - Emailový reset hesla pre firmy
-- **Auto obedné prestávky** - Voliteľné automatické odpočítanie prestávky
-- **Počítadlá dní dovolenky** - Sledovanie zostávajúcich dní dovolenky
-- **Kalendár sviatkov** - Rozpoznávanie sviatkov podľa krajiny
-- **Home Office podpora** - Špeciálny typ absencie pre prácu na diaľku
-- **Export dát** - Sťahovanie reportov vo formáte PDF/Excel
-- **Správa bielych znakov** - Čisté spracovanie a validácia dát
+### ðŸ”„ DodatoÄnÃ© funkcie
+- **Reset hesla** - EmailovÃ½ reset hesla pre firmy
+- **Auto obednÃ© prestÃ¡vky** - VoliteÄ¾nÃ© automatickÃ© odpoÄÃ­tanie prestÃ¡vky
+- **PoÄÃ­tadlÃ¡ dnÃ­ dovolenky** - Sledovanie zostÃ¡vajÃºcich dnÃ­ dovolenky
+- **KalendÃ¡r sviatkov** - RozpoznÃ¡vanie sviatkov podÄ¾a krajiny
+- **Home Office podpora** - Å peciÃ¡lny typ absencie pre prÃ¡cu na diaÄ¾ku
+- **Export dÃ¡t** - SÅ¥ahovanie reportov vo formÃ¡te PDF/Excel
+- **SprÃ¡va bielych znakov** - ÄŒistÃ© spracovanie a validÃ¡cia dÃ¡t
 
-## 🛠️ Technický stack
+## ðŸ› ï¸ TechnickÃ½ stack
 
 ### Backend
-- **Django 5.2.9** - Moderný Python web framework
-- **Python 3.x** - Najnovšia stabilná verzia
-- **MySQL Connector** - Pripojenie k databáze
-- **Gunicorn** - Produkčný WSGI server
+- **Django 5.2.9** - ModernÃ½ Python web framework
+- **Python 3.x** - NajnovÅ¡ia stabilnÃ¡ verzia
+- **MySQL Connector** - Pripojenie k databÃ¡ze
+- **Gunicorn** - ProdukÄnÃ½ WSGI server
 
 ### Frontend
-- **Bootstrap 5** - Responzívny CSS framework
-- **JavaScript ES6+** - Moderný JavaScript
-- **Font Awesome** - Knižnica ikon
-- **SweetAlert2** - Krásne alerty
-- **Daterangepicker** - Pokročilý výber dátumov
+- **Bootstrap 5** - ResponzÃ­vny CSS framework
+- **JavaScript ES6+** - ModernÃ½ JavaScript
+- **Font Awesome** - KniÅ¾nica ikon
+- **SweetAlert2** - KrÃ¡sne alerty
+- **Daterangepicker** - PokroÄilÃ½ vÃ½ber dÃ¡tumov
 
 ### PDF generovanie
-- **ReportLab 4.4.7** - Profesionálne vytváranie PDF
+- **ReportLab 4.4.7** - ProfesionÃ¡lne vytvÃ¡ranie PDF
 - **DejaVu Fonty** - Podpora Unicode znakov
-- **Landscape A4** - Optimalizované rozloženie
+- **Landscape A4** - OptimalizovanÃ© rozloÅ¾enie
 
 ### Excel generovanie
-- **OpenPyXL 3.1.5** - Vytváranie Excel súborov
-- **Štýlované bunky** - Farby, fonty, okraje
-- **Podpora vzorcov** - Pripravené na kalkulácie
+- **OpenPyXL 3.1.5** - VytvÃ¡ranie Excel sÃºborov
+- **Å tÃ½lovanÃ© bunky** - Farby, fonty, okraje
+- **Podpora vzorcov** - PripravenÃ© na kalkulÃ¡cie
 
-### Dodatočné knižnice
-- **QRCode 8.2** - Generovanie QR kódov
-- **Pillow 12.1** - Spracovanie obrázkov
-- **Requests 2.32** - HTTP knižnica pre geokódovanie
-- **Holidays 0.60** - Podpora kalendára sviatkov
-- **python-dotenv** - Správa premenných prostredia
+### DodatoÄnÃ© kniÅ¾nice
+- **QRCode 8.2** - Generovanie QR kÃ³dov
+- **Pillow 12.1** - Spracovanie obrÃ¡zkov
+- **Requests 2.32** - HTTP kniÅ¾nica pre geokÃ³dovanie
+- **Holidays 0.60** - Podpora kalendÃ¡ra sviatkov
+- **python-dotenv** - SprÃ¡va premennÃ½ch prostredia
 
 ### Nasadenie
-- **Docker podpora** - Kontajnerizované nasadenie
-- **WhiteNoise** - Servírovanie statických súborov
-- **Gunicorn** - Produkčný server
-- **MySQL/SQLite** - Možnosti databázy
+- **Docker podpora** - KontajnerizovanÃ© nasadenie
+- **WhiteNoise** - ServÃ­rovanie statickÃ½ch sÃºborov
+- **Gunicorn** - ProdukÄnÃ½ server
+- **MySQL/SQLite** - MoÅ¾nosti databÃ¡zy
 
-## 📁 Štruktúra projektu
+## ðŸ“ Å truktÃºra projektu
 
 ```
 qr_reader/
-├── viewer/                      # Hlavná aplikácia
-│   ├── models.py               # Databázové modely
-│   ├── views.py                # View funkcie
-│   ├── admin.py                # Django admin
-│   ├── templates/              # HTML šablóny
-│   └── migrations/             # Databázové migrácie
-├── qr_reader_django/           # Hlavné moduly
-│   ├── crud.py                 # CRUD operácie
-│   ├── crud_qr_code.py        # QR kód operácie
-│   ├── crud_user.py           # User operácie
-│   ├── crud_vacation.py       # Operácie absencie
-│   ├── login_register_logout.py # Autentifikácia
-│   ├── generate_pdf_excel.py  # Generovanie reportov
-│   ├── audit.py               # Auditné zaznamenávanie
-│   ├── settings.py            # Django nastavenia
-│   └── urls.py                # URL routing
-├── static/                     # Statické súbory
-│   ├── css/                   # Štýly
-│   ├── scripts/               # JavaScript
-│   ├── fontawesome/           # Ikony
-│   ├── fonts/                 # DejaVu fonty
-│   └── images/                # Obrázky
-├── media/                      # Nahrávky užívateľov
-│   ├── qr_codes/              # Generované QR kódy
-│   └── PDF/                   # Generované reporty
-├── locale/                     # Preklady
-│   ├── sk/                    # Slovenčina
-│   ├── de/                    # Nemčina
-│   └── es/                    # Španielčina
-├── docker-compose.yml         # Docker konfigurácia
-├── Dockerfile                 # Docker image
-├── requirements.txt           # Python závislosti
-└── manage.py                  # Django management
+â”œâ”€â”€ viewer/                      # HlavnÃ¡ aplikÃ¡cia
+â”‚   â”œâ”€â”€ models.py               # DatabÃ¡zovÃ© modely
+â”‚   â”œâ”€â”€ views.py                # View funkcie
+â”‚   â”œâ”€â”€ admin.py                # Django admin
+â”‚   â”œâ”€â”€ templates/              # HTML Å¡ablÃ³ny
+â”‚   â””â”€â”€ migrations/             # DatabÃ¡zovÃ© migrÃ¡cie
+â”œâ”€â”€ qr_reader_django/           # HlavnÃ© moduly
+â”‚   â”œâ”€â”€ crud.py                 # CRUD operÃ¡cie
+â”‚   â”œâ”€â”€ crud_qr_code.py        # QR kÃ³d operÃ¡cie
+â”‚   â”œâ”€â”€ crud_user.py           # User operÃ¡cie
+â”‚   â”œâ”€â”€ crud_vacation.py       # OperÃ¡cie absencie
+â”‚   â”œâ”€â”€ login_register_logout.py # AutentifikÃ¡cia
+â”‚   â”œâ”€â”€ generate_pdf_excel.py  # Generovanie reportov
+â”‚   â”œâ”€â”€ audit.py               # AuditnÃ© zaznamenÃ¡vanie
+â”‚   â”œâ”€â”€ settings.py            # Django nastavenia
+â”‚   â””â”€â”€ urls.py                # URL routing
+â”œâ”€â”€ static/                     # StatickÃ© sÃºbory
+â”‚   â”œâ”€â”€ css/                   # Å tÃ½ly
+â”‚   â”œâ”€â”€ scripts/               # JavaScript
+â”‚   â”œâ”€â”€ fontawesome/           # Ikony
+â”‚   â”œâ”€â”€ fonts/                 # DejaVu fonty
+â”‚   â””â”€â”€ images/                # ObrÃ¡zky
+â”œâ”€â”€ media/                      # NahrÃ¡vky uÅ¾Ã­vateÄ¾ov
+â”‚   â”œâ”€â”€ qr_codes/              # GenerovanÃ© QR kÃ³dy
+â”‚   â””â”€â”€ PDF/                   # GenerovanÃ© reporty
+â”œâ”€â”€ locale/                     # Preklady
+â”‚   â”œâ”€â”€ sk/                    # SlovenÄina
+â”‚   â”œâ”€â”€ de/                    # NemÄina
+â”‚   â””â”€â”€ es/                    # Å panielÄina
+â”œâ”€â”€ docker-compose.yml         # Docker konfigurÃ¡cia
+â”œâ”€â”€ Dockerfile                 # Docker image
+â”œâ”€â”€ requirements.txt           # Python zÃ¡vislosti
+â””â”€â”€ manage.py                  # Django management
 
 ```
 
-## 🚀 Kľúčové prípady použitia
+## ðŸš€ KÄ¾ÃºÄovÃ© prÃ­pady pouÅ¾itia
 
-### Malé podniky (1-50 zamestnancov)
-- Jednoduché sledovanie času
-- Základná správa dovoleniek
+### MalÃ© podniky (1-50 zamestnancov)
+- JednoduchÃ© sledovanie Äasu
+- ZÃ¡kladnÃ¡ sprÃ¡va dovoleniek
 - Monitorovanie jednej lokality
 
-### Stredné firmy (50-200 zamestnancov)
-- Viaceré lokality/oddelenia
-- Hierarchia manažérov
-- Detailná analytika
+### StrednÃ© firmy (50-200 zamestnancov)
+- ViacerÃ© lokality/oddelenia
+- Hierarchia manaÅ¾Ã©rov
+- DetailnÃ¡ analytika
 - Compliance reportovanie
 
-### Veľké podniky (200+ zamestnancov)
-- Multi-site operácie
-- Komplexné schvaľovacie procesy
-- Pokročilá analytika
-- Pripravené na integráciu (API možno pridať)
+### VeÄ¾kÃ© podniky (200+ zamestnancov)
+- Multi-site operÃ¡cie
+- KomplexnÃ© schvaÄ¾ovacie procesy
+- PokroÄilÃ¡ analytika
+- PripravenÃ© na integrÃ¡ciu (API moÅ¾no pridaÅ¥)
 
 ### Odvetvia
-- ✅ Výroba
-- ✅ Maloobchod
-- ✅ Pohostinstvo
-- ✅ Stavebníctvo
-- ✅ Zdravotníctvo
-- ✅ Školstvo
-- ✅ Logistika
-- ✅ Profesionálne služby
+- âœ… VÃ½roba
+- âœ… Maloobchod
+- âœ… Pohostinstvo
+- âœ… StavebnÃ­ctvo
+- âœ… ZdravotnÃ­ctvo
+- âœ… Å kolstvo
+- âœ… Logistika
+- âœ… ProfesionÃ¡lne sluÅ¾by
 
-## 💡 Podnikové výhody
+## ðŸ’¡ PodnikovÃ© vÃ½hody
 
-1. **Úspora nákladov**
-   - Eliminácia manuálnych výkazov
-   - Zníženie chýb vo výplatnej páske
-   - Prevencia krádeže času
-   - Minimalizácia administratívnej réžie
+1. **Ãšspora nÃ¡kladov**
+   - EliminÃ¡cia manuÃ¡lnych vÃ½kazov
+   - ZnÃ­Å¾enie chÃ½b vo vÃ½platnej pÃ¡ske
+   - Prevencia krÃ¡deÅ¾e Äasu
+   - MinimalizÃ¡cia administratÃ­vnej rÃ©Å¾ie
 
 2. **Compliance**
-   - Presné záznamy času
-   - Auditné stopy
+   - PresnÃ© zÃ¡znamy Äasu
+   - AuditnÃ© stopy
    - Sledovanie dovoleniek
-   - Regulácie pracovného času
+   - RegulÃ¡cie pracovnÃ©ho Äasu
 
 3. **Produktivita**
-   - Viditeľnosť dochádzky v reálnom čase
-   - Rýchle schvaľovacie procesy
-   - Mobilná dostupnosť
-   - Automatizované výpočty
+   - ViditeÄ¾nosÅ¥ dochÃ¡dzky v reÃ¡lnom Äase
+   - RÃ½chle schvaÄ¾ovacie procesy
+   - MobilnÃ¡ dostupnosÅ¥
+   - AutomatizovanÃ© vÃ½poÄty
 
-4. **Prehľady**
-   - Analýza pracovných vzorov
-   - Monitorovanie nadčasov
-   - Využitie lokalít
+4. **PrehÄ¾ady**
+   - AnalÃ½za pracovnÃ½ch vzorov
+   - Monitorovanie nadÄasov
+   - VyuÅ¾itie lokalÃ­t
    - Trendy absencie
 
-5. **Spokojnosť zamestnancov**
-   - Jednoduché používanie
-   - Samoobslužné požiadavky na dovolenku
-   - Transparentné sledovanie času
-   - Mobilné pohodlie
+5. **SpokojnosÅ¥ zamestnancov**
+   - JednoduchÃ© pouÅ¾Ã­vanie
+   - SamoobsluÅ¾nÃ© poÅ¾iadavky na dovolenku
+   - TransparentnÃ© sledovanie Äasu
+   - MobilnÃ© pohodlie
 
-## 🔒 Bezpečnostné funkcie
+## ðŸ”’ BezpeÄnostnÃ© funkcie
 
-- ✅ Hashovanie hesiel (vstavané v Django)
-- ✅ Správa sessions
-- ✅ CSRF ochrana
-- ✅ Prevencia SQL injection
-- ✅ XSS ochrana
-- ✅ Bezpečný reset hesla
-- ✅ Zaznamenávanie IP adries
-- ✅ Validácia oprávnení
-- ✅ Soft delete (uchovanie dát)
+- âœ… Hashovanie hesiel (vstavanÃ© v Django)
+- âœ… SprÃ¡va sessions
+- âœ… CSRF ochrana
+- âœ… Prevencia SQL injection
+- âœ… XSS ochrana
+- âœ… BezpeÄnÃ½ reset hesla
+- âœ… ZaznamenÃ¡vanie IP adries
+- âœ… ValidÃ¡cia oprÃ¡vnenÃ­
+- âœ… Soft delete (uchovanie dÃ¡t)
 
-## 📈 Škálovateľnosť
+## ðŸ“ˆ Å kÃ¡lovateÄ¾nosÅ¥
 
-- **Databáza**: MySQL pre produkciu, ľahko škálovateľná
-- **Caching**: Pripravené na Redis/Memcached
+- **DatabÃ¡za**: MySQL pre produkciu, Ä¾ahko Å¡kÃ¡lovateÄ¾nÃ¡
+- **Caching**: PripravenÃ© na Redis/Memcached
 - **Load Balancing**: Gunicorn podporuje viacero workerov
-- **Docker**: Jednoduché horizontálne škálovanie
-- **Media Storage**: Môže byť presunutý na S3/Cloud storage
-- **API Ready**: RESTful štruktúra umožňuje jednoduché pridanie API
+- **Docker**: JednoduchÃ© horizontÃ¡lne Å¡kÃ¡lovanie
+- **Media Storage**: MÃ´Å¾e byÅ¥ presunutÃ½ na S3/Cloud storage
+- **API Ready**: RESTful Å¡truktÃºra umoÅ¾Åˆuje jednoduchÃ© pridanie API
 
-## 🎯 Možnosti budúceho rozšírenia
+## ðŸŽ¯ MoÅ¾nosti budÃºceho rozÅ¡Ã­renia
 
-- Mobilná aplikácia (React Native/Flutter)
-- REST API pre integrácie
-- Biometrická autentifikácia
-- Rozpoznávanie tváre
+- MobilnÃ¡ aplikÃ¡cia (React Native/Flutter)
+- REST API pre integrÃ¡cie
+- BiometrickÃ¡ autentifikÃ¡cia
+- RozpoznÃ¡vanie tvÃ¡re
 - Geofencing
-- Plánovanie zmien
-- Integrácia miezd
-- Pokročilý reportovací dashboard
-- Notifikácie v reálnom čase (WebSockets)
-- Push notifikácie na mobile
-- Sync kalendára (Google/Outlook)
-- Slack/Teams integrácia
+- PlÃ¡novanie zmien
+- IntegrÃ¡cia miezd
+- PokroÄilÃ½ reportovacÃ­ dashboard
+- NotifikÃ¡cie v reÃ¡lnom Äase (WebSockets)
+- Push notifikÃ¡cie na mobile
+- Sync kalendÃ¡ra (Google/Outlook)
+- Slack/Teams integrÃ¡cia
 
-## 📞 Podpora
+## ðŸ“ž Podpora
 
-- Profesionálna kódová základňa
-- Dobre zdokumentované
-- Modulárna architektúra
-- Jednoduché rozšírenie
-- Čisté oddelenie zodpovedností
+- ProfesionÃ¡lna kÃ³dovÃ¡ zÃ¡kladÅˆa
+- Dobre zdokumentovanÃ©
+- ModulÃ¡rna architektÃºra
+- JednoduchÃ© rozÅ¡Ã­renie
+- ÄŒistÃ© oddelenie zodpovednostÃ­
 
-## 🏆 Prečo si vybrať tento systém?
+## ðŸ† PreÄo si vybraÅ¥ tento systÃ©m?
 
-1. **Kompletné riešenie** - Všetko potrebné ihneď k dispozícii
-2. **Moderná technológia** - Postavené s najnovšími nástrojmi a best practices
-3. **Používateľsky prívetivé** - Intuitívne rozhraie pre všetky úrovne užívateľov
-4. **Flexibilné** - Prispôsobuje sa rôznym potrebám podnikov
-5. **Spoľahlivé** - Robustné spracovanie chýb a validácia
-6. **Udržiavateľné** - Čistý kód, jednoduché aktualizovanie
-7. **Viacjazyčné** - Pripravené pre medzinárodné podnikanie
-8. **Mobile-first** - Funguje perfektne na akomkoľvek zariadení
-9. **Bezpečné** - Enterprise-grade bezpečnosť
-10. **Overené** - Production-ready kód
+1. **KompletnÃ© rieÅ¡enie** - VÅ¡etko potrebnÃ© ihneÄ k dispozÃ­cii
+2. **ModernÃ¡ technolÃ³gia** - PostavenÃ© s najnovÅ¡Ã­mi nÃ¡strojmi a best practices
+3. **PouÅ¾Ã­vateÄ¾sky prÃ­vetivÃ©** - IntuitÃ­vne rozhraie pre vÅ¡etky Ãºrovne uÅ¾Ã­vateÄ¾ov
+4. **FlexibilnÃ©** - PrispÃ´sobuje sa rÃ´znym potrebÃ¡m podnikov
+5. **SpoÄ¾ahlivÃ©** - RobustnÃ© spracovanie chÃ½b a validÃ¡cia
+6. **UdrÅ¾iavateÄ¾nÃ©** - ÄŒistÃ½ kÃ³d, jednoduchÃ© aktualizovanie
+7. **ViacjazyÄnÃ©** - PripravenÃ© pre medzinÃ¡rodnÃ© podnikanie
+8. **Mobile-first** - Funguje perfektne na akomkoÄ¾vek zariadenÃ­
+9. **BezpeÄnÃ©** - Enterprise-grade bezpeÄnosÅ¥
+10. **OverenÃ©** - Production-ready kÃ³d
 
-## 💰 Hodnotová ponuka
+## ðŸ’° HodnotovÃ¡ ponuka
 
-Toto nie je len systém dochádzky - je to kompletná platforma pre riadenie pracovnej sily, ktorá:
-- Šetrí hodiny administratívnej práce denne
-- Poskytuje presné dáta pre podnikové rozhodnutia
-- Zabezpečuje súlad s pracovnými predpismi
-- Škáluje sa s rastom vášho podnikania
-- Vyžaduje minimálne školenie
-- Funguje kdekoľvek, kedykoľvek
+Toto nie je len systÃ©m dochÃ¡dzky - je to kompletnÃ¡ platforma pre riadenie pracovnej sily, ktorÃ¡:
+- Å etrÃ­ hodiny administratÃ­vnej prÃ¡ce denne
+- Poskytuje presnÃ© dÃ¡ta pre podnikovÃ© rozhodnutia
+- ZabezpeÄuje sÃºlad s pracovnÃ½mi predpismi
+- Å kÃ¡luje sa s rastom vÃ¡Å¡ho podnikania
+- VyÅ¾aduje minimÃ¡lne Å¡kolenie
+- Funguje kdekoÄ¾vek, kedykoÄ¾vek
 
 ---
 
-**Pripravení modernizovať správu vašej pracovnej sily?** Tento systém poskytuje všetko, čo potrebujete na sledovanie, správu a optimalizáciu času a dochádzky vášho tímu.
+**PripravenÃ­ modernizovaÅ¥ sprÃ¡vu vaÅ¡ej pracovnej sily?** Tento systÃ©m poskytuje vÅ¡etko, Äo potrebujete na sledovanie, sprÃ¡vu a optimalizÃ¡ciu Äasu a dochÃ¡dzky vÃ¡Å¡ho tÃ­mu.
+
