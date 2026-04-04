@@ -21,7 +21,12 @@
                             <i class="fas fa-user fa-2x text-white"></i>
                         </div>
                         <div>
-                            <h4 class="mb-1 fw-bold">{{ user.name }}</h4>
+                            <h4 class="mb-1 fw-bold">
+                                {{ user.name }}
+                                {% if not user.is_active %}
+                                <span class="badge bg-danger ms-2">{% trans "Deactivated" %}</span>
+                                {% endif %}
+                            </h4>
                             <p class="text-muted mb-0">
                                 <i class="fas fa-building me-2"></i>{{ user.company.name }}
                             </p>
@@ -33,12 +38,17 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="d-flex gap-2 justify-content-lg-end justify-content-start flex-wrap">
-                        {% if can_edit_employees %}
+                        {% if can_edit_employees and user.is_active %}
                         <button type="button" class="btn btn-primary flex-fill flex-lg-grow-0" onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}, '{{ user.rc|default_if_none:"" }}', '{{ user.phone|default_if_none:"" }}', '{{ user.birth_date|date:"Y-m-d"|default_if_none:"" }}')">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit Employee" %}
                         </button>
                         {% endif %}
-                        {% if can_edit_absences %}
+                        {% if can_edit_employees and not user.is_active %}
+                        <button type="button" class="btn btn-success flex-fill flex-lg-grow-0" onclick="reactivateUser({{ user.id }}, '{{ user.name }}')">
+                            <i class="fas fa-rotate-left me-1"></i>{% trans "Reactivate Employee" %}
+                        </button>
+                        {% endif %}
+                        {% if can_edit_absences and user.is_active %}
                         <button type="button" class="btn header-action-btn btn-green flex-fill flex-lg-grow-0" onclick="addVacationForUser({{ user.id }}, '{{ user.name }}')">
                             <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus me-1"></i></span>{% trans "Add Absence" %}
                         </button>

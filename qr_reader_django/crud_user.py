@@ -270,9 +270,12 @@ def delete_user(request, user_id):
             if not company:
                 return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
             
-            user = crud.get_user_by_id(user_id)
+            user = crud.get_user_by_id(user_id, include_inactive=True)
             if not user or user.company != company:
                 return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+
+            if not user.is_active:
+                return JsonResponse({'status': 'error', 'message': str(_('User is already deactivated'))}, status=400)
             
             # Extract actor info for audit logging
             if is_company:
@@ -297,10 +300,131 @@ def delete_user(request, user_id):
             if success:
                 return JsonResponse({
                     'status': 'success',
-                    'message': str(_('User deleted successfully'))
+                    'message': str(_('User deactivated successfully'))
                 })
             else:
                 return JsonResponse({'status': 'error', 'message': error}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
+
+
+def reactivate_user(request, user_id):
+    """Reactivate a previously deactivated user"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+
+    if not (is_company or is_manager):
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
+
+    if request.method == 'POST':
+        try:
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+            else:
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+                company = current_user.company
+
+            if not company:
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+
+            user = crud.get_user_by_id(user_id, include_inactive=True)
+            if not user or user.company != company:
+                return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+
+            if user.is_active:
+                return JsonResponse({'status': 'error', 'message': str(_('User is already active'))}, status=400)
+
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                manager = crud.get_user_by_id(request.session['user_id'])
+                actor_type = 'user'
+                actor_email = manager.email
+                actor_name = manager.name
+
+            success, error = crud.reactivate_user(
+                user_id,
+                company,
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
+            )
+
+            if success:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': str(_('User reactivated successfully'))
+                })
+            return JsonResponse({'status': 'error', 'message': error}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': str(_('Invalid method'))}, status=405)
+
+
+def permanent_delete_user(request, user_id):
+    """Permanently delete a previously deactivated user"""
+    is_company = request.session.get('user_type') == 'company' and 'company_id' in request.session
+    is_manager = request.session.get('user_type') == 'user' and 'user_id' in request.session
+
+    if not (is_company or is_manager):
+        return JsonResponse({'status': 'error', 'message': str(_('Unauthorized'))}, status=403)
+
+    if request.method == 'POST':
+        try:
+            if is_company:
+                company = crud.get_company_by_id(request.session['company_id'])
+            else:
+                current_user = crud.get_user_by_id(request.session['user_id'])
+                if not current_user or not current_user.is_manager or not current_user.can_edit_employees:
+                    return JsonResponse({'status': 'error', 'message': str(_('Access denied'))}, status=403)
+                company = current_user.company
+
+            if not company:
+                return JsonResponse({'status': 'error', 'message': str(_('Company not found'))}, status=404)
+
+            user = crud.get_user_by_id(user_id, include_inactive=True)
+            if not user or user.company != company:
+                return JsonResponse({'status': 'error', 'message': str(_('User not found'))}, status=404)
+
+            if user.is_active:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(_('Deactivate the user before permanent deletion'))
+                }, status=400)
+
+            if is_company:
+                actor_type = 'company'
+                actor_email = company.email
+                actor_name = company.name
+            else:
+                manager = crud.get_user_by_id(request.session['user_id'])
+                actor_type = 'user'
+                actor_email = manager.email
+                actor_name = manager.name
+
+            success, error = crud.permanently_delete_user(
+                user_id,
+                company,
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                ip_address=get_client_ip(request)
+            )
+
+            if success:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': str(_('User permanently deleted successfully'))
+                })
+            return JsonResponse({'status': 'error', 'message': error}, status=400)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 

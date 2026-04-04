@@ -118,10 +118,13 @@ def get_user_by_email(email):
         return None
 
 
-def get_user_by_id(user_id):
+def get_user_by_id(user_id, include_inactive=False):
     """Get user by ID"""
     try:
-        return User.objects.get(id=user_id, is_active=True)
+        filters = {'id': user_id}
+        if not include_inactive:
+            filters['is_active'] = True
+        return User.objects.get(**filters)
     except User.DoesNotExist:
         return None
 
@@ -257,6 +260,59 @@ def delete_user(user_id, company, actor_type=None, actor_email=None, actor_name=
         return False, str(_('User not found'))
 
 
+def reactivate_user(user_id, company, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+    """Reactivate a previously deactivated user"""
+    try:
+        user = User.objects.get(id=user_id, company=company)
+        if user.is_active:
+            return False, str(_('User is already active'))
+
+        user_name = user.name
+        user_email = user.email
+        user.is_active = True
+        user.save()
+
+        if actor_type and actor_email and actor_name:
+            log_action(
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                action='update',
+                message=f'User "{user_name}" ({user_email}) reactivated',
+                ip_address=ip_address
+            )
+
+        return True, None
+    except User.DoesNotExist:
+        return False, str(_('User not found'))
+
+
+def permanently_delete_user(user_id, company, actor_type=None, actor_email=None, actor_name=None, ip_address=None):
+    """Permanently delete a user after they have already been deactivated"""
+    try:
+        user = User.objects.get(id=user_id, company=company)
+        if user.is_active:
+            return False, str(_('Deactivate the user before permanent deletion'))
+
+        user_name = user.name
+        user_email = user.email
+        user.delete()
+
+        if actor_type and actor_email and actor_name:
+            log_action(
+                actor_type=actor_type,
+                actor_email=actor_email,
+                actor_name=actor_name,
+                action='delete',
+                message=f'User "{user_name}" ({user_email}) permanently deleted',
+                ip_address=ip_address
+            )
+
+        return True, None
+    except User.DoesNotExist:
+        return False, str(_('User not found'))
+
+
 # ============= QR CODE CRUD =============
 
 def create_qr_code(company, name, location, additional_info='', actor_type=None, actor_email=None, actor_name=None, ip_address=None):
@@ -327,9 +383,12 @@ def get_company_qr_codes(company):
     return company.qr_codes.filter(is_active=True).order_by('-created_at')
 
 
-def get_company_users(company):
-    """Get all active users for a company"""
-    return company.users.filter(is_active=True).order_by('-created_at')
+def get_company_users(company, include_inactive=False):
+    """Get users for a company"""
+    users = company.users.all()
+    if not include_inactive:
+        users = users.filter(is_active=True)
+    return users.order_by('-created_at')
 
 
 def get_company_scans(company, limit=20):

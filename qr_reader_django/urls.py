@@ -11,7 +11,7 @@ from qr_reader_django.general import check_email
 from qr_reader_django.login_register_logout import company_register, company_login, company_logout, user_login, user_logout
 from qr_reader_django.offline_auth import offline_token_view, offline_scan_view
 from qr_reader_django.crud_qr_code import create_qr_code, delete_qr_code
-from qr_reader_django.crud_user import create_user, delete_user, edit_user
+from qr_reader_django.crud_user import create_user, delete_user, edit_user, reactivate_user, permanent_delete_user
 from qr_reader_django.crud_vacation import create_vacation, edit_vacation, delete_vacation, approve_vacation
 from qr_reader_django.magazine import magazine_dashboard, magazine_editor, magazine_preview, api_magazine_update, api_magazine_delete, api_article_create, api_article_data, api_article_update, api_article_delete, api_article_upload_header_image, api_article_remove_header_image, api_content_block_create, api_article_reorder_blocks, api_content_block_update, api_content_block_delete
 
@@ -62,6 +62,8 @@ urlpatterns += i18n_patterns(
     path('user/create/', create_user, name='create_user'),
     path('company/user/<int:user_id>/edit/', edit_user, name='edit_user'),
     path('company/user/<int:user_id>/delete/', delete_user, name='delete_user'),
+    path('company/user/<int:user_id>/reactivate/', reactivate_user, name='reactivate_user'),
+    path('company/user/<int:user_id>/permanent-delete/', permanent_delete_user, name='permanent_delete_user'),
     path('company/user/<int:user_id>/details/', views.view_user_details, name='view_user_details'),
     path('company/user/<int:user_id>/attendance-pdf/', generate_attendance_pdf, name='generate_attendance_pdf'),
     path('company/user/<int:user_id>/attendance-excel/', generate_attendance_excel, name='generate_attendance_excel'),

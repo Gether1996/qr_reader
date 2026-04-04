@@ -4340,6 +4340,84 @@ msgstr "Fehler beim Entfernen des Bildes"
 msgid "OK"
 msgstr "OK"
 
+msgid "Employee Status"
+msgstr "Mitarbeiterstatus"
+
+msgid "Show deactivated employees"
+msgstr "Deaktivierte Mitarbeiter anzeigen"
+
+msgid "Deactivated"
+msgstr "Deaktiviert"
+
+msgid "Delete Permanently"
+msgstr "Endgueltig loeschen"
+
+msgid "Deactivating user..."
+msgstr "Mitarbeiter wird deaktiviert..."
+
+msgid "User has been permanently deleted"
+msgstr "Mitarbeiter wurde endgueltig geloescht"
+
+msgid "Failed to permanently delete user"
+msgstr "Mitarbeiter konnte nicht endgueltig geloescht werden"
+
+msgid "Delete User Permanently?"
+msgstr "Mitarbeiter endgueltig loeschen?"
+
+msgid "Are you sure you want to permanently delete {name}? This removes the employee record for good."
+msgstr "Moechten Sie {name} wirklich endgueltig loeschen? Dieser Mitarbeiterdatensatz wird vollstaendig entfernt."
+
+msgid "Yes, delete permanently!"
+msgstr "Ja, endgueltig loeschen!"
+
+msgid "Deleting user permanently..."
+msgstr "Mitarbeiter wird endgueltig geloescht..."
+
+msgid "User is already deactivated"
+msgstr "Mitarbeiter ist bereits deaktiviert"
+
+msgid "User deactivated successfully"
+msgstr "Mitarbeiter erfolgreich deaktiviert"
+
+msgid "Deactivate the user before permanent deletion"
+msgstr "Deaktivieren Sie den Mitarbeiter vor dem endgueltigen Loeschen"
+
+msgid "User permanently deleted successfully"
+msgstr "Mitarbeiter erfolgreich endgueltig geloescht"
+
+msgid "User has been reactivated"
+msgstr "Mitarbeiter wurde wieder aktiviert"
+
+msgid "Failed to reactivate user"
+msgstr "Mitarbeiter konnte nicht wieder aktiviert werden"
+
+msgid "Reactivate User?"
+msgstr "Mitarbeiter wieder aktivieren?"
+
+msgid "Are you sure you want to reactivate {name}?"
+msgstr "Moechten Sie {name} wirklich wieder aktivieren?"
+
+msgid "Yes, reactivate!"
+msgstr "Ja, wieder aktivieren!"
+
+msgid "Reactivating user..."
+msgstr "Mitarbeiter wird wieder aktiviert..."
+
+msgid "Reactivate"
+msgstr "Wieder aktivieren"
+
+msgid "Reactivate Employee"
+msgstr "Mitarbeiter wieder aktivieren"
+
+msgid "User is already active"
+msgstr "Mitarbeiter ist bereits aktiv"
+
+msgid "User reactivated successfully"
+msgstr "Mitarbeiter erfolgreich wieder aktiviert"
+
+msgid "Show inactive"
+msgstr "Inaktive anzeigen"
+
 #: .\viewer\templates\user_dashboard.html:272
 #, fuzzy
 #| msgid "No scans"

@@ -193,6 +193,35 @@ body {
     box-shadow: none;
 }
 
+.filter-inline-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 46px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 14px;
+    background: #ffffff;
+    color: #334155;
+    cursor: pointer;
+}
+
+.filter-inline-checkbox input {
+    margin: 0;
+}
+
+.filter-inline-checkbox-compact {
+    justify-content: flex-start;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0.65rem 0.85rem;
+}
+
+.filter-inline-checkbox-compact span {
+    white-space: nowrap;
+}
+
 .tab-header {
     border-radius: 24px 24px 0 0;
     overflow: hidden;
@@ -283,6 +312,10 @@ body {
     cursor: pointer;
 }
 
+.inactive-user-row {
+    background: rgba(248, 250, 252, 0.82);
+}
+
 .action-buttons {
     display: inline-flex;
     gap: 0.45rem;
@@ -324,6 +357,11 @@ body {
     color: #dc2626;
 }
 
+.badge-user-inactive {
+    background: rgba(220, 38, 38, 0.1) !important;
+    color: #b91c1c !important;
+}
+
 .qr-code-img-small,
 .qr-code-img-mobile {
     border-radius: 14px;
@@ -356,7 +394,12 @@ body {
     box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
 }
 
+.inactive-user-card {
+    background: rgba(248, 250, 252, 0.96);
+}
+
 .btn-view-blue,
+.btn-reactivate-green,
 .btn-edit-blue,
 .btn-delete-red {
     border: 0;
@@ -367,6 +410,11 @@ body {
 
 .btn-view-blue {
     background: #1d4ed8;
+    color: #fff;
+}
+
+.btn-reactivate-green {
+    background: #059669;
     color: #fff;
 }
 
@@ -502,6 +550,22 @@ body {
 :root[data-theme="dark"] .qr-code-img-small,
 :root[data-theme="dark"] .qr-code-img-mobile {
     background: #fff;
+}
+
+:root[data-theme="dark"] .filter-inline-checkbox {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(71, 85, 105, 0.45);
+    color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .inactive-user-row,
+:root[data-theme="dark"] .inactive-user-card {
+    background: rgba(15, 23, 42, 0.78);
+}
+
+:root[data-theme="dark"] .badge-user-inactive {
+    background: rgba(239, 68, 68, 0.18) !important;
+    color: #fca5a5 !important;
 }
 
 :root[data-theme="dark"] .data-table-card .badge.bg-primary {

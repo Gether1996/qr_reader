@@ -101,7 +101,7 @@
     {% if active_tab == 'qr-codes' %}
         {% include 'filters_card.html' with form_action=request.path clear_url=request.path hide_date_range=True show_first_filter=True first_filter_label=_("QR Code Name") first_filter_name="qr_name" first_filter_value=current_filters.qr_name datalist_items=all_qr_codes has_active_filters=current_filters.qr_name active_tab='qr-codes' %}
     {% elif active_tab == 'users' %}
-        {% include 'filters_card.html' with form_action=request.path clear_url=request.path hide_date_range=True show_first_filter=True first_filter_label=_("Employee Name") first_filter_name="employee_name" first_filter_value=current_filters.employee_name datalist_items=users show_work_status=True has_active_filters=current_filters.employee_name|default:current_filters.work_status active_tab='users' %}
+        {% include 'filters_card.html' with form_action=request.path clear_url=request.path hide_date_range=True show_first_filter=True first_filter_label=_("Employee Name") first_filter_name="employee_name" first_filter_value=current_filters.employee_name datalist_items=user_filter_datalist show_work_status=True show_deactivated_toggle=True has_active_filters=current_filters.employee_name|default:current_filters.work_status|default:current_filters.show_deactivated active_tab='users' %}
     {% elif active_tab == 'absences' %}
         {% include 'filters_card.html' with form_action=request.path clear_url=request.path show_first_filter=True first_filter_label=_("Employee Name") first_filter_name="absence_employee_name" first_filter_value=current_filters.absence_employee_name datalist_items=users show_vacation_type=True has_active_filters=current_filters.date_from|default:current_filters.date_to|default:current_filters.vacation_type|default:current_filters.absence_employee_name active_tab='absences' %}
     {% endif %}
@@ -305,11 +305,19 @@
                     </thead>
                     <tbody>
                         {% for user in users_page %}
-                                <tr class="clickable-row" onclick="window.location.href='{% url 'view_user_details' user.id %}'">
-                                    <td><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong><br><small class="text-muted">{{ user.email }}</small></td>
+                                <tr class="clickable-row{% if not user.is_active %} inactive-user-row{% endif %}" onclick="window.location.href='{% url 'view_user_details' user.id %}'">
+                                    <td>
+                                        <i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong>
+                                        {% if not user.is_active %}
+                                            <span class="badge badge-user-inactive ms-2">{% trans "Deactivated" %}</span>
+                                        {% endif %}
+                                        <br><small class="text-muted">{{ user.email }}</small>
+                                    </td>
                                     <td><span class="badge bg-info">{{ user.total_scans }}</span></td>
                                     <td>
-                                        {% if user.is_at_work %}
+                                        {% if not user.is_active %}
+                                            <span class="badge badge-user-inactive">{% trans "Deactivated" %}</span>
+                                        {% elif user.is_at_work %}
                                             <span class="badge bg-success">{% trans "Yes" %}</span>
                                             {% if user.work_location %}
                                                 <br><small class="text-muted">({{ user.work_location }})</small>
@@ -330,6 +338,7 @@
                                             <a href="{% url 'view_user_details' user.id %}" class="action-icon-btn action-btn-view" title="{% trans 'View Details' %}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            {% if user.is_active %}
                                             <button type="button" class="action-icon-btn action-btn-edit" 
                                                     onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}, '{{ user.rc|default_if_none:"" }}', '{{ user.phone|default_if_none:"" }}', '{{ user.birth_date|date:"Y-m-d"|default_if_none:"" }}'); return false;"
                                                     title="{% trans 'Edit Employee' %}">
@@ -340,6 +349,18 @@
                                                     title="{% trans 'Deactivate Employee' %}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                            {% else %}
+                                            <button type="button" class="action-icon-btn action-btn-success" 
+                                                    onclick="reactivateUser({{ user.id }}, '{{ user.name }}'); return false;"
+                                                    title="{% trans 'Reactivate Employee' %}">
+                                                <i class="fas fa-rotate-left"></i>
+                                            </button>
+                                            <button type="button" class="action-icon-btn action-btn-delete" 
+                                                    onclick="permanentlyDeleteUser({{ user.id }}, '{{ user.name }}'); return false;"
+                                                    title="{% trans 'Delete Permanently' %}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            {% endif %}
                                         </div>
                                     </td>
                                 </tr>
@@ -356,9 +377,14 @@
             <!-- Mobile Card View -->
             <div class="d-lg-none mobile-view-padding">
                 {% for user in users_page %}
-                <div class="mobile-card mb-3">
+                <div class="mobile-card mb-3{% if not user.is_active %} inactive-user-card{% endif %}">
                     <div class="mb-2">
-                        <h6 class="mb-1"><i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong></h6>
+                        <h6 class="mb-1">
+                            <i class="fas fa-user me-2"></i><strong>{{ user.name }}</strong>
+                            {% if not user.is_active %}
+                                <span class="badge badge-user-inactive ms-2">{% trans "Deactivated" %}</span>
+                            {% endif %}
+                        </h6>
                         <p class="text-muted small mb-2"><i class="fas fa-envelope me-1"></i>{{ user.email }}</p>
                     </div>
                     <div class="d-flex gap-2 flex-wrap mb-2">
@@ -367,7 +393,9 @@
                         {% else %}
                             <span class="badge bg-secondary"><i class="fas fa-user me-1"></i>{% trans "Employee" %}</span>
                         {% endif %}
-                        {% if user.is_at_work %}
+                        {% if not user.is_active %}
+                            <span class="badge badge-user-inactive">{% trans "Deactivated" %}</span>
+                        {% elif user.is_at_work %}
                             <span class="badge bg-success"><i class="fas fa-briefcase me-1"></i>{% trans "At Work" %}</span>
                         {% else %}
                             <span class="badge bg-secondary"><i class="fas fa-home me-1"></i>{% trans "Off Work" %}</span>
@@ -380,6 +408,7 @@
                         <a href="{% url 'view_user_details' user.id %}" class="btn btn-sm flex-fill btn-view-blue">
                             <i class="fas fa-eye me-1"></i>{% trans "View" %}
                         </a>
+                        {% if user.is_active %}
                         <button type="button" class="btn btn-sm flex-fill btn-edit-blue" 
                                 onclick="editUser({{ user.id }}, '{{ user.name }}', '{{ user.email }}', {{ user.working_hours }}, {{ user.holidays_per_year }}, {{ user.has_lunch_break|lower }}, {{ user.lunch_break_duration }}, {{ user.is_manager|lower }}, {{ user.can_edit_employees|lower }}, {{ user.can_edit_qr_codes|lower }}, {{ user.can_edit_absences|lower }}, {{ user.notify_arrival|lower }}, {{ user.notify_departure|lower }}, {{ user.notify_vacation|lower }}, '{{ user.rc|default_if_none:"" }}', '{{ user.phone|default_if_none:"" }}', '{{ user.birth_date|date:"Y-m-d"|default_if_none:"" }}'); return false;">
                             <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
@@ -388,6 +417,16 @@
                                 onclick="deleteUser({{ user.id }}, '{{ user.name }}'); return false;">
                             <i class="fas fa-trash me-1"></i>{% trans "Deactivate" %}
                         </button>
+                        {% else %}
+                        <button type="button" class="btn btn-sm flex-fill btn-reactivate-green" 
+                                onclick="reactivateUser({{ user.id }}, '{{ user.name }}'); return false;">
+                            <i class="fas fa-rotate-left me-1"></i>{% trans "Reactivate" %}
+                        </button>
+                        <button type="button" class="btn btn-sm flex-fill btn-delete-red" 
+                                onclick="permanentlyDeleteUser({{ user.id }}, '{{ user.name }}'); return false;">
+                            <i class="fas fa-trash me-1"></i>{% trans "Delete Permanently" %}
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
                 {% empty %}

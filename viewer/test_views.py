@@ -345,8 +345,60 @@ class CompanyDashboardTests(TestCase):
         
         response = self.client.post(reverse('delete_user', args=[user_id]))
         
-        # Accept various response codes
-        self.assertIn(response.status_code, [200, 302, 400])
+        self.assertEqual(response.status_code, 200)
+        self.user1.refresh_from_db()
+        self.assertFalse(self.user1.is_active)
+
+    def test_company_dashboard_can_show_deactivated_users(self):
+        """Dashboard should include deactivated users only when filter is enabled"""
+        self.user2.is_active = False
+        self.user2.save()
+
+        response = self.client.get(reverse('company_dashboard'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'User 1')
+        self.assertNotContains(response, 'User 2')
+
+        response = self.client.get(reverse('company_dashboard'), {'show_deactivated': '1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'User 2')
+        self.assertContains(response, 'permanentlyDeleteUser')
+
+    def test_permanent_delete_user_requires_deactivation_first(self):
+        """Permanent delete should be blocked for active users"""
+        response = self.client.post(reverse('permanent_delete_user', args=[self.user1.id]))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(User.objects.filter(id=self.user1.id).exists())
+
+    def test_reactivate_user_requires_deactivated_user(self):
+        """Reactivate should be blocked for already active users"""
+        response = self.client.post(reverse('reactivate_user', args=[self.user1.id]))
+
+        self.assertEqual(response.status_code, 400)
+        self.user1.refresh_from_db()
+        self.assertTrue(self.user1.is_active)
+
+    def test_reactivate_user_success(self):
+        """Previously deactivated users can be restored"""
+        self.user1.is_active = False
+        self.user1.save()
+
+        response = self.client.post(reverse('reactivate_user', args=[self.user1.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.user1.refresh_from_db()
+        self.assertTrue(self.user1.is_active)
+
+    def test_permanent_delete_user_success(self):
+        """Previously deactivated users can be permanently deleted"""
+        self.user1.is_active = False
+        self.user1.save()
+
+        response = self.client.post(reverse('permanent_delete_user', args=[self.user1.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(id=self.user1.id).exists())
     
     def test_create_qr_code_success(self):
         """Test creating new QR code"""

@@ -109,6 +109,15 @@
                 </div>
                 {% endif %}
 
+                {% if show_deactivated_toggle %}
+                <div class="filter-input-group filter-field-medium">
+                    <label class="filter-inline-checkbox filter-inline-checkbox-compact" for="show_deactivated_{{ active_tab|default:'main' }}">
+                        <input type="checkbox" name="show_deactivated" id="show_deactivated_{{ active_tab|default:'main' }}" value="1" {% if current_filters.show_deactivated == '1' %}checked{% endif %} onchange="this.form.submit()">
+                        <span>{% trans "Show inactive" %}</span>
+                    </label>
+                </div>
+                {% endif %}
+
                 <div class="filter-input-group filter-field-small">
                     <label class="form-label" for="per_page_{{ active_tab|default:'main' }}">
                         <i class="fas fa-list-ol"></i>{% trans "Per Page" %}

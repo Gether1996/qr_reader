@@ -29,4 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
             select.closest('form').submit();
         });
     });
+
+    document.querySelectorAll('form[id^="filterForm"] input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            checkbox.closest('form').submit();
+        });
+    });
 });

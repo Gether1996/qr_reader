@@ -887,7 +887,7 @@ function deleteUser(userId, userName) {
             // Show loading spinner
             appUI.fire({
                 title: translations.pleaseWait || 'Please wait...',
-                html: translations.deletingUser || 'Deleting user...',
+                html: translations.deactivatingUser || 'Deactivating user...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
@@ -913,6 +913,96 @@ function deleteUser(userId, userName) {
             })
             .catch(error => {
                 showError(translations.error, translations.userDeleteFailed);
+            });
+        }
+    });
+}
+
+function permanentlyDeleteUser(userId, userName) {
+    appUI.confirm({
+        title: translations.permanentDeleteUserTitle || 'Delete User Permanently?',
+        text: (translations.permanentDeleteUserText || 'Are you sure you want to permanently delete {name}?').replace('{name}', userName),
+        confirmButtonText: translations.confirmPermanentDelete || 'Yes, delete permanently!',
+        cancelButtonText: translations.cancel || 'Cancel',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const langCode = window.location.pathname.split('/')[1];
+            const deleteUrl = `/${langCode}/company/user/${userId}/permanent-delete/`;
+
+            appUI.fire({
+                title: translations.pleaseWait || 'Please wait...',
+                html: translations.permanentlyDeletingUser || 'Deleting user permanently...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    appUI.showLoading();
+                }
+            });
+
+            fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showSuccess(translations.deleted, translations.userPermanentlyDeleted);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showError(translations.error, data.message || translations.userPermanentDeleteFailed);
+                }
+            })
+            .catch(error => {
+                showError(translations.error, translations.userPermanentDeleteFailed);
+            });
+        }
+    });
+}
+
+function reactivateUser(userId, userName) {
+    appUI.confirm({
+        title: translations.reactivateUserTitle || 'Reactivate User?',
+        text: (translations.reactivateUserText || 'Are you sure you want to reactivate {name}?').replace('{name}', userName),
+        confirmButtonText: translations.confirmReactivate || 'Yes, reactivate!',
+        cancelButtonText: translations.cancel || 'Cancel',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const langCode = window.location.pathname.split('/')[1];
+            const reactivateUrl = `/${langCode}/company/user/${userId}/reactivate/`;
+
+            appUI.fire({
+                title: translations.pleaseWait || 'Please wait...',
+                html: translations.reactivatingUser || 'Reactivating user...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    appUI.showLoading();
+                }
+            });
+
+            fetch(reactivateUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showSuccess(translations.success, translations.userReactivated);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showError(translations.error, data.message || translations.userReactivateFailed);
+                }
+            })
+            .catch(error => {
+                showError(translations.error, translations.userReactivateFailed);
             });
         }
     });

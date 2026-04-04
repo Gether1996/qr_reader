@@ -44,7 +44,7 @@ def generate_attendance_pdf(request, user_id):
         messages.error(request, _('Company not found'))
         return redirect('company_login' if is_company else 'user_login')
     
-    user = crud.get_user_by_id(user_id)
+    user = crud.get_user_by_id(user_id, include_inactive=True)
     if not user or user.company != company:
         messages.error(request, _('User not found'))
         return redirect('company_dashboard')
@@ -679,7 +679,7 @@ def generate_attendance_excel(request, user_id):
         messages.error(request, _('Company not found'))
         return redirect('company_login' if is_company else 'user_login')
     
-    user = crud.get_user_by_id(user_id)
+    user = crud.get_user_by_id(user_id, include_inactive=True)
     if not user or user.company != company:
         messages.error(request, _('User not found'))
         return redirect('company_dashboard')

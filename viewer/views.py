@@ -157,9 +157,11 @@ def company_dashboard(request):
     qr_name = request.GET.get('qr_name', '')
     employee_name = request.GET.get('employee_name', '')
     work_status = request.GET.get('work_status', '')
+    show_deactivated = request.GET.get('show_deactivated', '')
     items_per_page = request.GET.get('items_per_page', '25')
     sort = request.GET.get('sort', '')
     page_number = request.GET.get('page', 1)
+    include_inactive_users = show_deactivated in ['1', 'true', 'on']
     
     # Set default sorting based on active tab if not specified
     if not sort:
@@ -201,11 +203,12 @@ def company_dashboard(request):
             # Default sort: ASC on name
             qr_codes = qr_codes.order_by('name')
     
-    # Get all users for datalist (unfiltered)
-    all_users = crud.get_company_users(company)
-    
+    # Active users remain the source for absence flows and employee pickers.
+    active_users = crud.get_company_users(company)
+    user_filter_datalist = crud.get_company_users(company, include_inactive=include_inactive_users)
+
     # Get users with filtering
-    users = crud.get_company_users(company)
+    users = crud.get_company_users(company, include_inactive=include_inactive_users)
     if employee_name:
         users = users.filter(name__icontains=employee_name)
     
@@ -248,7 +251,10 @@ def company_dashboard(request):
             Q(qr_code__is_active=True) | Q(is_home_office=True) | Q(is_business_trip=True)
         ).order_by('-timestamp').first()
         
-        if last_scan:
+        if not user.is_active:
+            user.is_at_work = False
+            user.work_location = None
+        elif last_scan:
             # User is at work if last scan was arrival or lunch_break_end
             user.is_at_work = last_scan.scan_type in ['arrival', 'lunch_break_end']
             user.work_location = last_scan.address if last_scan.address else f"{last_scan.latitude}, {last_scan.longitude}"
@@ -349,7 +355,7 @@ def company_dashboard(request):
     else:
         absences_page = None
 
-    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in all_users])
+    users_json = json.dumps([{'id': u.id, 'name': u.name} for u in active_users])
 
     context = {
         'company': company,
@@ -361,7 +367,8 @@ def company_dashboard(request):
         'can_edit_absences': can_edit_absences,
         'all_qr_codes': all_qr_codes,  # All QR codes for datalist
         'qr_codes': qr_codes_list if active_tab == 'qr-codes' else [],
-        'users': all_users,  # All users for datalist
+        'users': active_users,
+        'user_filter_datalist': user_filter_datalist,
         'users_json': users_json,
         'users_list': users_list if active_tab == 'users' else [],
         'absences': absences if active_tab == 'absences' else [],
@@ -378,6 +385,7 @@ def company_dashboard(request):
             'qr_name': qr_name,
             'employee_name': employee_name,
             'work_status': work_status,
+            'show_deactivated': '1' if include_inactive_users else '',
             'items_per_page': str(items_per_page),
             'sort': sort,
         },
@@ -852,9 +860,9 @@ def view_user_details(request, user_id):
         messages.error(request, _('Company not found'))
         return redirect('company_login' if is_company else 'user_login')
     
-    user = crud.get_user_by_id(user_id)
+    user = crud.get_user_by_id(user_id, include_inactive=True)
     if not user or user.company != company:
-        messages.error(request, _('User not found or inactive'))
+        messages.error(request, _('User not found'))
         return redirect('company_dashboard')
     
     # Determine active tab
