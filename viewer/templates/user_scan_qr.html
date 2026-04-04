@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Scan QR Code" %}{% endblock %}
+{% block title %}{% trans "Record Attendance" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/user_scan_qr.css' %}">
@@ -23,6 +23,12 @@
             <i class="fas fa-clock-rotate-left offline-queue-icon"></i>
             <span id="offline-queue-text" class="offline-queue-text"></span>
             <span id="offline-queue-badge" class="offline-queue-badge d-none">0</span>
+        </div>
+
+        <!-- Offline Mode Banner (shown when device has no network) -->
+        <div id="offline-mode-banner" class="offline-mode-banner d-none" role="alert">
+            <i class="fas fa-wifi me-2" style="text-decoration:line-through;"></i>
+            <span>{% trans "Offline mode – scans will sync when connected" %}</span>
         </div>
 
         <!-- Scan Type Selection -->
@@ -89,19 +95,19 @@
                 <div class="col-sm-4 col-12">
                     <button id="homeOfficeBtn" type="button" class="btn btn-success action-button-mobile w-100">
                         <i class="fas fa-home"></i>
-                        <span>{% trans "Home Office Scan" %}</span>
+                        <span>{% trans "Home Office Check-in" %}</span>
                     </button>
                 </div>
                 <div class="col-sm-4 col-12">
                     <button id="businessTripBtn" type="button" class="btn btn-info action-button-mobile w-100">
                         <i class="fas fa-briefcase"></i>
-                        <span>{% trans "Business Trip Scan" %}</span>
+                        <span>{% trans "Business Trip Check-in" %}</span>
                     </button>
                 </div>
                 <div class="col-sm-4 col-12">
                     <button id="noQrBtn" type="button" class="btn btn-secondary action-button-mobile action-button-no-qr w-100">
                         <i class="fas fa-location-dot"></i>
-                        <span>{% trans "No QR Scan" %}</span>
+                        <span>{% trans "Manual Check-in" %}</span>
                     </button>
                 </div>
             </div>
@@ -123,7 +129,7 @@
         </div>
         <h4 class="mb-3 permission-title">{% trans "Camera & Location Required" %}</h4>
         <p class="mb-4 permission-text">
-            {% trans "To scan QR codes and record your location, we need permission to access your camera and location." %}
+            {% trans "To record your attendance and verify your location, we need permission to access your camera and location." %}
         </p>
         <button id="grant-permission-btn" type="button" class="btn btn-primary w-100 permission-button">
             <i class="fas fa-shield-alt me-2"></i>{% trans "Grant Permissions" %}
@@ -141,6 +147,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'scripts/offline-auth.js' %}"></script>
 <script src="{% static 'scripts/scan-queue.js' %}"></script>
 <script src="{% static 'scripts/libraries/html5-qrcode.min.js' %}"></script>
 <script src="{% static 'scripts/user-scan-qr.js' %}"></script>

@@ -126,12 +126,18 @@
     /* â”€â”€â”€ Sync logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     function postEntry(entry) {
-        return fetch(entry.scan_url, {
+        var useOffline = !!(entry.offline_token && entry.offline_scan_url);
+        var url     = useOffline ? entry.offline_scan_url : entry.scan_url;
+        var headers = { 'Content-Type': 'application/json' };
+        if (useOffline) {
+            headers['X-Offline-Token'] = entry.offline_token;
+        } else {
+            headers['X-CSRFToken'] = entry.csrf_token;
+        }
+
+        return fetch(url, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": entry.csrf_token,
-            },
+            headers: headers,
             body: JSON.stringify(entry.payload),
         }).then(function (response) {
             return response.json().then(function (data) {
@@ -187,21 +193,36 @@
     /* â”€â”€â”€ Add a scan to the offline queue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     function addScan(payload, scanUrl, csrfTokenValue) {
-        return dbAdd({
-            queued_at: Date.now(),
-            payload: payload,
-            scan_url: scanUrl,
-            csrf_token: csrfTokenValue,
-        }).then(function (id) {
-            // Register Background Sync (Android Chrome / modern browsers)
-            if ("serviceWorker" in navigator && "SyncManager" in window) {
-                navigator.serviceWorker.ready
-                    .then(function (sw) {
-                        return sw.sync.register("qr-scan-sync");
-                    })
-                    .catch(function () {});
-            }
-            return id;
+        // Embed offline token in the queued entry so both the browser
+        // sync path and the SW background sync can use the offline endpoint
+        var tokenPromise = (window.offlineAuth && window.offlineAuth.get)
+            ? window.offlineAuth.get().catch(function () { return null; })
+            : Promise.resolve(null);
+
+        return tokenPromise.then(function (authData) {
+            var offlineToken   = authData ? authData.token : null;
+            var offlineScanUrl = offlineToken
+                ? scanUrl.replace('/user/scan/', '/user/offline-scan/')
+                : null;
+
+            return dbAdd({
+                queued_at:       Date.now(),
+                payload:         payload,
+                scan_url:        scanUrl,
+                csrf_token:      csrfTokenValue,
+                offline_token:   offlineToken,
+                offline_scan_url: offlineScanUrl,
+            }).then(function (id) {
+                // Register Background Sync (Android Chrome / modern browsers)
+                if ("serviceWorker" in navigator && "SyncManager" in window) {
+                    navigator.serviceWorker.ready
+                        .then(function (sw) {
+                            return sw.sync.register("qr-scan-sync");
+                        })
+                        .catch(function () {});
+                }
+                return id;
+            });
         });
     }
 

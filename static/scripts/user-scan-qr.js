@@ -863,7 +863,60 @@ function initLifecycleHandlers() {
     });
 }
 
+function initOfflineMode() {
+    // ── Keep offline token fresh ──────────────────────────────────────────────
+    if (navigator.onLine && window.offlineAuth) {
+        window.offlineAuth.fetchAndStore().catch(function () {});
+    }
+
+    // ── Show/hide offline banner ──────────────────────────────────────────────
+    function applyOfflineBanner(isOffline) {
+        var banner = document.getElementById("offline-mode-banner");
+        if (!banner) return;
+        if (isOffline) {
+            banner.classList.remove("d-none");
+        } else {
+            banner.classList.add("d-none");
+        }
+    }
+
+    applyOfflineBanner(!navigator.onLine);
+
+    window.addEventListener("offline", function () {
+        applyOfflineBanner(true);
+        // In offline mode all scan types should be selectable;
+        // sequencing is enforced server-side on sync.
+        enableAllScanTypesOffline();
+    });
+
+    window.addEventListener("online", function () {
+        applyOfflineBanner(false);
+        // Refresh token now that we are back online
+        if (window.offlineAuth) {
+            window.offlineAuth.fetchAndStore().catch(function () {});
+        }
+    });
+
+    // If already offline on page load, enable all scan type buttons
+    if (!navigator.onLine) {
+        enableAllScanTypesOffline();
+    }
+}
+
+function enableAllScanTypesOffline() {
+    // Server-side state may be stale in the cached page.
+    // Enable all scan type buttons so users can record the correct type.
+    // The server validates the sequence when the scan is synced.
+    getScanTypeButtons().forEach(function (button) {
+        button.disabled = false;
+        // Mark so setControlsDisabled knows to respect server state on reconnect
+        button.dataset.offlineEnabled = "true";
+        delete button.dataset.serverDisabled;
+    });
+}
+
 function initUserScanQR() {
+    initOfflineMode();
     initGrantPermissionButton();
     initScanTypeButtons();
     initStartScanButton();

@@ -2413,8 +2413,8 @@ msgid "Company Login"
 msgstr "Firmen-Anmeldung"
 
 #: .\viewer\templates\company_login.html:20
-msgid "Sign in to manage your QR codes"
-msgstr "Melden Sie sich an, um Ihre QR-Codes zu verwalten"
+msgid "Sign in to manage your workforce"
+msgstr "Melden Sie sich an, um Ihre Belegschaft zu verwalten"
 
 #: .\viewer\templates\company_login.html:48
 msgid "Don't have an account?"
@@ -2430,8 +2430,8 @@ msgid "Register Your Company"
 msgstr "Registrieren Sie Ihr Unternehmen"
 
 #: .\viewer\templates\company_register.html:20
-msgid "Create an account to start managing QR codes"
-msgstr "Erstellen Sie ein Konto, um QR-Codes zu verwalten"
+msgid "Create an account to start tracking attendance"
+msgstr "Erstellen Sie ein Konto, um die Anwesenheit zu erfassen"
 
 #: .\viewer\templates\company_register.html:30
 msgid "Required Information"
@@ -2786,11 +2786,11 @@ msgstr "Willkommen"
 
 #: .\viewer\templates\landing.html:20
 msgid ""
-"Professional QR code management with real-time location tracking and "
-"comprehensive analytics"
+"Professional employee attendance management with real-time location tracking "
+"and comprehensive analytics"
 msgstr ""
-"Professionelle QR-Code-Verwaltung mit Echtzeit-Standortverfolgung und "
-"umfassender Analytik"
+"Professionelle Mitarbeiteranwesenheitsverwaltung mit Echtzeit-"
+"Standortverfolgung und umfangreicher Analytik"
 
 #: .\viewer\templates\landing.html:30
 msgid "Company Access"
@@ -2798,11 +2798,11 @@ msgstr "Firmenzugang"
 
 #: .\viewer\templates\landing.html:32
 msgid ""
-"Create QR codes, manage users, and monitor scan activity across your "
+"Manage employees, track attendance and monitor activity across your "
 "organization"
 msgstr ""
-"Erstellen Sie QR-Codes, verwalten Sie Benutzer und überwachen Sie Scan-"
-"Aktivitäten in Ihrem Unternehmen"
+"Verwalten Sie Mitarbeiter, erfassen Sie die Anwesenheit und überwachen Sie "
+"die Aktivitäten in Ihrem Unternehmen"
 
 #: .\viewer\templates\landing.html:41
 msgid "Register New Company"
@@ -2813,10 +2813,8 @@ msgid "User Access"
 msgstr "Benutzerzugang"
 
 #: .\viewer\templates\landing.html:53
-msgid "View your company's QR codes and access scan history and analytics"
-msgstr ""
-"Sehen Sie die QR-Codes Ihres Unternehmens und greifen Sie auf Scan-Historie "
-"und Analytik zu"
+msgid "Track your attendance, view your history and access personal analytics"
+msgstr "Verfolgen Sie Ihre Anwesenheit, sehen Sie Ihren Verlauf ein und greifen Sie auf persönliche Analysen zu"
 
 #: .\viewer\templates\landing.html:58 .\viewer\templates\navbar.html:249
 #: .\viewer\templates\navbar.html:463 .\viewer\templates\user_login.html:5
@@ -2859,8 +2857,8 @@ msgid "More Details"
 msgstr "Mehr Details"
 
 #: .\viewer\templates\landing.html:93
-msgid "QR code scanning with timestamp and GPS coordinates"
-msgstr "QR-Code-Scannen mit Zeitstempel und GPS-Koordinaten"
+msgid "Attendance recording with timestamp and GPS coordinates"
+msgstr "Anwesenheitserfassung mit Zeitstempel und GPS-Koordinaten"
 
 #: .\viewer\templates\landing.html:94
 msgid "Arrival, departure, and break event tracking"
@@ -3132,8 +3130,8 @@ msgid "Works on iOS and Android devices"
 msgstr "Funktioniert auf iOS- und Android-Geräten"
 
 #: .\viewer\templates\landing.html:293
-msgid "Generate QR Codes"
-msgstr "QR-Codes generieren"
+msgid "Attendance Tracking"
+msgstr "Anwesenheitserfassung"
 
 #: .\viewer\templates\landing.html:299
 msgid "GPS Tracking"
@@ -3451,7 +3449,7 @@ msgstr "Protokollierung"
 
 #: .\viewer\templates\navbar.html:122
 msgid "Scan QR"
-msgstr "QR scannen"
+msgstr "Anwesenheit erfassen"
 
 #: .\viewer\templates\navbar.html:271
 msgid "Open menu"
@@ -3484,22 +3482,22 @@ msgid "Sign out from account"
 msgstr "Vom Konto abmelden"
 
 #: .\viewer\templates\navbar.html:379
-msgid "Your QR Codes"
-msgstr "Ihre QR-Codes"
+msgid "Your Attendance"
+msgstr "Ihre Anwesenheit"
 
 #: .\viewer\templates\navbar.html:389 .\viewer\templates\user_dashboard.html:40
 #: .\viewer\templates\user_scan_qr.html:5
 #: .\viewer\templates\user_scan_qr.html:22
-msgid "Scan QR Code"
-msgstr "QR-Code scannen"
+msgid "Record Attendance"
+msgstr "Anwesenheit erfassen"
 
 #: .\viewer\templates\navbar.html:390
-msgid "Scan to record location"
-msgstr "Scannen, um Standort aufzuzeichnen"
+msgid "Record attendance and location"
+msgstr "Anwesenheit und Standort erfassen"
 
 #: .\viewer\templates\navbar.html:402
-msgid "Manage employees & QR codes"
-msgstr "Mitarbeiter & QR-Codes verwalten"
+msgid "Manage employees & attendance"
+msgstr "Mitarbeiter & Anwesenheit verwalten"
 
 #: .\viewer\templates\navbar.html:439
 msgid "Home"
@@ -3583,7 +3581,7 @@ msgstr "von"
 
 #: .\viewer\templates\paginator.html:101
 msgid "records"
-msgstr ""
+msgstr "Einträge"
 
 #: .\viewer\templates\password_reset_email.html:7
 #: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1713
@@ -3947,8 +3945,8 @@ msgid "Permissions Granted"
 msgstr "Berechtigungen erteilt"
 
 #: .\viewer\templates\translations_js.html:119
-msgid "You can now scan QR codes"
-msgstr "Sie können jetzt QR-Codes scannen"
+msgid "You can now record attendance"
+msgstr "Sie können jetzt Ihre Anwesenheit erfassen"
 
 #: .\viewer\templates\translations_js.html:120
 msgid "Permission Error"
@@ -3976,8 +3974,8 @@ msgid "Start Scanner"
 msgstr "Scanner starten"
 
 #: .\viewer\templates\translations_js.html:125
-msgid "Scan Workplace QR"
-msgstr ""
+msgid "Check-in at Workplace"
+msgstr "Eincheckung am Arbeitsplatz"
 
 #: .\viewer\templates\translations_js.html:126
 #: .\viewer\templates\user_scan_qr.html:154
@@ -4048,16 +4046,16 @@ msgid "Confirm Home Office"
 msgstr "Homeoffice bestätigen"
 
 #: .\viewer\templates\translations_js.html:140
-msgid "Are you sure you want to scan from home office?"
-msgstr "Möchten Sie wirklich vom Homeoffice scannen?"
+msgid "Are you sure you want to check in from home office?"
+msgstr "Möchten Sie wirklich Ihre Anwesenheit vom Homeoffice erfassen?"
 
 #: .\viewer\templates\translations_js.html:141
 msgid "Confirm Business Trip"
 msgstr "Geschäftsreise bestätigen"
 
 #: .\viewer\templates\translations_js.html:142
-msgid "Are you sure you want to scan from business trip?"
-msgstr "Möchten Sie wirklich von einer Geschäftsreise scannen?"
+msgid "Are you sure you want to check in from a business trip?"
+msgstr "Möchten Sie wirklich Ihre Anwesenheit von einer Dienstreise erfassen?"
 
 #: .\viewer\templates\translations_js.html:148
 #, fuzzy
@@ -4391,12 +4389,12 @@ msgid "Please select scan type"
 msgstr "Bitte wählen Sie den Scantyp aus"
 
 #: .\viewer\templates\user_scan_qr.html:114
-msgid "Home Office Scan"
-msgstr "Homeoffice-Scan"
+msgid "Home Office Check-in"
+msgstr "Homeoffice-Eincheckung"
 
 #: .\viewer\templates\user_scan_qr.html:120
-msgid "Business Trip Scan"
-msgstr "Geschäftsreise-Scan"
+msgid "Business Trip Check-in"
+msgstr "Dienstreise-Eincheckung"
 
 #: .\viewer\templates\user_scan_qr.html:129
 msgid "Stop Scanner"
@@ -4408,11 +4406,11 @@ msgstr "Kamera & Standort erforderlich"
 
 #: .\viewer\templates\user_scan_qr.html:142
 msgid ""
-"To scan QR codes and record your location, we need permission to access your "
-"camera and location."
+"To record your attendance and verify your location, we need permission to "
+"access your camera and location."
 msgstr ""
-"Um QR-Codes zu scannen und Ihren Standort aufzuzeichnen, benötigen wir die "
-"Erlaubnis, auf Ihre Kamera und Ihren Standort zuzugreifen."
+"Um Ihre Anwesenheit zu erfassen und Ihren Standort zu überprüfen, benötigen "
+"wir die Erlaubnis, auf Ihre Kamera und Ihren Standort zuzugreifen."
 
 #: .\viewer\templates\vacation_notification.html:7
 msgid "Vacation Notification"
@@ -4645,17 +4643,59 @@ msgstr "Ungültiger Link zum Zurücksetzen des Passworts"
 msgid "No QR Scan"
 msgstr "Scan ohne QR"
 
-msgid "Confirm No QR"
-msgstr "Ohne QR bestätigen"
+msgid "Confirm Manual Check-in"
+msgstr "Manuelle Eincheckung bestätigen"
 
-msgid "Are you sure you want to record a scan without a QR code?"
-msgstr "Möchten Sie wirklich einen Scan ohne QR-Code erfassen?"
+msgid "Are you sure you want to record attendance without a QR code?"
+msgstr "Möchten Sie wirklich Ihre Anwesenheit ohne QR-Code erfassen?"
 
-msgid "Scan a workplace QR code or use Home Office, Business Trip, or No QR."
-msgstr "Scannen Sie einen Arbeitsplatz-QR-Code oder verwenden Sie Homeoffice, Dienstreise oder Ohne QR."
+msgid "Scan your workplace QR code or use Home Office, Business Trip, or Manual Check-in."
+msgstr "Scannen Sie den QR-Code Ihres Arbeitsplatzes oder verwenden Sie Homeoffice, Dienstreise oder Manuelle Eincheckung."
 
 msgid "No QR"
 msgstr "Ohne QR"
+
+msgid "Scan Saved Offline"
+msgstr "Scan offline gespeichert"
+
+msgid "You are offline. Your scan is saved and will upload automatically when you reconnect."
+msgstr "Sie sind offline. Ihr Scan wurde gespeichert und wird automatisch hochgeladen, wenn Sie wieder verbunden sind."
+
+msgid "1 scan waiting to sync"
+msgstr "1 Scan wartet auf Synchronisierung"
+
+msgid "{n} scans waiting to sync"
+msgstr "{n} Scans warten auf Synchronisierung"
+
+msgid "Synced!"
+msgstr "Synchronisiert!"
+
+msgid "scan(s) uploaded to server"
+msgstr "Scan(s) zum Server hochgeladen"
+
+msgid "Failed to save scan offline."
+msgstr "Scan konnte nicht offline gespeichert werden."
+
+msgid "Offline mode – scans will sync when connected"
+msgstr "Offline-Modus – Scans werden bei Verbindung synchronisiert"
+
+msgid "Offline Mode"
+msgstr "Offline-Modus"
+
+msgid "You are offline. You can continue with your last stored session:"
+msgstr "Sie sind offline. Sie können mit Ihrer letzten gespeicherten Sitzung fortfahren:"
+
+msgid "Continue offline"
+msgstr "Offline fortfahren"
+
+msgid "No offline access available. Please connect to the internet to log in."
+msgstr "Kein Offline-Zugriff verfügbar. Bitte verbinden Sie sich mit dem Internet, um sich anzumelden."
+
+msgid "Missing offline token"
+msgstr "Offline-Token fehlt"
+
+msgid "Invalid or expired offline token"
+msgstr "Ungültiger oder abgelaufener Offline-Token"
 
 #~ msgid "scans"
 #~ msgstr "Scans"

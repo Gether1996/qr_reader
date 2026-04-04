@@ -2415,8 +2415,8 @@ msgid "Company Login"
 msgstr "Prihlásenie firmy"
 
 #: .\viewer\templates\company_login.html:20
-msgid "Sign in to manage your QR codes"
-msgstr "Prihláste sa pre správu vašich QR kódov"
+msgid "Sign in to manage your workforce"
+msgstr "Prihláste sa pre správu vašich zamestnancov"
 
 #: .\viewer\templates\company_login.html:48
 msgid "Don't have an account?"
@@ -2432,8 +2432,8 @@ msgid "Register Your Company"
 msgstr "Zaregistrujte svoju firmu"
 
 #: .\viewer\templates\company_register.html:20
-msgid "Create an account to start managing QR codes"
-msgstr "Vytvorte si účet a začnite spravovať QR kódy"
+msgid "Create an account to start tracking attendance"
+msgstr "Vytvorte si účet a začnite sledovať dochádzku"
 
 #: .\viewer\templates\company_register.html:30
 msgid "Required Information"
@@ -2469,7 +2469,7 @@ msgstr "Voliteľné"
 #: .\viewer\templates\company_register.html:77
 #: .\viewer\templates\company_settings.html:66
 msgid "Company ID"
-msgstr "IÄŒO"
+msgstr "IČO"
 
 #: .\viewer\templates\company_register.html:83
 #: .\viewer\templates\company_settings.html:79
@@ -2786,11 +2786,11 @@ msgstr "Vítajte"
 
 #: .\viewer\templates\landing.html:20
 msgid ""
-"Professional QR code management with real-time location tracking and "
-"comprehensive analytics"
+"Professional employee attendance management with real-time location tracking "
+"and comprehensive analytics"
 msgstr ""
-"Profesionálna správa QR kódov so sledovaním polohy v reálnom čase a "
-"komplexnými analytickými údajmi"
+"Profesionálna správa dochádzky zamestnancov so sledovaním polohy v reálnom "
+"čase a komplexnými analytickými údajmi"
 
 #: .\viewer\templates\landing.html:30
 msgid "Company Access"
@@ -2798,11 +2798,11 @@ msgstr "Prístup pre firmy"
 
 #: .\viewer\templates\landing.html:32
 msgid ""
-"Create QR codes, manage users, and monitor scan activity across your "
+"Manage employees, track attendance and monitor activity across your "
 "organization"
 msgstr ""
-"Vytvárajte QR kódy, spravujte používateľov a monitorujte aktivity skenovania "
-"vo vašej organizácii"
+"Spravujte zamestnancov, sledujte dochádzku a monitorujte aktivitu vo vašej "
+"organizácii"
 
 #: .\viewer\templates\landing.html:41
 msgid "Register New Company"
@@ -2813,10 +2813,8 @@ msgid "User Access"
 msgstr "Prístup pre používateľov"
 
 #: .\viewer\templates\landing.html:53
-msgid "View your company's QR codes and access scan history and analytics"
-msgstr ""
-"Zobrazte QR kódy vašej firmy a získajte prístup k histórii skenovaní a "
-"analytickým údajom"
+msgid "Track your attendance, view your history and access personal analytics"
+msgstr "Sledujte svoju dochádzku, prezerajte históriu a pristupujte k osobným analytickým údajom"
 
 #: .\viewer\templates\landing.html:58 .\viewer\templates\navbar.html:249
 #: .\viewer\templates\navbar.html:463 .\viewer\templates\user_login.html:5
@@ -2859,8 +2857,8 @@ msgid "More Details"
 msgstr "Viac detailov"
 
 #: .\viewer\templates\landing.html:93
-msgid "QR code scanning with timestamp and GPS coordinates"
-msgstr "Skenovanie QR kódu s časovou značkou a GPS súradnicami"
+msgid "Attendance recording with timestamp and GPS coordinates"
+msgstr "Zaznamenávanie dochádzky s časovou pečiatkou a GPS koordinátmi"
 
 #: .\viewer\templates\landing.html:94
 msgid "Arrival, departure, and break event tracking"
@@ -2884,7 +2882,7 @@ msgstr "Overovanie polohy v reálnom čase"
 
 #: .\viewer\templates\landing.html:108
 msgid "Absence Management"
-msgstr "Správa abséncií"
+msgstr "Správa absencií"
 
 #: .\viewer\templates\landing.html:110
 msgid ""
@@ -3131,8 +3129,8 @@ msgid "Works on iOS and Android devices"
 msgstr "Funguje na iOS a Android zariadeniach"
 
 #: .\viewer\templates\landing.html:293
-msgid "Generate QR Codes"
-msgstr "Generovať QR kódy"
+msgid "Attendance Tracking"
+msgstr "Evidencia dochádzky"
 
 #: .\viewer\templates\landing.html:299
 msgid "GPS Tracking"
@@ -3447,7 +3445,7 @@ msgstr "Logovanie"
 
 #: .\viewer\templates\navbar.html:122
 msgid "Scan QR"
-msgstr "Skenovať QR"
+msgstr "Zaznamenať dochádzku"
 
 #: .\viewer\templates\navbar.html:271
 msgid "Open menu"
@@ -3480,22 +3478,22 @@ msgid "Sign out from account"
 msgstr "Odhlásiť sa z účtu"
 
 #: .\viewer\templates\navbar.html:379
-msgid "Your QR Codes"
-msgstr "Vaše QR kódy"
+msgid "Your Attendance"
+msgstr "Vaša dochádzka"
 
 #: .\viewer\templates\navbar.html:389 .\viewer\templates\user_dashboard.html:40
 #: .\viewer\templates\user_scan_qr.html:5
 #: .\viewer\templates\user_scan_qr.html:22
-msgid "Scan QR Code"
-msgstr "Skenovať QR kód"
+msgid "Record Attendance"
+msgstr "Zaznamenať dochádzku"
 
 #: .\viewer\templates\navbar.html:390
-msgid "Scan to record location"
-msgstr "Skenovať na zaznamenanie polohy"
+msgid "Record attendance and location"
+msgstr "Zaznamenať dochádzku a polohu"
 
 #: .\viewer\templates\navbar.html:402
-msgid "Manage employees & QR codes"
-msgstr "Spravovať zamestnancov a QR kódy"
+msgid "Manage employees & attendance"
+msgstr "Spravovať zamestnancov a dochádzku"
 
 #: .\viewer\templates\navbar.html:439
 msgid "Home"
@@ -3579,7 +3577,7 @@ msgstr "z"
 
 #: .\viewer\templates\paginator.html:101
 msgid "records"
-msgstr ""
+msgstr "záznamov"
 
 #: .\viewer\templates\password_reset_email.html:7
 #: .\viewer\templates\password_reset_email.html:14 .\viewer\views.py:1713
@@ -3939,8 +3937,8 @@ msgid "Permissions Granted"
 msgstr "Povolenia udelené"
 
 #: .\viewer\templates\translations_js.html:119
-msgid "You can now scan QR codes"
-msgstr "Teraz môžete skenovať QR kódy"
+msgid "You can now record attendance"
+msgstr "Teraz môžete zaznamenávať dochádzku"
 
 #: .\viewer\templates\translations_js.html:120
 msgid "Permission Error"
@@ -3968,8 +3966,8 @@ msgid "Start Scanner"
 msgstr "Spustiť skener"
 
 #: .\viewer\templates\translations_js.html:125
-msgid "Scan Workplace QR"
-msgstr "Skenovanie pracovného QR"
+msgid "Check-in at Workplace"
+msgstr "Check-in na pracovisku"
 
 #: .\viewer\templates\translations_js.html:126
 #: .\viewer\templates\user_scan_qr.html:154
@@ -4034,16 +4032,16 @@ msgid "Confirm Home Office"
 msgstr "Potvrďte prácu z domu"
 
 #: .\viewer\templates\translations_js.html:140
-msgid "Are you sure you want to scan from home office?"
-msgstr "Naozaj chcete naskenovať z domu?"
+msgid "Are you sure you want to check in from home office?"
+msgstr "Naozaj chcete zaznamenať dochádzku z domu?"
 
 #: .\viewer\templates\translations_js.html:141
 msgid "Confirm Business Trip"
 msgstr "Potvrdiť pracovnú cestu"
 
 #: .\viewer\templates\translations_js.html:142
-msgid "Are you sure you want to scan from business trip?"
-msgstr "Naozaj chcete naskenovať z pracovnej cesty?"
+msgid "Are you sure you want to check in from a business trip?"
+msgstr "Naozaj chcete zaznamenať dochádzku z pracovnej cesty?"
 
 #: .\viewer\templates\translations_js.html:148
 msgid "Edit Absence"
@@ -4337,12 +4335,12 @@ msgid "Please select scan type"
 msgstr "Prosím vyberte typ skenovania"
 
 #: .\viewer\templates\user_scan_qr.html:114
-msgid "Home Office Scan"
-msgstr "Skenovanie z domu"
+msgid "Home Office Check-in"
+msgstr "Dochádzka z domu"
 
 #: .\viewer\templates\user_scan_qr.html:120
-msgid "Business Trip Scan"
-msgstr "Pracovná cesta"
+msgid "Business Trip Check-in"
+msgstr "Dochádzka - pracovná cesta"
 
 #: .\viewer\templates\user_scan_qr.html:129
 msgid "Stop Scanner"
@@ -4354,10 +4352,10 @@ msgstr "Kamera a poloha sú povinné"
 
 #: .\viewer\templates\user_scan_qr.html:142
 msgid ""
-"To scan QR codes and record your location, we need permission to access your "
-"camera and location."
+"To record your attendance and verify your location, we need permission to "
+"access your camera and location."
 msgstr ""
-"Na skenovanie QR kódov a zaznamenanie vašej polohy potrebujeme povolenie na "
+"Na zaznamenanie vašej dochádzky a overenie polohy potrebujeme povolenie na "
 "prístup k vašej kamere a polohe."
 
 #: .\viewer\templates\vacation_notification.html:7
@@ -4607,14 +4605,35 @@ msgstr "Synchronizované!"
 msgid "scan(s) uploaded to server"
 msgstr "sken(y) odoslaný na server"
 
-msgid "Confirm No QR"
-msgstr "Potvrdiť bez QR"
+msgid "Offline mode – scans will sync when connected"
+msgstr "Offline režim – skeny sa synchronizujú po pripojení"
 
-msgid "Are you sure you want to record a scan without a QR code?"
-msgstr "Naozaj chcete zaznamenať sken bez QR kódu?"
+msgid "Offline Mode"
+msgstr "Offline režim"
 
-msgid "Scan a workplace QR code or use Home Office, Business Trip, or No QR."
-msgstr "Naskenujte pracovný QR kód alebo použite Home Office, Pracovnú cestu alebo Bez QR."
+msgid "You are offline. You can continue with your last stored session:"
+msgstr "Ste offline. Môžete pokračovať s poslednou uloženou reláciou:"
+
+msgid "Continue offline"
+msgstr "Pokračovať offline"
+
+msgid "No offline access available. Please connect to the internet to log in."
+msgstr "Offline prístup nie je dostupný. Pre prihlásenie sa prosím pripojte na internet."
+
+msgid "Missing offline token"
+msgstr "Chýbajúci offline token"
+
+msgid "Invalid or expired offline token"
+msgstr "Neplatný alebo vypršaný offline token"
+
+msgid "Confirm Manual Check-in"
+msgstr "Potvrdiť manuálny záznam"
+
+msgid "Are you sure you want to record attendance without a QR code?"
+msgstr "Naozaj chcete zaznamenať dochádzku bez QR kódu?"
+
+msgid "Scan your workplace QR code or use Home Office, Business Trip, or Manual Check-in."
+msgstr "Naskenujte pracovný QR kód alebo použite Home Office, Pracovnú cestu alebo Manuálny záznam."
 
 msgid "No QR"
 msgstr "Bez QR"

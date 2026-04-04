@@ -9,6 +9,7 @@ from qr_reader_django.generate_pdf_excel import generate_qr_code_pdf, generate_a
 from qr_reader_django.generate_vacation_pdf import dovolenka_pdf
 from qr_reader_django.general import check_email
 from qr_reader_django.login_register_logout import company_register, company_login, company_logout, user_login, user_logout
+from qr_reader_django.offline_auth import offline_token_view, offline_scan_view
 from qr_reader_django.crud_qr_code import create_qr_code, delete_qr_code
 from qr_reader_django.crud_user import create_user, delete_user, edit_user
 from qr_reader_django.crud_vacation import create_vacation, edit_vacation, delete_vacation, approve_vacation
@@ -21,6 +22,8 @@ urlpatterns = [
     path('download/android/', views.download_android_apk, name='download_android_apk'),
     # PWA Service Worker — must be at root scope (not inside i18n_patterns)
     path('sw.js', views.service_worker, name='service_worker'),
+    # Offline auth — issues HMAC tokens for offline attendance sync
+    path('api/offline-token/', offline_token_view, name='offline_token'),
 ]
 
 if settings.DEBUG:
@@ -44,6 +47,8 @@ urlpatterns += i18n_patterns(
     path('user/logout/', user_logout, name='user_logout'),
     path('user/dashboard/', views.user_dashboard, name='user_dashboard'),
     path('user/scan/', views.user_scan_qr, name='user_scan_qr'),
+    # Offline scan sync — CSRF-exempt, authenticated via X-Offline-Token
+    path('user/offline-scan/', offline_scan_view, name='offline_scan'),
     path('user/set-password/<str:token>/', views.user_set_password, name='user_set_password'),
     
     # QR Code management (company actions)

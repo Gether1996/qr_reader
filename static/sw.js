@@ -1,9 +1,10 @@
 /**
  * Trakero — Service Worker
  * Caches static assets for fast loading. HTML pages always fetched from network.
+ * Navigation pages (login + scan) are also cached for offline access.
  */
 
-const CACHE_NAME = 'qr-reader-static-v1';
+const CACHE_NAME = 'qr-reader-static-v2';
 
 // Static assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -22,8 +23,13 @@ const PRECACHE_ASSETS = [
     '/static/scripts/libraries/html5-qrcode.min.js',
     '/static/scripts/general.js',
     '/static/scripts/navbar.js',
+    '/static/scripts/scan-queue.js',
+    '/static/scripts/offline-auth.js',
     '/static/scripts/user-scan-qr.js',
 ];
+
+// Navigation pages to cache for offline access (login + scan in all language prefixes)
+const NAV_CACHE_PATTERN = /^\/[a-z]{2}\/(user\/scan|user\/login)\/?$/;
 
 // Offline fallback HTML shown when network is unavailable for navigation
 const OFFLINE_HTML = `<!DOCTYPE html>
@@ -144,14 +150,28 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // HTML navigation: Network-first, offline fallback
+    // HTML navigation: Network-first; cache scan/login pages; fallback to cache then offline page
     if (request.mode === 'navigate') {
         event.respondWith(
             fetch(request)
+                .then((response) => {
+                    // Cache login and scan pages for offline access
+                    if (response.ok && NAV_CACHE_PATTERN.test(url.pathname)) {
+                        const clone = response.clone();
+                        caches.open(CACHE_NAME)
+                            .then((cache) => cache.put(request, clone))
+                            .catch(() => null);
+                    }
+                    return response;
+                })
                 .catch(() =>
-                    new Response(OFFLINE_HTML, {
-                        status: 200,
-                        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+                    // Offline: serve cached page if available, else generic fallback
+                    caches.match(request).then((cached) => {
+                        if (cached) return cached;
+                        return new Response(OFFLINE_HTML, {
+                            status: 200,
+                            headers: { 'Content-Type': 'text/html; charset=utf-8' },
+                        });
                     })
                 )
         );
@@ -227,14 +247,20 @@ self.addEventListener('sync', (event) => {
                 return scans
                     .sort((a, b) => a.queued_at - b.queued_at)
                     .reduce((chain, entry) =>
-                        chain.then(() =>
-                            fetch(entry.scan_url, {
+                        chain.then(() => {
+                            // Use offline-sync endpoint when offline token is embedded
+                            const useOffline = !!(entry.offline_token && entry.offline_scan_url);
+                            const url     = useOffline ? entry.offline_scan_url : entry.scan_url;
+                            const headers = { 'Content-Type': 'application/json' };
+                            if (useOffline) {
+                                headers['X-Offline-Token'] = entry.offline_token;
+                            } else {
+                                headers['X-CSRFToken'] = entry.csrf_token;
+                            }
+                            return fetch(url, {
                                 method:  'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRFToken':  entry.csrf_token,
-                                },
-                                body: JSON.stringify(entry.payload),
+                                headers: headers,
+                                body:    JSON.stringify(entry.payload),
                             })
                             .then((response) => {
                                 // Remove from queue whether success or server error
@@ -247,8 +273,8 @@ self.addEventListener('sync', (event) => {
                             .catch(() => {
                                 // Network still down — abort; sync will retry
                                 return Promise.reject(new Error('network'));
-                            })
-                        ),
+                            });
+                        }),
                     Promise.resolve()
                     )
                     .catch(() => { /* sync will be retried automatically */ });

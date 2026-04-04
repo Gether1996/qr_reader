@@ -2,9 +2,10 @@
 
 ## Project Overview
 
-- Confirmed: This is a multilingual Django application for company attendance tracking and employee absence management.
+- Confirmed: This is a multilingual Django application for **employee attendance tracking with GPS location verification** and absence management. QR code scanning is one of several check-in methods alongside Home Office, Business Trip, and Manual (No QR) modes.
+- Confirmed: The primary product value is attendance management — recording arrivals, departures, and breaks with location proof. QR codes are a convenience tool, not the core identity of the product.
 - Confirmed: The main user roles are company accounts, manager employees, and regular employees.
-- Confirmed: Core workflows include employee management, QR code location management, attendance scanning, absence requests/approval, attendance reporting, analytics, audit logs, and password setup/reset.
+- Confirmed: Core workflows include employee management, attendance location management, attendance check-in/check-out, absence requests/approval, attendance reporting, analytics, audit logs, and password setup/reset.
 - Confirmed: There is a secondary `n8n_integration` area for workflow/webhook integrations that is separate from the main attendance product flow.
 
 ## Confirmed Architecture
@@ -42,10 +43,11 @@
 
 ## Core Business Workflows
 
-### Attendance scanning
+### Attendance check-in
 
-- Confirmed: Users scan attendance events through `user_scan_qr`.
-- Confirmed: Allowed scan actions are stateful and determined by the latest scan history in `_get_enabled_scan_buttons`.
+- Confirmed: Users record attendance events through `user_scan_qr` — the page is branded "Record Attendance", not "Scan QR Code".
+- Confirmed: QR code scanning is the primary workplace method but Home Office, Business Trip, and Manual (No QR) modes are first-class check-in methods supported throughout the product.
+- Confirmed: Allowed check-in actions are stateful and determined by the latest event history in `_get_enabled_scan_buttons`.
 - Confirmed: The valid sequence is intentionally constrained:
   - Default state allows `arrival`.
   - After `arrival`, allowed actions are `departure` and `lunch_break_start`.
@@ -94,6 +96,26 @@
 - Do not change scan sequencing rules without explicit approval.
 - Do not change how worked hours, lunch breaks, or "currently at work" state are derived without explicit approval.
 - Do not change absence approval/cancellation side effects without explicit approval.
+
+## User-Visible Terminology Rules
+
+- The product is an **attendance management** system, not a "QR code management" system. QR codes are one input method.
+- User-facing text must use attendance-focused language: "Record Attendance", "Check-in", "Track Attendance", not "Scan QR" or "Generate QR" as primary descriptions.
+- Check-in method names: "Home Office Check-in", "Business Trip Check-in", "Manual Check-in" (not "Home Office Scan", "Business Trip Scan", "No QR Scan").
+- Internal/admin labels for QR code management (e.g. "QR Codes" tab, "Create QR Code" button, "Print QR Code") are fine since they describe the actual QR administration feature.
+- The paginator shows "records" — this uses the i18n key `records` which must be translated in all languages (sk: záznamov, es: registros, de: Einträge).
+- Before adding any new user-visible string, ensure it uses attendance-focused terminology, not QR-focused wording.
+
+## User Experience Rules
+
+- **UX first, intuitive always**: Every UI element must be immediately understandable without explanation.
+- Prefer icons over text labels where intent is clear (e.g. expand/collapse chevrons, action icon buttons).
+- Use icon buttons with `title` attributes for clarity when removing text.
+- Modals must open and close smoothly — avoid heavy CSS properties during animation: no `transform: translateY` on hover, no `box-shadow: 0 30px+ px` on modal content. Keep modal `box-shadow` at `0 8px 24px` or lighter.
+- Avoid `transition: all` — always list specific properties (e.g. `transition: background 0.15s ease`).
+- CSS selectors for modal content must target `.app-dialog-body` (the project's custom modal body), NOT `.swal2-html-container` (which is SweetAlert2 and is not used).
+- The project uses a custom Bootstrap modal wrapper (`appUI` / `appDialogModal`) that mimics the SweetAlert2 API. All modal HTML renders inside `#appDialogBody` (`.app-dialog-body`).
+- Use the existing `daterangepicker` library for all date inputs — do not use native `<input type="date">` in modals or interactive forms. For single date selection use `singleDatePicker: true` option.
 
 ## Localization Rules
 
@@ -153,6 +175,46 @@
 - Password token validity behavior and existing password policy differences between company reset and employee setup.
 - Any localization plumbing that affects translated templates, JavaScript strings, or email rendering.
 - The auth boundary difference between the main app and `n8n_integration`.
+- The offline token secret (`SECRET_KEY`). Rotating `SECRET_KEY` invalidates all offline tokens and queued scans.
+
+## Offline Mode Architecture
+
+### Overview
+The app supports full offline attendance recording via a two-stage architecture:
+1. **Online phase**: user logs in → server issues an HMAC-signed offline token → client stores it in IndexedDB (`trakero-auth` DB).
+2. **Offline phase**: scan page is served from Service Worker cache → user scans → entry stored in `qr-reader-queue` IndexedDB with the offline token embedded.
+3. **Reconnect phase**: scan-queue auto-sync uses `/user/offline-scan/` (CSRF-exempt, token-authenticated) instead of the regular session endpoint.
+
+### Key files
+| File | Role |
+|---|---|
+| `qr_reader_django/offline_auth.py` | Token generation (`generate_offline_token`), verification (`verify_offline_token`), and two endpoints |
+| `static/scripts/offline-auth.js` | IndexedDB auth store; exposes `window.offlineAuth` |
+| `static/scripts/scan-queue.js` | Embeds offline token in every queued entry; `postEntry` uses offline endpoint when token present |
+| `static/sw.js` | Caches login/scan pages for offline navigation; Background Sync uses token-aware fetch |
+
+### Token format
+`<base64url_payload>.<hex_hmac_sha256_sig>`
+Payload: `{"uid": int, "cid": int, "nam": str, "exp": unix_timestamp}` — 60-day expiry.
+
+### Endpoints
+- `GET /api/offline-token/` — session-authenticated, returns token + user metadata.
+- `POST /<lang>/user/offline-scan/` — CSRF-exempt, `X-Offline-Token` header required. Same request/response shape as `/user/scan/`.
+
+### Offline login UX
+- The Service Worker caches the login and scan pages for any language prefix.
+- When device is offline, the login page JS checks IndexedDB for a valid token.
+  - Token found → shows "Continue as [name]" button → navigates to cached scan page.
+  - No token → shows "No offline access available" message.
+- The scan page shows a red "Offline mode" banner and enables all scan-type buttons (server enforces sequencing on sync).
+
+### Rules
+- Do not rotate `SECRET_KEY` without also clearing all IndexedDB offline tokens (`offlineAuth.clear()` on clients).
+- The offline endpoint must never skip scan-sequencing validation (`_get_enabled_scan_buttons`).
+- Location (GPS) is always required for offline scans — it is hardware-based and works without internet.
+- If the offline token expires (60 days), the user must log in online once to refresh it.
+- The `scan-queue.js` `addScan()` always tries to embed the token; entries without a token fall back to CSRF-based sync (covers old queued entries and online-only failure retries).
+- The SW cache key for navigation pages is `qr-reader-static-v2`. Incrementing the cache version invalidates cached pages; bump it when the login/scan page HTML changes significantly.
 
 ## Safe Change Guidelines
 

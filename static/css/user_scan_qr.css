@@ -566,3 +566,23 @@
 :root[data-theme="dark"] .offline-queue-bar {
     box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
 }
+
+/* ─── Offline mode banner ───────────────────────────────────────────────── */
+
+.offline-mode-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #fff;
+    border-radius: 14px;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.32);
+    animation: queueBarIn 0.25s ease;
+}
+
+:root[data-theme="dark"] .offline-mode-banner {
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.2);
+}

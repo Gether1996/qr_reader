@@ -52,6 +52,31 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Offline mode card: shown automatically when device is offline -->
+            <div id="offline-auth-card" class="card auth-card mt-3 d-none">
+                <div class="card-body auth-card-body">
+                    <div class="auth-header">
+                        <i class="fas fa-wifi-slash auth-icon text-warning" style="font-size:1.8rem;"></i>
+                        <h5 class="mt-2">{% trans "Offline Mode" %}</h5>
+                    </div>
+                    <div id="offline-auth-content-capable" class="d-none">
+                        <p class="text-muted small text-center mb-3">
+                            {% trans "You are offline. You can continue with your last stored session:" %}
+                        </p>
+                        <button id="offline-continue-btn" type="button" class="btn btn-warning w-100">
+                            <i class="fas fa-user-clock me-2"></i>
+                            <span id="offline-user-label">{% trans "Continue offline" %}</span>
+                        </button>
+                    </div>
+                    <div id="offline-auth-content-incapable" class="d-none">
+                        <p class="text-muted small text-center mb-0">
+                            <i class="fas fa-exclamation-triangle me-1 text-danger"></i>
+                            {% trans "No offline access available. Please connect to the internet to log in." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -62,19 +87,57 @@
 <script>
 // Prevent double form submission
 document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('loginForm');
-    const loginBtn = document.getElementById('loginBtn');
-    let isSubmitting = false;
-    
+    var loginForm = document.getElementById('loginForm');
+    var loginBtn  = document.getElementById('loginBtn');
+    var isSubmitting = false;
+
     loginForm.addEventListener('submit', function(e) {
-        if (isSubmitting) {
-            e.preventDefault();
-            return false;
-        }
-        
+        if (isSubmitting) { e.preventDefault(); return false; }
         isSubmitting = true;
         loginBtn.disabled = true;
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{% trans "Logging in..." %}';
+    });
+
+    // ── Offline mode ──────────────────────────────────────────────────────────
+    function applyOfflineUI() {
+        if (!navigator.onLine && window.offlineAuth) {
+            var card = document.getElementById('offline-auth-card');
+            if (card) card.classList.remove('d-none');
+
+            window.offlineAuth.get().then(function(session) {
+                var capable   = document.getElementById('offline-auth-content-capable');
+                var incapable = document.getElementById('offline-auth-content-incapable');
+                var label     = document.getElementById('offline-user-label');
+                var btn       = document.getElementById('offline-continue-btn');
+
+                if (session && session.user_name) {
+                    if (capable)   capable.classList.remove('d-none');
+                    if (incapable) incapable.classList.add('d-none');
+                    if (label)     label.textContent = session.user_name;
+                    if (btn) {
+                        btn.addEventListener('click', function() {
+                            // Store an offline-mode flag so the scan page knows
+                            sessionStorage.setItem('offline_mode', '1');
+                            var lang = window.location.pathname.split('/')[1] || 'sk';
+                            window.location.href = '/' + lang + '/user/scan/';
+                        });
+                    }
+                } else {
+                    if (capable)   capable.classList.add('d-none');
+                    if (incapable) incapable.classList.remove('d-none');
+                }
+            }).catch(function() {
+                var incapable = document.getElementById('offline-auth-content-incapable');
+                if (incapable) incapable.classList.remove('d-none');
+            });
+        }
+    }
+
+    applyOfflineUI();
+    window.addEventListener('offline', applyOfflineUI);
+    window.addEventListener('online', function() {
+        var card = document.getElementById('offline-auth-card');
+        if (card) card.classList.add('d-none');
     });
 });
 </script>
