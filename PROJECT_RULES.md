@@ -128,6 +128,7 @@
 - Confirmed: JavaScript-visible strings are exposed through `viewer/templates/translations_js.html` and consumed by scripts through the shared `translations` object and helper functions.
 - Confirmed: Localized emails are rendered through `viewer/email_utils.py` using `override(language_code)`.
 - Hard rule for future changes: Do not add user-visible strings directly into templates, Python, or JavaScript without following the existing translation pipeline.
+- Hard rule for future changes: Slovak user-facing copy must use correct Slovak diacritics in UI, emails, validation messages, and JavaScript strings. Do not ship ASCII fallbacks such as `ucet`, `heslo`, `zobrazit`, or `pouzivatel` unless that exact output channel is technically forced to be ASCII.
 
 ## Datetime Rules
 

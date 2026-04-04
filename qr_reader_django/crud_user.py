@@ -25,7 +25,7 @@ def _build_user_setup_url(request, token):
 def _get_combined_password_message(language_code):
     language = (language_code or 'en').split('-')[0].lower()
     messages = {
-        'sk': 'Vyplnte obe polia hesla alebo ich nechajte prazdne a odosleme email s linkom na nastavenie hesla.',
+        'sk': 'Vyplňte obe polia hesla alebo ich nechajte prázdne a odošleme email s linkom na nastavenie hesla.',
         'de': 'Fuellen Sie beide Passwortfelder aus oder lassen Sie sie leer, damit wir einen Link zum Festlegen des Passworts per E-Mail senden koennen.',
         'es': 'Rellena ambos campos de contrasena o dejalos vacios para enviar un enlace de configuracion por correo.',
         'en': 'Fill both password fields or leave them blank to send a password setup link by email.',

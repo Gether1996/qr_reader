@@ -98,6 +98,7 @@
 - Any new user-visible text must follow the project i18n system documented in [PROJECT_RULES.md](C:/Users/gethe/Desktop/qr_reader/PROJECT_RULES.md).
 - Styling changes must not depend on hardcoded language assumptions.
 - Allow for longer translated labels in buttons, nav items, and cards.
+- Slovak copy must preserve proper diacritics everywhere it appears. Do not introduce ASCII-only Slovak labels like `ucet`, `zobrazit`, or `potvrdte` in UI copy, help text, or emails.
 
 ## Reuse Guidance
 

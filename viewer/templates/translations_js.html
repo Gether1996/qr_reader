@@ -55,11 +55,11 @@ const translations = {
     email: '{% trans "Email" %}',
     password: '{% trans "Password" %}',
     confirmPassword: '{% trans "Confirm Password" %}',
-    passwordOptionalInvite: '{% if LANGUAGE_CODE == "sk" %}Heslo (nechajte prazdne pre emailovy link){% elif LANGUAGE_CODE == "de" %}Passwort (leer lassen fuer E-Mail-Link){% elif LANGUAGE_CODE == "es" %}Contrasena (dejar vacio para enlace por correo){% else %}Password (leave blank to send email link){% endif %}',
+    passwordOptionalInvite: '{% if LANGUAGE_CODE == "sk" %}Heslo (nechajte prázdne pre emailový link){% elif LANGUAGE_CODE == "de" %}Passwort (leer lassen fuer E-Mail-Link){% elif LANGUAGE_CODE == "es" %}Contrasena (dejar vacio para enlace por correo){% else %}Password (leave blank to send email link){% endif %}',
     confirmPasswordOptional: '{% if LANGUAGE_CODE == "sk" %}Potvrdenie hesla{% elif LANGUAGE_CODE == "de" %}Passwort bestaetigen{% elif LANGUAGE_CODE == "es" %}Confirmar contrasena{% else %}Confirm password{% endif %}',
     register: '{% trans "Register" %}',
     fillAllFields: '{% trans "Please fill all fields" %}',
-    employeeInviteHint: '{% if LANGUAGE_CODE == "sk" %}Ak nechate obe polia hesla prazdne, odosleme zamestnancovi email s linkom na nastavenie hesla platnym 24 hodin.{% elif LANGUAGE_CODE == "de" %}Wenn Sie beide Passwortfelder leer lassen, senden wir dem Mitarbeiter eine E-Mail mit einem 24 Stunden gueltigen Link zum Festlegen des Passworts.{% elif LANGUAGE_CODE == "es" %}Si dejas vacios ambos campos de contrasena, enviaremos al empleado un correo con un enlace valido durante 24 horas para configurarla.{% else %}Leave both password fields empty to send the employee an email with a password setup link valid for 24 hours.{% endif %}',
+    employeeInviteHint: '{% if LANGUAGE_CODE == "sk" %}Ak necháte obe polia hesla prázdne, odošleme zamestnancovi email s linkom na nastavenie hesla platným 24 hodín.{% elif LANGUAGE_CODE == "de" %}Wenn Sie beide Passwortfelder leer lassen, senden wir dem Mitarbeiter eine E-Mail mit einem 24 Stunden gueltigen Link zum Festlegen des Passworts.{% elif LANGUAGE_CODE == "es" %}Si dejas vacios ambos campos de contrasena, enviaremos al empleado un correo con un enlace valido durante 24 horas para configurarla.{% else %}Leave both password fields empty to send the employee an email with a password setup link valid for 24 hours.{% endif %}',
     basicWorkHours: '{% trans "Basic Work Hours (per month)" %}',
     holidaysPerYear: '{% trans "Holidays Per Year (days)" %}',
     role: '{% trans "Role" %}',
@@ -88,9 +88,9 @@ const translations = {
     
     // Validation
     passwordMinLength: '{% trans "Password must be at least 8 characters" %}',
-    passwordMinLengthStrong: '{% if LANGUAGE_CODE == "sk" %}Heslo musi mat aspon 10 znakov{% elif LANGUAGE_CODE == "de" %}Das Passwort muss mindestens 10 Zeichen lang sein{% elif LANGUAGE_CODE == "es" %}La contrasena debe tener al menos 10 caracteres{% else %}Password must be at least 10 characters long{% endif %}',
-    passwordUppercaseRequired: '{% if LANGUAGE_CODE == "sk" %}Heslo musi obsahovat aspon jedno velke pismeno{% elif LANGUAGE_CODE == "de" %}Das Passwort muss mindestens einen Grossbuchstaben enthalten{% elif LANGUAGE_CODE == "es" %}La contrasena debe contener al menos una letra mayuscula{% else %}Password must contain at least one uppercase letter{% endif %}',
-    passwordBothOrInvite: '{% if LANGUAGE_CODE == "sk" %}Vyplnte obe polia hesla alebo ich nechajte prazdne a odosleme emailovy link{% elif LANGUAGE_CODE == "de" %}Fuellen Sie beide Passwortfelder aus oder lassen Sie sie leer, damit wir einen E-Mail-Link senden koennen{% elif LANGUAGE_CODE == "es" %}Rellena ambos campos de contrasena o dejalos vacios para enviar un enlace por correo{% else %}Fill both password fields or leave them blank to send an email link{% endif %}',
+    passwordMinLengthStrong: '{% if LANGUAGE_CODE == "sk" %}Heslo musí mať aspoň 10 znakov{% elif LANGUAGE_CODE == "de" %}Das Passwort muss mindestens 10 Zeichen lang sein{% elif LANGUAGE_CODE == "es" %}La contrasena debe tener al menos 10 caracteres{% else %}Password must be at least 10 characters long{% endif %}',
+    passwordUppercaseRequired: '{% if LANGUAGE_CODE == "sk" %}Heslo musí obsahovať aspoň jedno veľké písmeno{% elif LANGUAGE_CODE == "de" %}Das Passwort muss mindestens einen Grossbuchstaben enthalten{% elif LANGUAGE_CODE == "es" %}La contrasena debe contener al menos una letra mayuscula{% else %}Password must contain at least one uppercase letter{% endif %}',
+    passwordBothOrInvite: '{% if LANGUAGE_CODE == "sk" %}Vyplňte obe polia hesla alebo ich nechajte prázdne a odošleme emailový link{% elif LANGUAGE_CODE == "de" %}Fuellen Sie beide Passwortfelder aus oder lassen Sie sie leer, damit wir einen E-Mail-Link senden koennen{% elif LANGUAGE_CODE == "es" %}Rellena ambos campos de contrasena o dejalos vacios para enviar un enlace por correo{% else %}Fill both password fields or leave them blank to send an email link{% endif %}',
     passwordsDontMatch: '{% trans "Passwords do not match" %}',
     emailAlreadyExists: '{% trans "Email already exists" %}',
     

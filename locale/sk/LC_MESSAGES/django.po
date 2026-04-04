@@ -4288,79 +4288,79 @@ msgid "Employee Status"
 msgstr "Stav zamestnanca"
 
 msgid "Show deactivated employees"
-msgstr "Zobrazit deaktivovanych zamestnancov"
+msgstr "Zobraziť deaktivovaných zamestnancov"
 
 msgid "Deactivated"
-msgstr "Deaktivovany"
+msgstr "Deaktivovaný"
 
 msgid "Delete Permanently"
-msgstr "Odstranit natrvalo"
+msgstr "Odstrániť natrvalo"
 
 msgid "Deactivating user..."
 msgstr "Deaktivacia zamestnanca..."
 
 msgid "User has been permanently deleted"
-msgstr "Pouzivatel bol natrvalo odstraneny"
+msgstr "Používateľ bol natrvalo odstránený"
 
 msgid "Failed to permanently delete user"
-msgstr "Nepodarilo sa natrvalo odstranit pouzivatela"
+msgstr "Nepodarilo sa natrvalo odstrániť používateľa"
 
 msgid "Delete User Permanently?"
-msgstr "Odstranit pouzivatela natrvalo?"
+msgstr "Odstrániť používateľa natrvalo?"
 
 msgid "Are you sure you want to permanently delete {name}? This removes the employee record for good."
-msgstr "Ste si isty, ze chcete natrvalo odstranit {name}? Tento zaznam zamestnanca sa odstrani natrvalo."
+msgstr "Ste si istý, že chcete natrvalo odstrániť {name}? Tento záznam zamestnanca sa odstráni natrvalo."
 
 msgid "Yes, delete permanently!"
-msgstr "Ano, odstranit natrvalo!"
+msgstr "Áno, odstrániť natrvalo!"
 
 msgid "Deleting user permanently..."
-msgstr "Trvale odstranovanie zamestnanca..."
+msgstr "Trvalé odstraňovanie zamestnanca..."
 
 msgid "User is already deactivated"
-msgstr "Pouzivatel je uz deaktivovany"
+msgstr "Používateľ je už deaktivovaný"
 
 msgid "User deactivated successfully"
-msgstr "Pouzivatel bol deaktivovany"
+msgstr "Používateľ bol deaktivovaný"
 
 msgid "Deactivate the user before permanent deletion"
-msgstr "Pred trvalym odstraneni najprv deaktivujte pouzivatela"
+msgstr "Pred trvalým odstránením najprv deaktivujte používateľa"
 
 msgid "User permanently deleted successfully"
-msgstr "Pouzivatel bol natrvalo odstraneny"
+msgstr "Používateľ bol natrvalo odstránený"
 
 msgid "User has been reactivated"
-msgstr "Pouzivatel bol znovu aktivovany"
+msgstr "Používateľ bol znovu aktivovaný"
 
 msgid "Failed to reactivate user"
-msgstr "Nepodarilo sa znovu aktivovat pouzivatela"
+msgstr "Nepodarilo sa znovu aktivovať používateľa"
 
 msgid "Reactivate User?"
-msgstr "Znovu aktivovat pouzivatela?"
+msgstr "Znovu aktivovať používateľa?"
 
 msgid "Are you sure you want to reactivate {name}?"
-msgstr "Ste si isty, ze chcete znovu aktivovat {name}?"
+msgstr "Ste si istý, že chcete znovu aktivovať {name}?"
 
 msgid "Yes, reactivate!"
-msgstr "Ano, znovu aktivovat!"
+msgstr "Áno, znovu aktivovať!"
 
 msgid "Reactivating user..."
-msgstr "Opatovna aktivacia pouzivatela..."
+msgstr "Opätovná aktivácia používateľa..."
 
 msgid "Reactivate"
-msgstr "Znovu aktivovat"
+msgstr "Znovu aktivovať"
 
 msgid "Reactivate Employee"
-msgstr "Znovu aktivovat zamestnanca"
+msgstr "Znovu aktivovať zamestnanca"
 
 msgid "User is already active"
-msgstr "Pouzivatel je uz aktivny"
+msgstr "Používateľ je už aktívny"
 
 msgid "User reactivated successfully"
-msgstr "Pouzivatel bol uspesne znovu aktivovany"
+msgstr "Používateľ bol úspešne znovu aktivovaný"
 
 msgid "Show inactive"
-msgstr "Zobrazit neaktivnych"
+msgstr "Zobraziť neaktívnych"
 
 #: .\viewer\templates\user_dashboard.html:272
 #, fuzzy
