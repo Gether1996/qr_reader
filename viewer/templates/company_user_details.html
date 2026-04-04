@@ -55,9 +55,8 @@
             
             <!-- Toggle Button -->
             <div class="mt-3 text-center">
-                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#userDetails" aria-expanded="false" aria-controls="userDetails">
-                    <i class="fas fa-chevron-down me-1" id="detailsIcon"></i>
-                    <span id="detailsText">{% trans "Show Details" %}</span>
+                <button class="details-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#userDetails" aria-expanded="false" aria-controls="userDetails" title="{% trans 'Show Details' %}">
+                    <i class="fas fa-chevron-down details-toggle-icon"></i>
                 </button>
             </div>
             
@@ -242,17 +241,13 @@
     </div>
     
     <script>
-        // Toggle icon and text when collapsing/expanding
+        // Toggle tooltip when collapsing/expanding (icon rotation handled by CSS)
         document.getElementById('userDetails').addEventListener('show.bs.collapse', function () {
-            document.getElementById('detailsIcon').classList.remove('fa-chevron-down');
-            document.getElementById('detailsIcon').classList.add('fa-chevron-up');
-            document.getElementById('detailsText').textContent = "{% trans 'Hide Details' %}";
+            document.querySelector('.details-toggle-btn').setAttribute('title', "{% trans 'Hide Details' %}");
         });
         
         document.getElementById('userDetails').addEventListener('hide.bs.collapse', function () {
-            document.getElementById('detailsIcon').classList.remove('fa-chevron-up');
-            document.getElementById('detailsIcon').classList.add('fa-chevron-down');
-            document.getElementById('detailsText').textContent = "{% trans 'Show Details' %}";
+            document.querySelector('.details-toggle-btn').setAttribute('title', "{% trans 'Show Details' %}");
         });
     </script>
 

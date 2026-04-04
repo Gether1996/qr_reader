@@ -120,9 +120,9 @@
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="dropdown-content">
-                            <a href="{% url 'user_scan_qr' %}" class="dropdown-link {% if request.resolver_match.url_name == 'user_scan_qr' %}active{% endif %}" style="color: #10b981;">
+                            <a href="{% url 'user_scan_qr' %}" class="dropdown-link {% if request.resolver_match.url_name == 'user_scan_qr' %}active{% endif %}">
                                 <i class="fas fa-camera"></i>
-                                <span>{% trans "Scan QR" %}</span>
+                                <span>{% trans "Record Attendance" %}</span>
                             </a>
                             {% if current_user.is_manager %}
                             <a href="{% url 'company_dashboard' %}" class="dropdown-link {% if request.resolver_match.url_name == 'company_dashboard' %}active{% endif %}">
@@ -393,7 +393,7 @@
                     </div>
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Dashboard" %}</span>
-                        <span class="subtitle">{% trans "Your QR Codes" %}</span>
+                        <span class="subtitle">{% trans "Your Attendance" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
@@ -403,8 +403,8 @@
                         <i class="fas fa-camera"></i>
                     </div>
                     <div class="mobile-menu-item-text">
-                        <span class="title">{% trans "Scan QR Code" %}</span>
-                        <span class="subtitle">{% trans "Scan to record location" %}</span>
+                        <span class="title">{% trans "Record Attendance" %}</span>
+                        <span class="subtitle">{% trans "Record attendance and location" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>
@@ -416,7 +416,7 @@
                     </div>
                     <div class="mobile-menu-item-text">
                         <span class="title">{% trans "Company Dashboard" %}</span>
-                        <span class="subtitle">{% trans "Manage employees & QR codes" %}</span>
+                        <span class="subtitle">{% trans "Manage employees & attendance" %}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </a>

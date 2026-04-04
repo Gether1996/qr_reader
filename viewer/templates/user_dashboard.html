@@ -37,7 +37,7 @@
                             <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-plus"></i></span>{% trans "Add Absence" %}
                         </button>
                         <a href="{% url 'user_scan_qr' %}" class="btn header-action-btn btn-blue flex-fill flex-lg-grow-0">
-                            <i class="fas fa-camera me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-camera"></i></span>{% trans "Scan QR Code" %}
+                            <i class="fas fa-camera me-1 d-none d-sm-inline"></i><span class="d-sm-none"><i class="fas fa-camera"></i></span>{% trans "Record Attendance" %}
                         </a>
                     </div>
                 </div>
@@ -45,9 +45,8 @@
             
             <!-- Toggle Button -->
             <div class="mt-3 text-center">
-                <button class="details-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#userDetails" aria-expanded="false" aria-controls="userDetails">
-                    <span id="detailsText">{% trans "Show Details" %}</span>
-                    <i class="fas fa-chevron-down ms-1 details-toggle-icon" id="detailsIcon"></i>
+                <button class="details-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#userDetails" aria-expanded="false" aria-controls="userDetails" title="{% trans 'Show Details' %}">
+                    <i class="fas fa-chevron-down details-toggle-icon"></i>
                 </button>
             </div>
             
@@ -277,13 +276,13 @@
     </div>
     
     <script>
-        // Toggle text when collapsing/expanding (icon rotation handled by CSS)
+        // Toggle tooltip when collapsing/expanding (icon rotation handled by CSS)
         document.getElementById('userDetails').addEventListener('show.bs.collapse', function () {
-            document.getElementById('detailsText').textContent = "{% trans 'Hide Details' %}";
+            document.querySelector('.details-toggle-btn').setAttribute('title', "{% trans 'Hide Details' %}");
         });
         
         document.getElementById('userDetails').addEventListener('hide.bs.collapse', function () {
-            document.getElementById('detailsText').textContent = "{% trans 'Show Details' %}";
+            document.querySelector('.details-toggle-btn').setAttribute('title', "{% trans 'Show Details' %}");
         });
     </script>
 

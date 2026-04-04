@@ -49,44 +49,6 @@ body {
     background: #1e40af;
 }
 
-.details-toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: none;
-    border: none;
-    padding: 0.35rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #64748b;
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.details-toggle-btn:hover {
-    background: rgba(100, 116, 139, 0.08);
-    color: #334155;
-}
-
-.details-toggle-icon {
-    font-size: 0.72rem;
-    transition: transform 0.25s ease;
-}
-
-.details-toggle-btn[aria-expanded="true"] .details-toggle-icon {
-    transform: rotate(180deg);
-}
-
-:root[data-theme="dark"] .details-toggle-btn {
-    color: #94a3b8;
-}
-
-:root[data-theme="dark"] .details-toggle-btn:hover {
-    background: rgba(148, 163, 184, 0.1);
-    color: #cbd5e1;
-}
-
 .dashboard-summary-grid {
     display: grid;
     gap: 0.85rem;

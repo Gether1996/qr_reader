@@ -20,16 +20,16 @@
                     <span>Trakero</span>
                 </h1>
                 <p class="hero-subtitle">
-                    {% trans "Professional QR code management with real-time location tracking and comprehensive analytics" %}
+                    {% trans "Professional employee attendance management with real-time location tracking and comprehensive analytics" %}
                 </p>
             </div>
 
             <div class="features-strip">
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-qrcode"></i>
+                        <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <span class="feature-text">{% trans "Generate QR Codes" %}</span>
+                    <span class="feature-text">{% trans "Attendance Tracking" %}</span>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">
@@ -52,7 +52,7 @@
                     </div>
                     <h2 class="card-title">{% trans "Company Access" %}</h2>
                     <p class="card-description">
-                        {% trans "Create QR codes, manage users, and monitor scan activity across your organization" %}
+                        {% trans "Manage employees, track attendance and monitor activity across your organization" %}
                     </p>
                     <div class="card-actions">
                         <a href="{% url 'company_login' %}" class="action-btn primary">
@@ -72,7 +72,7 @@
                     </div>
                     <h2 class="card-title">{% trans "User Access" %}</h2>
                     <p class="card-description">
-                        {% trans "View your company's QR codes and access scan history and analytics" %}
+                        {% trans "Track your attendance, view your history and access personal analytics" %}
                     </p>
                     <div class="card-actions">
                         <a href="{% url 'user_login' %}" class="action-btn success">
@@ -124,7 +124,7 @@
                     <div class="feature-details">
                         <div class="feature-details-content">
                             <ul class="feature-details-list">
-                                <li><i class="fas fa-check-circle"></i> {% trans "QR code scanning with timestamp and GPS coordinates" %}</li>
+                                <li><i class="fas fa-check-circle"></i> {% trans "Attendance recording with timestamp and GPS coordinates" %}</li>
                                 <li><i class="fas fa-check-circle"></i> {% trans "Arrival, departure, and break event tracking" %}</li>
                                 <li><i class="fas fa-check-circle"></i> {% trans "Automatic working hours calculation" %}</li>
                                 <li><i class="fas fa-check-circle"></i> {% trans "Overtime and night shift detection" %}</li>

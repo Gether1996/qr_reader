@@ -10,13 +10,11 @@
     padding: 0.625rem 1.5rem !important;
     font-weight: 600 !important;
     border-radius: 0.5rem !important;
-    transition: all 0.3s ease !important;
+    transition: background 0.15s ease !important;
 }
 
 .swal-btn-gradient-green:hover {
     background: linear-gradient(135deg, #059669, #047857) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
 }
 
 .swal-btn-gradient-red {
@@ -26,13 +24,11 @@
     padding: 0.625rem 1.5rem !important;
     font-weight: 600 !important;
     border-radius: 0.5rem !important;
-    transition: all 0.3s ease !important;
+    transition: background 0.15s ease !important;
 }
 
 .swal-btn-gradient-red:hover {
     background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
 }
 
 .swal-btn-gradient-gray {
@@ -42,13 +38,11 @@
     padding: 0.625rem 1.5rem !important;
     font-weight: 600 !important;
     border-radius: 0.5rem !important;
-    transition: all 0.3s ease !important;
+    transition: background 0.15s ease !important;
 }
 
 .swal-btn-gradient-gray:hover {
     background: linear-gradient(135deg, #6b7280, #4b5563) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4) !important;
 }
 
 .swal-btn-gradient-blue {
@@ -58,13 +52,11 @@
     padding: 0.625rem 1.5rem !important;
     font-weight: 600 !important;
     border-radius: 0.5rem !important;
-    transition: all 0.3s ease !important;
+    transition: background 0.15s ease !important;
 }
 
 .swal-btn-gradient-blue:hover {
     background: linear-gradient(135deg, #2563eb, #1e40af) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
 }
 
 .swal-popup-rounded {
@@ -215,13 +207,13 @@
 }
 
 /* ---- Custom type picker inside modals ---- */
-.swal2-html-container .swal-type-grid {
+.swal-type-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.55rem;
 }
 
-.swal2-html-container .swal-type-btn {
+.swal-type-btn {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -241,70 +233,70 @@
     text-align: center !important;
 }
 
-.swal2-html-container .swal-type-btn:hover {
+.swal-type-btn:hover {
     border-color: #94a3b8 !important;
     background: #f1f5f9 !important;
 }
 
-.swal2-html-container .swal-type-icon {
+.swal-type-icon {
     font-size: 1.25rem !important;
     line-height: 1 !important;
 }
 
-.swal2-html-container .swal-type-btn.selected.type-vacation {
+.swal-type-btn.selected.type-vacation {
     border-color: #2563eb !important;
     background: #dbeafe !important;
     color: #1d4ed8 !important;
 }
 
-.swal2-html-container .swal-type-btn.selected.type-sick_leave {
+.swal-type-btn.selected.type-sick_leave {
     border-color: #d97706 !important;
     background: #fef3c7 !important;
     color: #b45309 !important;
 }
 
-.swal2-html-container .swal-type-btn.selected.type-doctor {
+.swal-type-btn.selected.type-doctor {
     border-color: #dc2626 !important;
     background: #fee2e2 !important;
     color: #b91c1c !important;
 }
 
-.swal2-html-container .swal-type-btn.selected.type-home_office {
+.swal-type-btn.selected.type-home_office {
     border-color: #059669 !important;
     background: #dcfce7 !important;
     color: #166534 !important;
 }
 
-:root[data-theme="dark"] .swal2-html-container .swal-type-btn {
+:root[data-theme="dark"] .swal-type-btn {
     border-color: rgba(71, 85, 105, 0.6) !important;
     background: rgba(255, 255, 255, 0.04) !important;
     color: #94a3b8 !important;
 }
 
-:root[data-theme="dark"] .swal2-html-container .swal-type-btn:hover {
+:root[data-theme="dark"] .swal-type-btn:hover {
     border-color: #475569 !important;
     background: rgba(255, 255, 255, 0.08) !important;
 }
 
-:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-vacation {
+:root[data-theme="dark"] .swal-type-btn.selected.type-vacation {
     border-color: #2563eb !important;
     background: rgba(37, 99, 235, 0.2) !important;
     color: #bfdbfe !important;
 }
 
-:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-sick_leave {
+:root[data-theme="dark"] .swal-type-btn.selected.type-sick_leave {
     border-color: #d97706 !important;
     background: rgba(217, 119, 6, 0.2) !important;
     color: #fde68a !important;
 }
 
-:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-doctor {
+:root[data-theme="dark"] .swal-type-btn.selected.type-doctor {
     border-color: #dc2626 !important;
     background: rgba(220, 38, 38, 0.2) !important;
     color: #fecaca !important;
 }
 
-:root[data-theme="dark"] .swal2-html-container .swal-type-btn.selected.type-home_office {
+:root[data-theme="dark"] .swal-type-btn.selected.type-home_office {
     border-color: #059669 !important;
     background: rgba(5, 150, 105, 0.2) !important;
     color: #bbf7d0 !important;

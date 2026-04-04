@@ -154,7 +154,7 @@ function createUser() {
                         </div>
                         <div class="col-12">
                             <label class="form-label mb-1 small">${translations.birthDate || 'Birth Date'}</label>
-                            <input type="date" id="swal-user-birth-date" class="form-control">
+                            <input type="text" id="swal-user-birth-date" class="form-control" placeholder="DD.MM.YYYY" autocomplete="off" readonly>
                         </div>
                     </div>
                 </div>
@@ -300,6 +300,22 @@ function createUser() {
                     notificationOptions.style.display = this.checked ? 'block' : 'none';
                 });
             }
+
+            // Birth date - single date picker
+            const bdLocale = (typeof daterangepickerLocale !== 'undefined' && daterangepickerLocale[langCode]) || {};
+            $('#swal-user-birth-date').daterangepicker({
+                singleDatePicker: true,
+                locale: bdLocale,
+                autoUpdateInput: false,
+                opens: 'center',
+                showDropdowns: true
+            });
+            $('#swal-user-birth-date').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD.MM.YYYY'));
+            });
+            $('#swal-user-birth-date').on('cancel.daterangepicker', function() {
+                $(this).val('');
+            });
         },
         showCancelButton: true,
         confirmButtonText: translations.register,
@@ -313,7 +329,8 @@ function createUser() {
             const email = document.getElementById('swal-user-email').value;
             const rc = document.getElementById('swal-user-rc').value || null;
             const phone = document.getElementById('swal-user-phone').value || null;
-            const birthDate = document.getElementById('swal-user-birth-date').value || null;
+            const rawBirthDate = document.getElementById('swal-user-birth-date').value;
+            const birthDate = rawBirthDate ? moment(rawBirthDate, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
             const password = document.getElementById('swal-user-password').value;
             const passwordConfirm = document.getElementById('swal-user-password-confirm').value;
             const role = document.getElementById('swal-user-role').value;
@@ -498,7 +515,7 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                         </div>
                         <div class="col-12">
                             <label class="form-label mb-1 small">${translations.birthDate || 'Birth Date'}</label>
-                            <input type="date" id="swal-edit-user-birth-date" class="form-control" value="${birthDate || ''}">
+                            <input type="text" id="swal-edit-user-birth-date" class="form-control" placeholder="DD.MM.YYYY" autocomplete="off" readonly>
                         </div>
                     </div>
                 </div>
@@ -639,6 +656,24 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
                     notificationOptions.style.display = this.checked ? 'block' : 'none';
                 });
             }
+
+            // Birth date - single date picker
+            const bdLocale = (typeof daterangepickerLocale !== 'undefined' && daterangepickerLocale[langCode]) || {};
+            const bdDrpOptions = { singleDatePicker: true, locale: bdLocale, autoUpdateInput: false, opens: 'center', showDropdowns: true };
+            if (birthDate) {
+                const parsedBD = moment(birthDate, 'YYYY-MM-DD');
+                if (parsedBD.isValid()) {
+                    bdDrpOptions.startDate = parsedBD;
+                    $('#swal-edit-user-birth-date').val(parsedBD.format('DD.MM.YYYY'));
+                }
+            }
+            $('#swal-edit-user-birth-date').daterangepicker(bdDrpOptions);
+            $('#swal-edit-user-birth-date').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD.MM.YYYY'));
+            });
+            $('#swal-edit-user-birth-date').on('cancel.daterangepicker', function() {
+                $(this).val('');
+            });
         },
         showCancelButton: true,
         confirmButtonText: translations.save,
@@ -652,7 +687,8 @@ function editUser(userId, name, email, basicWorkHours, holidaysPerYear, hasLunch
             const email = document.getElementById('swal-edit-user-email').value;
             const rc = document.getElementById('swal-edit-user-rc').value || null;
             const phone = document.getElementById('swal-edit-user-phone').value || null;
-            const birthDate = document.getElementById('swal-edit-user-birth-date').value || null;
+            const rawBirthDate = document.getElementById('swal-edit-user-birth-date').value;
+            const birthDate = rawBirthDate ? moment(rawBirthDate, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
             const password = document.getElementById('swal-edit-user-password').value;
             const passwordConfirm = document.getElementById('swal-edit-user-password-confirm').value;
             const workHours = document.getElementById('swal-edit-user-work-hours').value;
