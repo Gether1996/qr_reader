@@ -138,6 +138,8 @@ LANGUAGES = [
 TIME_ZONE = 'Europe/Bratislava'
 USE_I18N = True
 USE_TZ = False  # Pouzivame iba standardne datetime
+USE_X_FORWARDED_HOST = os.getenv('USE_X_FORWARDED_HOST', 'True') == 'True'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Base URL for QR code generation
 BASE_URL = 'https://dqr.314.sk'

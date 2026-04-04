@@ -7,7 +7,7 @@ from qr_reader_django import crud
 import json
 from viewer.models import ScanEvent, Vacation, PasswordResetToken, UserPasswordSetupToken
 from viewer.account_texts import get_user_password_setup_texts, get_scan_mode_texts
-from viewer.email_utils import get_email_language_code, render_localized_email
+from viewer.email_utils import get_email_language_code, render_localized_email, build_public_url
 from qr_reader_django.audit import log_action, get_client_ip
 from django.core.paginator import Paginator
 from django.db.models import Q, F
@@ -1749,10 +1749,7 @@ def company_request_password_reset(request):
         
         language_code = get_email_language_code(request=request)
 
-        # Generate reset URL based on current request
-        scheme = request.scheme  # http or https
-        host = request.get_host()  # localhost:9005 or dqr.314.sk
-        reset_url = f"{scheme}://{host}/{language_code}/company/reset-password/{token}/"
+        reset_url = build_public_url(request=request, path=f'/{language_code}/company/reset-password/{token}/')
 
         # Render email template
         email_html, language_code = render_localized_email('password_reset_email.html', {

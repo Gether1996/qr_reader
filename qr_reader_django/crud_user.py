@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import transaction
 from qr_reader_django import crud
 from viewer.account_texts import get_employee_invite_texts, get_user_password_setup_texts
-from viewer.email_utils import get_email_language_code, render_localized_email
+from viewer.email_utils import get_email_language_code, render_localized_email, build_public_url
 from viewer.models import UserPasswordSetupToken
 import json
 import secrets
@@ -18,10 +18,8 @@ def _password_has_required_policy(password):
 
 
 def _build_user_setup_url(request, token):
-    scheme = request.scheme
-    host = request.get_host()
     language_code = get_email_language_code(request=request)
-    return f"{scheme}://{host}/{language_code}/user/set-password/{token}/"
+    return build_public_url(request=request, path=f'/{language_code}/user/set-password/{token}/')
 
 
 def _get_combined_password_message(language_code):

@@ -301,6 +301,54 @@ class CompanyDashboardTests(TestCase):
         )
         self.assertIn('/de/user/set-password/', mail.outbox[0].body)
 
+    @override_settings(
+        EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
+        SITE_URL='https://dqr.314.sk'
+    )
+    def test_create_user_invite_email_uses_origin_host(self):
+        """Invite email should prefer the public Origin host over local request host"""
+        response = self.client.post(
+            reverse('create_user'),
+            data=json.dumps({
+                'name': 'Origin Host User',
+                'email': 'origin-host@test.sk',
+                'basic_work_hours': 160,
+                'holidays_per_year': 20,
+            }),
+            content_type='application/json',
+            HTTP_HOST='127.0.0.1:8000',
+            HTTP_ORIGIN='https://app.example.com'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('https://app.example.com/', mail.outbox[0].body)
+        self.assertIn('/user/set-password/', mail.outbox[0].body)
+
+    @override_settings(
+        EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
+        SITE_URL='https://dqr.314.sk'
+    )
+    def test_create_user_invite_email_falls_back_to_site_url_for_local_host(self):
+        """Invite email should not expose localhost or 127.0.0.1 when SITE_URL is public"""
+        response = self.client.post(
+            reverse('create_user'),
+            data=json.dumps({
+                'name': 'Fallback Host User',
+                'email': 'fallback-host@test.sk',
+                'basic_work_hours': 160,
+                'holidays_per_year': 20,
+            }),
+            content_type='application/json',
+            HTTP_HOST='127.0.0.1:8000'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('https://dqr.314.sk/', mail.outbox[0].body)
+        self.assertIn('/user/set-password/', mail.outbox[0].body)
+        self.assertNotIn('127.0.0.1', mail.outbox[0].body)
+
     def test_create_user_with_weak_password_is_rejected(self):
         """Creating a user with a weak password should fail"""
         response = self.client.post(
@@ -1280,6 +1328,29 @@ class PasswordResetTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, 'Solicitud de restablecimiento de contrasena')
         self.assertIn('/es/company/reset-password/', mail.outbox[0].body)
+
+    @override_settings(
+        EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
+        SITE_URL='https://dqr.314.sk'
+    )
+    def test_request_password_reset_email_falls_back_to_site_url_for_local_host(self):
+        """Password reset email should use SITE_URL when request host is local"""
+        session = self.client.session
+        session['company_id'] = self.company.id
+        session['user_type'] = 'company'
+        session.save()
+
+        response = self.client.post(
+            reverse('company_request_password_reset'),
+            HTTP_HOST='127.0.0.1:8000'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['success'])
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('https://dqr.314.sk/', mail.outbox[0].body)
+        self.assertIn('/company/reset-password/', mail.outbox[0].body)
+        self.assertNotIn('127.0.0.1', mail.outbox[0].body)
 
 
 class UserPasswordSetupViewTests(TestCase):
